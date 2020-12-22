@@ -14,8 +14,9 @@ import com.example.elitecommander.R
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
+ *  github: 6abb9654e4f5f9bfd22752f6b59a92d1578b3475
  */
-class FullscreenActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
     private lateinit var fullscreenContent: TextView
     private lateinit var fullscreenContentControls: LinearLayout
     private val hideHandler = Handler()
@@ -65,12 +66,13 @@ class FullscreenActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_fullscreen)
+        setContentView(R.layout.activity_main)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        isFullscreen = true
+        isFullscreen = false
 
         // Set up the user interaction to manually show or hide the system UI.
+        fullscreenContent = findViewById(R.id.fullscreen_content)
         fullscreenContent = findViewById(R.id.fullscreen_content)
         fullscreenContent.setOnClickListener { toggle() }
 
