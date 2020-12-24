@@ -6,7 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.elitecommander.R
+import com.devries48.elitecommander.R
 
 class CommanderFragment : Fragment() {
 
@@ -22,6 +22,9 @@ class CommanderFragment : Fragment() {
     ): View? {
         return inflater.inflate(R.layout.commander_fragment, container, false)
     }
+
+
+
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)

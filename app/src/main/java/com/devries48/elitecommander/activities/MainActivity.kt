@@ -1,6 +1,5 @@
 package com.devries48.elitecommander.activities
 
-import androidx.appcompat.app.AppCompatActivity
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
@@ -9,7 +8,13 @@ import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.example.elitecommander.R
+import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.NavController
+import androidx.navigation.NavDestination
+import androidx.navigation.Navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import com.devries48.elitecommander.R
+
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -17,8 +22,10 @@ import com.example.elitecommander.R
  *  github: 6abb9654e4f5f9bfd22752f6b59a92d1578b3475
  */
 class MainActivity : AppCompatActivity() {
+/*
     private lateinit var fullscreenContent: TextView
     private lateinit var fullscreenContentControls: LinearLayout
+*/
     private val hideHandler = Handler()
 
     @SuppressLint("InlinedApi")
@@ -28,18 +35,18 @@ class MainActivity : AppCompatActivity() {
         // Note that some of these constants are new as of API 16 (Jelly Bean)
         // and API 19 (KitKat). It is safe to use them, as they are inlined
         // at compile-time and do nothing on earlier devices.
-        fullscreenContent.systemUiVisibility =
+  /*      fullscreenContent.systemUiVisibility =
                 View.SYSTEM_UI_FLAG_LOW_PROFILE or
                         View.SYSTEM_UI_FLAG_FULLSCREEN or
                         View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
                         View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or
                         View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
                         View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-    }
+  */  }
     private val showPart2Runnable = Runnable {
         // Delayed display of UI elements
         supportActionBar?.show()
-        fullscreenContentControls.visibility = View.VISIBLE
+        //fullscreenContentControls.visibility = View.VISIBLE
     }
     private var isFullscreen: Boolean = false
 
@@ -72,17 +79,37 @@ class MainActivity : AppCompatActivity() {
         isFullscreen = false
 
         // Set up the user interaction to manually show or hide the system UI.
+/*
         fullscreenContent = findViewById(R.id.fullscreen_content)
         fullscreenContent = findViewById(R.id.fullscreen_content)
         fullscreenContent.setOnClickListener { toggle() }
+*/
 
-        fullscreenContentControls = findViewById(R.id.fullscreen_content_controls)
+        //fullscreenContentControls = findViewById(R.id.fullscreen_content_controls)
 
         // Upon interacting with UI controls, delay any scheduled hide()
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
-        findViewById<Button>(R.id.dummy_button).setOnTouchListener(delayHideTouchListener)
+        //findViewById<Button>(R.id.dummy_button).setOnTouchListener(delayHideTouchListener)
+
+        //val navController = findNavController(this, R.id.nav_host_fragment)
+
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navController = navHostFragment.navController
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            if (destination.id == R.id.commanderFragment) {
+                if (!isUserLoggedIn()) {
+                    navController.navigate(R.id.loginFragment)
+                }
+            }
+        }
     }
+
+    private fun isUserLoggedIn(): Boolean {
+        return false
+    }
+
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
@@ -104,7 +131,7 @@ class MainActivity : AppCompatActivity() {
     private fun hide() {
         // Hide UI first
         supportActionBar?.hide()
-        fullscreenContentControls.visibility = View.GONE
+        //fullscreenContentControls.visibility = View.GONE
         isFullscreen = false
 
         // Schedule a runnable to remove the status and navigation bar after a delay
@@ -114,9 +141,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun show() {
         // Show the system bar
-        fullscreenContent.systemUiVisibility =
-                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-                        View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+//        fullscreenContent.systemUiVisibility =
+//                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+//                        View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
         isFullscreen = true
 
         // Schedule a runnable to display UI elements after a delay
