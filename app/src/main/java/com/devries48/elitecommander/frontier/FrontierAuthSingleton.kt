@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Base64
 import com.devries48.elitecommander.R
 import com.devries48.elitecommander.BuildConfig
+import com.devries48.elitecommander.frontier.OAuthUtils.getAuthorizationCodeRequestBody
 import org.greenrobot.eventbus.EventBus
 import retrofit2.Call
 import retrofit2.Callback
@@ -88,14 +89,13 @@ class FrontierAuthSingleton private constructor() : Serializable {
         val retrofit: RetrofitSingleton? = RetrofitSingleton.getInstance()
         val frontierAuth= retrofit?.getFrontierAuthRetrofit(ctx)
 
-        val callback: retrofit2.Callback<FrontierAccessTokenResponse> =
-            object : Callback<FrontierAccessTokenResponse> {
+        val callback: Callback<FrontierAccessTokenResponse> =
+            object : Callback<FrontierAccessTokenResponse>
+            {
                 @EverythingIsNonNull
-                override fun onResponse(
-                    call: Call<FrontierAccessTokenResponse>,
-                    response: Response<FrontierAccessTokenResponse>
-                ) {
-                    val body: FrontierAccessTokenResponse = response.body()!!
+                override fun onResponse(call: Call<FrontierAccessTokenResponse>, response: Response<FrontierAccessTokenResponse>)
+                {
+                    val body: FrontierAccessTokenResponse? = response.body()
                     if (!response.isSuccessful || body == null) {
                         onFailure(call, Exception("Invalid response"))
                     } else {
@@ -110,7 +110,8 @@ class FrontierAuthSingleton private constructor() : Serializable {
                 }
 
                 @EverythingIsNonNull
-                override fun onFailure(call: Call<FrontierAccessTokenResponse>, t: Throwable?) {
+                override fun onFailure(call: Call<FrontierAccessTokenResponse>, t: Throwable?)
+                {
                     EventBus.getDefault().post(
                         FrontierTokensEvent(
                             false,
@@ -119,8 +120,9 @@ class FrontierAuthSingleton private constructor() : Serializable {
                     )
                 }
             }
+
         val requestBody: FrontierAccessTokenRequestBody =
-            OAuthUtils.getAuthorizationCodeRequestBody(
+            getAuthorizationCodeRequestBody(
                 codeVerifier, authCode
             )
         frontierAuth?.getAccessToken(requestBody)?.enqueue(callback)

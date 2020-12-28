@@ -5,13 +5,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.MotionEvent
 import android.view.View
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.NavController
-import androidx.navigation.NavDestination
-import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.devries48.elitecommander.R
 
@@ -105,6 +99,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
 
     private fun isUserLoggedIn(): Boolean {
         return false

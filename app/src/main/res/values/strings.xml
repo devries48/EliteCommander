@@ -10,5 +10,6 @@
     <string name="login_success">Login succeeded</string>
     <string name="access_token_key">access_token_key</string>
     <string name="refresh_token_key">refresh_token_key</string>
+    <string name="frontier_login">FRONTIER LOGIN</string>
 
 </resources>

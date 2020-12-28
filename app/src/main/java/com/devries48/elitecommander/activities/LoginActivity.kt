@@ -21,9 +21,9 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
 
         // Check step (back from browser or just opened)
-        if (intent != null && intent.action != null &&
-            intent.action == Intent.ACTION_VIEW) {
-            val uri = intent.data
+        if (intent != null && intent!!.action != null &&
+            intent!!.action == Intent.ACTION_VIEW) {
+            val uri = intent!!.data
 
             val code = uri?.getQueryParameter("code")
             val state = uri?.getQueryParameter("state")
@@ -37,7 +37,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onLoginTokensEvent(tokens: FrontierTokensEvent) {
+    fun onLFrontierTokensEvent(tokens: FrontierTokensEvent) {
         if (tokens.success) {
             val t = Toast.makeText(this, R.string.login_success,Toast.LENGTH_LONG )
             t.show()
@@ -75,7 +75,7 @@ class LoginActivity : AppCompatActivity() {
         if (url != null) {
             launchBrowserIntent(url)
         }
-        finish()
+       finish()
     }
 
     private fun launchTokensStep(authCode: String, state: String) {
@@ -89,4 +89,20 @@ class LoginActivity : AppCompatActivity() {
         browserIntent.data = Uri.parse(url)
         startActivity(browserIntent)
     }
+
+    override fun getIntent(): Intent? {
+        val intent = super.getIntent()
+        return if (intent != null && intent.action == "org.chromium.arc.intent.action.VIEW") {
+            Intent(intent).setAction(Intent.ACTION_VIEW)
+        } else intent
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        if (intent != null && intent.action == "org.chromium.arc.intent.action.VIEW") {
+            super.onNewIntent(Intent(intent).setAction(Intent.ACTION_VIEW))
+        } else {
+            super.onNewIntent(intent)
+        }
+    }
+
 }

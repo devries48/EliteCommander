@@ -50,7 +50,7 @@
             android:layout_width="145dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|center"
-            android:text="FRONTIER LOGIN"
+            android:text="@string/frontier_login"
             android:layout_marginBottom="32dp"/>
     </LinearLayout>
 </LinearLayout>

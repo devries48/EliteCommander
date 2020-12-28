@@ -19,8 +19,9 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-// Get or create code here: https://user.frontierstore.net/
+        // Get or create code here: https://user.frontierstore.net/
         buildConfigField "String", "FRONTIER_AUTH_CLIENT_ID", "\"${localProperties.getProperty("frontierclientid")}\""
+
     }
 
     buildTypes {

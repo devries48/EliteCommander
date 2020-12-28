@@ -2,14 +2,33 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.devries48.elitecommander">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.EliteCommander">
-        <activity android:name=".activities.LoginActivity"></activity>
+        android:theme="@style/Theme.EliteCommander"
+        android:fullBackupContent="@xml/backup_descriptor">
+        <activity
+            android:name=".activities.LoginActivity"
+            android:launchMode="singleTask"
+            android:label="@string/frontier_login"
+            android:noHistory="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="oauth"
+                    android:scheme="elitecommander" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".activities.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"

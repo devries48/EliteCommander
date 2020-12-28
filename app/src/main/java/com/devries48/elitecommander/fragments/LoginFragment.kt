@@ -1,5 +1,6 @@
 package com.devries48.elitecommander.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,13 +9,9 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.devries48.elitecommander.R
+import com.devries48.elitecommander.activities.LoginActivity
 
 
-/**
- * A simple [Fragment] subclass.
- * Use the [LoginFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class LoginFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -27,9 +24,13 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val button: Button = view.findViewById(R.id.frontierLoginButton)
-        button.setOnClickListener(View.OnClickListener {
-            Toast.makeText(activity, "This is my Toast message!",
-                    Toast.LENGTH_LONG).show();
-        })
+        button.setOnClickListener {
+            val i = Intent(context, LoginActivity::class.java)
+            activity?.startActivityForResult(i, FRONTIER_LOGIN_REQUEST_CODE)
+        }
     }
-}
+
+    companion object {
+        private const val FRONTIER_LOGIN_REQUEST_CODE = 999
+    }
+    }
