@@ -1,24 +1,27 @@
 package com.devries48.elitecommander.activities
 
-import com.devries48.elitecommander.R
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import androidx.core.view.isVisible
+import com.devries48.elitecommander.R
 import com.devries48.elitecommander.frontier.FrontierAuthSingleton
 import com.devries48.elitecommander.frontier.FrontierTokensEvent
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-
 
 class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+
+        val button: Button = findViewById(R.id.frontierLoginButton)
 
         // Check step (back from browser or just opened)
         if (intent != null && intent!!.action != null &&
@@ -29,9 +32,14 @@ class LoginActivity : AppCompatActivity() {
             val state = uri?.getQueryParameter("state")
 
             if(code != null && state != null) {
+        button.isVisible=false
                 launchTokensStep(code, state)
+                return
             }
-        } else {
+        }
+
+        button.setOnClickListener {
+            button.isEnabled=false
             launchAuthCodeStep()
         }
     }

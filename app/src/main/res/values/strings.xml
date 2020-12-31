@@ -2,7 +2,7 @@
     <string name="app_name">Elite Commander</string>
     <string name="frontier_auth_base">https://auth.frontierstore.net/</string>
     <string name="frontier_api_base">https://companion.orerve.net/</string>
-    <string name="settings_cmdr_username" >CMDR name</string>
+    <string name="settings_cmdr_username">CMDR name</string>
 
     <!--Login-->
     <string name="login_dialog_error_title">Frontier login error</string>
@@ -11,5 +11,4 @@
     <string name="access_token_key">access_token_key</string>
     <string name="refresh_token_key">refresh_token_key</string>
     <string name="frontier_login">FRONTIER LOGIN</string>
-
 </resources>

@@ -6,12 +6,13 @@
     app:startDestination="@id/commanderFragment">
 
     <fragment
-        android:id="@+id/loginFragment"
-        android:name="com.devries48.elitecommander.fragments.LoginFragment"
-        android:label="LoginFragment" />
-    <fragment
         android:id="@+id/commanderFragment"
         android:name="com.devries48.elitecommander.fragments.CommanderFragment"
         android:label="commander_fragment"
         tools:layout="@layout/commander_fragment" />
+    <activity
+        android:id="@+id/mainActivity"
+        android:name="com.devries48.elitecommander.activities.MainActivity"
+        android:label="activity_main"
+        tools:layout="@layout/activity_main" />
 </navigation>
