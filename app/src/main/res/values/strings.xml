@@ -11,4 +11,92 @@
     <string name="access_token_key">access_token_key</string>
     <string name="refresh_token_key">refresh_token_key</string>
     <string name="frontier_login">FRONTIER LOGIN</string>
+
+    <!--Ranks-->
+    <string name="rank_federation">Federation</string>
+    <string name="rank_empire">Empire</string>
+    <string name="rank_combat">Combat</string>
+    <string name="rank_trading">Trade</string>
+    <string name="rank_exploration">Exploration</string>
+    <string name="rank_arena">Arena</string>
+    <string-array name="ranks_combat">
+        <item>Harmless</item>
+        <item>Mostly Harmless</item>
+        <item>Novice</item>
+        <item>Competent</item>
+        <item>Expert</item>
+        <item>Master</item>
+        <item>Dangerous</item>
+        <item>Deadly</item>
+        <item>Elite</item>
+    </string-array>
+    <string-array name="ranks_trade">
+        <item>Penniless</item>
+        <item>Mostly Penniless</item>
+        <item>Peddler</item>
+        <item>Dealer</item>
+        <item>Merchant</item>
+        <item>Broker</item>
+        <item>Entrepreneur</item>
+        <item>Tycoon</item>
+        <item>Elite</item>
+    </string-array>
+    <string-array name="ranks_explorer">
+        <item>Aimless</item>
+        <item>Mostly Aimless</item>
+        <item>Scout</item>
+        <item>Surveyor</item>
+        <item>Trailblazer</item>
+        <item>Pathfinder</item>
+        <item>Ranger</item>
+        <item>Pioneer</item>
+        <item>Elite</item>
+    </string-array>
+    <string-array name="ranks_cqc">
+        <item>Helpless</item>
+        <item>Mostly Helpless</item>
+        <item>Amateur</item>
+        <item>Semi Professional</item>
+        <item>Professional</item>
+        <item>Champion</item>
+        <item>Hero</item>
+        <item>Legend</item>
+        <item>Elite</item>
+    </string-array>
+    <string-array name="ranks_federation">
+        <item>None</item>
+        <item>Recruit</item>
+        <item>Cadet</item>
+        <item>Midshipman</item>
+        <item>Petty Officer</item>
+        <item>Chief Petty Officer</item>
+        <item>Warrant Officer</item>
+        <item>Ensign</item>
+        <item>Lieutenant</item>
+        <item>Lieutenant Commander</item>
+        <item>Post Commander</item>
+        <item>Post Captain</item>
+        <item>Rear Admiral</item>
+        <item>Vice Admiral</item>
+        <item>Admiral</item>
+    </string-array>
+    <string-array name="ranks_empire">
+        <item>None</item>
+        <item>Outsider</item>
+        <item>Serf</item>
+        <item>Master</item>
+        <item>Squire</item>
+        <item>Knight</item>
+        <item>Lord</item>
+        <item>Baron</item>
+        <item>Viscount</item>
+        <item>Count</item>
+        <item>Earl</item>
+        <item>Marquis</item>
+        <item>Duke</item>
+        <item>Prince</item>
+        <item>King</item>
+        <item>Admiral</item>
+    </string-array>
+
 </resources>
