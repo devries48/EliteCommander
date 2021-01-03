@@ -17,27 +17,50 @@
         tools:context="com.devries48.elitecommander.fragments.CommanderFragment">
 
         <TextView
+            android:id="@+id/cmdr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="CMDR"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
             android:id="@+id/commanderNameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="0dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:text="@{viewModel.name}"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            app:layout_constraintStart_toEndOf="@+id/cmdr"
+            app:layout_constraintTop_toTopOf="@+id/cmdr" />
+
+        <TextView
+            android:id="@+id/commanderCreditsTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:ellipsize="end"
-            android:maxLines="2"
-            android:text="@{viewModel.name}"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:text="@{viewModel.credits}"
+            app:layout_constraintStart_toStartOf="@+id/cmdr"
+            app:layout_constraintTop_toBottomOf="@+id/commanderNameTextView" />
 
-        <Button
-            android:id="@+id/button"
+        <TextView
+            android:id="@+id/commanderLocationTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="156dp"
-            android:layout_marginTop="40dp"
-            android:text="Button"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:ellipsize="end"
+            android:text="@{viewModel.location}"
+            app:layout_constraintStart_toStartOf="@+id/cmdr"
+            app:layout_constraintTop_toBottomOf="@+id/commanderCreditsTextView" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

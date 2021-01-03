@@ -36,6 +36,8 @@ class CommanderFragment : Fragment() {
             R.layout.commander_fragment, container, false
         )
         binding.viewModel = viewModel
+        binding.lifecycleOwner=this
+
         return binding.root
     }
 }

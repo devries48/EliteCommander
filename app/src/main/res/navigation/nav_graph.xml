@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/commanderFragment">
+    app:startDestination="@id/mainFragment">
 
     <activity
         android:id="@+id/mainActivity"
@@ -16,5 +16,14 @@
         android:name="com.devries48.elitecommander.fragments.CommanderFragment"
         android:label="commander_fragment"
         tools:layout="@layout/commander_fragment" >
+    </fragment>
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.devries48.elitecommander.fragments.MainFragment"
+        android:label="fragment_main"
+        tools:layout="@layout/fragment_main" >
+        <action
+            android:id="@+id/action_mainFragment_to_commanderFragment"
+            app:destination="@id/commanderFragment" />
     </fragment>
 </navigation>

@@ -19,9 +19,9 @@ import retrofit2.Callback
 import retrofit2.Response
 
 
-class CommanderApi(ctx: Context)  {
+class CommanderApi(ctx: Context) {
 
-private var context:Context = ctx
+    private var context: Context = ctx
     private var frontierRetrofit: FrontierRetrofit? = null
 
     init {
@@ -56,11 +56,14 @@ private var context:Context = ctx
                     val credits: Credits
                     val ranks: Ranks
                     try {
-
                         // Position
+                        val commanderName: String = profileResponse.Commander?.Name!!
+
                         pos = profileResponse.LastSystem?.Name?.let {
                             CommanderPosition(
-                                true, it,
+                                true,
+                                commanderName,
+                                it,
                                 false
                             )
                         }!!
@@ -142,10 +145,7 @@ private var context:Context = ctx
 
             override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
                 val credits = Credits(false, 0, 0)
-                val pos = CommanderPosition(
-                    false,
-                    "", false
-                )
+                val pos = CommanderPosition(false, "", "", false)
                 val ranks = Ranks(
                     false, null, null,
                     null, null, null, null

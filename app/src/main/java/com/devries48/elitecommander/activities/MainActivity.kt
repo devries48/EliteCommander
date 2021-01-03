@@ -15,19 +15,19 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
-        navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
 
         navController = navHostFragment.navController
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             navDestinationId = destination.id
 
-/*
             if (!isUserLoggedIn) {
                 val intent = Intent(this@MainActivity, LoginActivity::class.java)
                 startActivityForResult(intent, FRONTIER_LOGIN_REQUEST_CODE)
             }
-*/
+
         }
     }
 
@@ -35,6 +35,9 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == FRONTIER_LOGIN_REQUEST_CODE) {
             isUserLoggedIn = true
+            if (navDestinationId == R.id.mainFragment) {
+                navDestinationId = R.id.action_mainFragment_to_commanderFragment
+            }
             navController.navigate(navDestinationId)
         }
     }
@@ -42,9 +45,9 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private const val FRONTIER_LOGIN_REQUEST_CODE = 999
         var isUserLoggedIn = false
-        private var navDestinationId :Int = 0
+        private var navDestinationId: Int = 0
         private lateinit var navController: NavController
-        private lateinit  var navHostFragment: NavHostFragment
+        private lateinit var navHostFragment: NavHostFragment
 
     }
 
