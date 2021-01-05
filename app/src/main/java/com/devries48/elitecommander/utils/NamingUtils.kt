@@ -38,7 +38,7 @@ object NamingUtils {
         }
     }
 
-    fun getCombatLogoId(rankValue: Int): Int {
+    fun getCombatRankDrawableId(rankValue: Int): Int {
         return when (rankValue + 1) {
             2 -> R.drawable.rank_2_combat
             3 -> R.drawable.rank_3_combat
@@ -52,7 +52,7 @@ object NamingUtils {
         }
     }
 
-    fun getTradeLogoId(rankValue: Int): Int {
+    fun getTradeRankDrawableId(rankValue: Int): Int {
         return when (rankValue + 1) {
             2 -> R.drawable.rank_2_trading
             3 -> R.drawable.rank_3_trading
@@ -66,7 +66,7 @@ object NamingUtils {
         }
     }
 
-    fun getExplorationLogoId(rankValue: Int): Int {
+    fun getExplorationRankDrawableId(rankValue: Int): Int {
         return when (rankValue + 1) {
             2 -> R.drawable.rank_2_exploration
             3 -> R.drawable.rank_3_exploration
@@ -80,7 +80,7 @@ object NamingUtils {
         }
     }
 
-    fun getCqcLogoId(rankValue: Int): Int {
+    fun getCqcRankDrawableId(rankValue: Int): Int {
         return when (rankValue + 1) {
             2 -> R.drawable.rank_2_cqc
             3 -> R.drawable.rank_3_cqc

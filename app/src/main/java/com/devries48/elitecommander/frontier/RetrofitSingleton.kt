@@ -1,8 +1,8 @@
 package com.devries48.elitecommander.frontier
 
 
-import com.devries48.elitecommander.R
 import android.content.Context
+import com.devries48.elitecommander.R
 import com.google.gson.GsonBuilder
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -106,7 +106,7 @@ class RetrofitSingleton private constructor() : Serializable {
     }
 
     private val retrofitInstance: Retrofit.Builder?
-        private get() {
+        get() {
             if (retrofitBuilder != null) {
                 return retrofitBuilder
             }
@@ -116,7 +116,7 @@ class RetrofitSingleton private constructor() : Serializable {
             return retrofitBuilder
         }
     private val commonGsonConverterFactory: GsonConverterFactory
-        private get() {
+        get() {
             val gson = GsonBuilder()
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
                 //.registerTypeAdapter(EDSMSystemInformationResponse::class.java, EDSMDeserializer())
@@ -124,7 +124,7 @@ class RetrofitSingleton private constructor() : Serializable {
             return GsonConverterFactory.create(gson)
         }
     private val commonOkHttpClientBuilder: OkHttpClient.Builder
-        private get() = OkHttpClient().newBuilder()
+         get() = OkHttpClient().newBuilder()
             .connectTimeout(15, TimeUnit.SECONDS)
             .readTimeout(15, TimeUnit.SECONDS)
             .writeTimeout(15, TimeUnit.SECONDS)

@@ -5,7 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="viewModel"
             type="com.devries48.elitecommander.fragments.CommanderViewModel" />
@@ -22,7 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:text="CMDR"
+            android:text="@string/cmdr"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -31,9 +30,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="0dp"
-            android:ellipsize="end"
-            android:maxLines="2"
             android:text="@{viewModel.name}"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
             app:layout_constraintStart_toEndOf="@+id/cmdr"
@@ -43,7 +39,6 @@
             android:id="@+id/commanderCreditsTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:ellipsize="end"
             android:text="@{viewModel.credits}"
@@ -54,13 +49,67 @@
             android:id="@+id/commanderLocationTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:ellipsize="end"
             android:text="@{viewModel.location}"
             app:layout_constraintStart_toStartOf="@+id/cmdr"
             app:layout_constraintTop_toBottomOf="@+id/commanderCreditsTextView" />
 
+        <include
+            android:id="@+id/combatRankInclude"
+            layout="@layout/include_rank_player"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="@id/commanderLocationTextView"
+            app:layout_constraintTop_toBottomOf="@id/commanderLocationTextView"
+            app:rank="@{viewModel.combatRank}" />
+
+        <include
+            android:id="@+id/tradeRankInclude"
+            layout="@layout/include_rank_player"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@+id/combatRankInclude"
+            app:layout_constraintTop_toTopOf="@+id/combatRankInclude"
+            app:rank="@{viewModel.tradeRank}" />
+
+        <include
+            android:id="@+id/exploreRankInclude"
+            layout="@layout/include_rank_player"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@+id/tradeRankInclude"
+            app:layout_constraintTop_toTopOf="@+id/tradeRankInclude"
+            app:rank="@{viewModel.exploreRank}" />
+
+        <include
+            android:id="@+id/cqcRankInclude"
+            layout="@layout/include_rank_player"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@+id/exploreRankInclude"
+            app:layout_constraintTop_toTopOf="@+id/exploreRankInclude"
+            app:rank="@{viewModel.cqcRank}" />
+
+        <include
+            android:id="@+id/federationRankInclude"
+            layout="@layout/include_rank_player"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toEndOf="@+id/combatRankInclude"
+            app:layout_constraintTop_toBottomOf="@+id/combatRankInclude"
+            app:rank="@{viewModel.federationRank}" />
+
+        <include
+            android:id="@+id/EmpireRankInclude"
+            layout="@layout/include_rank_player"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@+id/federationRankInclude"
+            app:layout_constraintTop_toTopOf="@+id/federationRankInclude"
+            app:rank="@{viewModel.empireRank}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

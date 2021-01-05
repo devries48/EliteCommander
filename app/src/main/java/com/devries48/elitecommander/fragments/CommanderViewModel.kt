@@ -5,9 +5,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.devries48.elitecommander.R
 import com.devries48.elitecommander.frontier.api.CommanderApi
 import com.devries48.elitecommander.frontier.api.models.CommanderPosition
 import com.devries48.elitecommander.frontier.api.models.Credits
+import com.devries48.elitecommander.frontier.api.models.Ranks
+import com.devries48.elitecommander.utils.NamingUtils
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -19,6 +22,12 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
     val name: LiveData<String> = mName
     val credits: LiveData<String> = mCredits
     val location: LiveData<String> = mLocation
+    val combatRank: LiveData<RankModel> = mCombatRank
+    val tradeRank: LiveData<RankModel> = mTradeRank
+    val exploreRank: LiveData<RankModel> = mExploreRank
+    val cqcRank: LiveData<RankModel> = mCqcRank
+    val federationRank: LiveData<RankModel> = mFederationRank
+    val empireRank: LiveData<RankModel> = mEmpireRank
 
     init {
         EventBus.getDefault().register(this)
@@ -42,7 +51,7 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
 
         // Check error case
         if (credits.balance == -1L) {
-            Companion.mCredits.value = "Unknown"
+            mCredits.value = "Unknown"
             return
         }
 
@@ -64,8 +73,63 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
             //NotificationsUtils.displayGenericDownloadErrorSnackbar(getActivity()) TODO: Error Handling
             return
         }
-        mName.value=position.name
+        mName.value = position.name
         mLocation.value = position.systemName
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onRanksEvents(ranks: Ranks) {
+
+        // Check download error
+        if (!ranks.success) {
+            //NotificationsUtils.displayGenericDownloadErrorSnackbar(getActivity()) TODO: Error Handling
+            return
+        }
+
+        mCombatRank.value = RankModel(
+            NamingUtils.getCombatRankDrawableId(ranks.combat!!.value),
+            ranks.combat,
+            ranks.combat.name,
+            R.string.rank_combat,
+            0
+        )
+        mTradeRank.value = RankModel(
+            NamingUtils.getTradeRankDrawableId(ranks.trade!!.value),
+            ranks.trade,
+            ranks.trade.name,
+            R.string.rank_trading,
+            0
+        )
+        mExploreRank.value = RankModel(
+            NamingUtils.getExplorationRankDrawableId(ranks.explore!!.value),
+            ranks.explore,
+            ranks.explore.name,
+            R.string.rank_explore,
+            0
+        )
+        mCqcRank.value = RankModel(
+            NamingUtils.getCqcRankDrawableId(ranks.cqc!!.value),
+            ranks.cqc,
+            ranks.cqc.name,
+            R.string.rank_cqc,
+            0
+        )
+        mFederationRank.value =
+            RankModel(
+                0,
+                ranks.federation!!,
+                ranks.federation.name,
+                R.string.rank_empire,
+                R.drawable.faction_federation
+            )
+        mEmpireRank.value =
+            RankModel(
+                0,
+                ranks.empire!!,
+                ranks.empire.name,
+                R.string.rank_federation,
+                R.drawable.faction_empire
+            )
     }
 
 
@@ -78,11 +142,25 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
         private val mName = MutableLiveData("")
         private val mCredits = MutableLiveData("")
         private val mLocation = MutableLiveData("")
+        private val mCombatRank = MutableLiveData(RankModel(0, Ranks.Rank("", 0, 0), "", R.string.empty_string, 0))
+        private val mTradeRank = MutableLiveData(RankModel(0, Ranks.Rank("", 0, 0), "", R.string.empty_string, 0))
+        private val mExploreRank = MutableLiveData(RankModel(0, Ranks.Rank("", 0, 0), "", R.string.empty_string, 0))
+        private val mCqcRank = MutableLiveData(RankModel(0, Ranks.Rank("", 0, 0), "", R.string.empty_string, 0))
+        private val mFederationRank = MutableLiveData(RankModel(0, Ranks.Rank("", 0, 0), "", R.string.empty_string, 0))
+        private val mEmpireRank = MutableLiveData(RankModel(0, Ranks.Rank("", 0, 0), "", R.string.empty_string, 0))
     }
 }
 
-
 class CommanderViewModelFactory(private val api: CommanderApi?) :
     ViewModelProvider.NewInstanceFactory() {
+    @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T = CommanderViewModel(api) as T
 }
+
+data class RankModel(
+    val logoResId: Int,
+    val rank: Ranks.Rank,
+    val name: String,
+    val titleResId: Int,
+    val factionBackgroundResId: Int
+)
