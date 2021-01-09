@@ -116,18 +116,18 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
         )
         mFederationRank.value =
             RankModel(
-                0,
-                ranks.federation!!,
+                NamingUtils.getFederationRankDrawableId(ranks.federation!!.value),
+                ranks.federation,
                 ranks.federation.name,
-                R.string.rank_empire,
+                R.string.rank_federation,
                 R.drawable.faction_federation
             )
         mEmpireRank.value =
             RankModel(
-                0,
-                ranks.empire!!,
+                NamingUtils.getEmpireRankDrawableId(ranks.empire!!.value),
+                ranks.empire,
                 ranks.empire.name,
-                R.string.rank_federation,
+                R.string.rank_empire,
                 R.drawable.faction_empire
             )
     }

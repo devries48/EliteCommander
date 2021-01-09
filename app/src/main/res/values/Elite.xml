@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Elite" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/orange</item>
+
+    </style>
+
+    <style name="Elite.Large">
+        <item name="android:textSize">22sp</item>
+        <item name="textAllCaps">true</item>
+    </style>
+</resources>

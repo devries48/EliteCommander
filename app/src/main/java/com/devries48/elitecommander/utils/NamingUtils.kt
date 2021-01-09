@@ -38,6 +38,8 @@ object NamingUtils {
         }
     }
 
+    //TODO: Refactor rank names alphabetically
+
     fun getCombatRankDrawableId(rankValue: Int): Int {
         return when (rankValue + 1) {
             2 -> R.drawable.rank_2_combat
@@ -91,6 +93,44 @@ object NamingUtils {
             8 -> R.drawable.rank_8_cqc
             9 -> R.drawable.rank_9_cqc
             else -> R.drawable.rank_1_cqc
+        }
+    }
+
+    fun getFederationRankDrawableId(rankValue: Int): Int {
+        return when (rankValue + 1) {
+            2 -> R.drawable.rank_2_fed
+            3 -> R.drawable.rank_3_fed
+            4 -> R.drawable.rank_4_fed
+            5 -> R.drawable.rank_5_fed
+            6 -> R.drawable.rank_6_fed
+            7 -> R.drawable.rank_7_fed
+            8 -> R.drawable.rank_8_fed
+            9 -> R.drawable.rank_9_fed
+            10 -> R.drawable.rank_10_fed
+            11-> R.drawable.rank_11_fed
+            12 -> R.drawable.rank_12_fed
+            13-> R.drawable.rank_13_fed
+            14 -> R.drawable.rank_14_fed
+            else -> R.drawable.rank_1_fed
+        }
+    }
+
+    fun getEmpireRankDrawableId(rankValue: Int): Int {
+        return when (rankValue + 1) {
+            2 -> R.drawable.rank_2_emp
+            3 -> R.drawable.rank_3_emp
+            4 -> R.drawable.rank_4_emp
+            5 -> R.drawable.rank_5_emp
+            6 -> R.drawable.rank_6_emp
+            7 -> R.drawable.rank_7_emp
+            8 -> R.drawable.rank_8_emp
+            9 -> R.drawable.rank_9_emp
+            10 -> R.drawable.rank_10_emp
+            11-> R.drawable.rank_11_emp
+            12 -> R.drawable.rank_12_emp
+            13-> R.drawable.rank_13_emp
+            14 -> R.drawable.rank_14_emp
+            else -> R.drawable.rank_1_emp
         }
     }
 }

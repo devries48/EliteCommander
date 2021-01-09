@@ -3,6 +3,7 @@
     <string name="frontier_auth_base">https://auth.frontierstore.net/</string>
     <string name="frontier_api_base">https://companion.orerve.net/</string>
     <string name="settings_cmdr_username">CMDR name</string>
+    <string name="cmdr">CMDR %s</string>
 
     <!--Login-->
     <string name="login_dialog_error_title">Frontier login error</string>
@@ -13,12 +14,15 @@
     <string name="frontier_login">FRONTIER LOGIN</string>
 
     <!--Ranks-->
+    <string name="rank">Rank</string>
+
     <string name="rank_federation">Federation</string>
     <string name="rank_empire">Empire</string>
     <string name="rank_combat">Combat</string>
     <string name="rank_trading">Trade</string>
     <string name="rank_explore">Exploration</string>
-    <string name="rank_arena">Arena</string>
+    <string name="rank_cqc">Arena</string>
+
     <string-array name="ranks_combat">
         <item>Harmless</item>
         <item>Mostly Harmless</item>
@@ -98,11 +102,8 @@
         <item>King</item>
         <item>Admiral</item>
     </string-array>
-    <!-- TODO: Remove or change this placeholder text -->
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="cmdr">CMDR</string>
-    <string name="rank">Rank</string>
-    <string name="rank_cqc">Arena</string>
     <string name="empty_string" />
 
 </resources>

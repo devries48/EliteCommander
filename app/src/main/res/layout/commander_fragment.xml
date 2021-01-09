@@ -19,96 +19,116 @@
             android:id="@+id/cmdr"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:text="@string/cmdr"
-            app:layout_constraintStart_toStartOf="parent"
+            android:text="@{@string/cmdr(viewModel.name)}"
+            android:textAppearance="@style/Elite.Large"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/commanderNameTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:text="@{viewModel.name}"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title"
-            app:layout_constraintStart_toEndOf="@+id/cmdr"
-            app:layout_constraintTop_toTopOf="@+id/cmdr" />
 
         <TextView
             android:id="@+id/commanderCreditsTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:ellipsize="end"
+            android:layout_marginTop="8dp"
             android:text="@{viewModel.credits}"
-            app:layout_constraintStart_toStartOf="@+id/cmdr"
-            app:layout_constraintTop_toBottomOf="@+id/commanderNameTextView" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cmdr" />
 
         <TextView
             android:id="@+id/commanderLocationTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:ellipsize="end"
+            android:layout_marginTop="8dp"
             android:text="@{viewModel.location}"
-            app:layout_constraintStart_toStartOf="@+id/cmdr"
+            app:layout_constraintStart_toStartOf="@+id/commanderCreditsTextView"
             app:layout_constraintTop_toBottomOf="@+id/commanderCreditsTextView" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideHor1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="100dp" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideVer1"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.25" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideVer2"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.50" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideVer3"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.75" />
 
         <include
             android:id="@+id/combatRankInclude"
             layout="@layout/include_rank_player"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:layout_constraintStart_toStartOf="@id/commanderLocationTextView"
-            app:layout_constraintTop_toBottomOf="@id/commanderLocationTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="@+id/guideVer1"
+            app:layout_constraintTop_toBottomOf="@+id/guideHor1"
             app:rank="@{viewModel.combatRank}" />
 
         <include
             android:id="@+id/tradeRankInclude"
             layout="@layout/include_rank_player"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@+id/combatRankInclude"
-            app:layout_constraintTop_toTopOf="@+id/combatRankInclude"
+            android:layout_height="0dp"
+            app:layout_constraintLeft_toLeftOf="@+id/guideVer1"
+            app:layout_constraintRight_toRightOf="@+id/guideVer2"
+            app:layout_constraintTop_toBottomOf="@+id/guideHor1"
             app:rank="@{viewModel.tradeRank}" />
 
         <include
             android:id="@+id/exploreRankInclude"
             layout="@layout/include_rank_player"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@+id/tradeRankInclude"
-            app:layout_constraintTop_toTopOf="@+id/tradeRankInclude"
+            android:layout_height="0dp"
+            app:layout_constraintLeft_toLeftOf="@+id/guideVer2"
+            app:layout_constraintRight_toRightOf="@+id/guideVer3"
+            app:layout_constraintTop_toBottomOf="@+id/guideHor1"
             app:rank="@{viewModel.exploreRank}" />
 
         <include
             android:id="@+id/cqcRankInclude"
             layout="@layout/include_rank_player"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@+id/exploreRankInclude"
-            app:layout_constraintTop_toTopOf="@+id/exploreRankInclude"
+            android:layout_height="0dp"
+            app:layout_constraintLeft_toLeftOf="@+id/guideVer3"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/guideHor1"
             app:rank="@{viewModel.cqcRank}" />
 
         <include
             android:id="@+id/federationRankInclude"
             layout="@layout/include_rank_player"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:layout_constraintStart_toEndOf="@+id/combatRankInclude"
+            android:layout_height="0dp"
+            app:layout_constraintLeft_toLeftOf="@+id/guideVer1"
+            app:layout_constraintRight_toRightOf="@+id/guideVer2"
             app:layout_constraintTop_toBottomOf="@+id/combatRankInclude"
             app:rank="@{viewModel.federationRank}" />
 
         <include
-            android:id="@+id/EmpireRankInclude"
+            android:id="@+id/empireRankInclude"
             layout="@layout/include_rank_player"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@+id/federationRankInclude"
-            app:layout_constraintTop_toTopOf="@+id/federationRankInclude"
+            android:layout_height="0dp"
+            app:layout_constraintLeft_toLeftOf="@+id/guideVer2"
+            app:layout_constraintRight_toRightOf="@+id/guideVer3"
+            app:layout_constraintTop_toBottomOf="@+id/combatRankInclude"
             app:rank="@{viewModel.empireRank}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
