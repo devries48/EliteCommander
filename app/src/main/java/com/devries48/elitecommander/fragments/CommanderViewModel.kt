@@ -91,28 +91,28 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
             ranks.combat,
             ranks.combat.name,
             R.string.rank_combat,
-            0
+            true
         )
         mTradeRank.value = RankModel(
             NamingUtils.getTradeRankDrawableId(ranks.trade!!.value),
             ranks.trade,
             ranks.trade.name,
             R.string.rank_trading,
-            0
+            true
         )
         mExploreRank.value = RankModel(
             NamingUtils.getExplorationRankDrawableId(ranks.explore!!.value),
             ranks.explore,
             ranks.explore.name,
             R.string.rank_explore,
-            0
+            true
         )
         mCqcRank.value = RankModel(
             NamingUtils.getCqcRankDrawableId(ranks.cqc!!.value),
             ranks.cqc,
             ranks.cqc.name,
             R.string.rank_cqc,
-            0
+            true
         )
         mFederationRank.value =
             RankModel(
@@ -120,7 +120,7 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
                 ranks.federation,
                 ranks.federation.name,
                 R.string.rank_federation,
-                R.drawable.faction_federation
+                false
             )
         mEmpireRank.value =
             RankModel(
@@ -128,7 +128,7 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
                 ranks.empire,
                 ranks.empire.name,
                 R.string.rank_empire,
-                R.drawable.faction_empire
+                false
             )
     }
 
@@ -142,12 +142,18 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
         private val mName = MutableLiveData("")
         private val mCredits = MutableLiveData("")
         private val mLocation = MutableLiveData("")
-        private val mCombatRank = MutableLiveData(RankModel(0, Ranks.Rank("", 0, 0), "", R.string.empty_string, 0))
-        private val mTradeRank = MutableLiveData(RankModel(0, Ranks.Rank("", 0, 0), "", R.string.empty_string, 0))
-        private val mExploreRank = MutableLiveData(RankModel(0, Ranks.Rank("", 0, 0), "", R.string.empty_string, 0))
-        private val mCqcRank = MutableLiveData(RankModel(0, Ranks.Rank("", 0, 0), "", R.string.empty_string, 0))
-        private val mFederationRank = MutableLiveData(RankModel(0, Ranks.Rank("", 0, 0), "", R.string.empty_string, 0))
-        private val mEmpireRank = MutableLiveData(RankModel(0, Ranks.Rank("", 0, 0), "", R.string.empty_string, 0))
+        private val mCombatRank =
+            MutableLiveData(RankModel(0, Ranks.Rank("", 0, 0), "", R.string.empty_string,false))
+        private val mTradeRank =
+            MutableLiveData(RankModel(0, Ranks.Rank("", 0, 0), "", R.string.empty_string,false))
+        private val mExploreRank =
+            MutableLiveData(RankModel(0, Ranks.Rank("", 0, 0), "", R.string.empty_string,false))
+        private val mCqcRank =
+            MutableLiveData(RankModel(0, Ranks.Rank("", 0, 0), "", R.string.empty_string,false))
+        private val mFederationRank =
+            MutableLiveData(RankModel(0, Ranks.Rank("", 0, 0), "", R.string.empty_string,false))
+        private val mEmpireRank =
+            MutableLiveData(RankModel(0, Ranks.Rank("", 0, 0), "", R.string.empty_string,false))
     }
 }
 
@@ -162,5 +168,5 @@ data class RankModel(
     val rank: Ranks.Rank,
     val name: String,
     val titleResId: Int,
-    val factionBackgroundResId: Int
+    val isPlayerRank: Boolean
 )

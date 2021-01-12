@@ -2,7 +2,8 @@
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    >
 
     <data>
         <variable
@@ -13,123 +14,177 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:padding="@dimen/default_padding"
         tools:context="com.devries48.elitecommander.fragments.CommanderFragment">
 
-        <TextView
-            android:id="@+id/cmdr"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{@string/cmdr(viewModel.name)}"
-            android:textAppearance="@style/Elite.Large"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_cmdr_info"
+            style="@style/EliteCardView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="4dp"
+            app:layout_constraintBottom_toTopOf="@id/card_player_rank"
+            app:layout_constraintEnd_toEndOf="parent"
 
-        <TextView
-            android:id="@+id/commanderCreditsTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@{viewModel.credits}"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cmdr" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/commanderLocationTextView"
-            android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/cmdr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{@string/cmdr(viewModel.name)}"
+                    android:textAppearance="@style/eliteStyle.Title"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/commanderCreditsTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@{viewModel.credits}"
+                    android:textAppearance="@style/eliteStyle"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/cmdr" />
+
+                <TextView
+                    android:id="@+id/commanderLocationTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@{viewModel.location}"
+                    android:textAppearance="@style/eliteStyle"
+                    app:layout_constraintStart_toStartOf="@+id/commanderCreditsTextView"
+                    app:layout_constraintTop_toBottomOf="@+id/commanderCreditsTextView" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_player_rank"
+            style="@style/EliteRankCardView"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@{viewModel.location}"
-            app:layout_constraintStart_toStartOf="@+id/commanderCreditsTextView"
-            app:layout_constraintTop_toBottomOf="@+id/commanderCreditsTextView" />
+            android:layout_marginBottom="4dp"
+            app:layout_constraintBottom_toTopOf="@+id/card_faction_rank"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideHor1"
-            android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideVer1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.25" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideVer2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.50" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideVer3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.75" />
+
+                <include
+                    android:id="@+id/combatRankInclude"
+                    layout="@layout/include_rank_player"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="@+id/guideVer1"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:rank="@{viewModel.combatRank}" />
+
+                <include
+                    android:id="@+id/tradeRankInclude"
+                    layout="@layout/include_rank_player"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    app:layout_constraintLeft_toLeftOf="@+id/guideVer1"
+                    app:layout_constraintRight_toRightOf="@+id/guideVer2"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:rank="@{viewModel.tradeRank}" />
+
+                <include
+                    android:id="@+id/exploreRankInclude"
+                    layout="@layout/include_rank_player"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    app:layout_constraintLeft_toLeftOf="@+id/guideVer2"
+                    app:layout_constraintRight_toRightOf="@+id/guideVer3"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:rank="@{viewModel.exploreRank}" />
+
+                <include
+                    android:id="@+id/cqcRankInclude"
+                    layout="@layout/include_rank_player"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    app:layout_constraintLeft_toLeftOf="@+id/guideVer3"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:rank="@{viewModel.cqcRank}" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_faction_rank"
+            style="@style/EliteRankCardView"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_begin="100dp" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" >
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideVer1"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.25" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guide_faction_ver"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.50" />
+                <include
+                    android:id="@+id/federationRankInclude"
+                    layout="@layout/include_rank_faction"
+                    android:layout_width="wrap_content"
+                    android:layout_height="170dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="@+id/guide_faction_ver"
+                    app:rank="@{viewModel.federationRank}" />
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideVer2"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.50" />
+                <include
+                    android:id="@+id/empireRankInclude"
+                    layout="@layout/include_rank_faction"
+                    android:layout_width="wrap_content"
+                    android:layout_height="170dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="@+id/guide_faction_ver"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:rank="@{viewModel.empireRank}" />
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideVer3"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.75" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
 
-        <include
-            android:id="@+id/combatRankInclude"
-            layout="@layout/include_rank_player"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="@+id/guideVer1"
-            app:layout_constraintTop_toBottomOf="@+id/guideHor1"
-            app:rank="@{viewModel.combatRank}" />
-
-        <include
-            android:id="@+id/tradeRankInclude"
-            layout="@layout/include_rank_player"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            app:layout_constraintLeft_toLeftOf="@+id/guideVer1"
-            app:layout_constraintRight_toRightOf="@+id/guideVer2"
-            app:layout_constraintTop_toBottomOf="@+id/guideHor1"
-            app:rank="@{viewModel.tradeRank}" />
-
-        <include
-            android:id="@+id/exploreRankInclude"
-            layout="@layout/include_rank_player"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            app:layout_constraintLeft_toLeftOf="@+id/guideVer2"
-            app:layout_constraintRight_toRightOf="@+id/guideVer3"
-            app:layout_constraintTop_toBottomOf="@+id/guideHor1"
-            app:rank="@{viewModel.exploreRank}" />
-
-        <include
-            android:id="@+id/cqcRankInclude"
-            layout="@layout/include_rank_player"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            app:layout_constraintLeft_toLeftOf="@+id/guideVer3"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/guideHor1"
-            app:rank="@{viewModel.cqcRank}" />
-
-        <include
-            android:id="@+id/federationRankInclude"
-            layout="@layout/include_rank_player"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            app:layout_constraintLeft_toLeftOf="@+id/guideVer1"
-            app:layout_constraintRight_toRightOf="@+id/guideVer2"
-            app:layout_constraintTop_toBottomOf="@+id/combatRankInclude"
-            app:rank="@{viewModel.federationRank}" />
-
-        <include
-            android:id="@+id/empireRankInclude"
-            layout="@layout/include_rank_player"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            app:layout_constraintLeft_toLeftOf="@+id/guideVer2"
-            app:layout_constraintRight_toRightOf="@+id/guideVer3"
-            app:layout_constraintTop_toBottomOf="@+id/combatRankInclude"
-            app:rank="@{viewModel.empireRank}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
