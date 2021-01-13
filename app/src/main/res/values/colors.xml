@@ -17,5 +17,6 @@
     <!-- elite.xml Colors -->
 
     <color name="orange">#ff7100</color>
-    <color name="dark_background">#ff2C2E2F</color>
+    <color name="dark_background">#ff2B2B2C</color>
+    <color name= "item_background">#424343</color>
 </resources>

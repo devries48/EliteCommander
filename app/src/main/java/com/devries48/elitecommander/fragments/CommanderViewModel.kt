@@ -1,15 +1,17 @@
 package com.devries48.elitecommander.fragments
 
 import android.icu.text.DecimalFormat
+import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.devries48.elitecommander.R
 import com.devries48.elitecommander.frontier.api.CommanderApi
-import com.devries48.elitecommander.frontier.api.models.CommanderPosition
-import com.devries48.elitecommander.frontier.api.models.Credits
-import com.devries48.elitecommander.frontier.api.models.Ranks
+import com.devries48.elitecommander.frontier.api.events.CommanderPosition
+import com.devries48.elitecommander.frontier.api.events.Credits
+import com.devries48.elitecommander.frontier.api.events.Ranks
+import com.devries48.elitecommander.frontier.api.models.EliteStatistic
 import com.devries48.elitecommander.utils.NamingUtils
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -29,6 +31,16 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
     val federationRank: LiveData<RankModel> = mFederationRank
     val empireRank: LiveData<RankModel> = mEmpireRank
 
+    internal fun getMainStatistics(): MutableLiveData<List<EliteStatistic>> {
+        if (mMainStatistics == null) {
+            mMainStatistics = MutableLiveData()
+            mMainStatistics!!.postValue(mMainStatisticsList)
+            loadMainStatistics()
+        }
+        return mMainStatistics as MutableLiveData<List<EliteStatistic>>
+    }
+
+
     init {
         EventBus.getDefault().register(this)
 
@@ -43,6 +55,8 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onCreditsEvent(credits: Credits) {
+        val resId = R.string.Credits
+
         // Check download error
         if (!credits.success) {
             //NotificationsUtils.displayGenericDownloadErrorSnackbar(getActivity()) TODO: Error Handling
@@ -51,7 +65,7 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
 
         // Check error case
         if (credits.balance == -1L) {
-            mCredits.value = "Unknown"
+            setMainStatistic(resId, "Unknown")
             return
         }
 
@@ -59,22 +73,25 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
 
         if (credits.loan != 0L) {
             val loan: String = currencyFormat(credits.loan)
-            mCredits.value = "$amount credits (with a $loan credits loan)"
-
+            setMainStatistic(resId, "$amount CR (with a $loan CR loan)")
         } else {
-            mCredits.value = "$amount credits"
+            setMainStatistic(resId, "$amount CR")
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onPositionEvent(position: CommanderPosition) {
+        val resId = R.string.CurrentLocation
+
         // Check download error
         if (!position.success) {
             //NotificationsUtils.displayGenericDownloadErrorSnackbar(getActivity()) TODO: Error Handling
             return
         }
+        setMainStatistic(resId, position.systemName)
+        // Get the commander name
         mName.value = position.name
-        mLocation.value = position.systemName
+        //mLocation.value = position.systemName
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -134,26 +151,46 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
 
 
     companion object {
+
+        private val mName = MutableLiveData("")
+        private val mCredits = MutableLiveData("")
+        private val mLocation = MutableLiveData("")
+
+        private val mCombatRank =
+            MutableLiveData(RankModel(0, Ranks.Rank("", 0, 0), "", R.string.empty_string, false))
+        private val mTradeRank =
+            MutableLiveData(RankModel(0, Ranks.Rank("", 0, 0), "", R.string.empty_string, false))
+        private val mExploreRank =
+            MutableLiveData(RankModel(0, Ranks.Rank("", 0, 0), "", R.string.empty_string, false))
+        private val mCqcRank =
+            MutableLiveData(RankModel(0, Ranks.Rank("", 0, 0), "", R.string.empty_string, false))
+        private val mFederationRank =
+            MutableLiveData(RankModel(0, Ranks.Rank("", 0, 0), "", R.string.empty_string, false))
+        private val mEmpireRank =
+            MutableLiveData(RankModel(0, Ranks.Rank("", 0, 0), "", R.string.empty_string, false))
+
+        private var mMainStatistics: MutableLiveData<List<EliteStatistic>>? = null
+        private val mMainStatisticsList = ArrayList<EliteStatistic>()
+
         private fun currencyFormat(amount: Long): String {
             val formatter = DecimalFormat("###,###,###,###")
             return formatter.format(amount)
         }
 
-        private val mName = MutableLiveData("")
-        private val mCredits = MutableLiveData("")
-        private val mLocation = MutableLiveData("")
-        private val mCombatRank =
-            MutableLiveData(RankModel(0, Ranks.Rank("", 0, 0), "", R.string.empty_string,false))
-        private val mTradeRank =
-            MutableLiveData(RankModel(0, Ranks.Rank("", 0, 0), "", R.string.empty_string,false))
-        private val mExploreRank =
-            MutableLiveData(RankModel(0, Ranks.Rank("", 0, 0), "", R.string.empty_string,false))
-        private val mCqcRank =
-            MutableLiveData(RankModel(0, Ranks.Rank("", 0, 0), "", R.string.empty_string,false))
-        private val mFederationRank =
-            MutableLiveData(RankModel(0, Ranks.Rank("", 0, 0), "", R.string.empty_string,false))
-        private val mEmpireRank =
-            MutableLiveData(RankModel(0, Ranks.Rank("", 0, 0), "", R.string.empty_string,false))
+        private fun loadMainStatistics() {
+            mMainStatisticsList.add(EliteStatistic(R.string.Credits))
+            mMainStatisticsList.add(EliteStatistic(R.string.CurrentLocation))
+        }
+
+        private fun setMainStatistic(@StringRes stringRes: Int, value: String) {
+            val stat: EliteStatistic? = mMainStatisticsList.find { it.stringRes == stringRes }
+if (stat != null){
+    stat.value=value
+    mMainStatistics!!.postValue(mMainStatisticsList) //for background postValue
+
+}
+        }
+
     }
 }
 

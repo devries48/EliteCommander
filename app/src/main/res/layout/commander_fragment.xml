@@ -18,14 +18,14 @@
         tools:context="com.devries48.elitecommander.fragments.CommanderFragment">
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/card_cmdr_info"
+            android:id="@+id/card_main"
             style="@style/EliteCardView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="4dp"
             app:layout_constraintBottom_toTopOf="@id/card_player_rank"
-            app:layout_constraintEnd_toEndOf="parent"
 
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -43,6 +43,7 @@
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
+                <!--
                 <TextView
                     android:id="@+id/commanderCreditsTextView"
                     android:layout_width="wrap_content"
@@ -62,6 +63,18 @@
                     android:textAppearance="@style/eliteStyle"
                     app:layout_constraintStart_toStartOf="@+id/commanderCreditsTextView"
                     app:layout_constraintTop_toBottomOf="@+id/commanderCreditsTextView" />
+-->
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/stats_recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="30dp"
+                    android:padding="@dimen/default_padding"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/cmdr" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>

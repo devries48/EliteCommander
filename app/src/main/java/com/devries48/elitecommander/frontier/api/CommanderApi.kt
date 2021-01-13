@@ -4,8 +4,9 @@ import android.content.Context
 import com.devries48.elitecommander.R
 import com.devries48.elitecommander.frontier.FrontierRetrofit
 import com.devries48.elitecommander.frontier.RetrofitSingleton
-import com.devries48.elitecommander.frontier.api.models.*
-import com.devries48.elitecommander.frontier.api.models.Ranks.Rank
+import com.devries48.elitecommander.frontier.api.events.*
+import com.devries48.elitecommander.frontier.api.events.Ranks.Rank
+import com.devries48.elitecommander.frontier.api.models.FrontierProfileResponse
 import com.devries48.elitecommander.utils.NamingUtils
 import com.google.gson.Gson
 import com.google.gson.JsonElement
