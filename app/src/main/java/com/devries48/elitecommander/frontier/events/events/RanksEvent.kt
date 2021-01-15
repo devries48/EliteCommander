@@ -1,6 +1,6 @@
-package com.devries48.elitecommander.frontier.api.events
+package com.devries48.elitecommander.frontier.events.events
 
-data class Ranks @JvmOverloads
+data class RanksEvent @JvmOverloads
 constructor(val success: Boolean, val combat: Rank? = null, val trade: Rank? = null,
             val explore: Rank? = null, val cqc: Rank? = null, val federation: Rank? = null,
             val empire: Rank? = null) {

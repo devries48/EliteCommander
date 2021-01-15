@@ -1,11 +1,11 @@
-package com.devries48.elitecommander.frontier
+package com.devries48.elitecommander.frontier.models.models
 
 import com.google.gson.annotations.SerializedName
 
 class FrontierAccessTokenResponse {
     @SerializedName("access_token")
-    var AccessToken: String? = null
+    var accessToken: String? = null
 
     @SerializedName("refresh_token")
-    var RefreshToken: String? = null
+    var refreshToken: String? = null
 }

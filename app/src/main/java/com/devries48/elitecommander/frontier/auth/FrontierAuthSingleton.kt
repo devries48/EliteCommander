@@ -1,10 +1,15 @@
-package com.devries48.elitecommander.frontier
+package com.devries48.elitecommander.frontier.auth
 
 import android.content.Context
 import android.util.Base64
-import com.devries48.elitecommander.R
 import com.devries48.elitecommander.BuildConfig
-import com.devries48.elitecommander.frontier.OAuthUtils.getAuthorizationCodeRequestBody
+import com.devries48.elitecommander.R
+import com.devries48.elitecommander.frontier.RetrofitSingleton
+import com.devries48.elitecommander.frontier.events.events.FrontierTokensEvent
+import com.devries48.elitecommander.frontier.models.models.FrontierAccessTokenRequestBody
+import com.devries48.elitecommander.frontier.models.models.FrontierAccessTokenResponse
+import com.devries48.elitecommander.utils.OAuthUtils
+import com.devries48.elitecommander.utils.OAuthUtils.getAuthorizationCodeRequestBody
 import org.greenrobot.eventbus.EventBus
 import retrofit2.Call
 import retrofit2.Callback
@@ -18,7 +23,7 @@ import java.security.SecureRandom
 
 // Singleton safe from serialization/reflection...
 // From https://medium.com/exploring-code/how-to-make-the-perfect-singleton-de6b951dfdb0
-class FrontierAuthSingleton private constructor() : Serializable {
+open class FrontierAuthSingleton private constructor() : Serializable {
     private var codeVerifier: String? = null
     private var codeChallenge: String? = null
     private var requestState: String? = null
@@ -87,31 +92,31 @@ class FrontierAuthSingleton private constructor() : Serializable {
             )
         }
         val retrofit: RetrofitSingleton? = RetrofitSingleton.getInstance()
-        val frontierAuth= retrofit?.getFrontierAuthRetrofit(ctx)
+        val frontierAuth = retrofit?.getFrontierAuthRetrofit(ctx)
 
         val callback: Callback<FrontierAccessTokenResponse> =
-            object : Callback<FrontierAccessTokenResponse>
-            {
+            object : Callback<FrontierAccessTokenResponse> {
                 @EverythingIsNonNull
-                override fun onResponse(call: Call<FrontierAccessTokenResponse>, response: Response<FrontierAccessTokenResponse>)
-                {
+                override fun onResponse(
+                    call: Call<FrontierAccessTokenResponse>,
+                    response: Response<FrontierAccessTokenResponse>
+                ) {
                     val body: FrontierAccessTokenResponse? = response.body()
                     if (!response.isSuccessful || body == null) {
                         onFailure(call, Exception("Invalid response"))
                     } else {
-                        OAuthUtils.storeUpdatedTokens(ctx, body.AccessToken!!, body.RefreshToken!!)
+                        OAuthUtils.storeUpdatedTokens(ctx, body.accessToken!!, body.refreshToken!!)
                         EventBus.getDefault().post(
                             FrontierTokensEvent(
                                 true,
-                                body.AccessToken!!, body.RefreshToken!!
+                                body.accessToken!!, body.refreshToken!!
                             )
                         )
                     }
                 }
 
                 @EverythingIsNonNull
-                override fun onFailure(call: Call<FrontierAccessTokenResponse>, t: Throwable?)
-                {
+                override fun onFailure(call: Call<FrontierAccessTokenResponse>, t: Throwable?) {
                     EventBus.getDefault().post(
                         FrontierTokensEvent(
                             false,

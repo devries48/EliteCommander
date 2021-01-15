@@ -3,6 +3,10 @@ package com.devries48.elitecommander.frontier
 
 import android.content.Context
 import com.devries48.elitecommander.R
+import com.devries48.elitecommander.frontier.auth.FrontierAuthRetrofit
+import com.devries48.elitecommander.frontier.events.events.FrontierAuthNeededEvent
+import com.devries48.elitecommander.frontier.models.models.FrontierAccessTokenResponse
+import com.devries48.elitecommander.utils.OAuthUtils
 import com.google.gson.GsonBuilder
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -71,13 +75,13 @@ class RetrofitSingleton private constructor() : Serializable {
                 val responseBody: FrontierAccessTokenResponse? = OAuthUtils.makeRefreshRequest(ctx)
                 if (responseBody == null) {
                     // Send event to renew login
-                    EventBus.getDefault().post(FrontierAuthNeeded(true))
+                    EventBus.getDefault().post(FrontierAuthNeededEvent(true))
                     return@addInterceptor response
                 }
 
                 // Retry request
-                responseBody.AccessToken?.let {
-                    responseBody.RefreshToken?.let { it1 ->
+                responseBody.accessToken?.let {
+                    responseBody.refreshToken?.let { it1 ->
                         OAuthUtils.storeUpdatedTokens(
                             ctx, it,
                             it1
@@ -91,7 +95,7 @@ class RetrofitSingleton private constructor() : Serializable {
 
             // If still not ok, need login
             if (!response.isSuccessful && (response.code() == 403 || response.code() == 422 || response.code() == 401)) {
-                EventBus.getDefault().post(FrontierAuthNeeded(true))
+                EventBus.getDefault().post(FrontierAuthNeededEvent(true))
             }
             response
         }

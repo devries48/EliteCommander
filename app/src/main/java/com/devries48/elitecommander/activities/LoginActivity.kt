@@ -9,8 +9,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.devries48.elitecommander.R
-import com.devries48.elitecommander.frontier.FrontierAuthSingleton
-import com.devries48.elitecommander.frontier.FrontierTokensEvent
+import com.devries48.elitecommander.frontier.auth.FrontierAuthSingleton
+import com.devries48.elitecommander.frontier.events.events.FrontierTokensEvent
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -25,29 +25,30 @@ class LoginActivity : AppCompatActivity() {
 
         // Check step (back from browser or just opened)
         if (intent != null && intent!!.action != null &&
-            intent!!.action == Intent.ACTION_VIEW) {
+            intent!!.action == Intent.ACTION_VIEW
+        ) {
             val uri = intent!!.data
 
             val code = uri?.getQueryParameter("code")
             val state = uri?.getQueryParameter("state")
 
-            if(code != null && state != null) {
-        button.isVisible=false
+            if (code != null && state != null) {
+                button.isVisible = false
                 launchTokensStep(code, state)
                 return
             }
         }
 
         button.setOnClickListener {
-            button.isEnabled=false
+            button.isEnabled = false
             launchAuthCodeStep()
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onLFrontierTokensEvent(tokens: FrontierTokensEvent) {
+    fun onFrontierTokensEvent(tokens: FrontierTokensEvent) {
         if (tokens.success) {
-            val t = Toast.makeText(this, R.string.login_success,Toast.LENGTH_LONG )
+            val t = Toast.makeText(this, R.string.login_success, Toast.LENGTH_LONG)
             t.show()
             setResult(Activity.RESULT_OK)
             finish()
@@ -83,7 +84,7 @@ class LoginActivity : AppCompatActivity() {
         if (url != null) {
             launchBrowserIntent(url)
         }
-       finish()
+        finish()
     }
 
     private fun launchTokensStep(authCode: String, state: String) {

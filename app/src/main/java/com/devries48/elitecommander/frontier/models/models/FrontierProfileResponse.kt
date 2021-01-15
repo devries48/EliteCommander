@@ -1,59 +1,62 @@
-package com.devries48.elitecommander.frontier.api.models
+package com.devries48.elitecommander.frontier.models.models
 
 import com.google.gson.annotations.SerializedName
 
 class FrontierProfileResponse {
     @SerializedName("commander")
-    var Commander: FrontierProfileCommanderResponse? = null
+    var commander: FrontierProfileCommanderResponse? = null
 
     @SerializedName("lastSystem")
-    var LastSystem: FrontierProfileSystemResponse? = null
+    var lastSystem: FrontierProfileSystemResponse? = null
 
     inner class FrontierProfileCommanderResponse {
         @SerializedName("name")
-        var Name: String? = null
+        var name: String? = null
 
         @SerializedName("credits")
-        var Credits: Long = 0
+        var credits: Long = 0
 
         @SerializedName("debt")
-        var Debt: Long = 0
+        var debt: Long = 0
+
+        @SerializedName("currentShipId")
+        var currentShipId :Int= 0
 
         @SerializedName("rank")
-        var Rank: FrontierProfileCommanderRankResponse? = null
+        var rank: FrontierProfileCommanderRankResponse? = null
     }
 
     inner class FrontierProfileCommanderRankResponse {
         @SerializedName("combat")
-        var Combat = 0
+        var combat = 0
 
         @SerializedName("trade")
-        var Trade = 0
+        var trade = 0
 
         @SerializedName("explore")
-        var Explore = 0
+        var explore = 0
 
         @SerializedName("crime")
-        var Crime = 0
+        var crime = 0
 
         @SerializedName("service")
-        var Service = 0
+        var service = 0
 
         @SerializedName("empire")
-        var Empire = 0
+        var empire = 0
 
         @SerializedName("federation")
-        var Federation = 0
+        var federation = 0
 
         @SerializedName("power")
-        var Power = 0
+        var power = 0
 
         @SerializedName("cqc")
-        var Cqc = 0
+        var cqc = 0
     }
 
     inner class FrontierProfileSystemResponse {
         @SerializedName("name")
-        var Name: String? = null
+        var name: String? = null
     }
 }

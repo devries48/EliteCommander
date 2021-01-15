@@ -1,12 +1,10 @@
-package com.devries48.elitecommander.frontier.api
+package com.devries48.elitecommander.frontier
 
 import android.content.Context
 import com.devries48.elitecommander.R
-import com.devries48.elitecommander.frontier.FrontierRetrofit
-import com.devries48.elitecommander.frontier.RetrofitSingleton
-import com.devries48.elitecommander.frontier.api.events.*
-import com.devries48.elitecommander.frontier.api.events.Ranks.Rank
-import com.devries48.elitecommander.frontier.api.models.FrontierProfileResponse
+import com.devries48.elitecommander.frontier.events.events.*
+import com.devries48.elitecommander.frontier.events.events.RanksEvent.Rank
+import com.devries48.elitecommander.frontier.models.models.FrontierProfileResponse
 import com.devries48.elitecommander.utils.NamingUtils
 import com.google.gson.Gson
 import com.google.gson.JsonElement
@@ -53,37 +51,42 @@ class CommanderApi(ctx: Context) {
                 if (!response.isSuccessful || profileResponse == null) {
                     onFailure(call, Exception("Invalid response"))
                 } else {
-                    val pos: CommanderPosition
-                    val credits: Credits
-                    val ranks: Ranks
+                    val commanderProfileEvent: CommanderProfileEvent
+                    val creditsEvent: CreditsEvent
+                    val ranksEvent: RanksEvent
+
                     try {
                         // Position
-                        val commanderName: String = profileResponse.Commander?.Name!!
+                        val commanderName: String = profileResponse.commander?.name!!
+                        val credits: Long = profileResponse.commander?.credits!!
+                        val debt: Long = profileResponse.commander?.debt!!
+                        val systemName = profileResponse.lastSystem?.name!!
 
-                        pos = profileResponse.LastSystem?.Name?.let {
-                            CommanderPosition(
+                        commanderProfileEvent = profileResponse.commander?.let {
+                            CommanderProfileEvent(
                                 true,
                                 commanderName,
-                                it,
-                                false
+                                credits,
+                                debt,
+                                systemName
                             )
                         }!!
-                        sendResultMessage(pos)
+                        sendResultMessage(commanderProfileEvent)
 
-                        // Credits
-                        credits = profileResponse.Commander?.let {
-                            Credits(
-                                true, it.Credits,
-                                profileResponse.Commander!!.Debt
+                        // CreditsEvent
+                        creditsEvent = profileResponse.commander?.let {
+                            CreditsEvent(
+                                true, it.credits,
+                                profileResponse.commander!!.debt
                             )
                         }!!
-                        sendResultMessage(credits)
+                        sendResultMessage(creditsEvent)
 
-                        // Ranks
-                        ranks = getRanksFromApiBody(profileResponse)
-                        sendResultMessage(ranks)
+                        // RanksEvent
+                        ranksEvent = getRanksFromApiBody(profileResponse)
+                        sendResultMessage(ranksEvent)
 
-                        // Fleet
+                        // FleetEvent
                         if (rawResponse != null) {
                             handleFleetParsing(rawResponse)
                         }
@@ -93,65 +96,64 @@ class CommanderApi(ctx: Context) {
                 }
             }
 
-            private fun getRanksFromApiBody(apiResponse: FrontierProfileResponse): Ranks {
-                val apiRanks = apiResponse.Commander!!.Rank
+            private fun getRanksFromApiBody(apiResponse: FrontierProfileResponse): RanksEvent {
+                val apiRanks = apiResponse.commander!!.rank
 
-                // Combat
+                // combat
                 val combatRank = Rank(
                     context.resources
-                        .getStringArray(R.array.ranks_combat)[apiRanks!!.Combat],
-                    apiRanks.Combat, -1
+                        .getStringArray(R.array.ranks_combat)[apiRanks!!.combat],
+                    apiRanks.combat, -1
                 )
 
-                // Trade
+                // trade
                 val tradeRank = Rank(
                     context.resources
-                        .getStringArray(R.array.ranks_trade)[apiRanks.Trade],
-                    apiRanks.Trade, -1
+                        .getStringArray(R.array.ranks_trade)[apiRanks.trade],
+                    apiRanks.trade, -1
                 )
 
-                // Explore
+                // explore
                 val exploreRank = Rank(
                     context.resources
-                        .getStringArray(R.array.ranks_explorer)[apiRanks.Explore],
-                    apiRanks.Explore, -1
+                        .getStringArray(R.array.ranks_explorer)[apiRanks.explore],
+                    apiRanks.explore, -1
                 )
 
                 // CQC
                 val cqcRank = Rank(
                     context.resources
-                        .getStringArray(R.array.ranks_cqc)[apiRanks.Cqc],
-                    apiRanks.Cqc, -1
+                        .getStringArray(R.array.ranks_cqc)[apiRanks.cqc],
+                    apiRanks.cqc, -1
                 )
 
-                // Federation
+                // federation
                 val federationRank = Rank(
                     context.resources
-                        .getStringArray(R.array.ranks_federation)[apiRanks.Federation],
-                    apiRanks.Federation, -1
+                        .getStringArray(R.array.ranks_federation)[apiRanks.federation],
+                    apiRanks.federation, -1
                 )
 
-                // Empire
+                // empire
                 val empireRank = Rank(
                     context.resources
-                        .getStringArray(R.array.ranks_empire)[apiRanks.Empire],
-                    apiRanks.Empire, -1
+                        .getStringArray(R.array.ranks_empire)[apiRanks.empire],
+                    apiRanks.empire, -1
                 )
-                return Ranks(
+                return RanksEvent(
                     true, combatRank, tradeRank, exploreRank,
                     cqcRank, federationRank, empireRank
                 )
             }
 
-
             override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
-                val credits = Credits(false, 0, 0)
-                val pos = CommanderPosition(false, "", "", false)
-                val ranks = Ranks(
+                val credits = CreditsEvent(false, 0, 0)
+                val pos = CommanderProfileEvent(false, "", 0, 0, "")
+                val ranks = RanksEvent(
                     false, null, null,
                     null, null, null, null
                 )
-                val fleet = Fleet(false, ArrayList())
+                val fleet = FleetEvent(false, ArrayList())
                 sendResultMessage(credits)
                 sendResultMessage(pos)
                 sendResultMessage(ranks)
@@ -165,7 +167,6 @@ class CommanderApi(ctx: Context) {
         val currentShipId = rawProfileResponse["commander"]
             .asJsonObject["currentShipId"]
             .asInt
-
 
         // Sometimes the cAPI return an array, sometimes an object with indexes
         val responseList: MutableList<JsonElement> = ArrayList()
@@ -205,7 +206,7 @@ class CommanderApi(ctx: Context) {
                 shipsList.add(newShip)
             }
         }
-        sendResultMessage(Fleet(true, shipsList))
+        sendResultMessage(FleetEvent(true, shipsList))
     }
 
 

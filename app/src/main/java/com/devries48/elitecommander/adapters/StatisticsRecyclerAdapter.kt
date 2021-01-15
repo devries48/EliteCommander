@@ -9,7 +9,7 @@ import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
 
 import com.devries48.elitecommander.R
-import com.devries48.elitecommander.frontier.api.models.EliteStatistic
+import com.devries48.elitecommander.frontier.models.models.EliteStatistic
 
 class StatisticsRecyclerAdapter(val data: LiveData<List<EliteStatistic>>) :
     RecyclerView.Adapter<StatisticsRecyclerAdapter.ViewHolder>() {

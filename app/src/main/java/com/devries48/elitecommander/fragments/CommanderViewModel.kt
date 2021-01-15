@@ -7,11 +7,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.devries48.elitecommander.R
-import com.devries48.elitecommander.frontier.api.CommanderApi
-import com.devries48.elitecommander.frontier.api.events.CommanderPosition
-import com.devries48.elitecommander.frontier.api.events.Credits
-import com.devries48.elitecommander.frontier.api.events.Ranks
-import com.devries48.elitecommander.frontier.api.models.EliteStatistic
+import com.devries48.elitecommander.frontier.CommanderApi
+import com.devries48.elitecommander.frontier.events.events.CommanderProfileEvent
+import com.devries48.elitecommander.frontier.events.events.CreditsEvent
+import com.devries48.elitecommander.frontier.events.events.FleetEvent
+import com.devries48.elitecommander.frontier.events.events.RanksEvent
+import com.devries48.elitecommander.frontier.models.models.EliteStatistic
 import com.devries48.elitecommander.utils.NamingUtils
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -22,8 +23,6 @@ import org.greenrobot.eventbus.ThreadMode
 class CommanderViewModel(api: CommanderApi?) : ViewModel() {
 
     val name: LiveData<String> = mName
-    val credits: LiveData<String> = mCredits
-    val location: LiveData<String> = mLocation
     val combatRank: LiveData<RankModel> = mCombatRank
     val tradeRank: LiveData<RankModel> = mTradeRank
     val exploreRank: LiveData<RankModel> = mExploreRank
@@ -32,18 +31,12 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
     val empireRank: LiveData<RankModel> = mEmpireRank
 
     internal fun getMainStatistics(): MutableLiveData<List<EliteStatistic>> {
-        if (mMainStatistics == null) {
-            mMainStatistics = MutableLiveData()
-            mMainStatistics!!.postValue(mMainStatisticsList)
-            loadMainStatistics()
-        }
         return mMainStatistics as MutableLiveData<List<EliteStatistic>>
     }
 
-
     init {
         EventBus.getDefault().register(this)
-
+        loadMainStatistics()
         api?.getCommanderStatus()
     }
 
@@ -54,25 +47,25 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onCreditsEvent(credits: Credits) {
+    fun onCreditsEvent(creditsEvent: CreditsEvent) {
         val resId = R.string.Credits
 
         // Check download error
-        if (!credits.success) {
+        if (!creditsEvent.success) {
             //NotificationsUtils.displayGenericDownloadErrorSnackbar(getActivity()) TODO: Error Handling
             return
         }
 
         // Check error case
-        if (credits.balance == -1L) {
+        if (creditsEvent.balance == -1L) {
             setMainStatistic(resId, "Unknown")
             return
         }
 
-        val amount: String = currencyFormat(credits.balance)
+        val amount: String = currencyFormat(creditsEvent.balance)
 
-        if (credits.loan != 0L) {
-            val loan: String = currencyFormat(credits.loan)
+        if (creditsEvent.loan != 0L) {
+            val loan: String = currencyFormat(creditsEvent.loan)
             setMainStatistic(resId, "$amount CR (with a $loan CR loan)")
         } else {
             setMainStatistic(resId, "$amount CR")
@@ -80,94 +73,158 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onPositionEvent(position: CommanderPosition) {
-        val resId = R.string.CurrentLocation
-
-        // Check download error
-        if (!position.success) {
+    fun onCommanderProfileEvent(profileEvent: CommanderProfileEvent) {
+        if (!profileEvent.success) {
             //NotificationsUtils.displayGenericDownloadErrorSnackbar(getActivity()) TODO: Error Handling
             return
         }
-        setMainStatistic(resId, position.systemName)
-        // Get the commander name
-        mName.value = position.name
-        //mLocation.value = position.systemName
+
+        mName.value = profileEvent.name
+        setMainStatistic(R.string.CurrentLocation, profileEvent.systemName)
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onRanksEvents(ranks: Ranks) {
+    fun onRanksEvent(ranksEvent: RanksEvent) {
 
         // Check download error
-        if (!ranks.success) {
+        if (!ranksEvent.success) {
             //NotificationsUtils.displayGenericDownloadErrorSnackbar(getActivity()) TODO: Error Handling
             return
         }
 
         mCombatRank.value = RankModel(
-            NamingUtils.getCombatRankDrawableId(ranks.combat!!.value),
-            ranks.combat,
-            ranks.combat.name,
+            NamingUtils.getCombatRankDrawableId(ranksEvent.combat!!.value),
+            ranksEvent.combat,
+            ranksEvent.combat.name,
             R.string.rank_combat,
             true
         )
         mTradeRank.value = RankModel(
-            NamingUtils.getTradeRankDrawableId(ranks.trade!!.value),
-            ranks.trade,
-            ranks.trade.name,
+            NamingUtils.getTradeRankDrawableId(ranksEvent.trade!!.value),
+            ranksEvent.trade,
+            ranksEvent.trade.name,
             R.string.rank_trading,
             true
         )
         mExploreRank.value = RankModel(
-            NamingUtils.getExplorationRankDrawableId(ranks.explore!!.value),
-            ranks.explore,
-            ranks.explore.name,
+            NamingUtils.getExplorationRankDrawableId(ranksEvent.explore!!.value),
+            ranksEvent.explore,
+            ranksEvent.explore.name,
             R.string.rank_explore,
             true
         )
         mCqcRank.value = RankModel(
-            NamingUtils.getCqcRankDrawableId(ranks.cqc!!.value),
-            ranks.cqc,
-            ranks.cqc.name,
+            NamingUtils.getCqcRankDrawableId(ranksEvent.cqc!!.value),
+            ranksEvent.cqc,
+            ranksEvent.cqc.name,
             R.string.rank_cqc,
             true
         )
         mFederationRank.value =
             RankModel(
-                NamingUtils.getFederationRankDrawableId(ranks.federation!!.value),
-                ranks.federation,
-                ranks.federation.name,
+                NamingUtils.getFederationRankDrawableId(ranksEvent.federation!!.value),
+                ranksEvent.federation,
+                ranksEvent.federation.name,
                 R.string.rank_federation,
                 false
             )
         mEmpireRank.value =
             RankModel(
-                NamingUtils.getEmpireRankDrawableId(ranks.empire!!.value),
-                ranks.empire,
-                ranks.empire.name,
+                NamingUtils.getEmpireRankDrawableId(ranksEvent.empire!!.value),
+                ranksEvent.empire,
+                ranksEvent.empire.name,
                 R.string.rank_empire,
                 false
             )
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onFleetEvent(fleetEvent: FleetEvent) {
+        if (!fleetEvent.success) {
+            //NotificationsUtils.displayGenericDownloadErrorSnackbar(getActivity()) TODO: Error Handling
+            return
+        }
+
+        var assetsValue: Long = 0
+
+        if (fleetEvent.ships.any()) {
+            fleetEvent.ships.forEach {
+                if (it.isCurrentShip) {
+                    setMainStatistic(R.string.CurrentShip, it.model)
+                }
+                assetsValue += it.totalValue
+            }
+
+            val assets: String = currencyFormat(assetsValue)
+            setMainStatistic(R.string.AssetsValue, "$assets CR")
+        }
+
+    }
 
     companion object {
 
         private val mName = MutableLiveData("")
-        private val mCredits = MutableLiveData("")
-        private val mLocation = MutableLiveData("")
 
         private val mCombatRank =
-            MutableLiveData(RankModel(0, Ranks.Rank("", 0, 0), "", R.string.empty_string, false))
+            MutableLiveData(
+                RankModel(
+                    0,
+                    RanksEvent.Rank("", 0, 0),
+                    "",
+                    R.string.empty_string,
+                    false
+                )
+            )
         private val mTradeRank =
-            MutableLiveData(RankModel(0, Ranks.Rank("", 0, 0), "", R.string.empty_string, false))
+            MutableLiveData(
+                RankModel(
+                    0,
+                    RanksEvent.Rank("", 0, 0),
+                    "",
+                    R.string.empty_string,
+                    false
+                )
+            )
         private val mExploreRank =
-            MutableLiveData(RankModel(0, Ranks.Rank("", 0, 0), "", R.string.empty_string, false))
+            MutableLiveData(
+                RankModel(
+                    0,
+                    RanksEvent.Rank("", 0, 0),
+                    "",
+                    R.string.empty_string,
+                    false
+                )
+            )
         private val mCqcRank =
-            MutableLiveData(RankModel(0, Ranks.Rank("", 0, 0), "", R.string.empty_string, false))
+            MutableLiveData(
+                RankModel(
+                    0,
+                    RanksEvent.Rank("", 0, 0),
+                    "",
+                    R.string.empty_string,
+                    false
+                )
+            )
         private val mFederationRank =
-            MutableLiveData(RankModel(0, Ranks.Rank("", 0, 0), "", R.string.empty_string, false))
+            MutableLiveData(
+                RankModel(
+                    0,
+                    RanksEvent.Rank("", 0, 0),
+                    "",
+                    R.string.empty_string,
+                    false
+                )
+            )
         private val mEmpireRank =
-            MutableLiveData(RankModel(0, Ranks.Rank("", 0, 0), "", R.string.empty_string, false))
+            MutableLiveData(
+                RankModel(
+                    0,
+                    RanksEvent.Rank("", 0, 0),
+                    "",
+                    R.string.empty_string,
+                    false
+                )
+            )
 
         private var mMainStatistics: MutableLiveData<List<EliteStatistic>>? = null
         private val mMainStatisticsList = ArrayList<EliteStatistic>()
@@ -178,17 +235,23 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
         }
 
         private fun loadMainStatistics() {
-            mMainStatisticsList.add(EliteStatistic(R.string.Credits))
-            mMainStatisticsList.add(EliteStatistic(R.string.CurrentLocation))
+            if (mMainStatistics == null) {
+                mMainStatistics = MutableLiveData()
+                mMainStatistics!!.postValue(mMainStatisticsList)
+
+                mMainStatisticsList.add(EliteStatistic(R.string.Credits))
+                mMainStatisticsList.add(EliteStatistic(R.string.AssetsValue))
+                mMainStatisticsList.add(EliteStatistic(R.string.CurrentLocation))
+                mMainStatisticsList.add(EliteStatistic(R.string.CurrentShip))
+            }
         }
 
         private fun setMainStatistic(@StringRes stringRes: Int, value: String) {
             val stat: EliteStatistic? = mMainStatisticsList.find { it.stringRes == stringRes }
-if (stat != null){
-    stat.value=value
-    mMainStatistics!!.postValue(mMainStatisticsList) //for background postValue
-
-}
+            if (stat != null) {
+                stat.value = value
+                mMainStatistics!!.value = mMainStatisticsList //for background postValue
+            }
         }
 
     }
@@ -202,7 +265,7 @@ class CommanderViewModelFactory(private val api: CommanderApi?) :
 
 data class RankModel(
     val logoResId: Int,
-    val rank: Ranks.Rank,
+    val rank: RanksEvent.Rank,
     val name: String,
     val titleResId: Int,
     val isPlayerRank: Boolean

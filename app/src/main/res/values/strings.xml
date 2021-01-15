@@ -8,12 +8,13 @@
     <!--Login-->
     <string name="login_dialog_error_title">Frontier login error</string>
     <string name="login_dialog_error_text">Error logging in to Frontier, please try again.</string>
+    <string name="login_dialog_text">Your browser will open to allow you to connect to your Frontier account.</string>
     <string name="login_success">Login succeeded</string>
     <string name="access_token_key">access_token_key</string>
     <string name="refresh_token_key">refresh_token_key</string>
     <string name="frontier_login">FRONTIER LOGIN</string>
 
-    <!--Ranks-->
+    <!--RanksEvent-->
     <string name="rank">Rank</string>
 
     <string name="rank_federation">Federation</string>
@@ -107,5 +108,7 @@
     <string name="empty_string" />
     <string name="Credits">Credits</string>
     <string name="CurrentLocation">Current location</string>
+    <string name="CurrentShip">Current ship</string>
+    <string name="AssetsValue">Assets</string>
 
 </resources>

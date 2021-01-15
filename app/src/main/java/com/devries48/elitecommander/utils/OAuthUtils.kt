@@ -1,11 +1,13 @@
-package com.devries48.elitecommander.frontier
+package com.devries48.elitecommander.utils
 
 
 import android.content.Context
 import android.util.Log
 import com.devries48.elitecommander.BuildConfig
 import com.devries48.elitecommander.R
-import com.devries48.elitecommander.utils.SettingsUtils
+import com.devries48.elitecommander.frontier.RetrofitSingleton
+import com.devries48.elitecommander.frontier.models.models.FrontierAccessTokenRequestBody
+import com.devries48.elitecommander.frontier.models.models.FrontierAccessTokenResponse
 import okhttp3.Interceptor
 import okhttp3.Request
 import retrofit2.Call
@@ -28,19 +30,19 @@ object OAuthUtils {
         )
     }
 
-    fun getAccessToken(context: Context): String {
+    private fun getAccessToken(context: Context): String {
         return SettingsUtils.getString(context, context.getString(R.string.access_token_key))!!
     }
 
-    fun getRefreshToken(context: Context): String {
+    private fun getRefreshToken(context: Context): String {
         return SettingsUtils.getString(context, context.getString(R.string.refresh_token_key))!!
     }
 
     private fun getRefreshTokenRequestBody(ctx: Context): FrontierAccessTokenRequestBody {
         val requestBody = FrontierAccessTokenRequestBody()
-        requestBody.GrantType = "refresh_token"
-        requestBody.ClientId = BuildConfig.FRONTIER_AUTH_CLIENT_ID
-        requestBody.RefreshToken = getRefreshToken(ctx)
+        requestBody.grantType = "refresh_token"
+        requestBody.clientId = BuildConfig.FRONTIER_AUTH_CLIENT_ID
+        requestBody.refreshToken = getRefreshToken(ctx)
         return requestBody
     }
 
@@ -49,11 +51,11 @@ object OAuthUtils {
         authCode: String?
     ): FrontierAccessTokenRequestBody {
         val requestBody = FrontierAccessTokenRequestBody()
-        requestBody.CodeVerifier = codeVerifier
-        requestBody.GrantType = "authorization_code"
-        requestBody.ClientId = BuildConfig.FRONTIER_AUTH_CLIENT_ID
-        requestBody.Code = authCode
-        requestBody.RedirectUri = "elitecommander://oauth"
+        requestBody.codeVerifier = codeVerifier
+        requestBody.grantType = "authorization_code"
+        requestBody.clientId = BuildConfig.FRONTIER_AUTH_CLIENT_ID
+        requestBody.code = authCode
+        requestBody.redirectUri = "elitecommander://oauth"
         return requestBody
     }
 

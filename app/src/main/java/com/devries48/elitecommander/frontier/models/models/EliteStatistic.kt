@@ -1,4 +1,4 @@
-package com.devries48.elitecommander.frontier.api.models
+package com.devries48.elitecommander.frontier.models.models
 
 import androidx.annotation.StringRes
 
