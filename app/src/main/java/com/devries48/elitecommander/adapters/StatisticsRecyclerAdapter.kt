@@ -5,13 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
-
 import com.devries48.elitecommander.R
 import com.devries48.elitecommander.frontier.models.models.EliteStatistic
 
-class StatisticsRecyclerAdapter(val data: LiveData<List<EliteStatistic>>) :
+
+class StatisticsRecyclerAdapter(var data: List<EliteStatistic>) :
     RecyclerView.Adapter<StatisticsRecyclerAdapter.ViewHolder>() {
 
     /**
@@ -33,11 +32,8 @@ class StatisticsRecyclerAdapter(val data: LiveData<List<EliteStatistic>>) :
     }
 
     override fun getItemCount(): Int {
-        Log.d("Adapter Size ", data.value.toString())
-        return if (data.value == null)
-            0
-        else
-            data.value!!.size
+        Log.d("Adapter Size ", data.size.toString())
+        return data.size
     }
 
     // Replace the contents of a view (invoked by the layout manager)
@@ -45,14 +41,15 @@ class StatisticsRecyclerAdapter(val data: LiveData<List<EliteStatistic>>) :
         val ctx = viewHolder.nameTextView.context
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
-        val item = data.value?.get(position)
-        viewHolder.nameTextView.text = item?.stringRes?.let { ctx.getString(it) }
-        viewHolder.valueTextView.text = item?.value
+        val item = data[position]
+        viewHolder.nameTextView.text = item.stringRes.let { ctx.getString(it) }
+        viewHolder.valueTextView.text = item.value
     }
 
-    // Return the size of your dataset (invoked by the layout manager)
-//    override fun getItemCount(): Int {
-//        return dataSet?.size ?: return 0
-//    }
+    fun updateList(stats:List<EliteStatistic>){
+        data= stats
+        notifyDataSetChanged()
+    }
+
 }
 

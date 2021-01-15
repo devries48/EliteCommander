@@ -30,7 +30,7 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
     val federationRank: LiveData<RankModel> = mFederationRank
     val empireRank: LiveData<RankModel> = mEmpireRank
 
-    internal fun getMainStatistics(): MutableLiveData<List<EliteStatistic>> {
+    internal fun getMainStatistics(): LiveData<List<EliteStatistic>> {
         return mMainStatistics as MutableLiveData<List<EliteStatistic>>
     }
 
@@ -237,12 +237,13 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
         private fun loadMainStatistics() {
             if (mMainStatistics == null) {
                 mMainStatistics = MutableLiveData()
-                mMainStatistics!!.postValue(mMainStatisticsList)
 
                 mMainStatisticsList.add(EliteStatistic(R.string.Credits))
                 mMainStatisticsList.add(EliteStatistic(R.string.AssetsValue))
                 mMainStatisticsList.add(EliteStatistic(R.string.CurrentLocation))
                 mMainStatisticsList.add(EliteStatistic(R.string.CurrentShip))
+
+                mMainStatistics!!.value = mMainStatisticsList
             }
         }
 
@@ -250,7 +251,7 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
             val stat: EliteStatistic? = mMainStatisticsList.find { it.stringRes == stringRes }
             if (stat != null) {
                 stat.value = value
-                mMainStatistics!!.value = mMainStatisticsList //for background postValue
+                mMainStatistics!!.postValue( mMainStatisticsList)
             }
         }
 

@@ -14,6 +14,7 @@ import com.devries48.elitecommander.adapters.StatisticsRecyclerAdapter
 import com.devries48.elitecommander.databinding.CommanderFragmentBinding
 import com.devries48.elitecommander.frontier.CommanderApi
 
+
 class CommanderFragment : Fragment() {
 
     private lateinit var mViewModel: CommanderViewModel
@@ -51,10 +52,19 @@ class CommanderFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
+        val list = mViewModel.getMainStatistics()
 
-        mAdapter = StatisticsRecyclerAdapter(mViewModel.getMainStatistics())
-        mBinding.statsRecyclerView.layoutManager= layoutManager
+        mAdapter = StatisticsRecyclerAdapter(list.value!!)
+        mBinding.statsRecyclerView.layoutManager = layoutManager
         mBinding.statsRecyclerView.adapter = mAdapter
+
+        list.observe(viewLifecycleOwner,
+            { stats ->
+                run {
+                    mAdapter.updateList(stats)
+                }
+            })
+
     }
 }
 
