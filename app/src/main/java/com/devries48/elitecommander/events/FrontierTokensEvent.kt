@@ -1,4 +1,4 @@
-package com.devries48.elitecommander.frontier.events.events
+package com.devries48.elitecommander.events
 
 data class FrontierTokensEvent(
     val success: Boolean, val accessToken: String,

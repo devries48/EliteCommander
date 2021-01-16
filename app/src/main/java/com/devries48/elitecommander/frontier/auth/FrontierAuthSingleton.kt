@@ -4,10 +4,10 @@ import android.content.Context
 import android.util.Base64
 import com.devries48.elitecommander.BuildConfig
 import com.devries48.elitecommander.R
-import com.devries48.elitecommander.frontier.RetrofitSingleton
-import com.devries48.elitecommander.frontier.events.events.FrontierTokensEvent
-import com.devries48.elitecommander.frontier.models.models.FrontierAccessTokenRequestBody
-import com.devries48.elitecommander.frontier.models.models.FrontierAccessTokenResponse
+import com.devries48.elitecommander.events.FrontierTokensEvent
+import com.devries48.elitecommander.models.FrontierAccessTokenRequestBody
+import com.devries48.elitecommander.models.FrontierAccessTokenResponse
+import com.devries48.elitecommander.network.retrofit.RetrofitSingleton
 import com.devries48.elitecommander.utils.OAuthUtils
 import com.devries48.elitecommander.utils.OAuthUtils.getAuthorizationCodeRequestBody
 import org.greenrobot.eventbus.EventBus

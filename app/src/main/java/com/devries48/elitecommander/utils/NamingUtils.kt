@@ -22,7 +22,7 @@ object NamingUtils {
             "Empire_Courier" -> "Imperial Courier"
             "DiamondBackXL" -> "Diamondback Explorer"
             "Empire_Eagle" -> "Imperial Eagle"
-            "Federation_Dropship_MkII" -> "Federal Assault Ship"
+            "Federation_Dropship_MkII" -> "Federal Assault FrontierShip"
             "Federation_Gunship" -> "Federal Gunship"
             "Viper_MkIV" -> "Viper MkIV"
             "CobraMkIV" -> "Cobra MkIV"

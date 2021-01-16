@@ -1,6 +1,6 @@
-package com.devries48.elitecommander.frontier.events.events
+package com.devries48.elitecommander.events
 
-data class CommanderProfileEvent(
+data class FrontierProfileEvent(
     val success: Boolean,
     val name: String,
     val balance: Long,

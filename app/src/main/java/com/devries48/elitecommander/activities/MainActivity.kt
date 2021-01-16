@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.devries48.elitecommander.R
-import com.devries48.elitecommander.frontier.events.events.FrontierAuthNeededEvent
+import com.devries48.elitecommander.events.FrontierAuthNeededEvent
 import com.devries48.elitecommander.utils.OAuthUtils.storeUpdatedTokens
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe

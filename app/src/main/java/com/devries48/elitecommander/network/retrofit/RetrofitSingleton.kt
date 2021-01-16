@@ -1,11 +1,9 @@
-package com.devries48.elitecommander.frontier
-
+package com.devries48.elitecommander.network.retrofit
 
 import android.content.Context
 import com.devries48.elitecommander.R
-import com.devries48.elitecommander.frontier.auth.FrontierAuthRetrofit
-import com.devries48.elitecommander.frontier.events.events.FrontierAuthNeededEvent
-import com.devries48.elitecommander.frontier.models.models.FrontierAccessTokenResponse
+import com.devries48.elitecommander.events.FrontierAuthNeededEvent
+import com.devries48.elitecommander.models.FrontierAccessTokenResponse
 import com.devries48.elitecommander.utils.OAuthUtils
 import com.google.gson.GsonBuilder
 import okhttp3.Interceptor
@@ -16,7 +14,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.Serializable
 import java.util.concurrent.TimeUnit
-
 
 // Singleton safe from serialization/reflection...
 // From https://medium.com/exploring-code/how-to-make-the-perfect-singleton-de6b951dfdb0

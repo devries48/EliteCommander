@@ -1,4 +1,4 @@
-package com.devries48.elitecommander.frontier.models.models
+package com.devries48.elitecommander.models
 
 import com.google.gson.annotations.SerializedName
 

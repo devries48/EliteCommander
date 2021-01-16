@@ -1,11 +1,10 @@
-package com.devries48.elitecommander.frontier.auth
+package com.devries48.elitecommander.network.retrofit
 
-import com.devries48.elitecommander.frontier.models.models.FrontierAccessTokenRequestBody
-import com.devries48.elitecommander.frontier.models.models.FrontierAccessTokenResponse
+import com.devries48.elitecommander.models.FrontierAccessTokenRequestBody
+import com.devries48.elitecommander.models.FrontierAccessTokenResponse
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.POST
-
 
 interface FrontierAuthRetrofit {
     @POST("token")

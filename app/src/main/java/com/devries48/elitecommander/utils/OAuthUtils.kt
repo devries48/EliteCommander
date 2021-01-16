@@ -5,9 +5,9 @@ import android.content.Context
 import android.util.Log
 import com.devries48.elitecommander.BuildConfig
 import com.devries48.elitecommander.R
-import com.devries48.elitecommander.frontier.RetrofitSingleton
-import com.devries48.elitecommander.frontier.models.models.FrontierAccessTokenRequestBody
-import com.devries48.elitecommander.frontier.models.models.FrontierAccessTokenResponse
+import com.devries48.elitecommander.models.FrontierAccessTokenRequestBody
+import com.devries48.elitecommander.models.FrontierAccessTokenResponse
+import com.devries48.elitecommander.network.retrofit.RetrofitSingleton
 import okhttp3.Interceptor
 import okhttp3.Request
 import retrofit2.Call

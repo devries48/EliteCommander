@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.devries48.elitecommander.R
 import com.devries48.elitecommander.adapters.StatisticsRecyclerAdapter
 import com.devries48.elitecommander.databinding.CommanderFragmentBinding
-import com.devries48.elitecommander.frontier.CommanderApi
+import com.devries48.elitecommander.network.CommanderApi
 
 
 class CommanderFragment : Fragment() {

@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.devries48.elitecommander.R
-import com.devries48.elitecommander.frontier.models.models.EliteStatistic
+import com.devries48.elitecommander.models.EliteStatistic
 
 
 class StatisticsRecyclerAdapter(var data: List<EliteStatistic>) :

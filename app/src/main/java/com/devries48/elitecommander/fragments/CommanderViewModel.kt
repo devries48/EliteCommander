@@ -7,12 +7,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.devries48.elitecommander.R
-import com.devries48.elitecommander.frontier.CommanderApi
-import com.devries48.elitecommander.frontier.events.events.CommanderProfileEvent
-import com.devries48.elitecommander.frontier.events.events.CreditsEvent
-import com.devries48.elitecommander.frontier.events.events.FleetEvent
-import com.devries48.elitecommander.frontier.events.events.RanksEvent
-import com.devries48.elitecommander.frontier.models.models.EliteStatistic
+import com.devries48.elitecommander.events.FrontierCreditsEvent
+import com.devries48.elitecommander.events.FrontierFleetEvent
+import com.devries48.elitecommander.events.FrontierProfileEvent
+import com.devries48.elitecommander.events.FrontierRanksEvent
+import com.devries48.elitecommander.models.EliteStatistic
+import com.devries48.elitecommander.network.CommanderApi
 import com.devries48.elitecommander.utils.NamingUtils
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -47,25 +47,25 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onCreditsEvent(creditsEvent: CreditsEvent) {
+    fun onFrontierCreditsEvent(frontierCreditsEvent: FrontierCreditsEvent) {
         val resId = R.string.Credits
 
         // Check download error
-        if (!creditsEvent.success) {
+        if (!frontierCreditsEvent.success) {
             //NotificationsUtils.displayGenericDownloadErrorSnackbar(getActivity()) TODO: Error Handling
             return
         }
 
         // Check error case
-        if (creditsEvent.balance == -1L) {
+        if (frontierCreditsEvent.balance == -1L) {
             setMainStatistic(resId, "Unknown")
             return
         }
 
-        val amount: String = currencyFormat(creditsEvent.balance)
+        val amount: String = currencyFormat(frontierCreditsEvent.balance)
 
-        if (creditsEvent.loan != 0L) {
-            val loan: String = currencyFormat(creditsEvent.loan)
+        if (frontierCreditsEvent.loan != 0L) {
+            val loan: String = currencyFormat(frontierCreditsEvent.loan)
             setMainStatistic(resId, "$amount CR (with a $loan CR loan)")
         } else {
             setMainStatistic(resId, "$amount CR")
@@ -73,7 +73,7 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onCommanderProfileEvent(profileEvent: CommanderProfileEvent) {
+    fun onFrontierProfileEvent(profileEvent: FrontierProfileEvent) {
         if (!profileEvent.success) {
             //NotificationsUtils.displayGenericDownloadErrorSnackbar(getActivity()) TODO: Error Handling
             return
@@ -81,10 +81,27 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
 
         mName.value = profileEvent.name
         setMainStatistic(R.string.CurrentLocation, profileEvent.systemName)
+
+        // Check error case
+        if (profileEvent.balance == -1L) {
+            setMainStatistic(R.string.Credits, "Unknown")
+            return
+        }
+
+        val amount: String = currencyFormat(profileEvent.balance)
+
+        if (profileEvent.loan != 0L) {
+            val loan: String = currencyFormat(profileEvent.loan)
+            setMainStatistic(R.string.Credits, "$amount CR (with a $loan CR loan)")
+        } else {
+            setMainStatistic(R.string.Credits, "$amount CR")
+        }
+
+
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onRanksEvent(ranksEvent: RanksEvent) {
+    fun onFrontierRanksEvent(ranksEvent: FrontierRanksEvent) {
 
         // Check download error
         if (!ranksEvent.success) {
@@ -139,7 +156,7 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onFleetEvent(fleetEvent: FleetEvent) {
+    fun onFrontierFleetEvent(fleetEvent: FrontierFleetEvent) {
         if (!fleetEvent.success) {
             //NotificationsUtils.displayGenericDownloadErrorSnackbar(getActivity()) TODO: Error Handling
             return
@@ -147,8 +164,8 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
 
         var assetsValue: Long = 0
 
-        if (fleetEvent.ships.any()) {
-            fleetEvent.ships.forEach {
+        if (fleetEvent.frontierShips.any()) {
+            fleetEvent.frontierShips.forEach {
                 if (it.isCurrentShip) {
                     setMainStatistic(R.string.CurrentShip, it.model)
                 }
@@ -158,7 +175,6 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
             val assets: String = currencyFormat(assetsValue)
             setMainStatistic(R.string.AssetsValue, "$assets CR")
         }
-
     }
 
     companion object {
@@ -169,7 +185,7 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
             MutableLiveData(
                 RankModel(
                     0,
-                    RanksEvent.Rank("", 0, 0),
+                    FrontierRanksEvent.FrontierRank("", 0, 0),
                     "",
                     R.string.empty_string,
                     false
@@ -179,7 +195,7 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
             MutableLiveData(
                 RankModel(
                     0,
-                    RanksEvent.Rank("", 0, 0),
+                    FrontierRanksEvent.FrontierRank("", 0, 0),
                     "",
                     R.string.empty_string,
                     false
@@ -189,7 +205,7 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
             MutableLiveData(
                 RankModel(
                     0,
-                    RanksEvent.Rank("", 0, 0),
+                    FrontierRanksEvent.FrontierRank("", 0, 0),
                     "",
                     R.string.empty_string,
                     false
@@ -199,7 +215,7 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
             MutableLiveData(
                 RankModel(
                     0,
-                    RanksEvent.Rank("", 0, 0),
+                    FrontierRanksEvent.FrontierRank("", 0, 0),
                     "",
                     R.string.empty_string,
                     false
@@ -209,7 +225,7 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
             MutableLiveData(
                 RankModel(
                     0,
-                    RanksEvent.Rank("", 0, 0),
+                    FrontierRanksEvent.FrontierRank("", 0, 0),
                     "",
                     R.string.empty_string,
                     false
@@ -219,7 +235,7 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
             MutableLiveData(
                 RankModel(
                     0,
-                    RanksEvent.Rank("", 0, 0),
+                    FrontierRanksEvent.FrontierRank("", 0, 0),
                     "",
                     R.string.empty_string,
                     false
@@ -266,7 +282,7 @@ class CommanderViewModelFactory(private val api: CommanderApi?) :
 
 data class RankModel(
     val logoResId: Int,
-    val rank: RanksEvent.Rank,
+    val rank: FrontierRanksEvent.FrontierRank,
     val name: String,
     val titleResId: Int,
     val isPlayerRank: Boolean

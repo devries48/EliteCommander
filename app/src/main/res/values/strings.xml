@@ -14,7 +14,7 @@
     <string name="refresh_token_key">refresh_token_key</string>
     <string name="frontier_login">FRONTIER LOGIN</string>
 
-    <!--RanksEvent-->
+    <!--FrontierRanksEvent-->
     <string name="rank">Rank</string>
 
     <string name="rank_federation">Federation</string>
