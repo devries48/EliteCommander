@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="eliteStyle" parent="TextAppearance.AppCompat">
-        <item name="android:textColor">@color/orange</item>
+        <item name="android:textColor">@color/elite_orange</item>
         <item name="android:fontFamily">@font/eurocaps</item>
         <item name="android:textSize">18sp</item>
     </style>
@@ -12,6 +12,10 @@
 
     <style name="eliteStyle.WhiteText">
         <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="eliteStyle.LightOrangeText">
+        <item name="android:textColor">@color/elite_light_orange</item>
     </style>
 
     <style name="EliteCardView" parent="@style/Widget.MaterialComponents.CardView">

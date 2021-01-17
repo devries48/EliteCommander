@@ -17,8 +17,9 @@ import java.util.concurrent.TimeUnit
 
 // Singleton safe from serialization/reflection...
 // From https://medium.com/exploring-code/how-to-make-the-perfect-singleton-de6b951dfdb0
-class RetrofitSingleton private constructor() : Serializable {
-    //private var edApiRetrofit: EDApiRetrofit? = null
+
+open class RetrofitSingleton private constructor() : Serializable {
+    private var edApiRetrofit: EDApiRetrofit? = null
     private var frontierAuthRetrofit: FrontierAuthRetrofit? = null
     private var frontierRetrofit: FrontierRetrofit? = null
     private var retrofitBuilder: Retrofit.Builder? = null
@@ -28,21 +29,16 @@ class RetrofitSingleton private constructor() : Serializable {
         return getInstance()
     }
 
-    // Retrofit stuff
-
-/*
     fun getEdApiRetrofit(ctx: Context): EDApiRetrofit? {
         if (edApiRetrofit != null) {
             return edApiRetrofit
         }
         edApiRetrofit = retrofitInstance
-            .baseUrl(ctx.getString(R.string.edapi_base))
-            .build()
-            .create(EDApiRetrofit::class.java)
+            ?.baseUrl(ctx.getString(R.string.edapi_base))
+            ?.build()
+            ?.create(EDApiRetrofit::class.java)
         return edApiRetrofit
     }
-*/
-
 
     fun getFrontierAuthRetrofit(ctx: Context): FrontierAuthRetrofit? {
         if (frontierAuthRetrofit != null) {

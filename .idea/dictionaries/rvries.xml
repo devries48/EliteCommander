@@ -2,8 +2,11 @@
   <dictionary name="rvries">
     <words>
       <w>devries</w>
+      <w>edapi</w>
+      <w>eddb</w>
       <w>elitecommander</w>
       <w>eurocaps</w>
+      <w>gson</w>
     </words>
   </dictionary>
 </component>

@@ -1,9 +1,12 @@
 <resources>
     <string name="app_name">Elite Commander</string>
-    <string name="frontier_auth_base">https://auth.frontierstore.net/</string>
-    <string name="frontier_api_base">https://companion.orerve.net/</string>
     <string name="settings_cmdr_username">CMDR name</string>
     <string name="cmdr">CMDR %s</string>
+
+    <!--URLs-->
+    <string name="edapi_base">https://ed-api.9cw.eu/</string>
+    <string name="frontier_auth_base">https://auth.frontierstore.net/</string>
+    <string name="frontier_api_base">https://companion.orerve.net/</string>
 
     <!--Login-->
     <string name="login_dialog_error_title">Frontier login error</string>
@@ -110,5 +113,6 @@
     <string name="CurrentLocation">Current location</string>
     <string name="CurrentShip">Current ship</string>
     <string name="AssetsValue">Assets</string>
+    <string name="distance_sol">Distance to Sol</string>
 
 </resources>

@@ -2,12 +2,13 @@ package com.devries48.elitecommander.fragments
 
 import android.icu.text.DecimalFormat
 import androidx.annotation.StringRes
+import androidx.annotation.StyleRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.devries48.elitecommander.R
-import com.devries48.elitecommander.events.FrontierCreditsEvent
+import com.devries48.elitecommander.events.DistanceSearch
 import com.devries48.elitecommander.events.FrontierFleetEvent
 import com.devries48.elitecommander.events.FrontierProfileEvent
 import com.devries48.elitecommander.events.FrontierRanksEvent
@@ -21,6 +22,7 @@ import org.greenrobot.eventbus.ThreadMode
 
 //TODO: use interface as argument!
 class CommanderViewModel(api: CommanderApi?) : ViewModel() {
+    private val commanderApi = api
 
     val name: LiveData<String> = mName
     val combatRank: LiveData<RankModel> = mCombatRank
@@ -37,39 +39,13 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
     init {
         EventBus.getDefault().register(this)
         loadMainStatistics()
-        api?.getCommanderStatus()
+        commanderApi?.getCommanderStatus()
     }
 
     override fun onCleared() {
         super.onCleared()
 
         EventBus.getDefault().unregister(this)
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onFrontierCreditsEvent(frontierCreditsEvent: FrontierCreditsEvent) {
-        val resId = R.string.Credits
-
-        // Check download error
-        if (!frontierCreditsEvent.success) {
-            //NotificationsUtils.displayGenericDownloadErrorSnackbar(getActivity()) TODO: Error Handling
-            return
-        }
-
-        // Check error case
-        if (frontierCreditsEvent.balance == -1L) {
-            setMainStatistic(resId, "Unknown")
-            return
-        }
-
-        val amount: String = currencyFormat(frontierCreditsEvent.balance)
-
-        if (frontierCreditsEvent.loan != 0L) {
-            val loan: String = currencyFormat(frontierCreditsEvent.loan)
-            setMainStatistic(resId, "$amount CR (with a $loan CR loan)")
-        } else {
-            setMainStatistic(resId, "$amount CR")
-        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -81,6 +57,7 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
 
         mName.value = profileEvent.name
         setMainStatistic(R.string.CurrentLocation, profileEvent.systemName)
+        commanderApi?.getDistanceToSol(profileEvent.systemName)
 
         // Check error case
         if (profileEvent.balance == -1L) {
@@ -88,7 +65,7 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
             return
         }
 
-        val amount: String = currencyFormat(profileEvent.balance)
+        val amount = currencyFormat(profileEvent.balance)
 
         if (profileEvent.loan != 0L) {
             val loan: String = currencyFormat(profileEvent.loan)
@@ -96,8 +73,6 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
         } else {
             setMainStatistic(R.string.Credits, "$amount CR")
         }
-
-
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -177,6 +152,30 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onDistanceSearch(distanceSearch: DistanceSearch) {
+        if (!distanceSearch.success) {
+            //NotificationsUtils.displayGenericDownloadErrorSnackbar(getActivity()) TODO: Error Handling
+            return
+        }
+
+        if (distanceSearch.distance == 0.0f)  {
+            setMainStatisticRight(
+                R.string.CurrentLocation,
+                0,
+                "Discovered",
+                R.style.eliteStyle_LightOrangeText
+            )
+        } else {
+            setMainStatisticRight(
+                R.string.CurrentLocation,
+                R.string.distance_sol,
+                "${floatFormat(distanceSearch.distance)} LY",
+                R.style.eliteStyle_LightOrangeText
+            )
+        }
+    }
+
     companion object {
 
         private val mName = MutableLiveData("")
@@ -250,6 +249,11 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
             return formatter.format(amount)
         }
 
+        private fun floatFormat(value: Float): String {
+            val formatter = DecimalFormat("###,###,###.#")
+            return formatter.format(value)
+        }
+
         private fun loadMainStatistics() {
             if (mMainStatistics == null) {
                 mMainStatistics = MutableLiveData()
@@ -267,7 +271,22 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
             val stat: EliteStatistic? = mMainStatisticsList.find { it.stringRes == stringRes }
             if (stat != null) {
                 stat.value = value
-                mMainStatistics!!.postValue( mMainStatisticsList)
+                mMainStatistics!!.postValue(mMainStatisticsList)
+            }
+        }
+
+        private fun setMainStatisticRight(
+            @StringRes stringRes: Int,
+            @StringRes rightStringRes: Int,
+            rightValue: String,
+            @StyleRes rightValueStyleRes: Int
+        ) {
+            val stat: EliteStatistic? = mMainStatisticsList.find { it.stringRes == stringRes }
+            if (stat != null) {
+                stat.rightValue = rightValue
+                stat.rightStringRes = rightStringRes
+                stat.rightValueStyleRes = rightValueStyleRes
+                mMainStatistics!!.postValue(mMainStatisticsList)
             }
         }
 

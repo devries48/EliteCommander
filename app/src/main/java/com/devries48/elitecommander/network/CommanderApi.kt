@@ -7,6 +7,7 @@ import com.devries48.elitecommander.events.FrontierProfileEvent
 import com.devries48.elitecommander.events.FrontierRanksEvent
 import com.devries48.elitecommander.events.FrontierShip
 import com.devries48.elitecommander.models.FrontierProfileResponse
+import com.devries48.elitecommander.network.retrofit.EDApiRetrofit
 import com.devries48.elitecommander.network.retrofit.FrontierRetrofit
 import com.devries48.elitecommander.network.retrofit.RetrofitSingleton
 import com.devries48.elitecommander.utils.NamingUtils
@@ -25,10 +26,14 @@ class CommanderApi(ctx: Context) {
 
     private var context: Context = ctx
     private var frontierRetrofit: FrontierRetrofit? = null
+    private var edApiRetrofit: EDApiRetrofit? = null
 
     init {
         frontierRetrofit = RetrofitSingleton.getInstance()
             ?.getFrontierRetrofit(context.applicationContext)
+
+        edApiRetrofit=RetrofitSingleton.getInstance()
+            ?.getEdApiRetrofit(context.applicationContext)
     }
 
     fun getCommanderStatus() {
@@ -41,6 +46,7 @@ class CommanderApi(ctx: Context) {
                 // Parse as string and as body
                 var profileResponse: FrontierProfileResponse? = null
                 var rawResponse: JsonObject? = null
+
                 try {
                     val responseString: String? = response.body()?.string()
                     rawResponse = JsonParser.parseString(responseString).asJsonObject
@@ -51,6 +57,7 @@ class CommanderApi(ctx: Context) {
                 } catch (e: Exception) {
                     onFailure(call, Exception("Invalid response"))
                 }
+
                 if (!response.isSuccessful || profileResponse == null) {
                     onFailure(call, Exception("Invalid response"))
                 } else {
@@ -140,20 +147,22 @@ class CommanderApi(ctx: Context) {
             }
 
             override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
-                //val credits = FrontierCreditsEvent(false, 0, 0)
                 val pos = FrontierProfileEvent(false, "", 0, 0, "")
                 val ranks = FrontierRanksEvent(
                     false, null, null,
                     null, null, null, null
                 )
                 val fleet = FrontierFleetEvent(false, ArrayList())
-                //sendResultMessage(credits)
                 sendResultMessage(pos)
                 sendResultMessage(ranks)
                 sendResultMessage(fleet)
             }
         }
         frontierRetrofit?.profileRaw?.enqueue(callback)
+    }
+
+    fun getDistanceToSol(systemName:String?){
+        DistanceCalculatorNetwork.getDistance(context,"Sol", systemName)
     }
 
     private fun handleFleetParsing(rawProfileResponse: JsonObject) {
