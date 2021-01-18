@@ -11,7 +11,8 @@
         style="@style/EliteStatisticCardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/default_padding">
+        app:cardElevation="0dp"
+        >
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -21,6 +22,7 @@
                 android:id="@+id/nameTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_small"
                 android:text=""
                 android:textAppearance="@style/eliteStyle"
                 app:layout_constraintStart_toStartOf="parent"
@@ -32,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:text=""
-                android:textAppearance="@style/eliteStyle.WhiteText"
+                android:textAppearance="@style/eliteStyle.YellowText"
                 app:layout_constraintStart_toStartOf="@+id/nameTextView"
                 app:layout_constraintTop_toTopOf="@+id/nameTextView" />
 
@@ -42,6 +44,7 @@
                 android:layout_height="wrap_content"
                 android:text=""
                 android:textAppearance="@style/eliteStyle"
+                android:layout_marginEnd="@dimen/margin_small"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
