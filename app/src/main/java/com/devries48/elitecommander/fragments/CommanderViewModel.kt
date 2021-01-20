@@ -13,6 +13,8 @@ import com.devries48.elitecommander.events.FrontierFleetEvent
 import com.devries48.elitecommander.events.FrontierProfileEvent
 import com.devries48.elitecommander.events.FrontierRanksEvent
 import com.devries48.elitecommander.models.EliteStatistic
+import com.devries48.elitecommander.models.FrontierJournal
+import com.devries48.elitecommander.models.FrontierJournalStatistics
 import com.devries48.elitecommander.network.CommanderApi
 import com.devries48.elitecommander.utils.NamingUtils
 import org.greenrobot.eventbus.EventBus
@@ -39,7 +41,13 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
     init {
         EventBus.getDefault().register(this)
         loadMainStatistics()
+
+        val journals=FrontierJournal()
+        journals.parseResponse("")
+        var stats: FrontierJournalStatistics?=journals.getStatistics()
+println("COMMANDER STATS" + (stats?.bankAccount?.currentWealth ?: ""))
         commanderApi?.getCommanderStatus()
+        commanderApi?.getJournal()
     }
 
     override fun onCleared() {

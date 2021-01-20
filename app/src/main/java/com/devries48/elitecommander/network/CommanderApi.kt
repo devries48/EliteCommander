@@ -6,6 +6,8 @@ import com.devries48.elitecommander.events.FrontierFleetEvent
 import com.devries48.elitecommander.events.FrontierProfileEvent
 import com.devries48.elitecommander.events.FrontierRanksEvent
 import com.devries48.elitecommander.events.FrontierShip
+import com.devries48.elitecommander.models.FrontierJournal
+import com.devries48.elitecommander.models.FrontierJournalStatistics
 import com.devries48.elitecommander.models.FrontierProfileResponse
 import com.devries48.elitecommander.network.retrofit.EDApiRetrofit
 import com.devries48.elitecommander.network.retrofit.FrontierRetrofit
@@ -32,7 +34,7 @@ class CommanderApi(ctx: Context) {
         frontierRetrofit = RetrofitSingleton.getInstance()
             ?.getFrontierRetrofit(context.applicationContext)
 
-        edApiRetrofit=RetrofitSingleton.getInstance()
+        edApiRetrofit = RetrofitSingleton.getInstance()
             ?.getEdApiRetrofit(context.applicationContext)
     }
 
@@ -83,67 +85,17 @@ class CommanderApi(ctx: Context) {
                         sendResultMessage(frontierProfileEvent)
 
                         // FrontierRanksEvent
-                        ranksEvent = getRanksFromApiBody(profileResponse)
+                        ranksEvent = getRanksFromApiBody(context, profileResponse)
                         sendResultMessage(ranksEvent)
 
                         // FrontierFleetEvent
                         if (rawResponse != null) {
-                            handleFleetParsing(rawResponse)
+                            Companion.handleFleetParsing(this@CommanderApi, rawResponse)
                         }
                     } catch (ex: Exception) {
                         onFailure(call, Exception("Invalid response"))
                     }
                 }
-            }
-
-            private fun getRanksFromApiBody(apiResponse: FrontierProfileResponse): FrontierRanksEvent {
-                val apiRanks = apiResponse.commander!!.rank
-
-                // combat
-                val combatRank = FrontierRanksEvent.FrontierRank(
-                    context.resources
-                        .getStringArray(R.array.ranks_combat)[apiRanks!!.combat],
-                    apiRanks.combat, -1
-                )
-
-                // trade
-                val tradeRank = FrontierRanksEvent.FrontierRank(
-                    context.resources
-                        .getStringArray(R.array.ranks_trade)[apiRanks.trade],
-                    apiRanks.trade, -1
-                )
-
-                // explore
-                val exploreRank = FrontierRanksEvent.FrontierRank(
-                    context.resources
-                        .getStringArray(R.array.ranks_explorer)[apiRanks.explore],
-                    apiRanks.explore, -1
-                )
-
-                // CQC
-                val cqcRank = FrontierRanksEvent.FrontierRank(
-                    context.resources
-                        .getStringArray(R.array.ranks_cqc)[apiRanks.cqc],
-                    apiRanks.cqc, -1
-                )
-
-                // federation
-                val federationRank = FrontierRanksEvent.FrontierRank(
-                    context.resources
-                        .getStringArray(R.array.ranks_federation)[apiRanks.federation],
-                    apiRanks.federation, -1
-                )
-
-                // empire
-                val empireRank = FrontierRanksEvent.FrontierRank(
-                    context.resources
-                        .getStringArray(R.array.ranks_empire)[apiRanks.empire],
-                    apiRanks.empire, -1
-                )
-                return FrontierRanksEvent(
-                    true, combatRank, tradeRank, exploreRank,
-                    cqcRank, federationRank, empireRank
-                )
             }
 
             override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
@@ -161,59 +113,182 @@ class CommanderApi(ctx: Context) {
         frontierRetrofit?.profileRaw?.enqueue(callback)
     }
 
-    fun getDistanceToSol(systemName:String?){
-        DistanceCalculatorNetwork.getDistance(context,"Sol", systemName)
+    fun getJournal() {
+        val callback: Callback<ResponseBody?> = object : Callback<ResponseBody?> {
+            override fun onResponse(
+                call: Call<ResponseBody?>,
+                @NotNull response: Response<ResponseBody?>
+            ) {
+                val journal= FrontierJournal()
+                var journalStatistics: FrontierJournalStatistics? = null
+
+                try {
+                    val responseString: String? = response.body()?.string()
+
+                    journal.parseResponse(responseString!!)
+                    journalStatistics = journal.getStatistics()
+
+                } catch (e: Exception) {
+                    onFailure(call, Exception("Invalid response"))
+                }
+
+                if (!response.isSuccessful || journalStatistics == null) {
+                    onFailure(call, Exception("Invalid response"))
+                } else {
+                    val frontierProfileEvent: FrontierProfileEvent
+
+                    try {
+/*
+
+                        // Position
+                        val commanderName: String = profileResponse.commander?.name!!
+                        val credits: Long = profileResponse.commander?.credits!!
+                        val debt: Long = profileResponse.commander?.debt!!
+                        val systemName = profileResponse.lastSystem?.name!!
+
+                        frontierProfileEvent = profileResponse.commander?.let {
+                            FrontierProfileEvent(
+                                true,
+                                commanderName,
+                                credits,
+                                debt,
+                                systemName
+                            )
+                        }!!
+                        sendResultMessage(frontierProfileEvent)
+*/
+
+                    } catch (ex: Exception) {
+                        onFailure(call, Exception("Invalid response"))
+                    }
+                }
+            }
+
+
+            override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
+                val pos = FrontierProfileEvent(false, "", 0, 0, "")
+                val ranks = FrontierRanksEvent(
+                    false, null, null,
+                    null, null, null, null
+                )
+                val fleet = FrontierFleetEvent(false, ArrayList())
+                sendResultMessage(pos)
+                sendResultMessage(ranks)
+                sendResultMessage(fleet)
+            }
+        }
+        frontierRetrofit?.journalRaw?.enqueue(callback)
     }
 
-    private fun handleFleetParsing(rawProfileResponse: JsonObject) {
-        val currentShipId = rawProfileResponse["commander"]
-            .asJsonObject["currentShipId"]
-            .asInt
-
-        // Sometimes the cAPI return an array, sometimes an object with indexes
-        val responseList: MutableList<JsonElement> = ArrayList()
-        if (rawProfileResponse["ships"].isJsonObject) {
-            for ((_, value) in rawProfileResponse["ships"].asJsonObject.entrySet()) {
-                responseList.add(value)
-            }
-        } else {
-            for (ship in rawProfileResponse["ships"].asJsonArray) {
-                responseList.add(ship)
-            }
-        }
-        val shipsList: MutableList<FrontierShip> = ArrayList()
-        for (entry in responseList) {
-            val rawShip = entry.asJsonObject
-            var shipName: String? = null
-            if (rawShip.has("shipName")) {
-                shipName = rawShip["shipName"].asString
-            }
-            val value = rawShip["value"].asJsonObject
-            val isCurrentShip = rawShip["id"].asInt == currentShipId
-            val newShip = FrontierShip(
-                rawShip["id"].asInt,
-                NamingUtils.getShipName(rawShip["name"].asString),
-                shipName,
-                rawShip["starsystem"].asJsonObject["name"].asString,
-                rawShip["station"].asJsonObject["name"].asString,
-                value["hull"].asLong,
-                value["modules"].asLong,
-                value["cargo"].asLong,
-                value["total"].asLong,
-                isCurrentShip
-            )
-            if (isCurrentShip) {
-                shipsList.add(0, newShip)
-            } else {
-                shipsList.add(newShip)
-            }
-        }
-        sendResultMessage(FrontierFleetEvent(true, shipsList))
+    fun getDistanceToSol(systemName: String?) {
+        DistanceCalculatorNetwork.getDistance(context, "Sol", systemName)
     }
 
 
     private fun sendResultMessage(data: Any?) {
         EventBus.getDefault().post(data)
+    }
+
+    companion object {
+
+        private fun getRanksFromApiBody(
+            context: Context,
+            apiResponse: FrontierProfileResponse
+        ): FrontierRanksEvent {
+            val apiRanks = apiResponse.commander!!.rank
+
+            // combat
+            val combatRank = FrontierRanksEvent.FrontierRank(
+                context.resources
+                    .getStringArray(R.array.ranks_combat)[apiRanks!!.combat],
+                apiRanks.combat, -1
+            )
+
+            // trade
+            val tradeRank = FrontierRanksEvent.FrontierRank(
+                context.resources
+                    .getStringArray(R.array.ranks_trade)[apiRanks.trade],
+                apiRanks.trade, -1
+            )
+
+            // explore
+            val exploreRank = FrontierRanksEvent.FrontierRank(
+                context.resources
+                    .getStringArray(R.array.ranks_explorer)[apiRanks.explore],
+                apiRanks.explore, -1
+            )
+
+            // CQC
+            val cqcRank = FrontierRanksEvent.FrontierRank(
+                context.resources
+                    .getStringArray(R.array.ranks_cqc)[apiRanks.cqc],
+                apiRanks.cqc, -1
+            )
+
+            // federation
+            val federationRank = FrontierRanksEvent.FrontierRank(
+                context.resources
+                    .getStringArray(R.array.ranks_federation)[apiRanks.federation],
+                apiRanks.federation, -1
+            )
+
+            // empire
+            val empireRank = FrontierRanksEvent.FrontierRank(
+                context.resources
+                    .getStringArray(R.array.ranks_empire)[apiRanks.empire],
+                apiRanks.empire, -1
+            )
+            return FrontierRanksEvent(
+                true, combatRank, tradeRank, exploreRank,
+                cqcRank, federationRank, empireRank
+            )
+        }
+
+        private fun handleFleetParsing(commanderApi: CommanderApi, rawProfileResponse: JsonObject) {
+            val currentShipId = rawProfileResponse["commander"]
+                .asJsonObject["currentShipId"]
+                .asInt
+
+            // Sometimes the cAPI return an array, sometimes an object with indexes
+            val responseList: MutableList<JsonElement> = ArrayList()
+            if (rawProfileResponse["ships"].isJsonObject) {
+                for ((_, value) in rawProfileResponse["ships"].asJsonObject.entrySet()) {
+                    responseList.add(value)
+                }
+            } else {
+                for (ship in rawProfileResponse["ships"].asJsonArray) {
+                    responseList.add(ship)
+                }
+            }
+            val shipsList: MutableList<FrontierShip> = ArrayList()
+            for (entry in responseList) {
+                val rawShip = entry.asJsonObject
+                var shipName: String? = null
+                if (rawShip.has("shipName")) {
+                    shipName = rawShip["shipName"].asString
+                }
+                val value = rawShip["value"].asJsonObject
+                val isCurrentShip = rawShip["id"].asInt == currentShipId
+                val newShip = FrontierShip(
+                    rawShip["id"].asInt,
+                    NamingUtils.getShipName(rawShip["name"].asString),
+                    shipName,
+                    rawShip["starsystem"].asJsonObject["name"].asString,
+                    rawShip["station"].asJsonObject["name"].asString,
+                    value["hull"].asLong,
+                    value["modules"].asLong,
+                    value["cargo"].asLong,
+                    value["total"].asLong,
+                    isCurrentShip
+                )
+                if (isCurrentShip) {
+                    shipsList.add(0, newShip)
+                } else {
+                    shipsList.add(newShip)
+                }
+            }
+            commanderApi.sendResultMessage(FrontierFleetEvent(true, shipsList))
+        }
     }
 
 }
