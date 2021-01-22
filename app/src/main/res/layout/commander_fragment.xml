@@ -2,8 +2,7 @@
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    >
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
         <variable
@@ -95,43 +94,43 @@
 
                 <include
                     android:id="@+id/combatRankInclude"
-                    layout="@layout/include_rank_player"
+                    layout="@layout/include_rank"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="@+id/guideVer1"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:rank="@{viewModel.combatRank}" />
+                    app:rankModel="@{viewModel.combatRank}" />
 
                 <include
                     android:id="@+id/tradeRankInclude"
-                    layout="@layout/include_rank_player"
+                    layout="@layout/include_rank"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     app:layout_constraintLeft_toLeftOf="@+id/guideVer1"
                     app:layout_constraintRight_toRightOf="@+id/guideVer2"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:rank="@{viewModel.tradeRank}" />
+                    app:rankModel="@{viewModel.tradeRank}" />
 
                 <include
                     android:id="@+id/exploreRankInclude"
-                    layout="@layout/include_rank_player"
+                    layout="@layout/include_rank"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     app:layout_constraintLeft_toLeftOf="@+id/guideVer2"
                     app:layout_constraintRight_toRightOf="@+id/guideVer3"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:rank="@{viewModel.exploreRank}" />
+                    app:rankModel="@{viewModel.exploreRank}" />
 
                 <include
                     android:id="@+id/cqcRankInclude"
-                    layout="@layout/include_rank_player"
+                    layout="@layout/include_rank"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     app:layout_constraintLeft_toLeftOf="@+id/guideVer3"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:rank="@{viewModel.cqcRank}" />
+                    app:rankModel="@{viewModel.cqcRank}" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
@@ -157,23 +156,23 @@
                     app:layout_constraintGuide_percent="0.50" />
                 <include
                     android:id="@+id/federationRankInclude"
-                    layout="@layout/include_rank_faction"
+                    layout="@layout/include_rank"
                     android:layout_width="wrap_content"
                     android:layout_height="170dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="@+id/guide_faction_ver"
-                    app:rank="@{viewModel.federationRank}" />
+                    app:rankModel="@{viewModel.federationRank}" />
 
                 <include
                     android:id="@+id/empireRankInclude"
-                    layout="@layout/include_rank_faction"
+                    layout="@layout/include_rank"
                     android:layout_width="wrap_content"
                     android:layout_height="170dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="@+id/guide_faction_ver"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:rank="@{viewModel.empireRank}" />
+                    app:rankModel="@{viewModel.empireRank}" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>

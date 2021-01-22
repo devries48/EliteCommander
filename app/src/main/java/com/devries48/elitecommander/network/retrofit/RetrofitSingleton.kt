@@ -65,6 +65,7 @@ open class RetrofitSingleton private constructor() : Serializable {
 
             // Check if access token expired and renew it if needed
             if (response.code() == 403 || response.code() == 422 || response.code() == 401) {
+
                 val responseBody: FrontierAccessTokenResponse? = OAuthUtils.makeRefreshRequest(ctx)
                 if (responseBody == null) {
                     // Send event to renew login
@@ -84,13 +85,16 @@ open class RetrofitSingleton private constructor() : Serializable {
                 response.close()
                 request = OAuthUtils.getRequestWithFrontierAuthorization(ctx, chain)
                 response = chain.proceed(request)
+
             }
+
 
             // If still not ok, need login
             if (!response.isSuccessful && (response.code() == 403 || response.code() == 422 || response.code() == 401)) {
                 EventBus.getDefault().post(FrontierAuthNeededEvent(true))
             }
             response
+
         }
         val customRetrofitBuilder = Retrofit.Builder()
             .client(httpClient.build())
