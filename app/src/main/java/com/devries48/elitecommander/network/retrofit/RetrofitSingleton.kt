@@ -3,7 +3,6 @@ package com.devries48.elitecommander.network.retrofit
 import android.content.Context
 import com.devries48.elitecommander.R
 import com.devries48.elitecommander.events.FrontierAuthNeededEvent
-import com.devries48.elitecommander.models.FrontierAccessTokenResponse
 import com.devries48.elitecommander.utils.OAuthUtils
 import com.google.gson.GsonBuilder
 import okhttp3.Interceptor
@@ -64,7 +63,8 @@ open class RetrofitSingleton private constructor() : Serializable {
             var response = chain.proceed(request)
 
             // Check if access token expired and renew it if needed
-            if (response.code() == 403 || response.code() == 422 || response.code() == 401) {
+/*            if (response.code() == 403 || response.code() == 422 || response.code() == 401) {
+
                 val responseBody: FrontierAccessTokenResponse? = OAuthUtils.makeRefreshRequest(ctx)
                 if (responseBody == null) {
                     // Send event to renew login
@@ -84,13 +84,16 @@ open class RetrofitSingleton private constructor() : Serializable {
                 response.close()
                 request = OAuthUtils.getRequestWithFrontierAuthorization(ctx, chain)
                 response = chain.proceed(request)
+
             }
+*/
 
             // If still not ok, need login
             if (!response.isSuccessful && (response.code() == 403 || response.code() == 422 || response.code() == 401)) {
                 EventBus.getDefault().post(FrontierAuthNeededEvent(true))
             }
             response
+
         }
         val customRetrofitBuilder = Retrofit.Builder()
             .client(httpClient.build())

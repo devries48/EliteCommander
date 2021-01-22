@@ -108,6 +108,7 @@
     </string-array>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="format_percentage">%1$s%%</string>
     <string name="empty_string" />
     <string name="Credits">Credits</string>
     <string name="CurrentLocation">Current location</string>

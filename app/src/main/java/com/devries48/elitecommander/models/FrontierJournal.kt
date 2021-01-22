@@ -1,5 +1,8 @@
 package com.devries48.elitecommander.models
 
+import android.content.Context
+import com.devries48.elitecommander.R
+import com.devries48.elitecommander.events.FrontierRanksEvent
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
@@ -189,6 +192,64 @@ class FrontierJournal {
         println("Journal events present: " + mRawEvents.size)
     }
 
+    fun getRanks(context: Context): FrontierRanksEvent {
+        try {
+            val rawRank = mRawEvents.firstOrNull { it.event == JOURNAL_EVENT_RANK }
+            val rawProgress = mRawEvents.firstOrNull { it.event == JOURNAL_EVENT_PROGRESS }
+
+            if (rawRank == null || rawProgress == null) {
+                throw error("Error parsing rank events from journal")
+            }
+
+            val rank = Gson().fromJson(rawRank.json, FrontierJournalRank::class.java)
+            val progress =
+                Gson().fromJson(rawProgress.json, FrontierJournalRankProgress::class.java)
+
+            val combatRank = FrontierRanksEvent.FrontierRank(
+                context.resources.getStringArray(R.array.ranks_combat)[rank.combat],
+                rank.combat,
+                progress.combat
+            )
+            val tradeRank = FrontierRanksEvent.FrontierRank(
+                context.resources.getStringArray(R.array.ranks_trade)[rank.trade],
+                rank.trade,
+                progress.trade
+            )
+            val exploreRank = FrontierRanksEvent.FrontierRank(
+                context.resources.getStringArray(R.array.ranks_explorer)[rank.explore],
+                rank.explore,
+                progress.explore
+            )
+            val cqcRank = FrontierRanksEvent.FrontierRank(
+                context.resources.getStringArray(R.array.ranks_cqc)[rank.cqc],
+                rank.cqc,
+                progress.cqc
+            )
+            val federationRank = FrontierRanksEvent.FrontierRank(
+                context.resources.getStringArray(R.array.ranks_federation)[rank.federation],
+                rank.federation,
+                progress.federation
+            )
+            val empireRank = FrontierRanksEvent.FrontierRank(
+                context.resources.getStringArray(R.array.ranks_empire)[rank.empire],
+                rank.empire,
+                progress.empire
+            )
+
+            return FrontierRanksEvent(
+                true, combatRank, tradeRank, exploreRank,
+                cqcRank, federationRank, empireRank
+            )
+        } catch (e: Exception) {
+            println("LOG: Error parsing ranking events from journal." + e.message)
+            return FrontierRanksEvent(
+                false, null, null,
+                null, null, null, null
+            )
+
+        }
+    }
+
     fun getStatistics(): FrontierJournalStatistics? {
         val event = mRawEvents.firstOrNull { it.event == JOURNAL_EVENT_STATISTICS }
 
@@ -199,15 +260,6 @@ class FrontierJournal {
             )
         }
         return null
-    }
-
-    /**
-     *  Capture FrontierRanksEvent for the result.
-     */
-    fun GetRanks()
-    {
-        val rankEvent = mRawEvents.firstOrNull { it.event == JOURNAL_EVENT_RANK }
-        val progressEvent = mRawEvents.firstOrNull { it.event == JOURNAL_EVENT_PROGRESS }
     }
 
     private class RawEvent(private var value: String) {
@@ -222,116 +274,139 @@ class FrontierJournal {
 
     companion object {
         const val JOURNAL_EVENT_STATISTICS = "Statistics"
-        const val JOURNAL_EVENT_RANK = "Rank"
-        const val JOURNAL_EVENT_PROGRESS = "Progress"
+        private const val JOURNAL_EVENT_RANK = "Rank"
+        private const val JOURNAL_EVENT_PROGRESS = "Progress"
 
         private val mRawEvents: MutableList<RawEvent> = ArrayList()
+
+
     }
 }
 
 abstract class FrontierJournalBase
 
+class FrontierJournalCommander : FrontierJournalBase()
+
 class FrontierJournalStatistics : FrontierJournalBase() {
     @SerializedName("Bank_Account")
-     var bankAccount: BankAccount?=null
+    var bankAccount: BankAccount? = null
 
     @SerializedName("Combat")
-     var combat: Combat?=null
+    var combat: Combat? = null
 
     @SerializedName("Smuggling")
-     var smuggling: Smuggling?=null
+    var smuggling: Smuggling? = null
 
     inner class BankAccount {
         @SerializedName("Current_Wealth")
         var currentWealth: Long = 0
 
         @SerializedName("Spent_On_Ships")
-        val spentOnShips: Long = 0
+        var spentOnShips: Long = 0
 
         @SerializedName("Spent_On_Outfitting")
-        val spentOnOutfitting: Long = 0
+        var spentOnOutfitting: Long = 0
 
         @SerializedName("Spent_On_Repairs")
-        val spentOnRepairs: Long = 0
+        var spentOnRepairs: Long = 0
 
         @SerializedName("Spent_On_Fuel")
-        val spentOnFuel: Long = 0
+        var spentOnFuel: Long = 0
 
         @SerializedName("spentOnAmmoConsumables")
-        val spentOnAmmoConsumables: Long = 0
+        var spentOnAmmoConsumables: Long = 0
 
         @SerializedName("Insurance_Claims")
-        val insuranceClaims: Int = 0
+        var insuranceClaims: Int = 0
 
         @SerializedName("Spent_On_Insurance")
-        val spentOnInsurance: Long = 0
+        var spentOnInsurance: Long = 0
 
         @SerializedName("Owned_Ship_Count")
-        val ownedShipCount: Int = 0
+        var ownedShipCount: Int = 0
     }
 
-     inner class Combat {
-         @SerializedName("Bounties_Claimed")
-         val bountiesClaimed: Int=0
-         @SerializedName("Bounty_Hunting_Profit")
-         val bountyHuntingProfit: Long=0
-         @SerializedName("Combat_Bonds")
-         val combatBonds: Int=0
-         @SerializedName("Combat_Bond_Profits")
-         val combatBondProfits: Long=0
-         @SerializedName("Assassinations")
-         val assassinations: Int=0
-         @SerializedName("Assassination_Profits")
-         val assassinationProfits: Long=0
-         @SerializedName("Highest_Single_Reward")
-         val highestSingleReward: Long=0
-         @SerializedName("Skimmers_Killed")
-         val skimmersKilled: Int=0
-     }
+    inner class Combat {
+        @SerializedName("Bounties_Claimed")
+        var bountiesClaimed: Int = 0
 
-    inner class Smuggling(
-        @SerializedName("blackMarketsTradedWith") val blackMarketsTradedWith: Int,
-        @SerializedName("blackMarketsProfits") val blackMarketsProfits: Long,
-        @SerializedName("resourcesSmuggled") val resourcesSmuggled: Int,
-        @SerializedName("averageProfit") val averageProfit: Long,
-        @SerializedName("highestSingleTransaction") val highestSingleTransaction: Long
-    )
+        @SerializedName("Bounty_Hunting_Profit")
+        var bountyHuntingProfit: Long = 0
 
+        @SerializedName("Combat_Bonds")
+        var combatBonds: Int = 0
 
+        @SerializedName("Combat_Bond_Profits")
+        var combatBondProfits: Long = 0
 
+        @SerializedName("Assassinations")
+        var assassinations: Int = 0
+
+        @SerializedName("Assassination_Profits")
+        var assassinationProfits: Long = 0
+
+        @SerializedName("Highest_Single_Reward")
+        var highestSingleReward: Long = 0
+
+        @SerializedName("Skimmers_Killed")
+        var skimmersKilled: Int = 0
+    }
+
+    inner class Smuggling {
+        @SerializedName("Black_Markets_Traded_With")
+        var blackMarketsTradedWith: Int = 0
+
+        @SerializedName("Black_Markets_Profits")
+        var blackMarketsProfits: Long = 0
+
+        @SerializedName("Resources_Smuggled")
+        var resourcesSmuggled: Int = 0
+
+        @SerializedName("Average_Profit")
+        var averageProfit: Long = 0
+
+        @SerializedName("Highest_Single_Transaction")
+        var highestSingleTransaction: Long = 0
+    }
 }
 
 class FrontierJournalRank : FrontierJournalBase() {
     @SerializedName("Combat")
-    val combat: Int = 0
+    var combat: Int = 0
+
     @SerializedName("Trade")
-    val trade: Int = 0
+    var trade: Int = 0
+
     @SerializedName("Explore")
-    val explore: Int = 0
+    var explore: Int = 0
+
     @SerializedName("Empire")
-    val empire: Int = 0
+    var empire: Int = 0
+
     @SerializedName("Federation")
-    val federation: Int = 0
+    var federation: Int = 0
+
     @SerializedName("CQC")
-    val cqc: Int = 0
+    var cqc: Int = 0
 }
 
 class FrontierJournalRankProgress : FrontierJournalBase() {
     @SerializedName("Combat")
-    val combat: Int = 0
+    var combat: Int = 0
+
     @SerializedName("Trade")
-    val trade: Int = 0
+    var trade: Int = 0
+
     @SerializedName("Explore")
-    val explore: Int = 0
+    var explore: Int = 0
+
     @SerializedName("Empire")
-    val empire: Int = 0
+    var empire: Int = 0
+
     @SerializedName("Federation")
-    val federation: Int = 0
+    var federation: Int = 0
+
     @SerializedName("CQC")
-    val cqc: Int = 0
+    var cqc: Int = 0
 }
 
-
-
-
-class FrontierJournalCommander : FrontierJournalBase()

@@ -76,7 +76,6 @@ class MainActivity : AppCompatActivity() {
         private var navDestinationId: Int = 0
         private lateinit var navController: NavController
         private lateinit var navHostFragment: NavHostFragment
-
     }
 
 }

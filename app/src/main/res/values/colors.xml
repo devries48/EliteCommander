@@ -16,11 +16,15 @@
 
     <!-- elite.xml Colors -->
 
-    <color name="elite_orange">#ff7100</color>
+    <color name="elite_orange">#FFFD7022</color>
     <color name="elite_light_orange">#ffb000</color>
     <color name="elite_yellow">#FFEB3B</color>
+    <color name="elite_teal">#FF08FADC</color>
+    <color name="elite_red">#FFFF0507</color>
 
     <color name= "background">#ff424343</color>
     <color name="dark_background">#ff2B2B2C</color>
     <color name= "item_background">#88424343</color>
+    <color name="elite_federation">#2196F3</color>
+    <color name="elite_empire">#E91E63</color>
 </resources>

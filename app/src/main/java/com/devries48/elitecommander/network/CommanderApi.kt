@@ -1,13 +1,11 @@
 package com.devries48.elitecommander.network
 
 import android.content.Context
-import com.devries48.elitecommander.R
 import com.devries48.elitecommander.events.FrontierFleetEvent
 import com.devries48.elitecommander.events.FrontierProfileEvent
 import com.devries48.elitecommander.events.FrontierRanksEvent
 import com.devries48.elitecommander.events.FrontierShip
 import com.devries48.elitecommander.models.FrontierJournal
-import com.devries48.elitecommander.models.FrontierJournalStatistics
 import com.devries48.elitecommander.models.FrontierProfileResponse
 import com.devries48.elitecommander.network.retrofit.EDApiRetrofit
 import com.devries48.elitecommander.network.retrofit.FrontierRetrofit
@@ -38,12 +36,16 @@ class CommanderApi(ctx: Context) {
             ?.getEdApiRetrofit(context.applicationContext)
     }
 
-    fun getCommanderStatus() {
+    fun loadProfile() {
         val callback: Callback<ResponseBody?> = object : Callback<ResponseBody?> {
             override fun onResponse(
                 call: Call<ResponseBody?>,
                 @NotNull response: Response<ResponseBody?>
             ) {
+                if (response.code() !=200){
+                    println("LOG: Error getting profile response - " + response.message())
+                    return
+                }
 
                 // Parse as string and as body
                 var profileResponse: FrontierProfileResponse? = null
@@ -64,7 +66,6 @@ class CommanderApi(ctx: Context) {
                     onFailure(call, Exception("Invalid response"))
                 } else {
                     val frontierProfileEvent: FrontierProfileEvent
-                    val ranksEvent: FrontierRanksEvent
 
                     try {
                         // Position
@@ -84,13 +85,9 @@ class CommanderApi(ctx: Context) {
                         }!!
                         sendResultMessage(frontierProfileEvent)
 
-                        // FrontierRanksEvent
-                        ranksEvent = getRanksFromApiBody(context, profileResponse)
-                        sendResultMessage(ranksEvent)
-
                         // FrontierFleetEvent
                         if (rawResponse != null) {
-                            Companion.handleFleetParsing(this@CommanderApi, rawResponse)
+                            handleFleetParsing(this@CommanderApi, rawResponse)
                         }
                     } catch (ex: Exception) {
                         onFailure(call, Exception("Invalid response"))
@@ -113,67 +110,37 @@ class CommanderApi(ctx: Context) {
         frontierRetrofit?.profileRaw?.enqueue(callback)
     }
 
-    fun getJournal() {
+    /**
+     *  - Loads ranks from journal,capture FrontierRanksEvent for the result.
+     */
+    fun loadJournal() {
         val callback: Callback<ResponseBody?> = object : Callback<ResponseBody?> {
             override fun onResponse(
                 call: Call<ResponseBody?>,
                 @NotNull response: Response<ResponseBody?>
             ) {
-                val journal= FrontierJournal()
-                var journalStatistics: FrontierJournalStatistics? = null
+                if (response.code() !=200){
+                    println("LOG: Error getting journal response - " + response.message())
+                    return
+                }
+
+                val journal = FrontierJournal()
 
                 try {
                     val responseString: String? = response.body()?.string()
-
                     journal.parseResponse(responseString!!)
-                    journalStatistics = journal.getStatistics()
-
                 } catch (e: Exception) {
-                    onFailure(call, Exception("Invalid response"))
+                    println("LOG: Error parsing journal response - " + e.message)
+                    return
                 }
 
-                if (!response.isSuccessful || journalStatistics == null) {
-                    onFailure(call, Exception("Invalid response"))
-                } else {
-                    val frontierProfileEvent: FrontierProfileEvent
-
-                    try {
-/*
-
-                        // Position
-                        val commanderName: String = profileResponse.commander?.name!!
-                        val credits: Long = profileResponse.commander?.credits!!
-                        val debt: Long = profileResponse.commander?.debt!!
-                        val systemName = profileResponse.lastSystem?.name!!
-
-                        frontierProfileEvent = profileResponse.commander?.let {
-                            FrontierProfileEvent(
-                                true,
-                                commanderName,
-                                credits,
-                                debt,
-                                systemName
-                            )
-                        }!!
-                        sendResultMessage(frontierProfileEvent)
-*/
-
-                    } catch (ex: Exception) {
-                        onFailure(call, Exception("Invalid response"))
-                    }
-                }
+                sendResultMessage(journal.getRanks(context))
             }
-
 
             override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
                 val pos = FrontierProfileEvent(false, "", 0, 0, "")
-                val ranks = FrontierRanksEvent(
-                    false, null, null,
-                    null, null, null, null
-                )
                 val fleet = FrontierFleetEvent(false, ArrayList())
                 sendResultMessage(pos)
-                sendResultMessage(ranks)
                 sendResultMessage(fleet)
             }
         }
@@ -190,59 +157,6 @@ class CommanderApi(ctx: Context) {
     }
 
     companion object {
-
-        private fun getRanksFromApiBody(
-            context: Context,
-            apiResponse: FrontierProfileResponse
-        ): FrontierRanksEvent {
-            val apiRanks = apiResponse.commander!!.rank
-
-            // combat
-            val combatRank = FrontierRanksEvent.FrontierRank(
-                context.resources
-                    .getStringArray(R.array.ranks_combat)[apiRanks!!.combat],
-                apiRanks.combat, -1
-            )
-
-            // trade
-            val tradeRank = FrontierRanksEvent.FrontierRank(
-                context.resources
-                    .getStringArray(R.array.ranks_trade)[apiRanks.trade],
-                apiRanks.trade, -1
-            )
-
-            // explore
-            val exploreRank = FrontierRanksEvent.FrontierRank(
-                context.resources
-                    .getStringArray(R.array.ranks_explorer)[apiRanks.explore],
-                apiRanks.explore, -1
-            )
-
-            // CQC
-            val cqcRank = FrontierRanksEvent.FrontierRank(
-                context.resources
-                    .getStringArray(R.array.ranks_cqc)[apiRanks.cqc],
-                apiRanks.cqc, -1
-            )
-
-            // federation
-            val federationRank = FrontierRanksEvent.FrontierRank(
-                context.resources
-                    .getStringArray(R.array.ranks_federation)[apiRanks.federation],
-                apiRanks.federation, -1
-            )
-
-            // empire
-            val empireRank = FrontierRanksEvent.FrontierRank(
-                context.resources
-                    .getStringArray(R.array.ranks_empire)[apiRanks.empire],
-                apiRanks.empire, -1
-            )
-            return FrontierRanksEvent(
-                true, combatRank, tradeRank, exploreRank,
-                cqcRank, federationRank, empireRank
-            )
-        }
 
         private fun handleFleetParsing(commanderApi: CommanderApi, rawProfileResponse: JsonObject) {
             val currentShipId = rawProfileResponse["commander"]

@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:viewBindingIgnore="true">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
-            name="rank"
-            type="com.devries48.elitecommander.fragments.RankModel" />
+            name="rankModel"
+            type="com.devries48.elitecommander.models.RankModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -19,8 +17,10 @@
             android:id="@+id/titleTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{rank.titleResId}"
-            android:textAppearance="@style/eliteStyle"
+            android:rankTextColor="@{rankModel}"
+            android:text="@{rankModel.titleResId}"
+            android:textAppearance="@style/eliteStyle.Rank"
+            android:textColor="@{rankModel.colorResId}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -31,18 +31,44 @@
             android:layout_height="80dp"
             android:adjustViewBounds="true"
             android:contentDescription="@string/rank"
-            app:imageResource="@{rank.logoResId}"
+            app:imageResource="@{rankModel.logoResId}"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/titleTextView" />
+            app:layout_constraintTop_toBottomOf="@+id/titleTextView" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:progress="@{rankModel.rank.progress}"
+            android:rankProgressHideIf100="@{rankModel}"
+            android:rankProgressTint="@{rankModel}"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/progressTextView"
+            app:layout_constraintTop_toBottomOf="@+id/itemImageView" />
+
+        <TextView
+            android:id="@+id/progressTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:rankTextColor="@{rankModel}"
+            android:rankTextHideIf100="@{rankModel}"
+            android:text="@{@string/format_percentage(rankModel.rank.progress)}"
+            android:textAppearance="@style/eliteStyle.SmallText"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/itemImageView" />
 
         <TextView
             android:id="@+id/rankTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:text="@{rank.name}"
-            android:textAppearance="@style/eliteStyle.WhiteText"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="2dp"
+            android:rankTextColor="@{rankModel}"
+            android:text="@{rankModel.name}"
+            android:textAppearance="@style/eliteStyle.Rank"
+            android:textColor="@{rankModel.colorResId}"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/itemImageView" />

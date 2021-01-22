@@ -13,8 +13,7 @@ import com.devries48.elitecommander.events.FrontierFleetEvent
 import com.devries48.elitecommander.events.FrontierProfileEvent
 import com.devries48.elitecommander.events.FrontierRanksEvent
 import com.devries48.elitecommander.models.EliteStatistic
-import com.devries48.elitecommander.models.FrontierJournal
-import com.devries48.elitecommander.models.FrontierJournalStatistics
+import com.devries48.elitecommander.models.RankModel
 import com.devries48.elitecommander.network.CommanderApi
 import com.devries48.elitecommander.utils.NamingUtils
 import org.greenrobot.eventbus.EventBus
@@ -42,12 +41,13 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
         EventBus.getDefault().register(this)
         loadMainStatistics()
 
-        val journals=FrontierJournal()
-        journals.parseResponse("")
-        var stats: FrontierJournalStatistics?=journals.getStatistics()
-println("COMMANDER STATS" + (stats?.bankAccount?.currentWealth ?: ""))
-        commanderApi?.getCommanderStatus()
-        commanderApi?.getJournal()
+//        val journals = FrontierJournal()
+//        journals.parseResponse("")
+//        var stats: FrontierJournalStatistics? = journals.getStatistics()
+//        println("COMMANDER STATS" + (stats?.bankAccount?.currentWealth ?: ""))
+
+        commanderApi?.loadProfile()
+        commanderApi?.loadJournal()
     }
 
     override fun onCleared() {
@@ -93,6 +93,7 @@ println("COMMANDER STATS" + (stats?.bankAccount?.currentWealth ?: ""))
         }
 
         mCombatRank.value = RankModel(
+            R.color.elite_orange,
             NamingUtils.getCombatRankDrawableId(ranksEvent.combat!!.value),
             ranksEvent.combat,
             ranksEvent.combat.name,
@@ -100,6 +101,7 @@ println("COMMANDER STATS" + (stats?.bankAccount?.currentWealth ?: ""))
             true
         )
         mTradeRank.value = RankModel(
+            R.color.white,
             NamingUtils.getTradeRankDrawableId(ranksEvent.trade!!.value),
             ranksEvent.trade,
             ranksEvent.trade.name,
@@ -107,6 +109,7 @@ println("COMMANDER STATS" + (stats?.bankAccount?.currentWealth ?: ""))
             true
         )
         mExploreRank.value = RankModel(
+            R.color.elite_teal,
             NamingUtils.getExplorationRankDrawableId(ranksEvent.explore!!.value),
             ranksEvent.explore,
             ranksEvent.explore.name,
@@ -114,6 +117,7 @@ println("COMMANDER STATS" + (stats?.bankAccount?.currentWealth ?: ""))
             true
         )
         mCqcRank.value = RankModel(
+            R.color.elite_red,
             NamingUtils.getCqcRankDrawableId(ranksEvent.cqc!!.value),
             ranksEvent.cqc,
             ranksEvent.cqc.name,
@@ -122,6 +126,7 @@ println("COMMANDER STATS" + (stats?.bankAccount?.currentWealth ?: ""))
         )
         mFederationRank.value =
             RankModel(
+                R.color.elite_federation,
                 NamingUtils.getFederationRankDrawableId(ranksEvent.federation!!.value),
                 ranksEvent.federation,
                 ranksEvent.federation.name,
@@ -130,6 +135,7 @@ println("COMMANDER STATS" + (stats?.bankAccount?.currentWealth ?: ""))
             )
         mEmpireRank.value =
             RankModel(
+                R.color.elite_empire,
                 NamingUtils.getEmpireRankDrawableId(ranksEvent.empire!!.value),
                 ranksEvent.empire,
                 ranksEvent.empire.name,
@@ -167,7 +173,7 @@ println("COMMANDER STATS" + (stats?.bankAccount?.currentWealth ?: ""))
             return
         }
 
-        if (distanceSearch.distance == 0.0f)  {
+        if (distanceSearch.distance == 0.0f) {
             setMainStatisticRight(
                 R.string.CurrentLocation,
                 0,
@@ -192,6 +198,7 @@ println("COMMANDER STATS" + (stats?.bankAccount?.currentWealth ?: ""))
             MutableLiveData(
                 RankModel(
                     0,
+                    0,
                     FrontierRanksEvent.FrontierRank("", 0, 0),
                     "",
                     R.string.empty_string,
@@ -201,6 +208,7 @@ println("COMMANDER STATS" + (stats?.bankAccount?.currentWealth ?: ""))
         private val mTradeRank =
             MutableLiveData(
                 RankModel(
+                    0,
                     0,
                     FrontierRanksEvent.FrontierRank("", 0, 0),
                     "",
@@ -212,6 +220,7 @@ println("COMMANDER STATS" + (stats?.bankAccount?.currentWealth ?: ""))
             MutableLiveData(
                 RankModel(
                     0,
+                    0,
                     FrontierRanksEvent.FrontierRank("", 0, 0),
                     "",
                     R.string.empty_string,
@@ -221,6 +230,7 @@ println("COMMANDER STATS" + (stats?.bankAccount?.currentWealth ?: ""))
         private val mCqcRank =
             MutableLiveData(
                 RankModel(
+                    0,
                     0,
                     FrontierRanksEvent.FrontierRank("", 0, 0),
                     "",
@@ -232,6 +242,7 @@ println("COMMANDER STATS" + (stats?.bankAccount?.currentWealth ?: ""))
             MutableLiveData(
                 RankModel(
                     0,
+                    0,
                     FrontierRanksEvent.FrontierRank("", 0, 0),
                     "",
                     R.string.empty_string,
@@ -241,6 +252,7 @@ println("COMMANDER STATS" + (stats?.bankAccount?.currentWealth ?: ""))
         private val mEmpireRank =
             MutableLiveData(
                 RankModel(
+                    0,
                     0,
                     FrontierRanksEvent.FrontierRank("", 0, 0),
                     "",
@@ -284,12 +296,12 @@ println("COMMANDER STATS" + (stats?.bankAccount?.currentWealth ?: ""))
         }
 
         private fun setMainStatisticRight(
-            @StringRes stringRes: Int,
+            @StringRes nameRes: Int,
             @StringRes rightStringRes: Int,
             rightValue: String,
             @StyleRes rightValueStyleRes: Int
         ) {
-            val stat: EliteStatistic? = mMainStatisticsList.find { it.stringRes == stringRes }
+            val stat: EliteStatistic? = mMainStatisticsList.find { it.stringRes == nameRes }
             if (stat != null) {
                 stat.rightValue = rightValue
                 stat.rightStringRes = rightStringRes
@@ -307,10 +319,3 @@ class CommanderViewModelFactory(private val api: CommanderApi?) :
     override fun <T : ViewModel?> create(modelClass: Class<T>): T = CommanderViewModel(api) as T
 }
 
-data class RankModel(
-    val logoResId: Int,
-    val rank: FrontierRanksEvent.FrontierRank,
-    val name: String,
-    val titleResId: Int,
-    val isPlayerRank: Boolean
-)
