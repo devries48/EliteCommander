@@ -93,28 +93,24 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
         }
 
         mCombatRank.value = RankModel(
-            R.color.elite_orange,
             NamingUtils.getCombatRankDrawableId(ranksEvent.combat!!.value),
             ranksEvent.combat,
             ranksEvent.combat.name,
             R.string.rank_combat
         )
         mTradeRank.value = RankModel(
-            R.color.white,
             NamingUtils.getTradeRankDrawableId(ranksEvent.trade!!.value),
             ranksEvent.trade,
             ranksEvent.trade.name,
             R.string.rank_trading
         )
         mExploreRank.value = RankModel(
-            R.color.elite_teal,
             NamingUtils.getExplorationRankDrawableId(ranksEvent.explore!!.value),
             ranksEvent.explore,
             ranksEvent.explore.name,
             R.string.rank_explore
         )
         mCqcRank.value = RankModel(
-            R.color.elite_red,
             NamingUtils.getCqcRankDrawableId(ranksEvent.cqc!!.value),
             ranksEvent.cqc,
             ranksEvent.cqc.name,
@@ -122,7 +118,6 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
         )
         mFederationRank.value =
             RankModel(
-                R.color.elite_federation,
                 NamingUtils.getFederationRankDrawableId(ranksEvent.federation!!.value),
                 ranksEvent.federation,
                 ranksEvent.federation.name,
@@ -131,7 +126,6 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
             )
         mEmpireRank.value =
             RankModel(
-                R.color.elite_empire,
                 NamingUtils.getEmpireRankDrawableId(ranksEvent.empire!!.value),
                 ranksEvent.empire,
                 ranksEvent.empire.name,
@@ -194,66 +188,56 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
             MutableLiveData(
                 RankModel(
                     0,
-                    0,
                     FrontierRanksEvent.FrontierRank("", 0, 0),
                     "",
-                    R.string.empty_string,
-                    false
+                    R.string.empty_string
                 )
             )
         private val mTradeRank =
             MutableLiveData(
                 RankModel(
                     0,
-                    0,
                     FrontierRanksEvent.FrontierRank("", 0, 0),
                     "",
-                    R.string.empty_string,
-                    false
+                    R.string.empty_string
                 )
             )
         private val mExploreRank =
             MutableLiveData(
                 RankModel(
                     0,
-                    0,
                     FrontierRanksEvent.FrontierRank("", 0, 0),
                     "",
-                    R.string.empty_string,
-                    false
+                    R.string.empty_string
                 )
             )
         private val mCqcRank =
             MutableLiveData(
                 RankModel(
                     0,
-                    0,
                     FrontierRanksEvent.FrontierRank("", 0, 0),
                     "",
-                    R.string.empty_string,
-                    false
+                    R.string.empty_string
                 )
             )
         private val mFederationRank =
             MutableLiveData(
                 RankModel(
                     0,
-                    0,
                     FrontierRanksEvent.FrontierRank("", 0, 0),
                     "",
                     R.string.empty_string,
-                    false
+                    true
                 )
             )
         private val mEmpireRank =
             MutableLiveData(
                 RankModel(
                     0,
-                    0,
                     FrontierRanksEvent.FrontierRank("", 0, 0),
                     "",
                     R.string.empty_string,
-                    false
+                    true
                 )
             )
 
