@@ -6,6 +6,7 @@
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
     <color name="light_blue_600">#FF039BE5</color>
     <color name="light_blue_900">#FF01579B</color>
     <color name="light_blue_A200">#FF40C4FF</color>
@@ -15,14 +16,9 @@
 
     <!-- elite.xml Colors -->
 
-    <color name="elite_orange">#FFFD7022</color>
+    <color name="elite_orange">#ff7100</color>
     <color name="elite_light_orange">#ffb000</color>
     <color name="elite_yellow">#FFEB3B</color>
-    <color name="elite_exploration">#FF08FADC</color>
-    <color name="elite_trading">#FFFFFFFF</color>
-    <color name="elite_cqc">#FFFF0507</color>
-    <color name="elite_federation">#2196F3</color>
-    <color name="elite_empire">#FB0505</color>
 
     <color name= "background">#ff424343</color>
     <color name="dark_background">#ff2B2B2C</color>
