@@ -16,19 +16,19 @@ import com.devries48.elitecommander.models.RankModel
 object RankModelAdapter {
 
     /**
-     * A Binding Adapter that is called whenever the value of the attribute `app:titleTextColor`
-     * changes. Receives a popularity level that determines the icon and tint color to use.
+     * A Binding Adapter that is called whenever the value of the attribute `android:rankTextColor`
+     * changes. Receives a model that determines the tint color to use.
      */
     @BindingAdapter("android:rankTextColor")
     @JvmStatic
     fun rankTextColor(view: TextView, model: RankModel) {
         val context: Context = view.context
-        var color = getAssociatedColor(context, model)
-        if (view.text.equals(model.titleResId)) {
-            color = darkenColor(color)
-        }
-        view.setTextColor(color)
 
+        var color = getAssociatedColor(context, model)
+        if (view.id == R.id.titleTextView)
+            color = darkenColor(color)
+
+        view.setTextColor(color)
     }
 
     /**
@@ -45,19 +45,19 @@ object RankModelAdapter {
     /**
      * Binding Adapter to hide a view if the number is hundred.
      */
-    @BindingAdapter("android:rankProgressHideIf100")
+    @BindingAdapter("android:rankProgressAutoHide")
     @JvmStatic
-    fun rankProgressHideIf100(view: ProgressBar, model: RankModel) {
-        view.visibility = if (model.rank.progress == 100) View.GONE else View.VISIBLE
+    fun rankProgressAutoHide(view: ProgressBar, value: Int) {
+        view.visibility = if (value == 100) View.GONE else View.VISIBLE
     }
 
     /**
      * Binding Adapter to hide a view if the number is hundred.
      */
-    @BindingAdapter("android:rankTextHideIf100")
+    @BindingAdapter("android:rankTextAutoHide")
     @JvmStatic
-    fun rankTextHideIf100(view: TextView, model: RankModel) {
-        view.visibility = if (model.rank.progress == 100) View.GONE else View.VISIBLE
+    fun rankTextAutoHide(view: TextView, value: Int) {
+        view.visibility = if (value == 0 || value == 100) View.GONE else View.VISIBLE
     }
 
     /**
@@ -78,7 +78,7 @@ object RankModelAdapter {
     private fun darkenColor(@ColorInt color: Int): Int {
         return Color.HSVToColor(FloatArray(3).apply {
             Color.colorToHSV(color, this)
-            this[2] *= 0.8f
+            this[2] *= 0.7f
         })
     }
 
