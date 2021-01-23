@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="default_padding">4dp</dimen>
     <dimen name="margin_medium">8dp</dimen>
     <dimen name="margin_large">16dp</dimen>
     <dimen name="margin_small">4dp</dimen>
 
-    <dimen name="item_statistic_height">50dp</dimen>
-    <dimen name="img_rank_faction_size">110dp</dimen>
     <dimen name="img_rank_player_size">70dp</dimen>
 
 </resources>

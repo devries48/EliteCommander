@@ -2,7 +2,7 @@ package com.devries48.elitecommander.network
 
 
 import android.content.Context
-import com.devries48.elitecommander.events.DistanceSearch
+import com.devries48.elitecommander.events.DistanceSearchEvent
 import com.devries48.elitecommander.models.DistanceResponse
 import com.devries48.elitecommander.network.retrofit.EDApiRetrofit
 import com.devries48.elitecommander.network.retrofit.RetrofitSingleton
@@ -35,8 +35,8 @@ object DistanceCalculatorNetwork {
                     }
                     onFailure(call, Exception(msg ))
                 } else {
-                    val distanceSearch: DistanceSearch = try {
-                        DistanceSearch(
+                    val distanceSearch: DistanceSearchEvent = try {
+                        DistanceSearchEvent(
                             true,
                             body.distance,
                             body.fromSystem!!.name!!,
@@ -45,7 +45,7 @@ object DistanceCalculatorNetwork {
                             body.toSystem!!.permitRequired
                         )
                     } catch (ex: Exception) {
-                        DistanceSearch(
+                        DistanceSearchEvent(
                             false,0f, "",
                             "", startPermitRequired = false, endPermitRequired = false
                         )
@@ -57,7 +57,7 @@ object DistanceCalculatorNetwork {
             @EverythingIsNonNull
             override fun onFailure(call: Call<DistanceResponse?>, t: Throwable) {
                 val success= t.message=="400"  // newly discovered system, not added to eddb (yet!)
-                val distanceSearch = DistanceSearch(
+                val distanceSearch = DistanceSearchEvent(
                     success, 0f, "",
                     "", startPermitRequired = false, endPermitRequired = false
                 )

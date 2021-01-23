@@ -262,7 +262,7 @@ class FrontierJournal {
         return null
     }
 
-    private class RawEvent(private var value: String) {
+    private class RawEvent(value: String) {
         var event: String
         val json: JsonObject = JsonParser.parseString("{$value}").asJsonObject
 

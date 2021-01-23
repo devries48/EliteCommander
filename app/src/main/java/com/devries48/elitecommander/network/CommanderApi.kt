@@ -68,11 +68,11 @@ class CommanderApi(ctx: Context) {
                     val frontierProfileEvent: FrontierProfileEvent
 
                     try {
-                        // Position
                         val commanderName: String = profileResponse.commander?.name!!
                         val credits: Long = profileResponse.commander?.credits!!
                         val debt: Long = profileResponse.commander?.debt!!
                         val systemName = profileResponse.lastSystem?.name!!
+                        val hull= profileResponse.ship?.health?.hull!!
 
                         frontierProfileEvent = profileResponse.commander?.let {
                             FrontierProfileEvent(
@@ -80,15 +80,14 @@ class CommanderApi(ctx: Context) {
                                 commanderName,
                                 credits,
                                 debt,
-                                systemName
+                                systemName,
+                                hull
                             )
                         }!!
                         sendResultMessage(frontierProfileEvent)
 
                         // FrontierFleetEvent
-                        if (rawResponse != null) {
-                            handleFleetParsing(this@CommanderApi, rawResponse)
-                        }
+                        if (rawResponse != null) handleFleetParsing(this@CommanderApi, rawResponse)
                     } catch (ex: Exception) {
                         onFailure(call, Exception("Invalid response"))
                     }
@@ -96,7 +95,7 @@ class CommanderApi(ctx: Context) {
             }
 
             override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
-                val pos = FrontierProfileEvent(false, "", 0, 0, "")
+                val pos = FrontierProfileEvent(false, "", 0, 0, "", 0)
                 val ranks = FrontierRanksEvent(
                     false, null, null,
                     null, null, null, null
@@ -138,7 +137,7 @@ class CommanderApi(ctx: Context) {
             }
 
             override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
-                val pos = FrontierProfileEvent(false, "", 0, 0, "")
+                val pos = FrontierProfileEvent(false, "", 0, 0, "", 0)
                 val fleet = FrontierFleetEvent(false, ArrayList())
                 sendResultMessage(pos)
                 sendResultMessage(fleet)

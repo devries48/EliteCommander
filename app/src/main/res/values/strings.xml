@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Elite Commander</string>
-    <string name="settings_cmdr_username">CMDR name</string>
     <string name="cmdr">CMDR %s</string>
 
     <!--URLs-->
@@ -107,7 +106,6 @@
         <item>Admiral</item>
     </string-array>
 
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="format_percentage">%1$s%%</string>
     <string name="empty_string" />
     <string name="Credits">Credits</string>
@@ -115,5 +113,6 @@
     <string name="CurrentShip">Current ship</string>
     <string name="AssetsValue">Assets</string>
     <string name="distance_sol">Distance to Sol</string>
+    <string name="hull">hull</string>
 
 </resources>

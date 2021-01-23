@@ -8,7 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.devries48.elitecommander.R
-import com.devries48.elitecommander.events.DistanceSearch
+import com.devries48.elitecommander.events.DistanceSearchEvent
 import com.devries48.elitecommander.events.FrontierFleetEvent
 import com.devries48.elitecommander.events.FrontierProfileEvent
 import com.devries48.elitecommander.events.FrontierRanksEvent
@@ -66,6 +66,18 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
         mName.value = profileEvent.name
         setMainStatistic(R.string.CurrentLocation, profileEvent.systemName)
         commanderApi?.getDistanceToSol(profileEvent.systemName)
+
+        // Hull damage
+
+        val hullPercentage:Int=profileEvent.hull/10000
+
+        setMainStatisticRight(
+            R.string.CurrentShip,
+            R.string.hull,
+            "$hullPercentage%",
+            R.style.eliteStyle_LightOrangeText
+        )
+
 
         // Check error case
         if (profileEvent.balance == -1L) {
@@ -157,7 +169,7 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onDistanceSearch(distanceSearch: DistanceSearch) {
+    fun onDistanceSearch(distanceSearch: DistanceSearchEvent) {
         if (!distanceSearch.success) {
             //NotificationsUtils.displayGenericDownloadErrorSnackbar(getActivity()) TODO: Error Handling
             return

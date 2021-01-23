@@ -52,7 +52,7 @@ object RankModelAdapter {
     }
 
     /**
-     * Binding Adapter to hide a view if the number is hundred.
+     * Binding Adapter to hide a view if the number is zero or hundred.
      */
     @BindingAdapter("android:rankTextAutoHide")
     @JvmStatic

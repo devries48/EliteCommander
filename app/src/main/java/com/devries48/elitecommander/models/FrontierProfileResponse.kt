@@ -9,6 +9,9 @@ class FrontierProfileResponse {
     @SerializedName("lastSystem")
     var lastSystem: FrontierProfileSystemResponse? = null
 
+    @SerializedName("ship")
+    var ship: FrontierProfileShipResponse? = null
+
     inner class FrontierProfileCommanderResponse {
         @SerializedName("name")
         var name: String? = null
@@ -59,4 +62,18 @@ class FrontierProfileResponse {
         @SerializedName("name")
         var name: String? = null
     }
+
+    inner class FrontierProfileShipResponse {
+        @SerializedName("shipID")
+        var shipID: String? = null
+
+        @SerializedName("health")
+        var health: FrontierProfileShipHealthResponse? = null
+    }
+
+    inner class FrontierProfileShipHealthResponse {
+        @SerializedName("hull")
+        var hull: Int = 0
+    }
+
 }
