@@ -11,14 +11,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.devries48.elitecommander.R
 import com.devries48.elitecommander.adapters.StatisticsRecyclerAdapter
-import com.devries48.elitecommander.databinding.CommanderFragmentBinding
+import com.devries48.elitecommander.databinding.FragmentCommanderBinding
 import com.devries48.elitecommander.network.CommanderApi
-
 
 class CommanderFragment : Fragment() {
 
     private lateinit var mViewModel: CommanderViewModel
-    private lateinit var mBinding: CommanderFragmentBinding
+    private lateinit var mBinding: FragmentCommanderBinding
     private lateinit var mAdapter: StatisticsRecyclerAdapter
 
     // This property is only valid between onCreateView and  onDestroyView.
@@ -35,12 +34,13 @@ class CommanderFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         mBinding = DataBindingUtil.inflate(
             inflater,
-            R.layout.commander_fragment, container, false
+            R.layout.fragment_commander, container, false
         )
         mBinding.viewModel = mViewModel
         mBinding.lifecycleOwner = this
@@ -64,8 +64,8 @@ class CommanderFragment : Fragment() {
                     mAdapter.updateList(stats)
                 }
             })
-
     }
+
 }
 
 
