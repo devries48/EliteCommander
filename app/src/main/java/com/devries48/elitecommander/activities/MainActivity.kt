@@ -24,10 +24,8 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
-        navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navController = getNavController()
 
-        navController = navHostFragment.navController
         navController.addOnDestinationChangedListener { _, destination, _ ->
             navDestinationId = destination.id
 
@@ -35,7 +33,7 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(this@MainActivity, LoginActivity::class.java)
                 startActivityForResult(intent, FRONTIER_LOGIN_REQUEST_CODE)
             } else {
-                if (navDestinationId == R.id.mainFragment){
+                if (navDestinationId == R.id.mainFragment) {
                     navDestinationId = R.id.action_main_to_commander
                     navController.navigate(navDestinationId)
                 }
@@ -43,6 +41,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         detector = GestureDetectorCompat(this, NavigationGestureListener())
+    }
+
+    private fun getNavController(): NavController {
+        val navHostFragment: NavHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        return navHostFragment.navController
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -115,11 +119,6 @@ class MainActivity : AppCompatActivity() {
         storeUpdatedTokens(this, "", "")
     }
 
-    private fun onSwipeTopToBottom() {
-        if (navDestinationId == R.id.discoveriesFragment)
-            doNavigate(R.id.action_discoveries_to_commander)
-    }
-
     private fun onSwipeBottomToTop() {
         when (navDestinationId) {
             R.id.action_main_to_commander, R.id.commanderFragment -> doNavigate(R.id.action_commander_to_discoveries)
@@ -134,23 +133,26 @@ class MainActivity : AppCompatActivity() {
         Toast.makeText(this, "Right to left Swipe", Toast.LENGTH_LONG).show()
     }
 
+    private fun onSwipeTopToBottom() {
+        if (navDestinationId == R.id.discoveriesFragment)
+            doNavigate(R.id.action_discoveries_to_commander)
+    }
+
+    private fun doNavigate(destinationId: Int) {
+        navDestinationId = destinationId
+        val navController = getNavController()
+        navController.navigate(destinationId)
+    }
+
     companion object {
         private const val FRONTIER_LOGIN_REQUEST_CODE = 999
         private const val SWIPE_THRESHOLD = 100
         private const val SWIPE_VELOCITY_THRESHOLD = 100
 
-        private lateinit var navController: NavController
-        private lateinit var navHostFragment: NavHostFragment
         private lateinit var detector: GestureDetectorCompat
 
         var isUserLoggedIn = true
         private var navDestinationId: Int = 0
-
-
-        private fun doNavigate(destinationId: Int) {
-            navDestinationId = destinationId
-            navController.navigate(destinationId)
-        }
 
     }
 

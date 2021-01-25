@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.devries48.elitecommander.fragments
 
 import android.os.Bundle

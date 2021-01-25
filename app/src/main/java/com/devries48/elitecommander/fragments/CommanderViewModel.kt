@@ -47,7 +47,7 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
 //        println("COMMANDER STATS" + (stats?.bankAccount?.currentWealth ?: ""))
 
         commanderApi?.loadProfile()
-        commanderApi?.loadJournal()
+        commanderApi?.loadRanks()
     }
 
     override fun onCleared() {
