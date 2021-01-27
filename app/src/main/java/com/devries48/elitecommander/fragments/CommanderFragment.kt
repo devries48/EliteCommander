@@ -26,7 +26,7 @@ class CommanderFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val api = context?.let { CommanderApi(it) }
+        val api = context?.let { CommanderApi() }
         mViewModel = ViewModelProvider(
             this,
             CommanderViewModelFactory(api)

@@ -12,7 +12,7 @@ import com.devries48.elitecommander.events.DistanceSearchEvent
 import com.devries48.elitecommander.events.FrontierFleetEvent
 import com.devries48.elitecommander.events.FrontierProfileEvent
 import com.devries48.elitecommander.events.FrontierRanksEvent
-import com.devries48.elitecommander.models.EliteStatistic
+import com.devries48.elitecommander.models.EliteStatisticModel
 import com.devries48.elitecommander.models.RankModel
 import com.devries48.elitecommander.network.CommanderApi
 import com.devries48.elitecommander.utils.NamingUtils
@@ -33,8 +33,8 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
     val federationRank: LiveData<RankModel> = mFederationRank
     val empireRank: LiveData<RankModel> = mEmpireRank
 
-    internal fun getMainStatistics(): LiveData<List<EliteStatistic>> {
-        return mMainStatistics as MutableLiveData<List<EliteStatistic>>
+    internal fun getMainStatistics(): LiveData<List<EliteStatisticModel>> {
+        return mMainStatistics as MutableLiveData<List<EliteStatisticModel>>
     }
 
     init {
@@ -43,7 +43,7 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
 
 //        val journals = FrontierJournal()
 //        journals.parseResponse("")
-//        var stats: FrontierJournalStatistics? = journals.getStatistics()
+//        var stats: FrontierJournalStatisticsResponse? = journals.getStatistics()
 //        println("COMMANDER STATS" + (stats?.bankAccount?.currentWealth ?: ""))
 
         commanderApi?.loadProfile()
@@ -253,8 +253,8 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
                 )
             )
 
-        private var mMainStatistics: MutableLiveData<List<EliteStatistic>>? = null
-        private val mMainStatisticsList = ArrayList<EliteStatistic>()
+        private var mMainStatistics: MutableLiveData<List<EliteStatisticModel>>? = null
+        private val mMainStatisticsList = ArrayList<EliteStatisticModel>()
 
         private fun currencyFormat(amount: Long): String {
             val formatter = DecimalFormat("###,###,###,###")
@@ -270,17 +270,17 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
             if (mMainStatistics == null) {
                 mMainStatistics = MutableLiveData()
 
-                mMainStatisticsList.add(EliteStatistic(R.string.Credits))
-                mMainStatisticsList.add(EliteStatistic(R.string.AssetsValue))
-                mMainStatisticsList.add(EliteStatistic(R.string.CurrentLocation))
-                mMainStatisticsList.add(EliteStatistic(R.string.CurrentShip))
+                mMainStatisticsList.add(EliteStatisticModel(R.string.Credits))
+                mMainStatisticsList.add(EliteStatisticModel(R.string.AssetsValue))
+                mMainStatisticsList.add(EliteStatisticModel(R.string.CurrentLocation))
+                mMainStatisticsList.add(EliteStatisticModel(R.string.CurrentShip))
 
                 mMainStatistics!!.value = mMainStatisticsList
             }
         }
 
         private fun setMainStatistic(@StringRes stringRes: Int, value: String) {
-            val stat: EliteStatistic? = mMainStatisticsList.find { it.stringRes == stringRes }
+            val stat: EliteStatisticModel? = mMainStatisticsList.find { it.stringRes == stringRes }
             if (stat != null) {
                 stat.value = value
                 mMainStatistics!!.postValue(mMainStatisticsList)
@@ -293,7 +293,7 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
             rightValue: String,
             @StyleRes rightValueStyleRes: Int
         ) {
-            val stat: EliteStatistic? = mMainStatisticsList.find { it.stringRes == nameRes }
+            val stat: EliteStatisticModel? = mMainStatisticsList.find { it.stringRes == nameRes }
             if (stat != null) {
                 stat.rightValue = rightValue
                 stat.rightStringRes = rightStringRes

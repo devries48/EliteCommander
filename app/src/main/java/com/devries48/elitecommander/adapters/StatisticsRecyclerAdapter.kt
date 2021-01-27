@@ -7,9 +7,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.devries48.elitecommander.R
-import com.devries48.elitecommander.models.EliteStatistic
+import com.devries48.elitecommander.models.EliteStatisticModel
 
-class StatisticsRecyclerAdapter(var data: List<EliteStatistic>) :
+class StatisticsRecyclerAdapter(var data: List<EliteStatisticModel>) :
     RecyclerView.Adapter<StatisticsRecyclerAdapter.ViewHolder>() {
 
     /**
@@ -54,7 +54,7 @@ class StatisticsRecyclerAdapter(var data: List<EliteStatistic>) :
         }
     }
 
-    fun updateList(stats: List<EliteStatistic>) {
+    fun updateList(stats: List<EliteStatisticModel>) {
         data = stats
         notifyDataSetChanged()
     }

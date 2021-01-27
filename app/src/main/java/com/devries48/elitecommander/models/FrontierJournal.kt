@@ -2,12 +2,16 @@ package com.devries48.elitecommander.models
 
 import android.content.Context
 import com.devries48.elitecommander.R
+import com.devries48.elitecommander.events.FrontierDiscoveriesEvent
+import com.devries48.elitecommander.events.FrontierDiscovery
+import com.devries48.elitecommander.events.FrontierDiscoverySummary
 import com.devries48.elitecommander.events.FrontierRanksEvent
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.google.gson.annotations.SerializedName
 
+//TODO: Cache result and cleanup rawevents
 class FrontierJournal {
 
     fun parseResponse(response: String) {
@@ -140,7 +144,7 @@ class FrontierJournal {
   "Count": 3
 }{
   "timestamp": "2021-01-17T20:30:28Z",
-  "event": "CodexEntry",
+  "event": "com.devries48.elitecommander.models.CodexEntry",
   "EntryID": 1400158,
   "Name": "${"$"}Codex_Ent_IceFumarole_WaterGeysers_Name;",
   "Name_Localised": "Water Ice Fumarole",
@@ -160,6 +164,71 @@ class FrontierJournal {
   "Category": "Raw",
   "Name": "carbon",
   "Count": 3
+}{
+  "timestamp": "2021-01-17T18:39:38Z",
+  "event": "SAAScanComplete",
+  "BodyName": "Dryoi Pri RX-W c4-3053 A 3",
+  "SystemAddress": 839285968151338,
+  "BodyID": 10,
+  "ProbesUsed": 6,
+  "EfficiencyTarget": 7
+}{
+  "timestamp": "2021-01-17T18:39:38Z",
+  "event": "Scan",
+  "ScanType": "Detailed",
+  "BodyName": "Dryoi Pri RX-W c4-3053 A 3",
+  "BodyID": 10,
+  "Parents": [
+    {
+      "Star": 1
+    },
+    {
+      "Null": 0
+    }
+  ],
+  "StarSystem": "Dryoi Pri RX-W c4-3053",
+  "SystemAddress": 839285968151338,
+  "DistanceFromArrivalLS": 590.434062,
+  "TidalLock": false,
+  "TerraformState": "",
+  "PlanetClass": "Water world",
+  "Atmosphere": "thick ammonia atmosphere",
+  "AtmosphereType": "Ammonia",
+  "AtmosphereComposition": [
+    {
+      "Name": "Ammonia",
+      "Percent": 72.842499
+    },
+    {
+      "Name": "Nitrogen",
+      "Percent": 24.443935
+    },
+    {
+      "Name": "Oxygen",
+      "Percent": 2.058566
+    }
+  ],
+  "Volcanism": "major silicate vapour geysers volcanism",
+  "MassEM": 4.213881,
+  "Radius": 9167464.000000,
+  "SurfaceGravity": 19.984497,
+  "SurfaceTemperature": 417.059662,
+  "SurfacePressure": 2600109.750000,
+  "Landable": false,
+  "Composition": {
+    "Ice": 0.000000,
+    "Rock": 0.666857,
+    "Metal": 0.333143
+  },
+  "SemiMajorAxis": 177566951513.290405,
+  "Eccentricity": 0.003189,
+  "OrbitalInclination": -0.104025,
+  "Periapsis": 358.897498,
+  "OrbitalPeriod": 45037426.948547,
+  "RotationPeriod": 48507.512126,
+  "AxialTilt": 0.318841,
+  "WasDiscovered": false,
+  "WasMapped": false
 }{
   "timestamp": "2021-01-17T20:32:16Z",
   "event": "DockSRV",
@@ -187,7 +256,8 @@ class FrontierJournal {
         // Couldn't get RegEx working here (worked on Kotlin Playground ...
         // ... So fix the response by removing the first and last curly brace
         response1.trim().drop(1).dropLast(1).split("}{").map {
-            mRawEvents.add(RawEvent(it.trim()))
+            val raw = RawEvent(it.trim())
+            if (raw.event !in mIgnoreEvents) mRawEvents.add(raw)
         }
         println("Journal events present: " + mRawEvents.size)
     }
@@ -201,9 +271,9 @@ class FrontierJournal {
                 throw error("Error parsing rank events from journal")
             }
 
-            val rank = Gson().fromJson(rawRank.json, FrontierJournalRank::class.java)
+            val rank = Gson().fromJson(rawRank.json, FrontierJournalRankResponse::class.java)
             val progress =
-                Gson().fromJson(rawProgress.json, FrontierJournalRankProgress::class.java)
+                Gson().fromJson(rawProgress.json, FrontierJournalRankProgressResponse::class.java)
 
             val combatRank = FrontierRanksEvent.FrontierRank(
                 context.resources.getStringArray(R.array.ranks_combat)[rank.combat],
@@ -246,20 +316,144 @@ class FrontierJournal {
                 false, null, null,
                 null, null, null, null
             )
-
         }
     }
 
-    fun getStatistics(): FrontierJournalStatistics? {
+    fun getCurrentDiscoveries(): FrontierDiscoveriesEvent {
+        try {
+            val rawDiscoveries = mRawEvents.filter { it.event == JOURNAL_EVENT_DISCOVERY }
+            val rawMappings = mRawEvents.filter { it.event == JOURNAL_EVENT_MAP }
+
+            if (rawDiscoveries.count() == 0) {
+                return FrontierDiscoveriesEvent(true,null,null)
+            }
+
+            val discoveries = mutableListOf<Discovery>()
+            val mappings = mutableListOf<Mapping>()
+
+            // Format mappings, so it can be merged into the FrontierDiscovery class
+            if (rawMappings.count() > 0) {
+                rawMappings.forEach {
+                    mappings.add(Gson().fromJson(it.json, Mapping::class.java))
+                }
+            }
+
+            val summary = FrontierDiscoverySummary(0, 0, 0, 0, 0, 0, 0,0,0)
+
+            rawDiscoveries.forEach { d ->
+
+                val discovery = Gson().fromJson(d.json, Discovery::class.java)
+                val map = mappings.firstOrNull {
+                    it.systemAddress == discovery.systemAddress && it.bodyID == discovery.bodyID
+                }
+
+                val addMapCount = 0
+                val addBonusCount = 0
+                val addFirstDiscovered = 0
+                val addFirstMapped = 0
+                var addProbeCount = 0
+
+                if (map != null) {
+                    addMapCount.inc()
+                    addProbeCount += map.probesUsed
+
+                    if (map.efficiencyTarget >= map.probesUsed)
+                        addBonusCount.inc()
+                }
+
+                if (!discovery.wasMapped) addFirstMapped.inc()
+                if (!discovery.wasDiscovered) addFirstDiscovered.inc()
+
+                var currentDiscovery = discoveries.firstOrNull { it.name == discovery.name }
+                if (currentDiscovery == null) {
+                    currentDiscovery = Discovery(
+                        discovery.systemAddress,
+                        discovery.bodyID,
+                        discovery.name,
+                        discovery.wasDiscovered,
+                        discovery.wasMapped,
+                        1,
+                        addMapCount,
+                        addBonusCount,
+                        addFirstDiscovered,
+                        addFirstMapped
+                    )
+                    discoveries.add(currentDiscovery)
+                }
+
+                currentDiscovery.discoveryCount.inc()
+                currentDiscovery.mappedCount.plus(addMapCount)
+                currentDiscovery.bonusCount.plus(addBonusCount)
+                currentDiscovery.firstDiscoveredCount.plus(addBonusCount)
+                currentDiscovery.firstMappedCount.plus(addBonusCount)
+
+                summary.DiscoveryTotal.inc()
+                summary.MappedTotal.plus(addMapCount)
+                summary.efficiencyBonusTotal.plus(addBonusCount)
+                summary.firstDiscoveryTotal.plus(addFirstDiscovered)
+                summary.firstMappedTotal.plus(addFirstDiscovered)
+            }
+
+            return FrontierDiscoveriesEvent(
+                true,
+                summary,
+                discoveries.map { (_, _, name, _, _, discoveryCount, mapCount, bonusCount, firstDiscoveredCount, firstMappedCount) ->
+                    FrontierDiscovery(
+                        name,
+                        discoveryCount,
+                        mapCount,
+                        bonusCount,
+                        firstDiscoveredCount,
+                        firstMappedCount,
+                    )
+                })
+//            return FrontierRanksEvent(
+//                true, combatRank, tradeRank, exploreRank,
+//                cqcRank, federationRank, empireRank
+//            )
+
+        } catch (e: Exception) {
+            println("LOG: Error parsing discovery events from journal." + e.message)
+            return FrontierDiscoveriesEvent(false,null,null)
+        }
+
+    }
+
+    private data class Discovery(
+        val systemAddress: Long,
+        val bodyID: Int,
+        val name: String,
+        val wasDiscovered: Boolean,
+        val wasMapped: Boolean,
+        var discoveryCount: Int,
+        var mappedCount: Int,
+        var bonusCount: Int,
+        var firstDiscoveredCount: Int,
+        var firstMappedCount: Int
+    )
+
+    private data class Mapping(
+        val systemAddress: Long,
+        val bodyID: Int,
+        val efficiencyTarget: Int,
+        val probesUsed: Int
+    )
+
+
+    fun getStatistics(): FrontierJournalStatisticsResponse? {
         val event = mRawEvents.firstOrNull { it.event == JOURNAL_EVENT_STATISTICS }
 
         if (event != null) {
             return Gson().fromJson(
                 event.json,
-                FrontierJournalStatistics::class.java
+                FrontierJournalStatisticsResponse::class.java
             )
         }
         return null
+    }
+
+    fun getCodexEntries() {
+
     }
 
     private class RawEvent(value: String) {
@@ -273,21 +467,47 @@ class FrontierJournal {
     }
 
     companion object {
-        const val JOURNAL_EVENT_STATISTICS = "Statistics"
+        private const val JOURNAL_EVENT_STATISTICS = "Statistics"
         private const val JOURNAL_EVENT_RANK = "Rank"
         private const val JOURNAL_EVENT_PROGRESS = "Progress"
+        private const val JOURNAL_EVENT_DISCOVERY = "Scan"
+        private const val JOURNAL_EVENT_MAP = "SAAScanComplete"
+
+        var mIgnoreEvents =
+            arrayOf(
+                "Commander",
+                "Materials",
+                "LoadGame",
+                "LoadGame",
+                "EngineerProgress",
+                "Location",
+                "Powerplay",
+                "Music",
+                "Touchdown",
+                "Missions",
+                "Loadout",
+                "SAASignalsFound",
+                "Cargo",
+                "Liftoff",
+                "ReservoirReplenished",
+                "NavRoute",
+                "FSDTarget",  // RemainingJumpsInRoute (multiple)
+                "StartJump",
+                "SupercruiseEntry",
+                "LeaveBody",
+                "FSDJump",
+                "FSSDiscoveryScan",
+                "FSSAllBodiesFound",
+                "FuelScoop"
+            )
 
         private val mRawEvents: MutableList<RawEvent> = ArrayList()
-
-
     }
 }
 
 abstract class FrontierJournalBase
 
-class FrontierJournalCommander : FrontierJournalBase()
-
-class FrontierJournalStatistics : FrontierJournalBase() {
+class FrontierJournalStatisticsResponse : FrontierJournalBase() {
     @SerializedName("Bank_Account")
     var bankAccount: BankAccount? = null
 
@@ -368,45 +588,5 @@ class FrontierJournalStatistics : FrontierJournalBase() {
         @SerializedName("Highest_Single_Transaction")
         var highestSingleTransaction: Long = 0
     }
-}
-
-class FrontierJournalRank : FrontierJournalBase() {
-    @SerializedName("Combat")
-    var combat: Int = 0
-
-    @SerializedName("Trade")
-    var trade: Int = 0
-
-    @SerializedName("Explore")
-    var explore: Int = 0
-
-    @SerializedName("Empire")
-    var empire: Int = 0
-
-    @SerializedName("Federation")
-    var federation: Int = 0
-
-    @SerializedName("CQC")
-    var cqc: Int = 0
-}
-
-class FrontierJournalRankProgress : FrontierJournalBase() {
-    @SerializedName("Combat")
-    var combat: Int = 0
-
-    @SerializedName("Trade")
-    var trade: Int = 0
-
-    @SerializedName("Explore")
-    var explore: Int = 0
-
-    @SerializedName("Empire")
-    var empire: Int = 0
-
-    @SerializedName("Federation")
-    var federation: Int = 0
-
-    @SerializedName("CQC")
-    var cqc: Int = 0
 }
 

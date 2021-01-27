@@ -1,6 +1,8 @@
 package com.devries48.elitecommander.network
 
-import android.content.Context
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
+import com.devries48.elitecommander.App
 import com.devries48.elitecommander.events.FrontierFleetEvent
 import com.devries48.elitecommander.events.FrontierProfileEvent
 import com.devries48.elitecommander.events.FrontierRanksEvent
@@ -22,23 +24,21 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class CommanderApi(ctx: Context) {
+// TODO: https://stackoverflow.com/questions/43233025/use-retrofit-methods-more-expressive-way
 
-    private var mContext: Context = ctx
+class CommanderApi {
+
     private var mFrontierRetrofit: FrontierRetrofit? = null
     private var mEdApiRetrofit: EDApiRetrofit? = null
-
-    private val mSyncJournalObject = Object()
-    private var mJournalParsed:Boolean=false
-
+    private var mIsJournalParsed = MutableLiveData<Boolean>()
     private lateinit var mJournal: FrontierJournal
 
     init {
         mFrontierRetrofit = RetrofitSingleton.getInstance()
-            ?.getFrontierRetrofit(mContext.applicationContext)
+            ?.getFrontierRetrofit(App.getContext())
 
         mEdApiRetrofit = RetrofitSingleton.getInstance()
-            ?.getEdApiRetrofit(mContext.applicationContext)
+            ?.getEdApiRetrofit(App.getContext())
     }
 
     fun loadProfile() {
@@ -47,7 +47,7 @@ class CommanderApi(ctx: Context) {
                 call: Call<ResponseBody?>,
                 @NotNull response: Response<ResponseBody?>
             ) {
-                if (response.code() !=200){
+                if (response.code() != 200) {
                     println("LOG: Error getting profile response - " + response.message())
                     return
                 }
@@ -77,7 +77,7 @@ class CommanderApi(ctx: Context) {
                         val credits: Long = profileResponse.commander?.credits!!
                         val debt: Long = profileResponse.commander?.debt!!
                         val systemName = profileResponse.lastSystem?.name!!
-                        val hull= profileResponse.ship?.health?.hull!!
+                        val hull = profileResponse.ship?.health?.hull!!
 
                         frontierProfileEvent = profileResponse.commander?.let {
                             FrontierProfileEvent(
@@ -114,41 +114,40 @@ class CommanderApi(ctx: Context) {
         mFrontierRetrofit?.profileRaw?.enqueue(callback)
     }
 
-
     /**
      *  - Loads ranks from journal,capture FrontierRanksEvent for the result.
      */
-    fun loadRanks(){
-        try {
-            synchronized(mSyncJournalObject) {
-                while(! mJournalParsed) {
-                    mSyncJournalObject.wait()
+    fun loadRanks() {
+        if (mIsJournalParsed.value != true) {
+            val observer: Observer<Boolean> = Observer<Boolean> { value ->
+                if (value == true) {
+                    sendResultMessage(mJournal.getRanks(App.getContext()))
+                    return@Observer
                 }
-                loadJournal()
             }
-        } catch (e:InterruptedException) {
-            // TODO: handleInterruption();
+            mIsJournalParsed.observeForever(observer)
+            parseJournal()
+        } else {
+            sendResultMessage(mJournal.getRanks(App.getContext()))
         }
-        sendResultMessage(mJournal.getRanks(mContext))
     }
 
     fun getDistanceToSol(systemName: String?) {
-        DistanceCalculatorNetwork.getDistance(mContext, "Sol", systemName)
+        DistanceCalculatorNetwork.getDistance(App.getContext(), "Sol", systemName)
     }
 
-
-    private fun loadJournal() {
+    private fun parseJournal() {
         val callback: Callback<ResponseBody?> = object : Callback<ResponseBody?> {
             override fun onResponse(
                 call: Call<ResponseBody?>,
                 @NotNull response: Response<ResponseBody?>
             ) {
-                if (response.code() !=200){
+                if (response.code() != 200) {
                     println("LOG: Error getting journal response - " + response.message())
                     return
                 }
 
-                 mJournal = FrontierJournal()
+                mJournal = FrontierJournal()
 
                 try {
                     val responseString: String? = response.body()?.string()
@@ -157,11 +156,7 @@ class CommanderApi(ctx: Context) {
                     println("LOG: Error parsing journal response - " + e.message)
                     return
                 }
-
-                synchronized(mSyncJournalObject) {
-                    mJournalParsed=true
-                    mSyncJournalObject.notify()
-                }
+                mIsJournalParsed.postValue(true)
             }
 
             override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
@@ -171,8 +166,7 @@ class CommanderApi(ctx: Context) {
                 sendResultMessage(fleet)
             }
         }
-        mFrontierRetrofit?.journalRaw?.enqueue(callback)
-
+        if (mIsJournalParsed.value == true) mFrontierRetrofit?.journalRaw?.enqueue(callback)
     }
 
     private fun handleFleetParsing(commanderApi: CommanderApi, rawProfileResponse: JsonObject) {
