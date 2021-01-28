@@ -7,13 +7,13 @@ data class FrontierDiscoveriesEvent(
 )
 
 data class FrontierDiscoverySummary(
-    val DiscoveryTotal: Int,
-    val MappedTotal: Int,
+    var DiscoveryTotal: Int,
+    var MappedTotal: Int,
     val WasDiscovered: Int,
     val wasMapped: Int,
-    val efficiencyBonusTotal:Int,
-    val firstDiscoveryTotal:Int,
-    val firstMappedTotal: Int,
+    var efficiencyBonusTotal:Int,
+    var firstDiscoveryTotal:Int,
+    var firstMappedTotal: Int,
     val probesUsedTotal: Int
 )
 

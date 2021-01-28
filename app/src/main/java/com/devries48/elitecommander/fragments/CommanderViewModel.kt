@@ -8,10 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.devries48.elitecommander.R
-import com.devries48.elitecommander.events.DistanceSearchEvent
-import com.devries48.elitecommander.events.FrontierFleetEvent
-import com.devries48.elitecommander.events.FrontierProfileEvent
-import com.devries48.elitecommander.events.FrontierRanksEvent
+import com.devries48.elitecommander.events.*
 import com.devries48.elitecommander.models.EliteStatisticModel
 import com.devries48.elitecommander.models.RankModel
 import com.devries48.elitecommander.network.CommanderApi
@@ -40,14 +37,6 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
     init {
         EventBus.getDefault().register(this)
         loadMainStatistics()
-
-//        val journals = FrontierJournal()
-//        journals.parseResponse("")
-//        var stats: FrontierJournalStatisticsResponse? = journals.getStatistics()
-//        println("COMMANDER STATS" + (stats?.bankAccount?.currentWealth ?: ""))
-
-        commanderApi?.loadProfile()
-        commanderApi?.loadRanks()
     }
 
     override fun onCleared() {
@@ -77,7 +66,6 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
             "$hullPercentage%",
             R.style.eliteStyle_LightOrangeText
         )
-
 
         // Check error case
         if (profileEvent.balance == -1L) {
@@ -190,6 +178,11 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
                 R.style.eliteStyle_LightOrangeText
             )
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onCurrentDiscoveries(discoveries: FrontierDiscoveriesEvent) {
+        println(discoveries)
     }
 
     companion object {
@@ -310,4 +303,5 @@ class CommanderViewModelFactory(private val api: CommanderApi?) :
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T = CommanderViewModel(api) as T
 }
+
 

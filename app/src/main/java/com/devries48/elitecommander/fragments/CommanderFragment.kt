@@ -6,32 +6,21 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.devries48.elitecommander.R
 import com.devries48.elitecommander.adapters.StatisticsRecyclerAdapter
 import com.devries48.elitecommander.databinding.FragmentCommanderBinding
-import com.devries48.elitecommander.network.CommanderApi
 
 class CommanderFragment : Fragment() {
 
-    private lateinit var mViewModel: CommanderViewModel
+    private val mViewModel: CommanderViewModel by navGraphViewModels(R.id.nav_graph)
     private lateinit var mBinding: FragmentCommanderBinding
     private lateinit var mAdapter: StatisticsRecyclerAdapter
 
     // This property is only valid between onCreateView and  onDestroyView.
     private val binding get() = mBinding
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        val api = context?.let { CommanderApi() }
-        mViewModel = ViewModelProvider(
-            this,
-            CommanderViewModelFactory(api)
-        ).get(CommanderViewModel::class.java)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

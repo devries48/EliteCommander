@@ -119,8 +119,9 @@ class CommanderApi {
 
     /**
      *  - Loads ranks from journal,capture FrontierRanksEvent for the result.
+     *  - Loads discoveries from journal, capture FrontierDiscoveriesEvent for the result.
      */
-    fun loadRanks() {
+    fun loadJournal() {
         if (!isParsing && mIsJournalParsed.value != true) {
             isParsing=true
 
@@ -128,6 +129,8 @@ class CommanderApi {
             observer = Observer<Boolean> { value ->
                 if (value == true) {
                     sendResultMessage(mJournal.getRanks(App.getContext()))
+                    sendResultMessage(mJournal.getCurrentDiscoveries())
+
                     mIsJournalParsed.removeObserver(observer)
                     isParsing=false
                     return@Observer
@@ -137,10 +140,9 @@ class CommanderApi {
             parseJournal()
         } else {
             sendResultMessage(mJournal.getRanks(App.getContext()))
+            sendResultMessage(mJournal.getCurrentDiscoveries())
         }
     }
-
-
 
     fun getDistanceToSol(systemName: String?) {
         DistanceCalculatorNetwork.getDistance(App.getContext(), "Sol", systemName)
@@ -170,10 +172,7 @@ class CommanderApi {
             }
 
             override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
-                val pos = FrontierProfileEvent(false, "", 0, 0, "", 0)
-                val fleet = FrontierFleetEvent(false, ArrayList())
-                sendResultMessage(pos)
-                sendResultMessage(fleet)
+                println("LOG: Response failure - " + t.message)
             }
         }
         mFrontierRetrofit?.journalRaw?.enqueue(callback)
@@ -228,5 +227,6 @@ class CommanderApi {
     private fun sendResultMessage(data: Any?) {
         EventBus.getDefault().post(data)
     }
+
 
 }

@@ -343,68 +343,66 @@ class FrontierJournal {
             rawDiscoveries.forEach { d ->
 
                 val discovery = Gson().fromJson(d.json, Discovery::class.java)
+                if (discovery.planetClass.isEmpty()) discovery.planetClass = "Asteroid Belt"
+
                 val map = mappings.firstOrNull {
                     it.systemAddress == discovery.systemAddress && it.bodyID == discovery.bodyID
                 }
 
-                val addMapCount = 0
-                val addBonusCount = 0
-                val addFirstDiscovered = 0
-                val addFirstMapped = 0
+                var addMapCount = 0
+                var addBonusCount = 0
+                var addFirstDiscovered = 0
+                var addFirstMapped = 0
                 var addProbeCount = 0
 
                 if (map != null) {
-                    addMapCount.inc()
+                    addMapCount += 1
                     addProbeCount += map.probesUsed
 
                     if (map.efficiencyTarget >= map.probesUsed)
-                        addBonusCount.inc()
+                        addBonusCount += 1
                 }
 
-                if (!discovery.wasMapped) addFirstMapped.inc()
-                if (!discovery.wasDiscovered) addFirstDiscovered.inc()
+                if (!discovery.wasMapped) addFirstMapped += 1
+                if (!discovery.wasDiscovered) addFirstDiscovered += 1
 
-                var currentDiscovery = discoveries.firstOrNull { it.name == discovery.name }
+                var currentDiscovery =
+                    discoveries.firstOrNull { it.planetClass == discovery.planetClass }
                 if (currentDiscovery == null) {
                     currentDiscovery = Discovery(
                         discovery.systemAddress,
                         discovery.bodyID,
-                        discovery.name,
+                        discovery.planetClass,
                         discovery.wasDiscovered,
-                        discovery.wasMapped,
-                        1,
-                        addMapCount,
-                        addBonusCount,
-                        addFirstDiscovered,
-                        addFirstMapped
+                        discovery.wasMapped
                     )
                     discoveries.add(currentDiscovery)
                 }
 
-                currentDiscovery.discoveryCount.inc()
-                currentDiscovery.mappedCount.plus(addMapCount)
-                currentDiscovery.bonusCount.plus(addBonusCount)
-                currentDiscovery.firstDiscoveredCount.plus(addBonusCount)
-                currentDiscovery.firstMappedCount.plus(addBonusCount)
+                currentDiscovery.discoveryCount += 1
+                currentDiscovery.mappedCount += addMapCount
+                currentDiscovery.bonusCount += addBonusCount
+                currentDiscovery.firstDiscoveredCount += addBonusCount
+                currentDiscovery.firstMappedCount += addBonusCount
 
-                summary.DiscoveryTotal.inc()
-                summary.MappedTotal.plus(addMapCount)
-                summary.efficiencyBonusTotal.plus(addBonusCount)
-                summary.firstDiscoveryTotal.plus(addFirstDiscovered)
-                summary.firstMappedTotal.plus(addFirstDiscovered)
+                summary.DiscoveryTotal += 1
+                summary.MappedTotal += addMapCount
+                summary.efficiencyBonusTotal += addBonusCount
+                summary.firstDiscoveryTotal += addFirstDiscovered
+                summary.firstMappedTotal += addFirstDiscovered
             }
 
             return FrontierDiscoveriesEvent(
                 true,
                 summary,
-                discoveries.map { (_, _, name, _, _, discoveryCount, mapCount, bonusCount, firstDiscoveredCount, firstMappedCount) ->
+                discoveries.map { (_, _, planetClass, _, _, discoveryCount, mapCount, bonusCount, firstDiscoveredCount, firstMappedCount) ->
                     FrontierDiscovery(
-                        name,
+                        planetClass,
                         discoveryCount,
                         mapCount,
                         bonusCount,
                         firstDiscoveredCount,
-                        firstMappedCount,
+                        firstMappedCount
                     )
                 })
 
@@ -416,25 +414,33 @@ class FrontierJournal {
     }
 
     private data class Discovery(
+        @SerializedName("SystemAddress")
         val systemAddress: Long,
+        @SerializedName("BodyID")
         val bodyID: Int,
-        val name: String,
+        @SerializedName("PlanetClass")
+        var planetClass: String,
+        @SerializedName("WasDiscovered")
         val wasDiscovered: Boolean,
+        @SerializedName("WasMapped")
         val wasMapped: Boolean,
-        var discoveryCount: Int,
-        var mappedCount: Int,
-        var bonusCount: Int,
-        var firstDiscoveredCount: Int,
-        var firstMappedCount: Int
+        var discoveryCount: Int=0,
+        var mappedCount: Int=0,
+        var bonusCount: Int=0,
+        var firstDiscoveredCount: Int=0,
+        var firstMappedCount: Int=0
     )
 
     private data class Mapping(
+        @SerializedName("SystemAddress")
         val systemAddress: Long,
+        @SerializedName("BodyID")
         val bodyID: Int,
+        @SerializedName("EfficiencyTarget")
         val efficiencyTarget: Int,
+        @SerializedName("ProbesUsed")
         val probesUsed: Int
     )
-
 
     fun getStatistics(): FrontierJournalStatisticsResponse? {
         val event = mRawEvents.firstOrNull { it.event == JOURNAL_EVENT_STATISTICS }

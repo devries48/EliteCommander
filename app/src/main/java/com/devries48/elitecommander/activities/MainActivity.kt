@@ -7,10 +7,15 @@ import android.view.MotionEvent
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GestureDetectorCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.devries48.elitecommander.R
+import com.devries48.elitecommander.databinding.ActivityMainBinding
 import com.devries48.elitecommander.events.FrontierAuthNeededEvent
+import com.devries48.elitecommander.fragments.CommanderViewModel
+import com.devries48.elitecommander.fragments.CommanderViewModelFactory
+import com.devries48.elitecommander.network.CommanderApi
 import com.devries48.elitecommander.utils.OAuthUtils.storeUpdatedTokens
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -19,12 +24,33 @@ import kotlin.math.abs
 
 class MainActivity : AppCompatActivity() {
 
+    private val navController by lazy { findNavController() }
+
+    private lateinit var mBinding: ActivityMainBinding
+    private lateinit var mCommanderApi: CommanderApi
+    private var mCommanderViewModel: CommanderViewModel? = null
+
+    // This property is only valid between onCreateView and  onDestroyView.
+    private val binding get() = mBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_main)
+        setupDataBinding()
+        setupViewModel()
+        setupNavigation()
 
-        val navController = getNavController()
+        detector = GestureDetectorCompat(this, NavigationGestureListener())
+    }
+
+    private fun setupDataBinding() {
+        mBinding = ActivityMainBinding.inflate(layoutInflater)
+        val view = mBinding.root
+        setContentView(view)
+    }
+
+    private fun setupNavigation() {
+        val navController = findNavController()
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             navDestinationId = destination.id
@@ -39,11 +65,27 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-
-        detector = GestureDetectorCompat(this, NavigationGestureListener())
     }
 
-    private fun getNavController(): NavController {
+    private fun setupViewModel() {
+        try {
+            mCommanderApi= CommanderApi()
+
+            val viewModelProvider = ViewModelProvider(
+                navController.getViewModelStoreOwner(R.id.nav_graph),
+                    CommanderViewModelFactory(mCommanderApi)
+            )
+            mCommanderViewModel = viewModelProvider.get(CommanderViewModel::class.java)
+
+            mCommanderApi.loadProfile()
+            mCommanderApi.loadJournal()
+
+        } catch (e: IllegalArgumentException) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun findNavController(): NavController {
         val navHostFragment: NavHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         return navHostFragment.navController
@@ -140,7 +182,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun doNavigate(destinationId: Int) {
         navDestinationId = destinationId
-        val navController = getNavController()
+        val navController = findNavController()
         navController.navigate(destinationId)
     }
 
@@ -153,7 +195,6 @@ class MainActivity : AppCompatActivity() {
 
         var isUserLoggedIn = true
         private var navDestinationId: Int = 0
-
     }
 
 }
