@@ -33,6 +33,9 @@ class CommanderApi {
     private var mIsJournalParsed = MutableLiveData<Boolean>()
     private lateinit var mJournal: FrontierJournal
 
+    @get:Synchronized @set:Synchronized
+    var isParsing = false
+
     init {
         mFrontierRetrofit = RetrofitSingleton.getInstance()
             ?.getFrontierRetrofit(App.getContext())
@@ -118,10 +121,15 @@ class CommanderApi {
      *  - Loads ranks from journal,capture FrontierRanksEvent for the result.
      */
     fun loadRanks() {
-        if (mIsJournalParsed.value != true) {
-            val observer: Observer<Boolean> = Observer<Boolean> { value ->
+        if (!isParsing && mIsJournalParsed.value != true) {
+            isParsing=true
+
+            var observer= Observer<Boolean>{}
+            observer = Observer<Boolean> { value ->
                 if (value == true) {
                     sendResultMessage(mJournal.getRanks(App.getContext()))
+                    mIsJournalParsed.removeObserver(observer)
+                    isParsing=false
                     return@Observer
                 }
             }
@@ -131,6 +139,8 @@ class CommanderApi {
             sendResultMessage(mJournal.getRanks(App.getContext()))
         }
     }
+
+
 
     fun getDistanceToSol(systemName: String?) {
         DistanceCalculatorNetwork.getDistance(App.getContext(), "Sol", systemName)
@@ -166,7 +176,7 @@ class CommanderApi {
                 sendResultMessage(fleet)
             }
         }
-        if (mIsJournalParsed.value == true) mFrontierRetrofit?.journalRaw?.enqueue(callback)
+        mFrontierRetrofit?.journalRaw?.enqueue(callback)
     }
 
     private fun handleFleetParsing(commanderApi: CommanderApi, rawProfileResponse: JsonObject) {

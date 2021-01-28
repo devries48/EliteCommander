@@ -21,7 +21,7 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
 
-//TODO: use interface as argument!
+//TODO: use Kodein for DI
 class CommanderViewModel(api: CommanderApi?) : ViewModel() {
     private val commanderApi = api
 

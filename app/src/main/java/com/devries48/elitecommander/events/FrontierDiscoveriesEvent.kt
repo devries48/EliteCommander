@@ -14,8 +14,7 @@ data class FrontierDiscoverySummary(
     val efficiencyBonusTotal:Int,
     val firstDiscoveryTotal:Int,
     val firstMappedTotal: Int,
-    val probesUsedTotal: Int,
-    val codexEntriesTotal: Int
+    val probesUsedTotal: Int
 )
 
 data class FrontierDiscovery(

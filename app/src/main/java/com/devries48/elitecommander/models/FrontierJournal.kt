@@ -325,7 +325,7 @@ class FrontierJournal {
             val rawMappings = mRawEvents.filter { it.event == JOURNAL_EVENT_MAP }
 
             if (rawDiscoveries.count() == 0) {
-                return FrontierDiscoveriesEvent(true,null,null)
+                return FrontierDiscoveriesEvent(true, null, null)
             }
 
             val discoveries = mutableListOf<Discovery>()
@@ -338,7 +338,7 @@ class FrontierJournal {
                 }
             }
 
-            val summary = FrontierDiscoverySummary(0, 0, 0, 0, 0, 0, 0,0,0)
+            val summary = FrontierDiscoverySummary(0, 0, 0, 0, 0, 0, 0, 0)
 
             rawDiscoveries.forEach { d ->
 
@@ -407,14 +407,10 @@ class FrontierJournal {
                         firstMappedCount,
                     )
                 })
-//            return FrontierRanksEvent(
-//                true, combatRank, tradeRank, exploreRank,
-//                cqcRank, federationRank, empireRank
-//            )
 
         } catch (e: Exception) {
             println("LOG: Error parsing discovery events from journal." + e.message)
-            return FrontierDiscoveriesEvent(false,null,null)
+            return FrontierDiscoveriesEvent(false, null, null)
         }
 
     }
