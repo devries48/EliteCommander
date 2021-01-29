@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Elite Commander</string>
-    <string name="cmdr">CMDR %s</string>
+    <string name="format_cmdr">CMDR %s</string>
+    <string name="format_percentage">%1$s%%</string>
 
     <!--URLs-->
     <string name="edapi_base">https://ed-api.9cw.eu/</string>
@@ -106,7 +107,6 @@
         <item>Admiral</item>
     </string-array>
 
-    <string name="format_percentage">%1$s%%</string>
     <string name="empty_string" />
     <string name="Credits">Credits</string>
     <string name="CurrentLocation">Current location</string>
@@ -114,6 +114,7 @@
     <string name="AssetsValue">Assets</string>
     <string name="distance_sol">Distance to Sol</string>
     <string name="hull">hull</string>
-    <string name="discovery_report">Discovery Report</string>
+    <string name="discovery_summary">Discovery summary</string>
+    <string name="total_discovered">Discovered</string>
 
 </resources>

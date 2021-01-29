@@ -33,7 +33,7 @@
     <style name="EliteRankCardView" parent="@style/Widget.MaterialComponents.CardView">
         <item name="cardBackgroundColor">@color/black</item>
     </style>
-    <style name="EliteStatisticCardView" parent="@style/Widget.MaterialComponents.CardView">
+    <style name="EliteCardViewItem" parent="@style/Widget.MaterialComponents.CardView">
         <item name="cardBackgroundColor">@color/item_background</item>
     </style>
 

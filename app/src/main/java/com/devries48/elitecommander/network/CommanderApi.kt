@@ -23,8 +23,6 @@ import retrofit2.Callback
 import retrofit2.Response
 import kotlin.properties.Delegates
 
-// TODO: https://stackoverflow.com/questions/43233025/use-retrofit-methods-more-expressive-way
-
 class CommanderApi {
 
     private var mFrontierRetrofit: FrontierRetrofit? = null

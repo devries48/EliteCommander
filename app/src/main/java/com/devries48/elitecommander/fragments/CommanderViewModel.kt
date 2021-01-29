@@ -27,6 +27,7 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
     val cqcRank: LiveData<RankModel> = mCqcRank
     val federationRank: LiveData<RankModel> = mFederationRank
     val empireRank: LiveData<RankModel> = mEmpireRank
+    val currentDiscoverySummary: LiveData<FrontierDiscoverySummary> = mCurrentDiscoverySummary
 
     internal fun getMainStatistics(): LiveData<List<EliteStatisticModel>> {
         return mMainStatistics as MutableLiveData<List<EliteStatisticModel>>
@@ -179,6 +180,10 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onCurrentDiscoveries(discoveries: FrontierDiscoveriesEvent) {
+        if (!discoveries.success){
+            //NotificationsUtils.displayGenericDownloadErrorSnackbar(getActivity()) TODO: Error Handling
+            return
+        }
         println(discoveries)
     }
 
@@ -245,6 +250,9 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
 
         private var mMainStatistics: MutableLiveData<List<EliteStatisticModel>>? = null
         private val mMainStatisticsList = ArrayList<EliteStatisticModel>()
+        private val mCurrentDiscoverySummary=MutableLiveData(FrontierDiscoverySummary(
+            0,0,0,0,0,0,0,0
+        ))
 
         private fun currencyFormat(amount: Long): String {
             val formatter = DecimalFormat("###,###,###,###")

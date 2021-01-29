@@ -91,7 +91,7 @@ class MainActivity : AppCompatActivity() {
                 startActivityForResult(intent, FRONTIER_LOGIN_REQUEST_CODE)
             } else {
                 if (navDestinationId == R.id.mainFragment) {
-                    navDestinationId = R.id.action_main_to_commander
+                    navDestinationId =  R.id.discoveriesFragment // R.id.action_main_to_commander
                     navController.navigate(navDestinationId)
                 }
             }
