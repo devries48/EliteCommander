@@ -27,7 +27,9 @@
         tools:layout="@layout/fragment_main" >
         <action
             android:id="@+id/action_main_to_commander"
-            app:destination="@id/commanderFragment" />
+            app:destination="@id/commanderFragment"
+            app:popUpTo="@id/commanderFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/discoveriesFragment"

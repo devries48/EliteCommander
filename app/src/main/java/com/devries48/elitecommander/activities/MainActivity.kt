@@ -21,6 +21,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import kotlin.math.abs
+import kotlin.properties.Delegates
 
 class MainActivity : AppCompatActivity() {
 
@@ -30,8 +31,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mCommanderApi: CommanderApi
     private var mCommanderViewModel: CommanderViewModel? = null
 
-    // This property is only valid between onCreateView and  onDestroyView.
-    private val binding get() = mBinding
+    private var mIsLoggedIn by Delegates.observable(false) { _, _, newValue ->
+        if (newValue) loadData()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,63 +43,6 @@ class MainActivity : AppCompatActivity() {
         setupNavigation()
 
         detector = GestureDetectorCompat(this, NavigationGestureListener())
-    }
-
-    private fun setupDataBinding() {
-        mBinding = ActivityMainBinding.inflate(layoutInflater)
-        val view = mBinding.root
-        setContentView(view)
-    }
-
-    private fun setupNavigation() {
-        val navController = findNavController()
-
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            navDestinationId = destination.id
-
-            if (!isUserLoggedIn) {
-                val intent = Intent(this@MainActivity, LoginActivity::class.java)
-                startActivityForResult(intent, FRONTIER_LOGIN_REQUEST_CODE)
-            } else {
-                if (navDestinationId == R.id.mainFragment) {
-                    navDestinationId = R.id.action_main_to_commander
-                    navController.navigate(navDestinationId)
-                }
-            }
-        }
-    }
-
-    private fun setupViewModel() {
-        try {
-            mCommanderApi= CommanderApi()
-
-            val viewModelProvider = ViewModelProvider(
-                navController.getViewModelStoreOwner(R.id.nav_graph),
-                    CommanderViewModelFactory(mCommanderApi)
-            )
-            mCommanderViewModel = viewModelProvider.get(CommanderViewModel::class.java)
-
-            mCommanderApi.loadProfile()
-            mCommanderApi.loadJournal()
-
-        } catch (e: IllegalArgumentException) {
-            e.printStackTrace()
-        }
-    }
-
-    private fun findNavController(): NavController {
-        val navHostFragment: NavHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        return navHostFragment.navController
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == FRONTIER_LOGIN_REQUEST_CODE) {
-            isUserLoggedIn = true
-            doNavigate(navDestinationId)
-        }
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
@@ -118,6 +63,98 @@ class MainActivity : AppCompatActivity() {
         EventBus.getDefault().unregister(this)
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == FRONTIER_LOGIN_REQUEST_CODE) {
+            mIsLoggedIn = true
+            doNavigate(navDestinationId)
+        }
+    }
+
+    private fun setupDataBinding() {
+        mBinding = ActivityMainBinding.inflate(layoutInflater)
+        val view = mBinding.root
+        setContentView(view)
+    }
+
+    private fun setupNavigation() {
+        val navController = findNavController()
+
+        //TODO: check connection (refresh?) and set IsUserLoggedIn
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            navDestinationId = destination.id
+
+            if (!mIsLoggedIn) {
+                val intent = Intent(this@MainActivity, LoginActivity::class.java)
+                startActivityForResult(intent, FRONTIER_LOGIN_REQUEST_CODE)
+            } else {
+                if (navDestinationId == R.id.mainFragment) {
+                    navDestinationId = R.id.action_main_to_commander
+                    navController.navigate(navDestinationId)
+                }
+            }
+        }
+    }
+
+    private fun setupViewModel() {
+        try {
+            mCommanderApi = CommanderApi()
+
+            val viewModelProvider = ViewModelProvider(
+                navController.getViewModelStoreOwner(R.id.nav_graph),
+                CommanderViewModelFactory(mCommanderApi)
+            )
+            mCommanderViewModel = viewModelProvider.get(CommanderViewModel::class.java)
+
+        } catch (e: IllegalArgumentException) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun loadData(){
+        mCommanderApi.loadProfile()
+        mCommanderApi.loadJournal()
+    }
+
+    private fun findNavController(): NavController {
+        val navHostFragment: NavHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        return navHostFragment.navController
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onFrontierAuthNeededEvent(frontierAuthNeededEvent: FrontierAuthNeededEvent) {
+        mIsLoggedIn = false
+        storeUpdatedTokens(this, "", "")
+    }
+
+    private fun onSwipeBottomToTop() {
+        when (navDestinationId) {
+            R.id.action_main_to_commander, R.id.commanderFragment -> doNavigate(R.id.action_commander_to_discoveries)
+        }
+    }
+
+    internal fun onSwipeRightToLeft() {
+        Toast.makeText(this, "Right to left Swipe", Toast.LENGTH_LONG).show()
+    }
+
+    internal fun onSwipeLeftToRight() {
+        Toast.makeText(this, "Left to right Swipe", Toast.LENGTH_LONG).show()
+    }
+
+    private fun onSwipeTopToBottom() {
+        if (navDestinationId == R.id.discoveriesFragment)
+            doNavigate(R.id.action_discoveries_to_commander)
+    }
+
+    private fun doNavigate(destinationId: Int) {
+        navDestinationId = destinationId
+        val navController = findNavController()
+        navController.navigate(destinationId)
+    }
+
     inner class NavigationGestureListener : GestureDetector.SimpleOnGestureListener() {
 
         override fun onFling(
@@ -132,9 +169,9 @@ class MainActivity : AppCompatActivity() {
             return if (abs(diffX) > abs(diffY)) {
                 if (abs(diffX) > SWIPE_THRESHOLD && abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
                     if (diffX > 0) {
-                        this@MainActivity.onSwipeRight()
+                        this@MainActivity.onSwipeLeftToRight()
                     } else {
-                        this@MainActivity.onLeftSwipe()
+                        this@MainActivity.onSwipeRightToLeft()
                     }
                     true
                 } else {
@@ -155,37 +192,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onFrontierAuthNeededEvent(frontierAuthNeededEvent: FrontierAuthNeededEvent) {
-        isUserLoggedIn = false
-        storeUpdatedTokens(this, "", "")
-    }
-
-    private fun onSwipeBottomToTop() {
-        when (navDestinationId) {
-            R.id.action_main_to_commander, R.id.commanderFragment -> doNavigate(R.id.action_commander_to_discoveries)
-        }
-    }
-
-    internal fun onLeftSwipe() {
-        Toast.makeText(this, "Left to right Swipe", Toast.LENGTH_LONG).show()
-    }
-
-    internal fun onSwipeRight() {
-        Toast.makeText(this, "Right to left Swipe", Toast.LENGTH_LONG).show()
-    }
-
-    private fun onSwipeTopToBottom() {
-        if (navDestinationId == R.id.discoveriesFragment)
-            doNavigate(R.id.action_discoveries_to_commander)
-    }
-
-    private fun doNavigate(destinationId: Int) {
-        navDestinationId = destinationId
-        val navController = findNavController()
-        navController.navigate(destinationId)
-    }
-
     companion object {
         private const val FRONTIER_LOGIN_REQUEST_CODE = 999
         private const val SWIPE_THRESHOLD = 100
@@ -193,7 +199,6 @@ class MainActivity : AppCompatActivity() {
 
         private lateinit var detector: GestureDetectorCompat
 
-        var isUserLoggedIn = true
         private var navDestinationId: Int = 0
     }
 

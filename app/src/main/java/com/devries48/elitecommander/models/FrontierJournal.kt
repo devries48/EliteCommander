@@ -2,6 +2,7 @@ package com.devries48.elitecommander.models
 
 import android.content.Context
 import com.devries48.elitecommander.R
+import com.devries48.elitecommander.declarations.toStringOrEmpty
 import com.devries48.elitecommander.events.FrontierDiscoveriesEvent
 import com.devries48.elitecommander.events.FrontierDiscovery
 import com.devries48.elitecommander.events.FrontierDiscoverySummary
@@ -343,7 +344,8 @@ class FrontierJournal {
             rawDiscoveries.forEach { d ->
 
                 val discovery = Gson().fromJson(d.json, Discovery::class.java)
-                if (discovery.planetClass.isEmpty()) discovery.planetClass = "Asteroid Belt"
+                if (discovery.planetClass.isNullOrEmpty() && discovery.starType.isNullOrEmpty())
+                    discovery.planetClass = "Asteroid Belt"
 
                 val map = mappings.firstOrNull {
                     it.systemAddress == discovery.systemAddress && it.bodyID == discovery.bodyID
@@ -367,12 +369,16 @@ class FrontierJournal {
                 if (!discovery.wasDiscovered) addFirstDiscovered += 1
 
                 var currentDiscovery =
-                    discoveries.firstOrNull { it.planetClass == discovery.planetClass }
+                    discoveries.firstOrNull {
+                        !it.planetClass.isNullOrEmpty() && it.planetClass == discovery.planetClass ||
+                                !it.starType.isNullOrEmpty() && it.starType == discovery.starType
+                    }
                 if (currentDiscovery == null) {
                     currentDiscovery = Discovery(
                         discovery.systemAddress,
                         discovery.bodyID,
-                        discovery.planetClass,
+                        discovery.planetClass.toStringOrEmpty(),
+                        discovery.starType.toStringOrEmpty(),
                         discovery.wasDiscovered,
                         discovery.wasMapped
                     )
@@ -395,9 +401,10 @@ class FrontierJournal {
             return FrontierDiscoveriesEvent(
                 true,
                 summary,
-                discoveries.map { (_, _, planetClass, _, _, discoveryCount, mapCount, bonusCount, firstDiscoveredCount, firstMappedCount) ->
+                discoveries.map { (_, _, planetClass, starType, _, _, discoveryCount, mapCount, bonusCount, firstDiscoveredCount, firstMappedCount) ->
                     FrontierDiscovery(
-                        planetClass,
+                        planetClass.toStringOrEmpty(),
+                        starType.toStringOrEmpty(),
                         discoveryCount,
                         mapCount,
                         bonusCount,
@@ -419,16 +426,18 @@ class FrontierJournal {
         @SerializedName("BodyID")
         val bodyID: Int,
         @SerializedName("PlanetClass")
-        var planetClass: String,
+        var planetClass: String?,
+        @SerializedName("StarType")
+        val starType: String?,
         @SerializedName("WasDiscovered")
         val wasDiscovered: Boolean,
         @SerializedName("WasMapped")
         val wasMapped: Boolean,
-        var discoveryCount: Int=0,
-        var mappedCount: Int=0,
-        var bonusCount: Int=0,
-        var firstDiscoveredCount: Int=0,
-        var firstMappedCount: Int=0
+        var discoveryCount: Int = 0,
+        var mappedCount: Int = 0,
+        var bonusCount: Int = 0,
+        var firstDiscoveredCount: Int = 0,
+        var firstMappedCount: Int = 0
     )
 
     private data class Mapping(

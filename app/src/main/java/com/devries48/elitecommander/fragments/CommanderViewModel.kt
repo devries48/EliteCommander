@@ -17,8 +17,6 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
-
-//TODO: use Kodein for DI
 class CommanderViewModel(api: CommanderApi?) : ViewModel() {
     private val commanderApi = api
 
@@ -57,7 +55,6 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
         commanderApi?.getDistanceToSol(profileEvent.systemName)
 
         // Hull damage
-
         val hullPercentage:Int=profileEvent.hull/10000
 
         setMainStatisticRight(

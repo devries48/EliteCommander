@@ -1,7 +1,5 @@
 package com.devries48.elitecommander.network
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import com.devries48.elitecommander.App
 import com.devries48.elitecommander.events.FrontierFleetEvent
 import com.devries48.elitecommander.events.FrontierProfileEvent
@@ -23,6 +21,7 @@ import org.jetbrains.annotations.NotNull
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.properties.Delegates
 
 // TODO: https://stackoverflow.com/questions/43233025/use-retrofit-methods-more-expressive-way
 
@@ -30,11 +29,11 @@ class CommanderApi {
 
     private var mFrontierRetrofit: FrontierRetrofit? = null
     private var mEdApiRetrofit: EDApiRetrofit? = null
-    private var mIsJournalParsed = MutableLiveData<Boolean>()
     private lateinit var mJournal: FrontierJournal
 
-    @get:Synchronized @set:Synchronized
-    var isParsing = false
+    private var mIsJournalParsed by Delegates.observable(false) { _, _, newValue ->
+        if (newValue) loadJournal()
+    }
 
     init {
         mFrontierRetrofit = RetrofitSingleton.getInstance()
@@ -122,25 +121,11 @@ class CommanderApi {
      *  - Loads discoveries from journal, capture FrontierDiscoveriesEvent for the result.
      */
     fun loadJournal() {
-        if (!isParsing && mIsJournalParsed.value != true) {
-            isParsing=true
-
-            var observer= Observer<Boolean>{}
-            observer = Observer<Boolean> { value ->
-                if (value == true) {
-                    sendResultMessage(mJournal.getRanks(App.getContext()))
-                    sendResultMessage(mJournal.getCurrentDiscoveries())
-
-                    mIsJournalParsed.removeObserver(observer)
-                    isParsing=false
-                    return@Observer
-                }
-            }
-            mIsJournalParsed.observeForever(observer)
-            parseJournal()
-        } else {
+        if (mIsJournalParsed) {
             sendResultMessage(mJournal.getRanks(App.getContext()))
             sendResultMessage(mJournal.getCurrentDiscoveries())
+        } else {
+            parseJournal()
         }
     }
 
@@ -168,7 +153,7 @@ class CommanderApi {
                     println("LOG: Error parsing journal response - " + e.message)
                     return
                 }
-                mIsJournalParsed.postValue(true)
+                mIsJournalParsed = true
             }
 
             override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {

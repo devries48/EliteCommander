@@ -18,7 +18,8 @@ data class FrontierDiscoverySummary(
 )
 
 data class FrontierDiscovery(
-    val name: String,
+    val body: String,
+    val star: String,
     val discoveryCount: Int,
     val mappedCount: Int,
     val efficiencyBonusCount: Int,

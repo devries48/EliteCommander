@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:text="@string/login_dialog_text"
         android:textAlignment="center"
-        android:textAppearance="@style/eliteStyle"
+        android:textAppearance="@style/eliteStyle.YellowText"
         app:layout_constraintBottom_toTopOf="@+id/frontierLoginButton"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
