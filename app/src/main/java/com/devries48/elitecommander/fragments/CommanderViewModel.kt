@@ -184,7 +184,7 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
             //NotificationsUtils.displayGenericDownloadErrorSnackbar(getActivity()) TODO: Error Handling
             return
         }
-        println(discoveries)
+        mCurrentDiscoverySummary.value = discoveries.summary!!
     }
 
     companion object {
@@ -250,7 +250,7 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
 
         private var mMainStatistics: MutableLiveData<List<EliteStatisticModel>>? = null
         private val mMainStatisticsList = ArrayList<EliteStatisticModel>()
-        private val mCurrentDiscoverySummary=MutableLiveData(FrontierDiscoverySummary(
+        private var mCurrentDiscoverySummary=MutableLiveData(FrontierDiscoverySummary(
             0,0,0,0,0,0,0,0
         ))
 

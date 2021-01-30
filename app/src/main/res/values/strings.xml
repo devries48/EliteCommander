@@ -116,5 +116,8 @@
     <string name="hull">hull</string>
     <string name="discovery_summary">Discovery summary</string>
     <string name="total_discovered">Discovered</string>
+    <string name="total_mapped">Mapped</string>
+    <string name="total_bonus">Efficiency Bonus</string>
+    <string name="elite_commander_logo">Elite Commander logo</string>
 
 </resources>

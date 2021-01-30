@@ -251,8 +251,44 @@ class FrontierJournal {
   "Empire": 100,
   "Federation": 35,
   "CQC": 0
-}
-"""
+}{
+  "timestamp": "2021-01-17T17:29:25Z",
+  "event": "Scan",
+  "ScanType": "AutoScan",
+  "BodyName": "Dryoi Pri DM-J d10-154",
+  "BodyID": 0,
+  "StarSystem": "Dryoi Pri DM-J d10-154",
+  "SystemAddress": 5301860291035,
+  "DistanceFromArrivalLS": 0.000000,
+  "StarType": "G",
+  "Subclass": 6,
+  "StellarMass": 0.910156,
+  "Radius": 671112448.000000,
+  "AbsoluteMagnitude": 5.158279,
+  "Age_MY": 766,
+  "SurfaceTemperature": 5454.000000,
+  "Luminosity": "Vab",
+  "RotationPeriod": 452212.000315,
+  "AxialTilt": 0.000000,
+  "Rings": [
+    {
+      "Name": "Dryoi Pri DM-J d10-154 A Belt",
+      "RingClass": "eRingClass_Metalic",
+      "MassMT": 1.2464e+14,
+      "InnerRad": 1.2248e+09,
+      "OuterRad": 2.3385e+09
+    },
+    {
+      "Name": "Dryoi Pri DM-J d10-154 B Belt",
+      "RingClass": "eRingClass_Rocky",
+      "MassMT": 7.7939e+14,
+      "InnerRad": 5.9289e+10,
+      "OuterRad": 3.7646e+11
+    }
+  ],
+  "WasDiscovered": false,
+  "WasMapped": false
+}"""
 
         // Couldn't get RegEx working here (worked on Kotlin Playground ...
         // ... So fix the response by removing the first and last curly brace
