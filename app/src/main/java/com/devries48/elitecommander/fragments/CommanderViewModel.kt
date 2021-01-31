@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.devries48.elitecommander.R
 import com.devries48.elitecommander.events.*
-import com.devries48.elitecommander.models.EliteStatisticModel
+import com.devries48.elitecommander.models.FrontierStatistic
 import com.devries48.elitecommander.models.RankModel
 import com.devries48.elitecommander.network.CommanderApi
 import com.devries48.elitecommander.utils.NamingUtils
@@ -18,6 +18,7 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
 class CommanderViewModel(api: CommanderApi?) : ViewModel() {
+
     private val commanderApi = api
 
     val name: LiveData<String> = mName
@@ -29,10 +30,6 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
     val empireRank: LiveData<RankModel> = mEmpireRank
     val currentDiscoverySummary: LiveData<FrontierDiscoverySummary> = mCurrentDiscoverySummary
 
-    internal fun getMainStatistics(): LiveData<List<EliteStatisticModel>> {
-        return mMainStatistics as MutableLiveData<List<EliteStatisticModel>>
-    }
-
     init {
         EventBus.getDefault().register(this)
         loadMainStatistics()
@@ -42,6 +39,14 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
         super.onCleared()
 
         EventBus.getDefault().unregister(this)
+    }
+
+    internal fun getMainStatistics(): LiveData<List<FrontierStatistic>> {
+        return mMainStatistics as MutableLiveData<List<FrontierStatistic>>
+    }
+
+    internal fun getCurrentDiscoveries(): LiveData<List<FrontierDiscovery>> {
+        return mCurrentDiscoveries
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -185,6 +190,7 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
             return
         }
         mCurrentDiscoverySummary.value = discoveries.summary!!
+        mCurrentDiscoveries.value= discoveries.discoveries
     }
 
     companion object {
@@ -248,8 +254,10 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
                 )
             )
 
-        private var mMainStatistics: MutableLiveData<List<EliteStatisticModel>>? = null
-        private val mMainStatisticsList = ArrayList<EliteStatisticModel>()
+        private var mMainStatistics: MutableLiveData<List<FrontierStatistic>>? = null
+        private var mCurrentDiscoveries = MutableLiveData<List<FrontierDiscovery>>()
+        private val mMainStatisticsList = ArrayList<FrontierStatistic>()
+        private val mDCurrentDiscoveriesList = ArrayList<FrontierStatistic>()
         private var mCurrentDiscoverySummary=MutableLiveData(FrontierDiscoverySummary(
             0,0,0,0,0,0,0,0
         ))
@@ -268,17 +276,17 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
             if (mMainStatistics == null) {
                 mMainStatistics = MutableLiveData()
 
-                mMainStatisticsList.add(EliteStatisticModel(R.string.Credits))
-                mMainStatisticsList.add(EliteStatisticModel(R.string.AssetsValue))
-                mMainStatisticsList.add(EliteStatisticModel(R.string.CurrentLocation))
-                mMainStatisticsList.add(EliteStatisticModel(R.string.CurrentShip))
+                mMainStatisticsList.add(FrontierStatistic(R.string.Credits))
+                mMainStatisticsList.add(FrontierStatistic(R.string.AssetsValue))
+                mMainStatisticsList.add(FrontierStatistic(R.string.CurrentLocation))
+                mMainStatisticsList.add(FrontierStatistic(R.string.CurrentShip))
 
                 mMainStatistics!!.value = mMainStatisticsList
             }
         }
 
         private fun setMainStatistic(@StringRes stringRes: Int, value: String) {
-            val stat: EliteStatisticModel? = mMainStatisticsList.find { it.stringRes == stringRes }
+            val stat: FrontierStatistic? = mMainStatisticsList.find { it.stringRes == stringRes }
             if (stat != null) {
                 stat.value = value
                 mMainStatistics!!.postValue(mMainStatisticsList)
@@ -291,7 +299,7 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
             rightValue: String,
             @StyleRes rightValueStyleRes: Int
         ) {
-            val stat: EliteStatisticModel? = mMainStatisticsList.find { it.stringRes == nameRes }
+            val stat: FrontierStatistic? = mMainStatisticsList.find { it.stringRes == nameRes }
             if (stat != null) {
                 stat.rightValue = rightValue
                 stat.rightStringRes = rightStringRes
@@ -299,7 +307,6 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
                 mMainStatistics!!.postValue(mMainStatisticsList)
             }
         }
-
     }
 }
 
@@ -308,5 +315,3 @@ class CommanderViewModelFactory(private val api: CommanderApi?) :
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T = CommanderViewModel(api) as T
 }
-
-

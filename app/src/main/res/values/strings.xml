@@ -2,6 +2,8 @@
     <string name="app_name">Elite Commander</string>
     <string name="format_cmdr">CMDR %s</string>
     <string name="format_percentage">%1$s%%</string>
+    <string name="format_number">%,d</string>
+    <string name="format_currency">%1$,CR</string>
 
     <!--URLs-->
     <string name="edapi_base">https://ed-api.9cw.eu/</string>
@@ -107,6 +109,16 @@
         <item>Admiral</item>
     </string-array>
 
+    <!--FrontierDiscoveriesEvent-->
+    <string name="discovery_summary">Discovery summary</string>
+    <string name="total_discovered">Discovered</string>
+    <string name="total_mapped">Mapped</string>
+    <string name="total_bonus">Efficiency Bonus</string>
+
+    <string name="body_water_world">Water World</string>
+    <string name="body_k_star">K - Yellow-Orange Star</string>
+    <string name="body_g_star">G - White-Yellow Star</string>
+
     <string name="empty_string" />
     <string name="Credits">Credits</string>
     <string name="CurrentLocation">Current location</string>
@@ -114,10 +126,7 @@
     <string name="AssetsValue">Assets</string>
     <string name="distance_sol">Distance to Sol</string>
     <string name="hull">hull</string>
-    <string name="discovery_summary">Discovery summary</string>
-    <string name="total_discovered">Discovered</string>
-    <string name="total_mapped">Mapped</string>
-    <string name="total_bonus">Efficiency Bonus</string>
     <string name="elite_commander_logo">Elite Commander logo</string>
+    <string name="image_planet_star_discoveries">Image for the planet or star discoveries.</string>
 
 </resources>

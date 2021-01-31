@@ -288,6 +288,25 @@ class FrontierJournal {
   ],
   "WasDiscovered": false,
   "WasMapped": false
+}{
+  "timestamp": "2021-01-17T17:29:25Z",
+  "event": "Scan",
+  "ScanType": "AutoScan",
+  "BodyName": "Dryoi Pri DM-J d10-154 A Belt Cluster 1",
+  "BodyID": 2,
+  "Parents": [
+    {
+      "Ring": 1
+    },
+    {
+      "Star": 0
+    }
+  ],
+  "StarSystem": "Dryoi Pri DM-J d10-154",
+  "SystemAddress": 5301860291035,
+  "DistanceFromArrivalLS": 7.395918,
+  "WasDiscovered": false,
+  "WasMapped": false
 }"""
 
         // Couldn't get RegEx working here (worked on Kotlin Playground ...
@@ -380,8 +399,10 @@ class FrontierJournal {
             rawDiscoveries.forEach { d ->
 
                 val discovery = Gson().fromJson(d.json, Discovery::class.java)
+
+                // Skip asteroid belt's as they bring no profit or further interest
                 if (discovery.planetClass.isNullOrEmpty() && discovery.starType.isNullOrEmpty())
-                    discovery.planetClass = "Asteroid Belt"
+                    return@forEach
 
                 val map = mappings.firstOrNull {
                     it.systemAddress == discovery.systemAddress && it.bodyID == discovery.bodyID
@@ -424,14 +445,15 @@ class FrontierJournal {
                 currentDiscovery.discoveryCount += 1
                 currentDiscovery.mappedCount += addMapCount
                 currentDiscovery.bonusCount += addBonusCount
-                currentDiscovery.firstDiscoveredCount += addBonusCount
-                currentDiscovery.firstMappedCount += addBonusCount
+                currentDiscovery.firstDiscoveredCount += addFirstDiscovered
+                currentDiscovery.firstMappedCount += addMapCount
 
                 summary.DiscoveryTotal += 1
                 summary.MappedTotal += addMapCount
                 summary.efficiencyBonusTotal += addBonusCount
                 summary.firstDiscoveryTotal += addFirstDiscovered
                 summary.firstMappedTotal += addFirstDiscovered
+                summary.probesUsedTotal+=addProbeCount
             }
 
             return FrontierDiscoveriesEvent(
@@ -509,7 +531,6 @@ class FrontierJournal {
 
         init {
             event = json.get("event").asString
-            println("Journal event: $event")
         }
     }
 

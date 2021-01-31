@@ -107,9 +107,9 @@ object NamingUtils {
             8 -> R.drawable.rank_8_fed
             9 -> R.drawable.rank_9_fed
             10 -> R.drawable.rank_10_fed
-            11-> R.drawable.rank_11_fed
+            11 -> R.drawable.rank_11_fed
             12 -> R.drawable.rank_12_fed
-            13-> R.drawable.rank_13_fed
+            13 -> R.drawable.rank_13_fed
             14 -> R.drawable.rank_14_fed
             else -> R.drawable.rank_1_fed
         }
@@ -126,11 +126,46 @@ object NamingUtils {
             8 -> R.drawable.rank_8_emp
             9 -> R.drawable.rank_9_emp
             10 -> R.drawable.rank_10_emp
-            11-> R.drawable.rank_11_emp
+            11 -> R.drawable.rank_11_emp
             12 -> R.drawable.rank_12_emp
-            13-> R.drawable.rank_13_emp
+            13 -> R.drawable.rank_13_emp
             14 -> R.drawable.rank_14_emp
             else -> R.drawable.rank_1_emp
         }
     }
+
+    fun getDiscoveryBodyResources(bodyName: String, starType: String): Pair<Int, Int> {
+        var stringResId = 0
+        val drawableResId: Int
+
+        if (starType.isNotEmpty()) {
+            when (starType) {
+                "G" -> {
+                    drawableResId = R.drawable.body_g_star
+                    stringResId = R.string.body_g_star
+                }
+                "K" -> {
+                    drawableResId = R.drawable.body_k_star
+                    stringResId = R.string.body_k_star
+                }
+                else -> {
+                    drawableResId = R.drawable.body_unknown
+                }
+            }
+
+        } else {
+            when (bodyName) {
+                "Water world" -> {
+                    drawableResId = R.drawable.body_water_world
+                    stringResId = R.string.body_water_world
+                }
+                else -> {
+                    drawableResId = R.drawable.body_unknown
+                }
+            }
+        }
+
+        return stringResId to drawableResId
+    }
+
 }

@@ -4,7 +4,7 @@ import androidx.annotation.StringRes
 import androidx.annotation.StyleRes
 import org.jetbrains.annotations.NotNull
 
-data class EliteStatisticModel(
+data class FrontierStatistic(
     @StringRes val stringRes: Int = 0,
     var value: String? = null,
     @StringRes var rightStringRes: Int = 0,

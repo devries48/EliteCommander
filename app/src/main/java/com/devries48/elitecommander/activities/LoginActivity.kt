@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.devries48.elitecommander.R
 import com.devries48.elitecommander.events.FrontierTokensEvent
-import com.devries48.elitecommander.frontier.auth.FrontierAuthSingleton
+import com.devries48.elitecommander.network.retrofit.FrontierAuthSingleton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
