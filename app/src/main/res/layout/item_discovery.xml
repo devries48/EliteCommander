@@ -17,12 +17,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-
             <ImageView
                 android:id="@+id/bodyImageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="2dp"
+                android:layout_marginLeft="2dp"
+                android:layout_marginBottom="2dp"
+                android:maxWidth="76dp"
+                android:maxHeight="76dp"
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/image_planet_star_discoveries"
                 app:layout_constraintStart_toStartOf="parent"

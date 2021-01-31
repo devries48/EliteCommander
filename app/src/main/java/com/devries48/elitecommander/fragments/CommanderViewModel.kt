@@ -257,7 +257,6 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
         private var mMainStatistics: MutableLiveData<List<FrontierStatistic>>? = null
         private var mCurrentDiscoveries = MutableLiveData<List<FrontierDiscovery>>()
         private val mMainStatisticsList = ArrayList<FrontierStatistic>()
-        private val mDCurrentDiscoveriesList = ArrayList<FrontierStatistic>()
         private var mCurrentDiscoverySummary=MutableLiveData(FrontierDiscoverySummary(
             0,0,0,0,0,0,0,0
         ))

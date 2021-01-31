@@ -38,99 +38,97 @@ object NamingUtils {
         }
     }
 
-    //TODO: Refactor rank names alphabetically
-
     fun getCombatRankDrawableId(rankValue: Int): Int {
         return when (rankValue + 1) {
-            2 -> R.drawable.rank_2_combat
-            3 -> R.drawable.rank_3_combat
-            4 -> R.drawable.rank_4_combat
-            5 -> R.drawable.rank_5_combat
-            6 -> R.drawable.rank_6_combat
-            7 -> R.drawable.rank_7_combat
-            8 -> R.drawable.rank_8_combat
-            9 -> R.drawable.rank_9_combat
-            else -> R.drawable.rank_1_combat
+            2 -> R.drawable.rank_combat_2
+            3 -> R.drawable.rank_combat_3
+            4 -> R.drawable.rank_combat_4
+            5 -> R.drawable.rank_combat_5
+            6 -> R.drawable.rank_combat_6
+            7 -> R.drawable.rank_combat_7
+            8 -> R.drawable.rank_combat_8
+            9 -> R.drawable.rank_combat_9
+            else -> R.drawable.rank_combat_1
         }
     }
 
     fun getTradeRankDrawableId(rankValue: Int): Int {
         return when (rankValue + 1) {
-            2 -> R.drawable.rank_2_trading
-            3 -> R.drawable.rank_3_trading
-            4 -> R.drawable.rank_4_trading
-            5 -> R.drawable.rank_5_trading
-            6 -> R.drawable.rank_6_trading
-            7 -> R.drawable.rank_7_trading
-            8 -> R.drawable.rank_8_trading
-            9 -> R.drawable.rank_9_trading
-            else -> R.drawable.rank_1_trading
+            2 -> R.drawable.rank_trading_2
+            3 -> R.drawable.rank_trading_3
+            4 -> R.drawable.rank_trading_4
+            5 -> R.drawable.rank_trading_5
+            6 -> R.drawable.rank_trading_6
+            7 -> R.drawable.rank_trading_7
+            8 -> R.drawable.rank_trading_8
+            9 -> R.drawable.rank_trading_9
+            else -> R.drawable.rank_trading_1
         }
     }
 
     fun getExplorationRankDrawableId(rankValue: Int): Int {
         return when (rankValue + 1) {
-            2 -> R.drawable.rank_2_exploration
-            3 -> R.drawable.rank_3_exploration
-            4 -> R.drawable.rank_4_exploration
-            5 -> R.drawable.rank_5_exploration
-            6 -> R.drawable.rank_6_exploration
-            7 -> R.drawable.rank_7_exploration
-            8 -> R.drawable.rank_8_exploration
-            9 -> R.drawable.rank_9_exploration
-            else -> R.drawable.rank_1_exploration
+            2 -> R.drawable.rank_exploration_2
+            3 -> R.drawable.rank_exploration_3
+            4 -> R.drawable.rank_exploration_4
+            5 -> R.drawable.rank_exploration_5
+            6 -> R.drawable.rank_exploration_6
+            7 -> R.drawable.rank_exploration_7
+            8 -> R.drawable.rank_exploration_8
+            9 -> R.drawable.rank_exploration_9
+            else -> R.drawable.rank_exploration_1
         }
     }
 
     fun getCqcRankDrawableId(rankValue: Int): Int {
         return when (rankValue + 1) {
-            2 -> R.drawable.rank_2_cqc
-            3 -> R.drawable.rank_3_cqc
-            4 -> R.drawable.rank_4_cqc
-            5 -> R.drawable.rank_5_cqc
-            6 -> R.drawable.rank_6_cqc
-            7 -> R.drawable.rank_7_cqc
-            8 -> R.drawable.rank_8_cqc
-            9 -> R.drawable.rank_9_cqc
-            else -> R.drawable.rank_1_cqc
+            2 -> R.drawable.rank_cqc_2
+            3 -> R.drawable.rank_cqc_3
+            4 -> R.drawable.rank_cqc_4
+            5 -> R.drawable.rank_cqc_5
+            6 -> R.drawable.rank_cqc_6
+            7 -> R.drawable.rank_cqc_7
+            8 -> R.drawable.rank_cqc_8
+            9 -> R.drawable.rank_cqc_9
+            else -> R.drawable.rank_cqc_1
         }
     }
 
     fun getFederationRankDrawableId(rankValue: Int): Int {
         return when (rankValue + 1) {
-            2 -> R.drawable.rank_2_fed
-            3 -> R.drawable.rank_3_fed
-            4 -> R.drawable.rank_4_fed
-            5 -> R.drawable.rank_5_fed
-            6 -> R.drawable.rank_6_fed
-            7 -> R.drawable.rank_7_fed
-            8 -> R.drawable.rank_8_fed
-            9 -> R.drawable.rank_9_fed
-            10 -> R.drawable.rank_10_fed
-            11 -> R.drawable.rank_11_fed
-            12 -> R.drawable.rank_12_fed
-            13 -> R.drawable.rank_13_fed
-            14 -> R.drawable.rank_14_fed
-            else -> R.drawable.rank_1_fed
+            2 -> R.drawable.rank_fed_2
+            3 -> R.drawable.rank_fed_3
+            4 -> R.drawable.rank_fed_4
+            5 -> R.drawable.rank_fed_5
+            6 -> R.drawable.rank_fed_6
+            7 -> R.drawable.rank_fed_7
+            8 -> R.drawable.rank_fed_8
+            9 -> R.drawable.rank_fed_9
+            10 -> R.drawable.rank_fed_10
+            11 -> R.drawable.rank_fed_11
+            12 -> R.drawable.rank_fed_12
+            13 -> R.drawable.rank_fed_13
+            14 -> R.drawable.rank_fed_14
+            else -> R.drawable.rank_fed_1
         }
     }
 
     fun getEmpireRankDrawableId(rankValue: Int): Int {
         return when (rankValue + 1) {
-            2 -> R.drawable.rank_2_emp
-            3 -> R.drawable.rank_3_emp
-            4 -> R.drawable.rank_4_emp
-            5 -> R.drawable.rank_5_emp
-            6 -> R.drawable.rank_6_emp
-            7 -> R.drawable.rank_7_emp
-            8 -> R.drawable.rank_8_emp
-            9 -> R.drawable.rank_9_emp
-            10 -> R.drawable.rank_10_emp
-            11 -> R.drawable.rank_11_emp
-            12 -> R.drawable.rank_12_emp
-            13 -> R.drawable.rank_13_emp
-            14 -> R.drawable.rank_14_emp
-            else -> R.drawable.rank_1_emp
+            2 -> R.drawable.rank_emp_2
+            3 -> R.drawable.rank_emp_3
+            4 -> R.drawable.rank_emp_4
+            5 -> R.drawable.rank_emp_5
+            6 -> R.drawable.rank_emp_6
+            7 -> R.drawable.rank_emp_7
+            8 -> R.drawable.rank_emp_8
+            9 -> R.drawable.rank_emp_9
+            10 -> R.drawable.rank_emp_10
+            11 -> R.drawable.rank_emp_11
+            12 -> R.drawable.rank_emp_12
+            13 -> R.drawable.rank_emp_13
+            14 -> R.drawable.rank_emp_14
+            else -> R.drawable.rank_emp_1
         }
     }
 
