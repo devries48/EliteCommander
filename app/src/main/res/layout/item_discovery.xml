@@ -21,12 +21,13 @@
                 android:id="@+id/bodyImageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:layout_marginBottom="2dp"
-                android:maxWidth="76dp"
-                android:maxHeight="76dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/image_planet_star_discoveries"
+                android:maxWidth="72dp"
+                android:maxHeight="72dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -34,8 +35,9 @@
                 android:id="@+id/bodyNameTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_large"
                 android:text=""
-                android:textAppearance="@style/eliteStyle.YellowText"
+                android:textAppearance="@style/eliteStyle"
                 app:layout_constraintStart_toEndOf="@+id/bodyImageView"
                 app:layout_constraintTop_toTopOf="@+id/bodyImageView" />
 

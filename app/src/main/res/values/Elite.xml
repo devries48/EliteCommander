@@ -3,7 +3,7 @@
     <style name="eliteStyle" parent="TextAppearance.AppCompat">
         <item name="android:textColor">@color/elite_orange</item>
         <item name="android:fontFamily">@font/eurocaps</item>
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">17sp</item>
     </style>
 
     <style name="eliteStyle.Title">

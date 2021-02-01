@@ -114,10 +114,27 @@
     <string name="total_discovered">Discovered</string>
     <string name="total_mapped">Mapped</string>
     <string name="total_bonus">Efficiency Bonus</string>
+    <string name="image_planet_star_discoveries">Image for the planet or star discoveries.</string>
 
     <string name="body_water_world">Water World</string>
-    <string name="body_k_star">K - Yellow-Orange Star</string>
-    <string name="body_g_star">G - White-Yellow Star</string>
+    <string name="body_star_o">Blue-White Star (O type)</string>
+    <string name="body_star_b">Blue-White Star (B type)</string>
+    <string name="body_star_a">Blue-White Star (A type)</string>
+    <string name="body_star_f">White Star (F type)</string>
+    <string name="body_star_g">White-Yellow Star (G type)</string>
+    <string name="body_star_k">Yellow-Orange Star (K type)</string>
+    <string name="body_star_m">Red Dwarf Star (M type)</string>
+    <string name="body_star_tts">"T Tauri Star (TTS type)"</string>
+    <string name="body_star_c">"Carbon Star (C type)"</string>
+    <string name="body_black_hole_super_massive">Super massive Black Hole</string>
+
+    <string name="body_high_metal_content">High metal content body</string>
+    <string name="body_metal_rich">Metal rich body</string>
+    <string name="body_sudarsky_class1">Sudarsky class I gas giant</string>
+    <string name="body_sudarsky_class2">Sudarsky class II gas giant</string>
+    <string name="body_sudarsky_class3">Sudarsky class III gas giant</string>
+    <string name="body_sudarsky_class4">Sudarsky class IV gas giant</string>
+    <string name="body_sudarsky_class5">Sudarsky class V gas giant</string>
 
     <string name="empty_string" />
     <string name="Credits">Credits</string>
@@ -127,6 +144,6 @@
     <string name="distance_sol">Distance to Sol</string>
     <string name="hull">hull</string>
     <string name="elite_commander_logo">Elite Commander logo</string>
-    <string name="image_planet_star_discoveries">Image for the planet or star discoveries.</string>
-
+    <string name="total_discovered_and_mapped"><![CDATA[Discovered & Mapped]]></string>
+    <string name="first">First</string>
 </resources>

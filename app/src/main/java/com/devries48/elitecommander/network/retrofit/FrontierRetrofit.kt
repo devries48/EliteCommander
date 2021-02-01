@@ -11,9 +11,9 @@ interface FrontierRetrofit {
     @get:GET("profile")
     val profile: Call<Any?>?
 
-    @get:GET("journal/2021/01/17")
+    @get:GET("journal/2021/01/14")
     val journalRaw: Call<ResponseBody?>?
 
-    @get:GET("journal/2021/01/17")
+    @get:GET("journal/2021/01/14")
     val journal: Call<Any?>?
 }

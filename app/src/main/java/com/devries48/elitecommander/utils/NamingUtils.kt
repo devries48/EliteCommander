@@ -138,16 +138,46 @@ object NamingUtils {
 
         if (starType.isNotEmpty()) {
             when (starType) {
+                "O" -> {
+                    drawableResId = R.drawable.body_star_o
+                    stringResId = R.string.body_star_o
+                }
+                "B" -> {
+                    drawableResId = R.drawable.body_star_b
+                    stringResId = R.string.body_star_b
+                }
+                "A" -> {
+                    drawableResId = R.drawable.body_star_a
+                    stringResId = R.string.body_star_a
+                }
+                "F" -> {
+                    drawableResId = R.drawable.body_star_f
+                    stringResId = R.string.body_star_f
+                }
                 "G" -> {
-                    drawableResId = R.drawable.body_g_star
-                    stringResId = R.string.body_g_star
+                    drawableResId = R.drawable.body_star_g
+                    stringResId = R.string.body_star_g
                 }
                 "K" -> {
-                    drawableResId = R.drawable.body_k_star
-                    stringResId = R.string.body_k_star
+                    drawableResId = R.drawable.body_star_k
+                    stringResId = R.string.body_star_k
                 }
+                "M" -> {
+                    drawableResId = R.drawable.body_star_m
+                    stringResId = R.string.body_star_m
+                }
+                "TTS" -> {
+                    drawableResId = R.drawable.body_star_tts
+                    stringResId = R.string.body_star_tts
+                }
+                "SupermassiveBlackHole" -> {
+                    drawableResId = R.drawable.body_black_hole_super_massive
+                    stringResId = R.string.body_black_hole_super_massive
+                }
+
                 else -> {
                     drawableResId = R.drawable.body_unknown
+                    println(starType)
                 }
             }
 
@@ -157,7 +187,37 @@ object NamingUtils {
                     drawableResId = R.drawable.body_water_world
                     stringResId = R.string.body_water_world
                 }
+                "High metal content body" -> {
+                    drawableResId = R.drawable.body_high_metal_content
+                    stringResId = R.string.body_high_metal_content
+                }
+                "Metal rich body" -> {
+                    drawableResId = R.drawable.body_metal_rich
+                    stringResId = R.string.body_metal_rich
+                }
+                "Sudarsky class I gas giant" -> {
+                    drawableResId = R.drawable.body_sudarsky_class1
+                    stringResId = R.string.body_sudarsky_class1
+                }
+                "Sudarsky class II gas giant" -> {
+                    drawableResId = R.drawable.body_sudarsky_class2
+                    stringResId = R.string.body_sudarsky_class2
+                }
+                "Sudarsky class III gas giant" -> {
+                    drawableResId = R.drawable.body_sudarsky_class3
+                    stringResId = R.string.body_sudarsky_class3
+                }
+                "Sudarsky class IV gas giant" -> {
+                    drawableResId = R.drawable.body_sudarsky_class4
+                    stringResId = R.string.body_sudarsky_class4
+                }
+                "Sudarsky class V gas giant" -> {
+                    drawableResId = R.drawable.body_sudarsky_class5
+                    stringResId = R.string.body_sudarsky_class5
+                }
+
                 else -> {
+                    println(bodyName)
                     drawableResId = R.drawable.body_unknown
                 }
             }
