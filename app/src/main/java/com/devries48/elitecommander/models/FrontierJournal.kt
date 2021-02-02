@@ -182,7 +182,9 @@ class FrontierJournal {
                         firstDiscoveredCount,
                         firstMappedCount
                     )
-                })
+                }.sortedWith(compareBy<FrontierDiscovery> { it.discoveryCount }.thenBy { it.body }
+                    .thenBy { it.star })
+            )
 
         } catch (e: Exception) {
             println("LOG: Error parsing discovery events from journal." + e.message)

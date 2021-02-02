@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Elite Commander</string>
+    <string name="elite_commander_logo">Elite Commander logo</string>
     <string name="format_cmdr">CMDR %s</string>
     <string name="format_percentage">%1$s%%</string>
     <string name="format_number">%,d</string>
@@ -115,6 +116,8 @@
     <string name="total_mapped">Mapped</string>
     <string name="total_bonus">Efficiency Bonus</string>
     <string name="image_planet_star_discoveries">Image for the planet or star discoveries.</string>
+    <string name="total_discovered_and_mapped"><![CDATA[Discovered & Mapped]]></string>
+    <string name="first">First</string>
 
     <string name="body_water_world">Water World</string>
     <string name="body_star_o">Blue-White Star (O type)</string>
@@ -126,10 +129,22 @@
     <string name="body_star_m">Red Dwarf Star (M type)</string>
     <string name="body_star_tts">"T Tauri Star (TTS type)"</string>
     <string name="body_star_c">"Carbon Star (C type)"</string>
+    <string name="body_star_d">White Dwarf Star (D type)"</string>
+    <string name="body_star_l">Brown Star (L type)</string>
+    <string name="body_star_t">T Tauri Star (T type)</string>
+    <string name="body_star_y">Y Brown Star (Y type)</string>
+    <string name="body_star_neutron">Neutron Star</string>
     <string name="body_black_hole_super_massive">Super massive Black Hole</string>
 
+    <string name="body_earthlike">Earthlike body</string>
+    <string name="body_giant_water_based">Gas giant with water based life</string>
+    <string name="body_giant_ammonia_based">Gas giant with ammonia based life</string>
+    <string name="body_ammonia_world">Ammonia world</string>
     <string name="body_high_metal_content">High metal content body</string>
     <string name="body_metal_rich">Metal rich body</string>
+    <string name="body_icy">Icy body</string>
+    <string name="body_rocky">Rocky body</string>
+    <string name="body_rocky_ice">Rocky ice body</string>
     <string name="body_sudarsky_class1">Sudarsky class I gas giant</string>
     <string name="body_sudarsky_class2">Sudarsky class II gas giant</string>
     <string name="body_sudarsky_class3">Sudarsky class III gas giant</string>
@@ -143,7 +158,4 @@
     <string name="AssetsValue">Assets</string>
     <string name="distance_sol">Distance to Sol</string>
     <string name="hull">hull</string>
-    <string name="elite_commander_logo">Elite Commander logo</string>
-    <string name="total_discovered_and_mapped"><![CDATA[Discovered & Mapped]]></string>
-    <string name="first">First</string>
 </resources>

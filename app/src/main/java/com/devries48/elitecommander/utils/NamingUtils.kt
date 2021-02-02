@@ -1,6 +1,7 @@
 package com.devries48.elitecommander.utils
 
 import com.devries48.elitecommander.R
+import java.util.*
 
 object NamingUtils {
     fun getShipName(internalName: String): String {
@@ -137,42 +138,58 @@ object NamingUtils {
         val drawableResId: Int
 
         if (starType.isNotEmpty()) {
-            when (starType) {
-                "O" -> {
+            when (starType.toLowerCase(Locale.ROOT)) {
+                "o" -> {
                     drawableResId = R.drawable.body_star_o
                     stringResId = R.string.body_star_o
                 }
-                "B" -> {
+                "b" -> {
                     drawableResId = R.drawable.body_star_b
                     stringResId = R.string.body_star_b
                 }
-                "A" -> {
+                "a" -> {
                     drawableResId = R.drawable.body_star_a
                     stringResId = R.string.body_star_a
                 }
-                "F" -> {
+                "f" -> {
                     drawableResId = R.drawable.body_star_f
                     stringResId = R.string.body_star_f
                 }
-                "G" -> {
+                "g" -> {
                     drawableResId = R.drawable.body_star_g
                     stringResId = R.string.body_star_g
                 }
-                "K" -> {
+                "k" -> {
                     drawableResId = R.drawable.body_star_k
                     stringResId = R.string.body_star_k
                 }
-                "M" -> {
+                "m" -> {
                     drawableResId = R.drawable.body_star_m
                     stringResId = R.string.body_star_m
                 }
-                "TTS" -> {
+                "tts" -> {
                     drawableResId = R.drawable.body_star_tts
                     stringResId = R.string.body_star_tts
                 }
-                "SupermassiveBlackHole" -> {
+                "supermassiveblackhole" -> {
                     drawableResId = R.drawable.body_black_hole_super_massive
                     stringResId = R.string.body_black_hole_super_massive
+                }
+                "l" -> {
+                    drawableResId = R.drawable.body_star_l
+                    stringResId = R.string.body_star_l
+                }
+                "t" -> {
+                    drawableResId = R.drawable.body_star_t
+                    stringResId = R.string.body_star_t
+                }
+                "y" -> {
+                    drawableResId = R.drawable.body_star_y
+                    stringResId = R.string.body_star_y
+                }
+                "d" -> {
+                    drawableResId = R.drawable.body_star_d
+                    stringResId = R.string.body_star_d
                 }
 
                 else -> {
@@ -182,36 +199,65 @@ object NamingUtils {
             }
 
         } else {
-            when (bodyName) {
-                "Water world" -> {
+            when (bodyName.toLowerCase(Locale.ROOT)) {
+                "water world" -> {
                     drawableResId = R.drawable.body_water_world
                     stringResId = R.string.body_water_world
                 }
-                "High metal content body" -> {
+                "high metal content body" -> {
                     drawableResId = R.drawable.body_high_metal_content
                     stringResId = R.string.body_high_metal_content
                 }
-                "Metal rich body" -> {
+                "icy body" -> {
+                    drawableResId = R.drawable.body_icy
+                    stringResId = R.string.body_icy
+                }
+                "metal rich body" -> {
                     drawableResId = R.drawable.body_metal_rich
                     stringResId = R.string.body_metal_rich
                 }
-                "Sudarsky class I gas giant" -> {
+                "rocky body" -> {
+                    drawableResId = R.drawable.body_rocky
+                    stringResId = R.string.body_rocky
+                }
+                "rocky ice body" -> {
+                    drawableResId = R.drawable.body_rocky_ice
+                    stringResId = R.string.body_rocky_ice
+                }
+                "earthlike body" -> {
+                    drawableResId = R.drawable.body_earthlike
+                    stringResId = R.string.body_earthlike
+                }
+                "ammonia world" -> {
+                    drawableResId = R.drawable.body_ammonia_world
+                    stringResId = R.string.body_ammonia_world
+                }
+                "gas giant with water based life" -> {
+                    drawableResId = R.drawable.body_giant_water_based
+                    stringResId = R.string.body_giant_water_based
+                }
+                "gas giant with ammonia based life" -> {
+                    drawableResId = R.drawable.body_giant_ammonia_based
+                    stringResId = R.string.body_giant_ammonia_based
+                }
+
+                "sudarsky class i gas giant" -> {
                     drawableResId = R.drawable.body_sudarsky_class1
                     stringResId = R.string.body_sudarsky_class1
                 }
-                "Sudarsky class II gas giant" -> {
+                "sudarsky class ii gas giant" -> {
                     drawableResId = R.drawable.body_sudarsky_class2
                     stringResId = R.string.body_sudarsky_class2
                 }
-                "Sudarsky class III gas giant" -> {
+                "sudarsky class iii gas giant" -> {
                     drawableResId = R.drawable.body_sudarsky_class3
                     stringResId = R.string.body_sudarsky_class3
                 }
-                "Sudarsky class IV gas giant" -> {
+                "sudarsky class iv gas giant" -> {
                     drawableResId = R.drawable.body_sudarsky_class4
                     stringResId = R.string.body_sudarsky_class4
                 }
-                "Sudarsky class V gas giant" -> {
+                "sudarsky class v gas giant" -> {
                     drawableResId = R.drawable.body_sudarsky_class5
                     stringResId = R.string.body_sudarsky_class5
                 }

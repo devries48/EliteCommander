@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_large"
                 android:text=""
-                android:textAppearance="@style/eliteStyle"
+                android:textAppearance="@style/eliteStyle.LightOrangeText"
                 app:layout_constraintStart_toEndOf="@+id/bodyImageView"
                 app:layout_constraintTop_toTopOf="@+id/bodyImageView" />
 
