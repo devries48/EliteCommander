@@ -106,7 +106,7 @@ class FrontierJournal {
                 }
             }
 
-            val summary = FrontierDiscoverySummary(0, 0, 0, 0, 0, 0, 0, 0)
+            val summary = FrontierDiscoverySummary(0, 0, 0, 0, 0, 0, 0, 0, 0)
 
             rawDiscoveries.forEach { d ->
 
@@ -124,18 +124,26 @@ class FrontierJournal {
                 var addBonusCount = 0
                 var addFirstDiscovered = 0
                 var addFirstMapped = 0
+                var addFirstDiscoveredAndMapped = 0
                 var addProbeCount = 0
 
                 if (!discovery.wasDiscovered) addFirstDiscovered += 1
 
                 if (map != null) {
-                    addMapCount += 1
                     addProbeCount += map.probesUsed
+                    addMapCount += 1
 
                     if (map.efficiencyTarget >= map.probesUsed)
                         addBonusCount += 1
 
-                    if (!discovery.wasMapped) addFirstMapped += 1
+                    if (!discovery.wasMapped) {
+                        if (!discovery.wasDiscovered) {
+                            addFirstDiscoveredAndMapped += 1
+                            addFirstDiscovered -= 1
+                        } else {
+                            addFirstMapped += 1
+                        }
+                    }
                 }
 
                 var currentDiscovery =
@@ -160,19 +168,21 @@ class FrontierJournal {
                 currentDiscovery.bonusCount += addBonusCount
                 currentDiscovery.firstDiscoveredCount += addFirstDiscovered
                 currentDiscovery.firstMappedCount += addFirstMapped
+                currentDiscovery.firstDiscoveredAndMappedCount += addFirstDiscoveredAndMapped
 
                 summary.DiscoveryTotal += 1
                 summary.MappedTotal += addMapCount
                 summary.efficiencyBonusTotal += addBonusCount
                 summary.firstDiscoveryTotal += addFirstDiscovered
                 summary.firstMappedTotal += addFirstMapped
+                summary.firstDiscoveredAndMappedTotal += addFirstDiscoveredAndMapped
                 summary.probesUsedTotal += addProbeCount
             }
 
             return FrontierDiscoveriesEvent(
                 true,
                 summary,
-                discoveries.map { (_, _, planetClass, starType, _, _, discoveryCount, mapCount, bonusCount, firstDiscoveredCount, firstMappedCount) ->
+                discoveries.map { (_, _, planetClass, starType, _, _, discoveryCount, mapCount, bonusCount, firstDiscoveredCount, firstMappedCount, firstMappedAndDiscovered) ->
                     FrontierDiscovery(
                         planetClass.toStringOrEmpty(),
                         starType.toStringOrEmpty(),
@@ -180,7 +190,8 @@ class FrontierJournal {
                         mapCount,
                         bonusCount,
                         firstDiscoveredCount,
-                        firstMappedCount
+                        firstMappedCount,
+                        firstMappedAndDiscovered
                     )
                 }.sortedWith(compareBy<FrontierDiscovery> { it.discoveryCount }.thenBy { it.body }
                     .thenBy { it.star })
@@ -210,7 +221,9 @@ class FrontierJournal {
         var mappedCount: Int = 0,
         var bonusCount: Int = 0,
         var firstDiscoveredCount: Int = 0,
-        var firstMappedCount: Int = 0
+        var firstMappedCount: Int = 0,
+        var firstDiscoveredAndMappedCount: Int = 0
+
     )
 
     private data class Mapping(

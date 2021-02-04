@@ -158,4 +158,6 @@
     <string name="AssetsValue">Assets</string>
     <string name="distance_sol">Distance to Sol</string>
     <string name="hull">hull</string>
+    <string name="discovered">Discovered</string>
+    <string name="mapped">Mapped</string>
 </resources>

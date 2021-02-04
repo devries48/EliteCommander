@@ -61,7 +61,7 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
         commanderApi?.getDistanceToSol(profileEvent.systemName)
 
         // Hull damage
-        val hullPercentage:Int=profileEvent.hull/10000
+        val hullPercentage: Int = profileEvent.hull / 10000
 
         setMainStatisticRight(
             R.string.CurrentShip,
@@ -185,12 +185,12 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onCurrentDiscoveries(discoveries: FrontierDiscoveriesEvent) {
-        if (!discoveries.success){
+        if (!discoveries.success) {
             //NotificationsUtils.displayGenericDownloadErrorSnackbar(getActivity()) TODO: Error Handling
             return
         }
         mCurrentDiscoverySummary.value = discoveries.summary!!
-        mCurrentDiscoveries.value= discoveries.discoveries
+        mCurrentDiscoveries.value = discoveries.discoveries
     }
 
     companion object {
@@ -257,9 +257,11 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
         private var mMainStatistics: MutableLiveData<List<FrontierStatistic>>? = null
         private var mCurrentDiscoveries = MutableLiveData<List<FrontierDiscovery>>()
         private val mMainStatisticsList = ArrayList<FrontierStatistic>()
-        private var mCurrentDiscoverySummary=MutableLiveData(FrontierDiscoverySummary(
-            0,0,0,0,0,0,0,0
-        ))
+        private var mCurrentDiscoverySummary = MutableLiveData(
+            FrontierDiscoverySummary(
+                0, 0, 0, 0, 0, 0, 0, 0, 0
+            )
+        )
 
         private fun currencyFormat(amount: Long): String {
             val formatter = DecimalFormat("###,###,###,###")

@@ -20,9 +20,13 @@ class DiscoveriesRecyclerAdapter(var data: List<FrontierDiscovery>?) :
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val bodyImageView: ImageView = view.findViewById(R.id.bodyImageView)
         val bodyNameTextView: TextView = view.findViewById(R.id.bodyNameTextView)
-        val discoveriesTextView: TextView = view.findViewById(R.id.discoveriesTextView)
+        val discoveredTextView: TextView = view.findViewById(R.id.discoveredTextView)
+        val firstDiscoveredTextView: TextView = view.findViewById(R.id.firstDiscoveredTextView)
+        val firstDiscoveredLabelTextView: TextView =
+            view.findViewById(R.id.firstDiscoveredLabelTextView)
+        val mappedTitleTextView: TextView = view.findViewById(R.id.mappedTitleTextView)
         val mappedTextView: TextView = view.findViewById(R.id.mappedTextView)
-        val bonusTextView: TextView = view.findViewById(R.id.bonusTextView)
+        val firstMappedTextView: TextView = view.findViewById(R.id.firstMappedTextView)
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
@@ -52,10 +56,39 @@ class DiscoveriesRecyclerAdapter(var data: List<FrontierDiscovery>?) :
             else
                 viewHolder.bodyNameTextView.text = ctx.getString(bodyResources.first)
 
-            viewHolder.discoveriesTextView.text =
+            viewHolder.bodyImageView.setImageResource(bodyResources.second)
+            viewHolder.discoveredTextView.text =
                 String.format(ctx.getString(R.string.format_number), item.discoveryCount)
 
-            viewHolder.bodyImageView.setImageResource(bodyResources.second)
+            if (item.firstDiscoveredCount + item.firstMappedCount == 0)
+                viewHolder.firstDiscoveredLabelTextView.visibility = View.GONE
+            else viewHolder.firstDiscoveredLabelTextView.visibility = View.VISIBLE
+
+            if (item.firstDiscoveredCount == 0)
+                viewHolder.firstDiscoveredTextView.text = ""
+            else
+                viewHolder.firstDiscoveredTextView.text =
+                    String.format(ctx.getString(R.string.format_number), item.firstDiscoveredCount)
+
+            val totalFirstMapped :Int= item.firstMappedCount + item.firstDiscoveredAndMappedCount
+
+            if (item.mappedCount + totalFirstMapped == 0) {
+                viewHolder.mappedTitleTextView.visibility = View.GONE
+                viewHolder.mappedTextView.text = ""
+            } else {
+                viewHolder.mappedTitleTextView.visibility = View.VISIBLE
+                if (item.mappedCount == 0)
+                    viewHolder.mappedTextView.text = ""
+                else
+                    viewHolder.mappedTextView.text =
+                        String.format(ctx.getString(R.string.format_number), item.mappedCount)
+
+                if (totalFirstMapped == 0)
+                    viewHolder.firstMappedTextView.text = ""
+                else
+                    viewHolder.firstMappedTextView.text =
+                        String.format(ctx.getString(R.string.format_number), totalFirstMapped)
+            }
         }
     }
 

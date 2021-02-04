@@ -14,6 +14,7 @@
         <item name="android:textSize">12sp</item>
     </style>
 
+
     <style name="eliteStyle.YellowText">
         <item name="android:textColor">@color/elite_yellow</item>
     </style>
@@ -24,6 +25,18 @@
 
     <style name="eliteStyle.Rank">
         <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="eliteStyle.BodyDiscovery">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="eliteStyle.BodyDiscovery.Value" parent="eliteStyle.BodyDiscovery">
+        <item name="android:textColor">@color/elite_light_orange</item>
+    </style>
+
+    <style name="eliteStyle.BodyDiscovery.First" parent="eliteStyle.BodyDiscovery">
+        <item name="android:textColor">@color/elite_yellow</item>
     </style>
 
     <style name="eliteStyle.LoginActivityText">

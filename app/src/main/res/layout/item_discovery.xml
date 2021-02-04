@@ -17,6 +17,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideMapping"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.60" />
+
             <ImageView
                 android:id="@+id/bodyImageView"
                 android:layout_width="wrap_content"
@@ -42,34 +49,67 @@
                 app:layout_constraintTop_toTopOf="@+id/bodyImageView" />
 
             <TextView
-                android:id="@+id/discoveriesTextView"
+                android:id="@+id/discoveredTitleTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text=""
-                android:textAppearance="@style/eliteStyle.YellowText"
+                android:text="@string/discovered"
+                android:textAppearance="@style/eliteStyle.BodyDiscovery"
                 app:layout_constraintStart_toStartOf="@+id/bodyNameTextView"
                 app:layout_constraintTop_toBottomOf="@+id/bodyNameTextView" />
+
+            <TextView
+                android:id="@+id/discoveredTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textAppearance="@style/eliteStyle.BodyDiscovery.Value"
+                app:layout_constraintEnd_toEndOf="@+id/discoveredTitleTextView"
+                app:layout_constraintTop_toBottomOf="@+id/discoveredTitleTextView" />
+
+            <TextView
+                android:id="@+id/firstDiscoveredTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textAppearance="@style/eliteStyle.BodyDiscovery.First"
+                app:layout_constraintEnd_toEndOf="@+id/discoveredTitleTextView"
+                app:layout_constraintTop_toBottomOf="@+id/discoveredTextView" />
+
+            <TextView
+                android:id="@+id/firstDiscoveredLabelTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/first"
+                android:textAppearance="@style/eliteStyle.SmallText"
+                app:layout_constraintStart_toStartOf="@+id/discoveredTitleTextView"
+                app:layout_constraintTop_toTopOf="@+id/firstDiscoveredTextView" />
+
+            <TextView
+                android:id="@+id/mappedTitleTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mapped"
+                android:textAppearance="@style/eliteStyle.BodyDiscovery"
+                app:layout_constraintEnd_toEndOf="@+id/guideMapping"
+                app:layout_constraintTop_toTopOf="@+id/discoveredTitleTextView" />
 
             <TextView
                 android:id="@+id/mappedTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_small"
                 android:text=""
-                android:textAppearance="@style/eliteStyle"
-                app:layout_constraintStart_toEndOf="@+id/discoveriesTextView"
-                app:layout_constraintTop_toTopOf="@+id/discoveriesTextView" />
+                android:textAppearance="@style/eliteStyle.BodyDiscovery.Value"
+                app:layout_constraintEnd_toEndOf="@+id/mappedTitleTextView"
+                app:layout_constraintTop_toBottomOf="@+id/mappedTitleTextView" />
 
             <TextView
-                android:id="@+id/bonusTextView"
+                android:id="@+id/firstMappedTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
                 android:text=""
-                android:textAppearance="@style/eliteStyle.YellowText"
-                app:layout_constraintStart_toEndOf="@+id/mappedTextView"
-                app:layout_constraintTop_toTopOf="@+id/mappedTextView" />
+                android:textAppearance="@style/eliteStyle.BodyDiscovery.First"
+                app:layout_constraintEnd_toEndOf="@+id/mappedTitleTextView"
+                app:layout_constraintTop_toBottomOf="@+id/mappedTextView" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
