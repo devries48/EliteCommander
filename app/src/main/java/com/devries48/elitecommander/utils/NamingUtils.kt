@@ -133,63 +133,227 @@ object NamingUtils {
         }
     }
 
+    /* List of number aliases for star types received from Frontier.
+    * Returns the corresponding value of the requested star type. */
+    fun getStarTypeAlias(starType: String): Int {
+        return when (starType.toLowerCase(Locale.ROOT)) {
+            "o" -> 1
+            "b" -> 2
+            "b_bluewhitesupergiant" -> 201
+            "a" -> 3
+            "a_bluewhitesupergiant" -> 301
+            "f" -> 4
+            "f_whitesupergiant" -> 401
+            "g" -> 5
+            "g_whitesupergiant" -> 5001
+            "k" -> 6
+            "k_orangegiant" -> 601
+            "m" -> 7
+            "m_redgiant" -> 701
+            "m_redsupergiant" -> 702
+
+            "l" -> 8
+            "t" -> 9
+            "y" -> 10
+
+            // Proto stars
+            "tts" -> 11
+            "aebe" -> 12
+
+            // Wolf-Rayet
+            "w" -> 21
+            "wn" -> 22
+            "wnc" -> 23
+            "wc" -> 24
+            "wo" -> 25
+
+            // carbon stars
+            "cs" -> 31
+            "c" -> 32
+            "cn" -> 33
+            "cj" -> 34
+            "ch" -> 35
+            "chd" -> 36
+            "ms" -> 41
+            "s" -> 42
+
+            // white dwarfs
+            "d" -> 51
+            "da" -> 501
+            "dab" -> 502
+            "dao" -> 503
+            "daz" -> 504
+            "dav" -> 505
+            "db" -> 506
+            "dbz" -> 507
+            "dbv" -> 508
+            "do" -> 509
+            "dov" -> 510
+            "dq" -> 511
+            "dc" -> 512
+            "dcv" -> 513
+            "dx" -> 514
+
+            // Others
+            "n" -> 91
+            "h" -> 92
+            "supermassiveblackhole" -> 93
+            "x" -> 94
+            "rogueplanet" -> 111
+            "nebula" -> 112
+            "stellarremnantnebula" -> 113
+            else -> {
+                println("Unknown star type: $starType")
+                0
+            }
+        }
+    }
+
+    /* List of number aliases for planet types received from Frontier.
+    * Returns the corresponding value of the requested star type. */
+    fun getPlanetBodyAlias(planetBodyType: String): Int {
+        return when (planetBodyType.toLowerCase(Locale.ROOT)) {
+            "metal-rich body", "metal rich body" -> 1
+            "high metal content body", "high metal content world" -> 2
+            "rocky body" -> 11
+            "rocky ice body" -> 12
+            "rocky ice world" -> 12
+            "icy body" -> 21
+            "earthlike body", "earthlike", "earth-like world" -> 31
+            "water world" -> 41
+            "water giant" -> 42
+            "water giant with life" -> 43
+            "ammonia world" -> 51
+            "gas giant with water based life", "gas giant with water-based life" -> 61
+            "gas giant with ammonia based life", "gas giant with ammonia-based life" -> 62
+            "sudarsky class i gas giant", "class i gas giant" -> 71
+            "sudarsky class ii gas giant", "class ii gas giant" -> 72
+            "sudarsky class iii gas giant", "class iii gas giant" -> 73
+            "sudarsky class iv gas giant", "class iv gas giant" -> 74
+            "sudarsky class v gas giant", "class v gas giant" -> 75
+            "helium rich gas giant", "helium-rich gas giant" -> 81
+            "helium gas giant" -> 82
+            else -> {
+                println("Unknown planet: $planetBodyType")
+                0
+            }
+        }
+    }
+
     fun getDiscoveryBodyResources(bodyName: String, starType: String): Pair<Int, Int> {
         var stringResId = 0
         val drawableResId: Int
 
-        if (starType.isNotEmpty()) {
-            when (starType.toLowerCase(Locale.ROOT)) {
-                "o" -> {
+        if (starType.isNotEmpty() && starType.isNotBlank()) {
+            when (val id = getStarTypeAlias(starType)) {
+                1 -> {
                     drawableResId = R.drawable.body_star_o
                     stringResId = R.string.body_star_o
                 }
-                "b" -> {
+                2, 201 -> {
                     drawableResId = R.drawable.body_star_b
-                    stringResId = R.string.body_star_b
+                    stringResId =
+                        if (id == 2) R.string.body_star_b else R.string.body_star_b_blue_white_supergiant
                 }
-                "a" -> {
+                3, 301 -> {
                     drawableResId = R.drawable.body_star_a
-                    stringResId = R.string.body_star_a
+                    stringResId =
+                        if (id == 3) R.string.body_star_a else R.string.body_star_a_blue_white_supergiant
                 }
-                "f" -> {
+                4, 401 -> {
                     drawableResId = R.drawable.body_star_f
-                    stringResId = R.string.body_star_f
+                    stringResId =
+                        if (id == 4) R.string.body_star_f else R.string.body_star_f_whitesupergiant
                 }
-                "g" -> {
+                5, 5001 -> {
                     drawableResId = R.drawable.body_star_g
-                    stringResId = R.string.body_star_g
+                    stringResId =
+                        if (id == 5) R.string.body_star_g else R.string.body_star_g_white_yellow_supergiant
                 }
-                "k" -> {
+                6, 601 -> {
                     drawableResId = R.drawable.body_star_k
-                    stringResId = R.string.body_star_k
+                    stringResId =
+                        if (id == 5) R.string.body_star_k else R.string.body_star_k_yellow_orange_giant
                 }
-                "m" -> {
+                7, 701, 702 -> {
                     drawableResId = R.drawable.body_star_m
-                    stringResId = R.string.body_star_m
+                    when (id) {
+                        7 -> R.string.body_star_m
+                        701 -> R.string.body_star_m_red_giant
+                        else -> R.string.body_star_m_red_super_giant
+                    }
                 }
-                "tts" -> {
-                    drawableResId = R.drawable.body_star_tts
-                    stringResId = R.string.body_star_tts
-                }
-                "supermassiveblackhole" -> {
-                    drawableResId = R.drawable.body_black_hole_super_massive
-                    stringResId = R.string.body_black_hole_super_massive
-                }
-                "l" -> {
+                8 -> {
                     drawableResId = R.drawable.body_star_l
                     stringResId = R.string.body_star_l
                 }
-                "t" -> {
+                9 -> {
                     drawableResId = R.drawable.body_star_t
                     stringResId = R.string.body_star_t
                 }
-                "y" -> {
+                10 -> {
                     drawableResId = R.drawable.body_star_y
                     stringResId = R.string.body_star_y
                 }
-                "d" -> {
+                11 -> {
+                    drawableResId = R.drawable.body_star_tts
+                    stringResId = R.string.body_star_tts
+                }
+                12 -> {
+                    drawableResId = R.drawable.body_star_aebe
+                    stringResId = R.string.body_star_aebe
+                }
+                21, 22, 23, 24, 25 -> {
+                    drawableResId = R.drawable.body_star_wolf
+                    stringResId = when (id) {
+                        21 -> R.string.body_star_wolf
+                        22 -> R.string.body_star_wolf_n
+                        23 -> R.string.body_star_wolf_nc
+                        24 -> R.string.body_star_wolf_c
+                        else -> R.string.body_star_wolf_o
+                    }
+                }
+                31, 32, 33, 34, 35, 36, 41, 42 -> {
+                    drawableResId = R.drawable.body_star_c
+                    stringResId = when (id) {
+                        31 -> R.string.body_star_cs
+                        32 -> R.string.body_star_c
+                        33 -> R.string.body_star_cn
+                        34 -> R.string.body_star_cj
+                        35 -> R.string.body_star_ch
+                        36 -> R.string.body_star_chd
+                        41 -> R.string.body_star_ms
+                        else -> R.string.body_star_s
+                    }
+                }
+                51, 501, 502, 503, 504, 505, 506, 507, 508, 509, 510, 511, 512, 513, 514 -> {
                     drawableResId = R.drawable.body_star_d
-                    stringResId = R.string.body_star_d
+                    stringResId = when (id) {
+                        51 -> R.string.body_star_d
+                        501 -> R.string.body_star_da
+                        502 -> R.string.body_star_dab
+                        503 -> R.string.body_star_dao
+                        504 -> R.string.body_star_daz
+                        505 -> R.string.body_star_dav
+                        506 -> R.string.body_star_db
+                        507 -> R.string.body_star_dbz
+                        508 -> R.string.body_star_dbv
+                        509 -> R.string.body_star_do
+                        510 -> R.string.body_star_dov
+                        511 -> R.string.body_star_dq
+                        512 -> R.string.body_star_dc
+                        513 -> R.string.body_star_dcw
+                        else -> R.string.body_star_dx
+                    }
+                }
+                91 -> {
+                    drawableResId = R.drawable.body_star_neutron
+                    stringResId = R.string.body_star_neutron
+                }
+
+                93 -> {
+                    drawableResId = R.drawable.body_black_hole_super_massive
+                    stringResId = R.string.body_black_hole_super_massive
                 }
 
                 else -> {
@@ -199,69 +363,76 @@ object NamingUtils {
             }
 
         } else {
-            when (bodyName.toLowerCase(Locale.ROOT)) {
-                "water world" -> {
-                    drawableResId = R.drawable.body_water_world
-                    stringResId = R.string.body_water_world
-                }
-                "high metal content body" -> {
-                    drawableResId = R.drawable.body_high_metal_content
-                    stringResId = R.string.body_high_metal_content
-                }
-                "icy body" -> {
-                    drawableResId = R.drawable.body_icy
-                    stringResId = R.string.body_icy
-                }
-                "metal rich body" -> {
+            when (getPlanetBodyAlias(bodyName)) {
+                1 -> {
                     drawableResId = R.drawable.body_metal_rich
                     stringResId = R.string.body_metal_rich
                 }
-                "rocky body" -> {
+                2 -> {
+                    drawableResId = R.drawable.body_high_metal_content
+                    stringResId = R.string.body_high_metal_content
+                }
+                11 -> {
                     drawableResId = R.drawable.body_rocky
                     stringResId = R.string.body_rocky
                 }
-                "rocky ice body" -> {
+                12 -> {
                     drawableResId = R.drawable.body_rocky_ice
                     stringResId = R.string.body_rocky_ice
                 }
-                "earthlike body" -> {
+                21 -> {
+                    drawableResId = R.drawable.body_icy
+                    stringResId = R.string.body_icy
+                }
+                31 -> {
                     drawableResId = R.drawable.body_earthlike
                     stringResId = R.string.body_earthlike
                 }
-                "ammonia world" -> {
+                41 -> {
+                    drawableResId = R.drawable.body_water_world
+                    stringResId = R.string.body_water_world
+                }
+                42 -> {
+                    drawableResId = R.drawable.body_water_giant
+                    stringResId = R.string.body_water_giant
+                }
+                51 -> {
                     drawableResId = R.drawable.body_ammonia_world
                     stringResId = R.string.body_ammonia_world
                 }
-                "gas giant with water based life" -> {
+                61 -> {
                     drawableResId = R.drawable.body_giant_water_based
                     stringResId = R.string.body_giant_water_based
                 }
-                "gas giant with ammonia based life" -> {
+                62 -> {
                     drawableResId = R.drawable.body_giant_ammonia_based
                     stringResId = R.string.body_giant_ammonia_based
                 }
 
-                "sudarsky class i gas giant" -> {
+                71 -> {
                     drawableResId = R.drawable.body_sudarsky_class1
                     stringResId = R.string.body_sudarsky_class1
                 }
-                "sudarsky class ii gas giant" -> {
+                72 -> {
                     drawableResId = R.drawable.body_sudarsky_class2
                     stringResId = R.string.body_sudarsky_class2
                 }
-                "sudarsky class iii gas giant" -> {
+                73 -> {
                     drawableResId = R.drawable.body_sudarsky_class3
                     stringResId = R.string.body_sudarsky_class3
                 }
-                "sudarsky class iv gas giant" -> {
+                74 -> {
                     drawableResId = R.drawable.body_sudarsky_class4
                     stringResId = R.string.body_sudarsky_class4
                 }
-                "sudarsky class v gas giant" -> {
+                75 -> {
                     drawableResId = R.drawable.body_sudarsky_class5
                     stringResId = R.string.body_sudarsky_class5
                 }
-
+                81, 82 -> {
+                    drawableResId = R.drawable.body_helium_giant
+                    stringResId = R.string.body_helium_giant
+                }
                 else -> {
                     println(bodyName)
                     drawableResId = R.drawable.body_unknown

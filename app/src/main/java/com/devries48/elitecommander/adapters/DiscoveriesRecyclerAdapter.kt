@@ -27,6 +27,7 @@ class DiscoveriesRecyclerAdapter(var data: List<FrontierDiscovery>?) :
         val mappedTitleTextView: TextView = view.findViewById(R.id.mappedTitleTextView)
         val mappedTextView: TextView = view.findViewById(R.id.mappedTextView)
         val firstMappedTextView: TextView = view.findViewById(R.id.firstMappedTextView)
+        val valueTextView: TextView = view.findViewById(R.id.valueTextView)
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
@@ -57,26 +58,37 @@ class DiscoveriesRecyclerAdapter(var data: List<FrontierDiscovery>?) :
                 viewHolder.bodyNameTextView.text = ctx.getString(bodyResources.first)
 
             viewHolder.bodyImageView.setImageResource(bodyResources.second)
-            viewHolder.discoveredTextView.text =
-                String.format(ctx.getString(R.string.format_number), item.discoveryCount)
 
-            if (item.firstDiscoveredCount + item.firstMappedCount == 0)
+            val totalDiscovered = item.discoveryCount + item.firstDiscoveredAndMappedCount
+
+            if (totalDiscovered == 0)
+                viewHolder.discoveredTextView.text = ""
+            else viewHolder.discoveredTextView.text =
+                String.format(ctx.getString(R.string.format_number), totalDiscovered)
+
+            if (item.firstDiscoveredCount + item.firstMappedCount + item.firstDiscoveredAndMappedCount == 0)
                 viewHolder.firstDiscoveredLabelTextView.visibility = View.GONE
-            else viewHolder.firstDiscoveredLabelTextView.visibility = View.VISIBLE
+            else
+                viewHolder.firstDiscoveredLabelTextView.visibility = View.VISIBLE
 
             if (item.firstDiscoveredCount == 0)
                 viewHolder.firstDiscoveredTextView.text = ""
             else
                 viewHolder.firstDiscoveredTextView.text =
-                    String.format(ctx.getString(R.string.format_number), item.firstDiscoveredCount)
+                    String.format(
+                        ctx.getString(R.string.format_number),
+                        item.firstDiscoveredCount + item.firstDiscoveredAndMappedCount
+                    )
 
-            val totalFirstMapped :Int= item.firstMappedCount + item.firstDiscoveredAndMappedCount
+            val totalFirstMapped: Int = item.firstMappedCount + item.firstDiscoveredAndMappedCount
 
             if (item.mappedCount + totalFirstMapped == 0) {
                 viewHolder.mappedTitleTextView.visibility = View.GONE
                 viewHolder.mappedTextView.text = ""
+                viewHolder.firstMappedTextView.text = ""
             } else {
                 viewHolder.mappedTitleTextView.visibility = View.VISIBLE
+
                 if (item.mappedCount == 0)
                     viewHolder.mappedTextView.text = ""
                 else
@@ -89,6 +101,10 @@ class DiscoveriesRecyclerAdapter(var data: List<FrontierDiscovery>?) :
                     viewHolder.firstMappedTextView.text =
                         String.format(ctx.getString(R.string.format_number), totalFirstMapped)
             }
+
+            viewHolder.valueTextView.text =
+                String.format(ctx.getString(R.string.format_currency), item.estimatedValue)
+
         }
     }
 

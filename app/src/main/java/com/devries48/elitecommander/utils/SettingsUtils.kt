@@ -5,6 +5,7 @@ import androidx.preference.PreferenceManager
 
 object SettingsUtils {
 
+
     fun getBoolean(c: Context?, key: String?): Boolean {
         return PreferenceManager.getDefaultSharedPreferences(c)
             .getBoolean(key, false)

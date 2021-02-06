@@ -7,6 +7,7 @@ import com.devries48.elitecommander.events.FrontierDiscoveriesEvent
 import com.devries48.elitecommander.events.FrontierDiscovery
 import com.devries48.elitecommander.events.FrontierDiscoverySummary
 import com.devries48.elitecommander.events.FrontierRanksEvent
+import com.devries48.elitecommander.utils.DiscoveryValueCalculator
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
@@ -88,6 +89,7 @@ class FrontierJournal {
     }
 
     fun getCurrentDiscoveries(): FrontierDiscoveriesEvent {
+
         try {
             val rawDiscoveries = mRawEvents.filter { it.event == JOURNAL_EVENT_DISCOVERY }
             val rawMappings = mRawEvents.filter { it.event == JOURNAL_EVENT_MAP }
@@ -106,7 +108,7 @@ class FrontierJournal {
                 }
             }
 
-            val summary = FrontierDiscoverySummary(0, 0, 0, 0, 0, 0, 0, 0, 0)
+            val summary = FrontierDiscoverySummary(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
             rawDiscoveries.forEach { d ->
 
@@ -126,6 +128,7 @@ class FrontierJournal {
                 var addFirstMapped = 0
                 var addFirstDiscoveredAndMapped = 0
                 var addProbeCount = 0
+                var hasEfficiencyBonus = false
 
                 if (!discovery.wasDiscovered) addFirstDiscovered += 1
 
@@ -133,8 +136,10 @@ class FrontierJournal {
                     addProbeCount += map.probesUsed
                     addMapCount += 1
 
-                    if (map.efficiencyTarget >= map.probesUsed)
+                    if (map.efficiencyTarget >= map.probesUsed) {
                         addBonusCount += 1
+                        hasEfficiencyBonus = true
+                    }
 
                     if (!discovery.wasMapped) {
                         if (!discovery.wasDiscovered) {
@@ -156,33 +161,46 @@ class FrontierJournal {
                         discovery.systemAddress,
                         discovery.bodyID,
                         discovery.planetClass.toStringOrEmpty(),
-                        discovery.starType.toStringOrEmpty(),
-                        discovery.wasDiscovered,
-                        discovery.wasMapped
+                        discovery.starType.toStringOrEmpty()
                     )
                     discoveries.add(currentDiscovery)
                 }
 
-                currentDiscovery.discoveryCount += 1
-                currentDiscovery.mappedCount += addMapCount
+                // Calculate estimated scan values for current body
+                currentDiscovery.mass = discovery.mass
+                currentDiscovery.stellarMass= discovery.stellarMass
+                currentDiscovery.terraformState = discovery.terraformState
+                currentDiscovery.wasDiscovered = discovery.wasDiscovered
+                currentDiscovery.wasMapped = discovery.wasMapped
+
+                val estimatedValue = DiscoveryValueCalculator.calculate(
+                    currentDiscovery,
+                    map != null,
+                    hasEfficiencyBonus
+                )
+
+                currentDiscovery.discoveryCount += (1 - addFirstDiscovered - addFirstDiscoveredAndMapped)
+                currentDiscovery.mappedCount += (addMapCount - addFirstMapped - addFirstDiscoveredAndMapped)
                 currentDiscovery.bonusCount += addBonusCount
                 currentDiscovery.firstDiscoveredCount += addFirstDiscovered
                 currentDiscovery.firstMappedCount += addFirstMapped
                 currentDiscovery.firstDiscoveredAndMappedCount += addFirstDiscoveredAndMapped
+                currentDiscovery.estimatedValue += estimatedValue
 
-                summary.DiscoveryTotal += 1
-                summary.MappedTotal += addMapCount
+                summary.DiscoveryTotal += (1 - addFirstDiscovered)
+                summary.MappedTotal += (addMapCount - addFirstMapped)
                 summary.efficiencyBonusTotal += addBonusCount
                 summary.firstDiscoveryTotal += addFirstDiscovered
                 summary.firstMappedTotal += addFirstMapped
                 summary.firstDiscoveredAndMappedTotal += addFirstDiscoveredAndMapped
                 summary.probesUsedTotal += addProbeCount
+                summary.estimatedValue += estimatedValue
             }
 
             return FrontierDiscoveriesEvent(
                 true,
                 summary,
-                discoveries.map { (_, _, planetClass, starType, _, _, discoveryCount, mapCount, bonusCount, firstDiscoveredCount, firstMappedCount, firstMappedAndDiscovered) ->
+                discoveries.map { (_, _, planetClass, starType, _, _, _, _, _, discoveryCount, mapCount, bonusCount, firstDiscoveredCount, firstMappedCount, firstMappedAndDiscovered, estimatedValue) ->
                     FrontierDiscovery(
                         planetClass.toStringOrEmpty(),
                         starType.toStringOrEmpty(),
@@ -191,7 +209,8 @@ class FrontierJournal {
                         bonusCount,
                         firstDiscoveredCount,
                         firstMappedCount,
-                        firstMappedAndDiscovered
+                        firstMappedAndDiscovered,
+                        estimatedValue
                     )
                 }.sortedWith(compareBy<FrontierDiscovery> { it.discoveryCount }.thenBy { it.body }
                     .thenBy { it.star })
@@ -201,29 +220,35 @@ class FrontierJournal {
             println("LOG: Error parsing discovery events from journal." + e.message)
             return FrontierDiscoveriesEvent(false, null, null)
         }
-
     }
 
-    private data class Discovery(
+    data class Discovery(
         @SerializedName("SystemAddress")
         val systemAddress: Long,
         @SerializedName("BodyID")
         val bodyID: Int,
         @SerializedName("PlanetClass")
-        var planetClass: String?,
+        val planetClass: String?,
         @SerializedName("StarType")
         val starType: String?,
         @SerializedName("WasDiscovered")
-        val wasDiscovered: Boolean,
+        var wasDiscovered: Boolean = false,
         @SerializedName("WasMapped")
-        val wasMapped: Boolean,
+        var wasMapped: Boolean = false,
+        @SerializedName("MassEM")
+        var mass: Double? = 0.0,
+        @SerializedName("StellarMass")
+        var stellarMass: Double? = 0.0,
+        @SerializedName("TerraformState")
+        var terraformState: String? = "",
+
         var discoveryCount: Int = 0,
         var mappedCount: Int = 0,
         var bonusCount: Int = 0,
         var firstDiscoveredCount: Int = 0,
         var firstMappedCount: Int = 0,
-        var firstDiscoveredAndMappedCount: Int = 0
-
+        var firstDiscoveredAndMappedCount: Int = 0,
+        var estimatedValue: Long = 0
     )
 
     private data class Mapping(

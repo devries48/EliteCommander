@@ -115,6 +115,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadData(){
         mCommanderApi.loadProfile()
+        // TODO: iterate through journals from today to the journal's last 'Docked' event.
+
         mCommanderApi.loadJournal()
     }
 

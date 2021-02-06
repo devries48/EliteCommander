@@ -259,7 +259,7 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
         private val mMainStatisticsList = ArrayList<FrontierStatistic>()
         private var mCurrentDiscoverySummary = MutableLiveData(
             FrontierDiscoverySummary(
-                0, 0, 0, 0, 0, 0, 0, 0, 0
+                0, 0, 0, 0, 0, 0, 0, 0, 0,0
             )
         )
 
