@@ -15,7 +15,7 @@ import com.devries48.elitecommander.databinding.ActivityMainBinding
 import com.devries48.elitecommander.events.FrontierAuthNeededEvent
 import com.devries48.elitecommander.fragments.CommanderViewModel
 import com.devries48.elitecommander.fragments.CommanderViewModelFactory
-import com.devries48.elitecommander.network.CommanderApi
+import com.devries48.elitecommander.network.CommanderNetwork
 import com.devries48.elitecommander.utils.OAuthUtils.storeUpdatedTokens
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
     private val navController by lazy { findNavController() }
 
     private lateinit var mBinding: ActivityMainBinding
-    private lateinit var mCommanderApi: CommanderApi
+    private lateinit var mCommanderNetwork: CommanderNetwork
     private var mCommanderViewModel: CommanderViewModel? = null
 
     private var mIsLoggedIn by Delegates.observable(false) { _, _, newValue ->
@@ -100,11 +100,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupViewModel() {
         try {
-            mCommanderApi = CommanderApi()
+            mCommanderNetwork = CommanderNetwork()
 
             val viewModelProvider = ViewModelProvider(
                 navController.getViewModelStoreOwner(R.id.nav_graph),
-                CommanderViewModelFactory(mCommanderApi)
+                CommanderViewModelFactory(mCommanderNetwork)
             )
             mCommanderViewModel = viewModelProvider.get(CommanderViewModel::class.java)
 
@@ -114,10 +114,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadData(){
-        mCommanderApi.loadProfile()
+        mCommanderNetwork.loadProfile()
         // TODO: iterate through journals from today to the journal's last 'Docked' event.
 
-        mCommanderApi.loadJournal()
+        mCommanderNetwork.loadJournal()
     }
 
     private fun findNavController(): NavController {

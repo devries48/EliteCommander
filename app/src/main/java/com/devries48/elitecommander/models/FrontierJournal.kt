@@ -7,6 +7,8 @@ import com.devries48.elitecommander.events.FrontierDiscoveriesEvent
 import com.devries48.elitecommander.events.FrontierDiscovery
 import com.devries48.elitecommander.events.FrontierDiscoverySummary
 import com.devries48.elitecommander.events.FrontierRanksEvent
+import com.devries48.elitecommander.models.response.FrontierJournalRankProgressResponse
+import com.devries48.elitecommander.models.response.FrontierJournalRankResponse
 import com.devries48.elitecommander.utils.DiscoveryValueCalculator
 import com.google.gson.Gson
 import com.google.gson.JsonObject

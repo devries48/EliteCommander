@@ -1,5 +1,6 @@
-package com.devries48.elitecommander.models
+package com.devries48.elitecommander.models.response
 
+import com.devries48.elitecommander.models.FrontierJournalBase
 import com.google.gson.annotations.SerializedName
 
 class FrontierJournalDiscoveriesResponse : FrontierJournalBase() {

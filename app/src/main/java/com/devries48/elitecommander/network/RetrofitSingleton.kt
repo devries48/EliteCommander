@@ -1,9 +1,12 @@
-package com.devries48.elitecommander.network.retrofit
+package com.devries48.elitecommander.network
 
 import android.content.Context
 import com.devries48.elitecommander.R
 import com.devries48.elitecommander.events.FrontierAuthNeededEvent
-import com.devries48.elitecommander.models.FrontierAccessTokenResponse
+import com.devries48.elitecommander.interfaces.EddbInterface
+import com.devries48.elitecommander.interfaces.FrontierAuthInterface
+import com.devries48.elitecommander.interfaces.FrontierInterface
+import com.devries48.elitecommander.models.response.FrontierAccessTokenResponse
 import com.devries48.elitecommander.utils.OAuthUtils
 import com.google.gson.GsonBuilder
 import okhttp3.Interceptor
@@ -19,41 +22,36 @@ import java.util.concurrent.TimeUnit
 // From https://medium.com/exploring-code/how-to-make-the-perfect-singleton-de6b951dfdb0
 
 open class RetrofitSingleton private constructor() : Serializable {
-    private var edApiRetrofit: EDApiRetrofit? = null
-    private var frontierAuthRetrofit: FrontierAuthRetrofit? = null
-    private var frontierRetrofit: FrontierRetrofit? = null
+    private var edInterface: EddbInterface? = null
+    private var frontierAuthInterface: FrontierAuthInterface? = null
+    private var frontierInterface: FrontierInterface? = null
     private var retrofitBuilder: Retrofit.Builder? = null
 
-    //Make singleton from serialize and deserialize operation.
-    protected fun readResolve(): RetrofitSingleton? {
-        return getInstance()
-    }
-
-    fun getEdApiRetrofit(ctx: Context): EDApiRetrofit? {
-        if (edApiRetrofit != null) {
-            return edApiRetrofit
+    fun getEdApiRetrofit(ctx: Context): EddbInterface? {
+        if (edInterface != null) {
+            return edInterface
         }
-        edApiRetrofit = retrofitInstance
+        edInterface = retrofitInstance
             ?.baseUrl(ctx.getString(R.string.edapi_base))
             ?.build()
-            ?.create(EDApiRetrofit::class.java)
-        return edApiRetrofit
+            ?.create(EddbInterface::class.java)
+        return edInterface
     }
 
-    fun getFrontierAuthRetrofit(ctx: Context): FrontierAuthRetrofit? {
-        if (frontierAuthRetrofit != null) {
-            return frontierAuthRetrofit
+    fun getFrontierAuthRetrofit(ctx: Context): FrontierAuthInterface? {
+        if (frontierAuthInterface != null) {
+            return frontierAuthInterface
         }
-        frontierAuthRetrofit = retrofitInstance
+        frontierAuthInterface = retrofitInstance
             ?.baseUrl(ctx.getString(R.string.frontier_auth_base))
             ?.build()
-            ?.create(FrontierAuthRetrofit::class.java)
-        return frontierAuthRetrofit
+            ?.create(FrontierAuthInterface::class.java)
+        return frontierAuthInterface
     }
 
-    fun getFrontierRetrofit(ctx: Context): FrontierRetrofit? {
-        if (frontierRetrofit != null) {
-            return frontierRetrofit
+    fun getFrontierRetrofit(ctx: Context): FrontierInterface? {
+        if (frontierInterface != null) {
+            return frontierInterface
         }
         val httpClient = commonOkHttpClientBuilder
 
@@ -100,11 +98,11 @@ open class RetrofitSingleton private constructor() : Serializable {
         val customRetrofitBuilder = Retrofit.Builder()
             .client(httpClient.build())
             .addConverterFactory(commonGsonConverterFactory)
-        frontierRetrofit = customRetrofitBuilder
+        frontierInterface = customRetrofitBuilder
             .baseUrl(ctx.getString(R.string.frontier_api_base))
             .build()
-            .create(FrontierRetrofit::class.java)
-        return frontierRetrofit
+            .create(FrontierInterface::class.java)
+        return frontierInterface
     }
 
     private val retrofitInstance: Retrofit.Builder?

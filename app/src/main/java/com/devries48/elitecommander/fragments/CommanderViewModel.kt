@@ -11,15 +11,15 @@ import com.devries48.elitecommander.R
 import com.devries48.elitecommander.events.*
 import com.devries48.elitecommander.models.FrontierStatistic
 import com.devries48.elitecommander.models.RankModel
-import com.devries48.elitecommander.network.CommanderApi
+import com.devries48.elitecommander.network.CommanderNetwork
 import com.devries48.elitecommander.utils.NamingUtils
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
-class CommanderViewModel(api: CommanderApi?) : ViewModel() {
+class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
 
-    private val commanderApi = api
+    private val commanderApi = network
 
     val name: LiveData<String> = mName
     val combatRank: LiveData<RankModel> = mCombatRank
@@ -311,8 +311,8 @@ class CommanderViewModel(api: CommanderApi?) : ViewModel() {
     }
 }
 
-class CommanderViewModelFactory(private val api: CommanderApi?) :
+class CommanderViewModelFactory(private val network: CommanderNetwork?) :
     ViewModelProvider.NewInstanceFactory() {
     @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T = CommanderViewModel(api) as T
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T = CommanderViewModel(network) as T
 }

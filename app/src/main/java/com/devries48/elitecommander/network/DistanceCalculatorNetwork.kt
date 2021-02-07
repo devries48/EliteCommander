@@ -1,39 +1,28 @@
 package com.devries48.elitecommander.network
 
-
 import android.content.Context
+import com.devries48.elitecommander.declarations.enqueueWrap
 import com.devries48.elitecommander.events.DistanceSearchEvent
-import com.devries48.elitecommander.models.DistanceResponse
-import com.devries48.elitecommander.network.retrofit.EDApiRetrofit
-import com.devries48.elitecommander.network.retrofit.RetrofitSingleton
+import com.devries48.elitecommander.interfaces.EddbInterface
 import org.greenrobot.eventbus.EventBus
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.internal.EverythingIsNonNull
-
 
 object DistanceCalculatorNetwork {
 
     fun getDistance(ctx: Context, firstSystem: String?, secondSystem: String?) {
-        val retrofit: EDApiRetrofit? = RetrofitSingleton.getInstance()
+        val eddb: EddbInterface? = RetrofitSingleton.getInstance()
             ?.getEdApiRetrofit(ctx.applicationContext)
 
-        val callback: Callback<DistanceResponse?> = object : Callback<DistanceResponse?> {
-            @EverythingIsNonNull
-            override fun onResponse(
-                call: Call<DistanceResponse?>,
-                response: Response<DistanceResponse?>
-            ) {
-                val body = response.body()
+        eddb?.getDistance(firstSystem, secondSystem)!!.enqueueWrap {
+            onResponse = {
+                val body = it.body()
 
-                if (!response.isSuccessful || body == null) {
+                if (!it.isSuccessful || body == null) {
                     var msg = "Invalid response"
 
-                    if  (    response.code()==400) {
-                        msg= "400"
-                    }
-                    onFailure(call, Exception(msg ))
+                    if (it.code() == 400)
+                        msg = "400"
+
+                    onFailure?.let { it1 -> it1(Exception(msg)) }
                 } else {
                     val distanceSearch: DistanceSearchEvent = try {
                         DistanceSearchEvent(
@@ -46,17 +35,17 @@ object DistanceCalculatorNetwork {
                         )
                     } catch (ex: Exception) {
                         DistanceSearchEvent(
-                            false,0f, "",
+                            false, 0f, "",
                             "", startPermitRequired = false, endPermitRequired = false
                         )
                     }
                     EventBus.getDefault().post(distanceSearch)
                 }
-            }
 
-            @EverythingIsNonNull
-            override fun onFailure(call: Call<DistanceResponse?>, t: Throwable) {
-                val success= t.message=="400"  // newly discovered system, not added to eddb (yet!)
+            }
+            onFailure = {
+                val success =
+                    it?.message == "400"  // newly discovered system, not added to eddb (yet!)
                 val distanceSearch = DistanceSearchEvent(
                     success, 0f, "",
                     "", startPermitRequired = false, endPermitRequired = false
@@ -64,6 +53,6 @@ object DistanceCalculatorNetwork {
                 EventBus.getDefault().post(distanceSearch)
             }
         }
-        retrofit?.getDistance(firstSystem, secondSystem)!!.enqueue(callback)
+
     }
 }

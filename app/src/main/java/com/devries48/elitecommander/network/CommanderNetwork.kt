@@ -1,32 +1,27 @@
 package com.devries48.elitecommander.network
 
 import com.devries48.elitecommander.App
+import com.devries48.elitecommander.declarations.enqueueWrap
 import com.devries48.elitecommander.events.FrontierFleetEvent
 import com.devries48.elitecommander.events.FrontierProfileEvent
 import com.devries48.elitecommander.events.FrontierRanksEvent
 import com.devries48.elitecommander.events.FrontierShip
+import com.devries48.elitecommander.interfaces.EddbInterface
+import com.devries48.elitecommander.interfaces.FrontierInterface
 import com.devries48.elitecommander.models.FrontierJournal
-import com.devries48.elitecommander.models.FrontierProfileResponse
-import com.devries48.elitecommander.network.retrofit.EDApiRetrofit
-import com.devries48.elitecommander.network.retrofit.FrontierRetrofit
-import com.devries48.elitecommander.network.retrofit.RetrofitSingleton
+import com.devries48.elitecommander.models.response.FrontierProfileResponse
 import com.devries48.elitecommander.utils.NamingUtils
 import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-import okhttp3.ResponseBody
 import org.greenrobot.eventbus.EventBus
-import org.jetbrains.annotations.NotNull
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import kotlin.properties.Delegates
 
-class CommanderApi {
+class CommanderNetwork {
 
-    private var mFrontierRetrofit: FrontierRetrofit? = null
-    private var mEdApiRetrofit: EDApiRetrofit? = null
+    private var mFrontierApi: FrontierInterface? = null
+    private var mEddb: EddbInterface? = null
     private lateinit var mJournal: FrontierJournal
 
     private var mIsJournalParsed by Delegates.observable(false) { _, _, newValue ->
@@ -34,72 +29,70 @@ class CommanderApi {
     }
 
     init {
-        mFrontierRetrofit = RetrofitSingleton.getInstance()
+        mFrontierApi = RetrofitSingleton.getInstance()
             ?.getFrontierRetrofit(App.getContext())
 
-        mEdApiRetrofit = RetrofitSingleton.getInstance()
+        mEddb = RetrofitSingleton.getInstance()
             ?.getEdApiRetrofit(App.getContext())
     }
 
     fun loadProfile() {
-        val callback: Callback<ResponseBody?> = object : Callback<ResponseBody?> {
-            override fun onResponse(
-                call: Call<ResponseBody?>,
-                @NotNull response: Response<ResponseBody?>
-            ) {
-                if (response.code() != 200) {
-                    println("LOG: Error getting profile response - " + response.message())
-                    return
+        mFrontierApi?.profileRaw?.enqueueWrap {
+            onResponse = response@{
+                if (it.code() != 200) {
+                    onFailure?.let { it1 -> it1(Exception(it.code().toString())) }
+                    return@response
                 }
 
-                // Parse as string and as body
-                var profileResponse: FrontierProfileResponse? = null
-                var rawResponse: JsonObject? = null
+                val profileResponse: FrontierProfileResponse?
+                val rawResponse: JsonObject?
 
                 try {
-                    val responseString: String? = response.body()?.string()
+                    val responseString: String? = it.body()?.string()
                     rawResponse = JsonParser.parseString(responseString).asJsonObject
                     profileResponse = Gson().fromJson(
                         rawResponse,
                         FrontierProfileResponse::class.java
                     )
                 } catch (e: Exception) {
-                    onFailure(call, Exception("Invalid response"))
+                    onFailure?.let { it1 -> it1(e) }
+                    return@response
                 }
 
-                if (!response.isSuccessful || profileResponse == null) {
-                    onFailure(call, Exception("Invalid response"))
-                } else {
-                    val frontierProfileEvent: FrontierProfileEvent
+                if (!it.isSuccessful || profileResponse == null) {
+                    onFailure?.let { it1 -> it1(Exception("Empty profile response")) }
+                    return@response
+                }
 
-                    try {
-                        val commanderName: String = profileResponse.commander?.name!!
-                        val credits: Long = profileResponse.commander?.credits!!
-                        val debt: Long = profileResponse.commander?.debt!!
-                        val systemName = profileResponse.lastSystem?.name!!
-                        val hull = profileResponse.ship?.health?.hull!!
+                val frontierProfileEvent: FrontierProfileEvent
 
-                        frontierProfileEvent = profileResponse.commander?.let {
-                            FrontierProfileEvent(
-                                true,
-                                commanderName,
-                                credits,
-                                debt,
-                                systemName,
-                                hull
-                            )
-                        }!!
-                        sendResultMessage(frontierProfileEvent)
+                try {
+                    val commanderName: String = profileResponse.commander?.name!!
+                    val credits: Long = profileResponse.commander?.credits!!
+                    val debt: Long = profileResponse.commander?.debt!!
+                    val systemName = profileResponse.lastSystem?.name!!
+                    val hull = profileResponse.ship?.health?.hull!!
 
-                        // FrontierFleetEvent
-                        if (rawResponse != null) handleFleetParsing(this@CommanderApi, rawResponse)
-                    } catch (ex: Exception) {
-                        onFailure(call, Exception("Invalid response"))
-                    }
+                    frontierProfileEvent = profileResponse.commander?.let {
+                        FrontierProfileEvent(
+                            true,
+                            commanderName,
+                            credits,
+                            debt,
+                            systemName,
+                            hull
+                        )
+                    }!!
+                    sendResultMessage(frontierProfileEvent)
+
+                    // FrontierFleetEvent
+                    if (rawResponse != null) handleFleetParsing(this@CommanderNetwork, rawResponse)
+                } catch (ex: Exception) {
+                    onFailure?.let { it1 -> it1(Exception(ex)) }
                 }
             }
-
-            override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
+            onFailure = {
+                println(it?.message)
                 val pos = FrontierProfileEvent(false, "", 0, 0, "", 0)
                 val ranks = FrontierRanksEvent(
                     false, null, null,
@@ -111,7 +104,6 @@ class CommanderApi {
                 sendResultMessage(fleet)
             }
         }
-        mFrontierRetrofit?.profileRaw?.enqueue(callback)
     }
 
     /**
@@ -132,36 +124,31 @@ class CommanderApi {
     }
 
     private fun parseJournal() {
-        val callback: Callback<ResponseBody?> = object : Callback<ResponseBody?> {
-            override fun onResponse(
-                call: Call<ResponseBody?>,
-                @NotNull response: Response<ResponseBody?>
-            ) {
-                if (response.code() != 200) {
-                    println("LOG: Error getting journal response - " + response.message())
-                    return
-                }
+        mFrontierApi?.journalRaw?.enqueueWrap {
+            onResponse = {
+                if (it.code() != 200) {
+                    onFailure?.let { it1 -> it1(Exception(it.code().toString())) }
+                } else {
+                    mJournal = FrontierJournal()
 
-                mJournal = FrontierJournal()
+                    try {
+                        val responseString: String? = it.body()?.string()
+                        mJournal.parseResponse(responseString!!)
+                        mIsJournalParsed = true
+                    } catch (e: Exception) {
+                        onFailure?.let { it1 -> it1(Exception(it.code().toString())) }
 
-                try {
-                    val responseString: String? = response.body()?.string()
-                    mJournal.parseResponse(responseString!!)
-                } catch (e: Exception) {
-                    println("LOG: Error parsing journal response - " + e.message)
-                    return
+                        println(java.lang.Exception(e.message))
+                    }
                 }
-                mIsJournalParsed = true
             }
-
-            override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
-                println("LOG: Response failure - " + t.message)
+            onFailure = {
+                println("LOG: Response failure - " + it?.message)
             }
         }
-        mFrontierRetrofit?.journalRaw?.enqueue(callback)
     }
 
-    private fun handleFleetParsing(commanderApi: CommanderApi, rawProfileResponse: JsonObject) {
+    private fun handleFleetParsing(commanderNetwork: CommanderNetwork, rawProfileResponse: JsonObject) {
         val currentShipId = rawProfileResponse["commander"]
             .asJsonObject["currentShipId"]
             .asInt
@@ -204,12 +191,11 @@ class CommanderApi {
                 shipsList.add(newShip)
             }
         }
-        commanderApi.sendResultMessage(FrontierFleetEvent(true, shipsList))
+        commanderNetwork.sendResultMessage(FrontierFleetEvent(true, shipsList))
     }
 
     private fun sendResultMessage(data: Any?) {
         EventBus.getDefault().post(data)
     }
-
 
 }

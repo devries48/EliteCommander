@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.devries48.elitecommander.R
 import com.devries48.elitecommander.events.FrontierTokensEvent
-import com.devries48.elitecommander.network.retrofit.FrontierAuthSingleton
+import com.devries48.elitecommander.network.FrontierAuthNetwork
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -78,7 +78,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun launchAuthCodeStep() {
         // Authorization step
-        val url = FrontierAuthSingleton.getInstance()
+        val url = FrontierAuthNetwork.getInstance()
             ?.getAuthorizationUrl(applicationContext)
 
         if (url != null) {
@@ -89,7 +89,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun launchTokensStep(authCode: String, state: String) {
         // Tokens exchange step
-        FrontierAuthSingleton.getInstance()?.sendTokensRequest(applicationContext, authCode, state)
+        FrontierAuthNetwork.getInstance()?.sendTokensRequest(applicationContext, authCode, state)
     }
 
     private fun launchBrowserIntent(url: String) {

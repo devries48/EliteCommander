@@ -1,10 +1,10 @@
-package com.devries48.elitecommander.network.retrofit
+package com.devries48.elitecommander.interfaces
 
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.GET
 
-interface FrontierRetrofit {
+interface FrontierInterface {
     @get:GET("profile")
     val profileRaw: Call<ResponseBody?>?
 

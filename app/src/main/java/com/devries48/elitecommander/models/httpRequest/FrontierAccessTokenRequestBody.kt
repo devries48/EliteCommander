@@ -1,4 +1,4 @@
-package com.devries48.elitecommander.models
+package com.devries48.elitecommander.models.httpRequest
 
 import com.google.gson.annotations.SerializedName
 
