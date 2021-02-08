@@ -277,7 +277,7 @@ object NamingUtils {
                 }
                 7, 701, 702 -> {
                     drawableResId = R.drawable.body_star_m
-                    when (id) {
+                    stringResId = when (id) {
                         7 -> R.string.body_star_m
                         701 -> R.string.body_star_m_red_giant
                         else -> R.string.body_star_m_red_super_giant

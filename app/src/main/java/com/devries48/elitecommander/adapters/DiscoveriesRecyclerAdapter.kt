@@ -59,28 +59,30 @@ class DiscoveriesRecyclerAdapter(var data: List<FrontierDiscovery>?) :
 
             viewHolder.bodyImageView.setImageResource(bodyResources.second)
 
-            val totalDiscovered = item.discoveryCount + item.firstDiscoveredAndMappedCount
+            val totalFirstMapped: Int = item.firstMappedCount + item.firstDiscoveredAndMappedCount
+            val totalFirstDiscovered: Int = item.firstDiscoveredCount + item.firstDiscoveredAndMappedCount
 
-            if (totalDiscovered == 0)
+            // No discoveries, display empty string
+            if (item.discoveryCount == 0 )
                 viewHolder.discoveredTextView.text = ""
             else viewHolder.discoveredTextView.text =
-                String.format(ctx.getString(R.string.format_number), totalDiscovered)
+                String.format(ctx.getString(R.string.format_number), item.discoveryCount)
 
+            // No first discoveries and mappings, hide the 'first' label
             if (item.firstDiscoveredCount + item.firstMappedCount + item.firstDiscoveredAndMappedCount == 0)
                 viewHolder.firstDiscoveredLabelTextView.visibility = View.GONE
             else
                 viewHolder.firstDiscoveredLabelTextView.visibility = View.VISIBLE
 
-            if (item.firstDiscoveredCount == 0)
+            // No first discoveries, display empty string
+            if (totalFirstDiscovered== 0)
                 viewHolder.firstDiscoveredTextView.text = ""
             else
                 viewHolder.firstDiscoveredTextView.text =
                     String.format(
                         ctx.getString(R.string.format_number),
-                        item.firstDiscoveredCount + item.firstDiscoveredAndMappedCount
+                        totalFirstDiscovered
                     )
-
-            val totalFirstMapped: Int = item.firstMappedCount + item.firstDiscoveredAndMappedCount
 
             if (item.mappedCount + totalFirstMapped == 0) {
                 viewHolder.mappedTitleTextView.visibility = View.GONE
@@ -104,7 +106,6 @@ class DiscoveriesRecyclerAdapter(var data: List<FrontierDiscovery>?) :
 
             viewHolder.valueTextView.text =
                 String.format(ctx.getString(R.string.format_currency), item.estimatedValue)
-
         }
     }
 
@@ -114,4 +115,3 @@ class DiscoveriesRecyclerAdapter(var data: List<FrontierDiscovery>?) :
     }
 
 }
-

@@ -33,7 +33,7 @@ class CommanderNetwork {
             ?.getFrontierRetrofit(App.getContext())
 
         mEddb = RetrofitSingleton.getInstance()
-            ?.getEdApiRetrofit(App.getContext())
+            ?.getEddbApiRetrofit(App.getContext())
     }
 
     fun loadProfile() {

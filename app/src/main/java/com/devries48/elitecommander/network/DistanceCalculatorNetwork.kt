@@ -10,7 +10,7 @@ object DistanceCalculatorNetwork {
 
     fun getDistance(ctx: Context, firstSystem: String?, secondSystem: String?) {
         val eddb: EddbInterface? = RetrofitSingleton.getInstance()
-            ?.getEdApiRetrofit(ctx.applicationContext)
+            ?.getEddbApiRetrofit(ctx.applicationContext)
 
         eddb?.getDistance(firstSystem, secondSystem)!!.enqueueWrap {
             onResponse = {
@@ -50,6 +50,9 @@ object DistanceCalculatorNetwork {
                     success, 0f, "",
                     "", startPermitRequired = false, endPermitRequired = false
                 )
+                if (!success)
+                    println("Distance calculation failed: " + it?.message)
+
                 EventBus.getDefault().post(distanceSearch)
             }
         }

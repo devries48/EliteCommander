@@ -27,7 +27,7 @@ open class RetrofitSingleton private constructor() : Serializable {
     private var frontierInterface: FrontierInterface? = null
     private var retrofitBuilder: Retrofit.Builder? = null
 
-    fun getEdApiRetrofit(ctx: Context): EddbInterface? {
+    fun getEddbApiRetrofit(ctx: Context): EddbInterface? {
         if (edInterface != null) {
             return edInterface
         }
@@ -132,6 +132,7 @@ open class RetrofitSingleton private constructor() : Serializable {
     companion object {
         @Volatile
         private var instance: RetrofitSingleton? = null
+
         fun getInstance(): RetrofitSingleton? {
             if (instance == null) {
                 synchronized(RetrofitSingleton::class.java) {

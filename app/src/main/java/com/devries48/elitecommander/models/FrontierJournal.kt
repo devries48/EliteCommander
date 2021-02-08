@@ -170,7 +170,7 @@ class FrontierJournal {
 
                 // Calculate estimated scan values for current body
                 currentDiscovery.mass = discovery.mass
-                currentDiscovery.stellarMass= discovery.stellarMass
+                currentDiscovery.stellarMass = discovery.stellarMass
                 currentDiscovery.terraformState = discovery.terraformState
                 currentDiscovery.wasDiscovered = discovery.wasDiscovered
                 currentDiscovery.wasMapped = discovery.wasMapped
@@ -181,16 +181,16 @@ class FrontierJournal {
                     hasEfficiencyBonus
                 )
 
-                currentDiscovery.discoveryCount += (1 - addFirstDiscovered - addFirstDiscoveredAndMapped)
-                currentDiscovery.mappedCount += (addMapCount - addFirstMapped - addFirstDiscoveredAndMapped)
+                currentDiscovery.discoveryCount += 1 - addFirstDiscovered - addFirstDiscoveredAndMapped
+                currentDiscovery.mappedCount += addMapCount - addFirstMapped - addFirstDiscoveredAndMapped
                 currentDiscovery.bonusCount += addBonusCount
                 currentDiscovery.firstDiscoveredCount += addFirstDiscovered
                 currentDiscovery.firstMappedCount += addFirstMapped
                 currentDiscovery.firstDiscoveredAndMappedCount += addFirstDiscoveredAndMapped
                 currentDiscovery.estimatedValue += estimatedValue
 
-                summary.DiscoveryTotal += (1 - addFirstDiscovered)
-                summary.MappedTotal += (addMapCount - addFirstMapped)
+                summary.DiscoveryTotal += 1 - addFirstDiscovered- addFirstDiscoveredAndMapped
+                summary.MappedTotal += addMapCount - addFirstMapped- addFirstDiscoveredAndMapped
                 summary.efficiencyBonusTotal += addBonusCount
                 summary.firstDiscoveryTotal += addFirstDiscovered
                 summary.firstMappedTotal += addFirstMapped
@@ -214,8 +214,9 @@ class FrontierJournal {
                         firstMappedAndDiscovered,
                         estimatedValue
                     )
-                }.sortedWith(compareBy<FrontierDiscovery> { it.discoveryCount }.thenBy { it.body }
-                    .thenBy { it.star })
+                }
+                    .sortedWith(compareBy<FrontierDiscovery> { it.discoveryCount + it.firstDiscoveredCount + it.firstDiscoveredAndMappedCount }.thenBy { it.body }
+                        .thenBy { it.star })
             )
 
         } catch (e: Exception) {

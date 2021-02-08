@@ -14,7 +14,7 @@
     <!--Login-->
     <string name="login_dialog_error_title">Frontier login error</string>
     <string name="login_dialog_error_text">Error logging in to Frontier, please try again.</string>
-    <string name="login_dialog_text">Your browser will open to allow you to connect to your Frontier account.</string>
+    <string name="login_dialog_text">The browser will open to allow you to connect to your Frontier account.</string>
     <string name="login_success">Login succeeded</string>
     <string name="access_token_key">access_token_key</string>
     <string name="refresh_token_key">refresh_token_key</string>
@@ -124,9 +124,9 @@
     <string name="body_star_o">O Blue-White Star</string>
     <string name="body_star_b">B Blue-White Star</string>
     <string name="body_star_b_blue_white_supergiant">B Blue-White super giant Star</string>
-    <string name="body_star_a">A Blue-White) Star</string>
+    <string name="body_star_a">A Blue-White Star</string>
     <string name="body_star_a_blue_white_supergiant">A Blue-White super giant Star</string>
-    <string name="body_star_f">F White) Star</string>
+    <string name="body_star_f">F White Star</string>
     <string name="body_star_f_whitesupergiant">F White super giant) Star</string>
     <string name="body_star_g">G White-Yellow) Star</string>
     <string name="body_star_g_white_yellow_supergiant">G White-Yellow super giant Star</string>
@@ -145,12 +145,12 @@
     <string name="body_star_wolf_nc">Wolf-Rayet NC Star</string>
     <string name="body_star_wolf_c">Wolf-Rayet C Star</string>
     <string name="body_star_wolf_o">Wolf-Rayet O Star</string>
-    <string name="body_star_c">"C Carbon) Star"</string>
-    <string name="body_star_cs">CS Carbon) Star</string>
-    <string name="body_star_cn">CN Carbon) Star</string>
-    <string name="body_star_cj">CJ Carbon) Star</string>
-    <string name="body_star_ch">CH Carbon) Star</string>
-    <string name="body_star_chd">CHd Carbon) Star</string>
+    <string name="body_star_c">"C Carbon Star"</string>
+    <string name="body_star_cs">CS Carbon Star</string>
+    <string name="body_star_cn">CN Carbon Star</string>
+    <string name="body_star_cj">CJ Carbon Star</string>
+    <string name="body_star_ch">CH Carbon Star</string>
+    <string name="body_star_chd">CHd Carbon Star</string>
     <string name="body_star_ms">MS-type Star</string>
     <string name="body_star_s">S-type Star</string>
     <string name="body_star_d">White Dwarf (D) Star"</string>

@@ -20,21 +20,19 @@
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideMapping"
                 android:layout_width="wrap_content"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.60" />
+                app:layout_constraintGuide_percent="0.5" />
 
             <ImageView
                 android:id="@+id/bodyImageView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
                 android:layout_marginStart="4dp"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="4dp"
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/image_planet_star_discoveries"
-                android:maxWidth="72dp"
-                android:maxHeight="72dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -42,7 +40,7 @@
                 android:id="@+id/bodyNameTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_large"
+                android:layout_marginStart="@dimen/margin_medium"
                 android:text=""
                 android:textAppearance="@style/eliteStyle.LightOrangeText"
                 app:layout_constraintStart_toEndOf="@+id/bodyImageView"
@@ -53,6 +51,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/discovered"
+                android:textAlignment="textStart"
                 android:textAppearance="@style/eliteStyle.BodyDiscovery"
                 app:layout_constraintStart_toStartOf="@+id/bodyNameTextView"
                 app:layout_constraintTop_toBottomOf="@+id/bodyNameTextView" />
@@ -89,9 +88,10 @@
                 android:id="@+id/mappedTitleTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_large"
                 android:text="@string/mapped"
                 android:textAppearance="@style/eliteStyle.BodyDiscovery"
-                app:layout_constraintEnd_toEndOf="@+id/guideMapping"
+                app:layout_constraintStart_toEndOf="@+id/discoveredTitleTextView"
                 app:layout_constraintTop_toTopOf="@+id/discoveredTitleTextView" />
 
             <TextView
@@ -118,6 +118,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/margin_small"
                 android:text="@string/estimated_value"
+                android:textAlignment="textEnd"
                 android:textAppearance="@style/eliteStyle.BodyDiscovery"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/discoveredTitleTextView" />
