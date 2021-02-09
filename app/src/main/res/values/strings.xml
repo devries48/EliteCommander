@@ -7,7 +7,7 @@
     <string name="format_currency">"%,d" CR</string>
 
     <!--URLs-->
-    <string name="edapi_base">https://ed-network.9cw.eu/</string>
+    <string name="edsm_base">https://www.edsm.net/</string>
     <string name="frontier_auth_base">https://auth.frontierstore.net/</string>
     <string name="frontier_api_base">https://companion.orerve.net/</string>
 

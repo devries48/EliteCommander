@@ -60,20 +60,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
-                        <androidx.constraintlayout.widget.Guideline
-                            android:id="@+id/guideVer1a"
-                            android:layout_width="wrap_content"
-                            android:layout_height="0dp"
-                            android:orientation="vertical"
-                            app:layout_constraintGuide_percent="0.3" />
-
-                        <androidx.constraintlayout.widget.Guideline
-                            android:id="@+id/guideVer2a"
-                            android:layout_width="wrap_content"
-                            android:layout_height="0dp"
-                            android:orientation="vertical"
-                            app:layout_constraintGuide_percent="0.60" />
-
                         <TextView
                             android:id="@+id/discoveredTitleTextView"
                             android:layout_width="wrap_content"
@@ -98,9 +84,10 @@
                             android:id="@+id/mappedTitleTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/margin_large"
                             android:text="@string/total_mapped"
                             android:textAppearance="@style/eliteStyle"
-                            app:layout_constraintStart_toStartOf="@id/guideVer1a"
+                            app:layout_constraintStart_toEndOf="@id/discoveredTitleTextView"
                             app:layout_constraintTop_toTopOf="@id/discoveredTitleTextView" />
 
                         <TextView
@@ -153,20 +140,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
-                        <androidx.constraintlayout.widget.Guideline
-                            android:id="@+id/guideVer1b"
-                            android:layout_width="wrap_content"
-                            android:layout_height="0dp"
-                            android:orientation="vertical"
-                            app:layout_constraintGuide_percent="0.3" />
-
-                        <androidx.constraintlayout.widget.Guideline
-                            android:id="@+id/guideVer2b"
-                            android:layout_width="wrap_content"
-                            android:layout_height="0dp"
-                            android:orientation="vertical"
-                            app:layout_constraintGuide_percent="0.60" />
-
                         <TextView
                             android:id="@+id/firstDiscoveriesTopTextView"
                             android:layout_width="wrap_content"
@@ -211,9 +184,10 @@
                             android:id="@+id/firstMappedTitleTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/margin_large"
                             android:text="@string/total_mapped"
                             android:textAppearance="@style/eliteStyle"
-                            app:layout_constraintStart_toStartOf="@id/guideVer1b"
+                            app:layout_constraintStart_toEndOf="@id/firstDiscoveriesTitleTextView"
                             app:layout_constraintTop_toTopOf="@id/firstDiscoveriesTitleTextView" />
 
                         <TextView

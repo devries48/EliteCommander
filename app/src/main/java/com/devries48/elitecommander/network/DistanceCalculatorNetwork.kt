@@ -3,17 +3,20 @@ package com.devries48.elitecommander.network
 import android.content.Context
 import com.devries48.elitecommander.declarations.enqueueWrap
 import com.devries48.elitecommander.events.DistanceSearchEvent
-import com.devries48.elitecommander.interfaces.EddbInterface
+import com.devries48.elitecommander.interfaces.EdsmInterface
 import org.greenrobot.eventbus.EventBus
+import kotlin.math.pow
+import kotlin.math.round
+import kotlin.math.sqrt
 
 object DistanceCalculatorNetwork {
 
-    fun getDistance(ctx: Context, firstSystem: String?, secondSystem: String?) {
-        val eddb: EddbInterface? = RetrofitSingleton.getInstance()
-            ?.getEddbApiRetrofit(ctx.applicationContext)
+    fun getDistanceToSol(ctx: Context, system: String) {
+        val edsm: EdsmInterface? = RetrofitSingleton.getInstance()
+            ?.getEdsmRetrofit(ctx.applicationContext)
 
-        eddb?.getDistance(firstSystem, secondSystem)!!.enqueueWrap {
-            onResponse = {
+        edsm?.getSystems(system, 0, 1, 0, 1)!!.enqueueWrap {
+            onResponse = response@{
                 val body = it.body()
 
                 if (!it.isSuccessful || body == null) {
@@ -23,32 +26,36 @@ object DistanceCalculatorNetwork {
                         msg = "400"
 
                     onFailure?.let { it1 -> it1(Exception(msg)) }
-                } else {
-                    val distanceSearch: DistanceSearchEvent = try {
-                        DistanceSearchEvent(
-                            true,
-                            body.distance,
-                            body.fromSystem!!.name!!,
-                            body.toSystem!!.name!!,
-                            body.fromSystem!!.permitRequired,
-                            body.toSystem!!.permitRequired
-                        )
-                    } catch (ex: Exception) {
-                        DistanceSearchEvent(
-                            false, 0f, "",
-                            "", startPermitRequired = false, endPermitRequired = false
-                        )
-                    }
-                    EventBus.getDefault().post(distanceSearch)
+                    return@response
                 }
+                val coords = body[0]?.information
+                if (coords == null) {
+                    onFailure?.let { it1 -> it1(Exception("Invalid EDSM call")) }
+                    return@response
+                }
+                val distance = sqrt(coords.x.pow(2) + coords.y.pow(2) + coords.z.pow(2))
 
+                val distanceSearch: DistanceSearchEvent = try {
+                    DistanceSearchEvent(
+                        true,
+                        round(distance * 10) / 10,
+                        "Sol",
+                        system
+                    )
+                } catch (ex: Exception) {
+                    DistanceSearchEvent(
+                        false, 0.0, "",
+                        ""
+                    )
+                }
+                EventBus.getDefault().post(distanceSearch)
             }
             onFailure = {
                 val success =
                     it?.message == "400"  // newly discovered system, not added to eddb (yet!)
                 val distanceSearch = DistanceSearchEvent(
-                    success, 0f, "",
-                    "", startPermitRequired = false, endPermitRequired = false
+                    success, 0.0, "",
+                    ""
                 )
                 if (!success)
                     println("Distance calculation failed: " + it?.message)
@@ -58,4 +65,5 @@ object DistanceCalculatorNetwork {
         }
 
     }
+
 }

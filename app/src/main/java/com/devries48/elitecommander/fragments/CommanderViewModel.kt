@@ -166,7 +166,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             return
         }
 
-        if (distanceSearch.distance == 0.0f) {
+        if (distanceSearch.distance == 0.0) {
             setMainStatisticRight(
                 R.string.CurrentLocation,
                 0,
@@ -177,7 +177,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             setMainStatisticRight(
                 R.string.CurrentLocation,
                 R.string.distance_sol,
-                "${floatFormat(distanceSearch.distance)} LY",
+                "${doubleFormat(distanceSearch.distance)} LY",
                 R.style.eliteStyle_LightOrangeText
             )
         }
@@ -268,7 +268,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             return formatter.format(amount)
         }
 
-        private fun floatFormat(value: Float): String {
+        private fun doubleFormat(value: Double): String {
             val formatter = DecimalFormat("###,###,###.#")
             return formatter.format(value)
         }

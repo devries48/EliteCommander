@@ -3,7 +3,7 @@ package com.devries48.elitecommander.network
 import android.content.Context
 import com.devries48.elitecommander.R
 import com.devries48.elitecommander.events.FrontierAuthNeededEvent
-import com.devries48.elitecommander.interfaces.EddbInterface
+import com.devries48.elitecommander.interfaces.EdsmInterface
 import com.devries48.elitecommander.interfaces.FrontierAuthInterface
 import com.devries48.elitecommander.interfaces.FrontierInterface
 import com.devries48.elitecommander.models.response.FrontierAccessTokenResponse
@@ -18,24 +18,25 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.io.Serializable
 import java.util.concurrent.TimeUnit
 
+
 // Singleton safe from serialization/reflection...
 // From https://medium.com/exploring-code/how-to-make-the-perfect-singleton-de6b951dfdb0
 
 open class RetrofitSingleton private constructor() : Serializable {
-    private var edInterface: EddbInterface? = null
     private var frontierAuthInterface: FrontierAuthInterface? = null
     private var frontierInterface: FrontierInterface? = null
+    private var edsmInterface: EdsmInterface? = null
     private var retrofitBuilder: Retrofit.Builder? = null
 
-    fun getEddbApiRetrofit(ctx: Context): EddbInterface? {
-        if (edInterface != null) {
-            return edInterface
+    fun getEdsmRetrofit(ctx: Context): EdsmInterface? {
+        if (edsmInterface != null) {
+            return edsmInterface
         }
-        edInterface = retrofitInstance
-            ?.baseUrl(ctx.getString(R.string.edapi_base))
+        edsmInterface = retrofitInstance
+            ?.baseUrl(ctx.getString(R.string.edsm_base))
             ?.build()
-            ?.create(EddbInterface::class.java)
-        return edInterface
+            ?.create(EdsmInterface::class.java)
+        return edsmInterface
     }
 
     fun getFrontierAuthRetrofit(ctx: Context): FrontierAuthInterface? {
@@ -64,7 +65,9 @@ open class RetrofitSingleton private constructor() : Serializable {
             // Check if access token expired and renew it if needed
             if (response.code() == 403 || response.code() == 422 || response.code() == 401) {
                 try{
-                    val responseBody: FrontierAccessTokenResponse? = OAuthUtils.makeRefreshRequest(ctx)
+                    val responseBody: FrontierAccessTokenResponse? = OAuthUtils.makeRefreshRequest(
+                        ctx
+                    )
                     if (responseBody == null) {
                         // Send event to renew login
                         EventBus.getDefault().post(FrontierAuthNeededEvent(true))

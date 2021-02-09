@@ -6,7 +6,6 @@ import com.devries48.elitecommander.events.FrontierFleetEvent
 import com.devries48.elitecommander.events.FrontierProfileEvent
 import com.devries48.elitecommander.events.FrontierRanksEvent
 import com.devries48.elitecommander.events.FrontierShip
-import com.devries48.elitecommander.interfaces.EddbInterface
 import com.devries48.elitecommander.interfaces.FrontierInterface
 import com.devries48.elitecommander.models.FrontierJournal
 import com.devries48.elitecommander.models.response.FrontierProfileResponse
@@ -21,7 +20,6 @@ import kotlin.properties.Delegates
 class CommanderNetwork {
 
     private var mFrontierApi: FrontierInterface? = null
-    private var mEddb: EddbInterface? = null
     private lateinit var mJournal: FrontierJournal
 
     private var mIsJournalParsed by Delegates.observable(false) { _, _, newValue ->
@@ -31,9 +29,6 @@ class CommanderNetwork {
     init {
         mFrontierApi = RetrofitSingleton.getInstance()
             ?.getFrontierRetrofit(App.getContext())
-
-        mEddb = RetrofitSingleton.getInstance()
-            ?.getEddbApiRetrofit(App.getContext())
     }
 
     fun loadProfile() {
@@ -120,7 +115,9 @@ class CommanderNetwork {
     }
 
     fun getDistanceToSol(systemName: String?) {
-        DistanceCalculatorNetwork.getDistance(App.getContext(), "Sol", systemName)
+        if (systemName != null) {
+            DistanceCalculatorNetwork.getDistanceToSol(App.getContext(),  systemName)
+        }
     }
 
     private fun parseJournal() {
