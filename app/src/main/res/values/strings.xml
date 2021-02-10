@@ -127,10 +127,10 @@
     <string name="body_star_a">A Blue-White Star</string>
     <string name="body_star_a_blue_white_supergiant">A Blue-White super giant Star</string>
     <string name="body_star_f">F White Star</string>
-    <string name="body_star_f_whitesupergiant">F White super giant) Star</string>
-    <string name="body_star_g">G White-Yellow) Star</string>
+    <string name="body_star_f_whitesupergiant">F White super giant Star</string>
+    <string name="body_star_g">G White-Yellow Star</string>
     <string name="body_star_g_white_yellow_supergiant">G White-Yellow super giant Star</string>
-    <string name="body_star_k">K Yellow-Orange) Star</string>
+    <string name="body_star_k">K Yellow-Orange Star</string>
     <string name="body_star_k_yellow_orange_giant">K Yellow-Orange giant Star</string>
     <string name="body_star_m">M Red dwarf Star</string>
     <string name="body_star_m_red_giant">M Red giant Star</string>
@@ -198,4 +198,5 @@
     <string name="distance_sol">Distance to Sol</string>
     <string name="hull">hull</string>
     <string name="estimated_value">Estimated value</string>
+    <string name="rep">RP</string>
 </resources>

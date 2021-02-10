@@ -8,6 +8,7 @@ import com.devries48.elitecommander.events.FrontierDiscovery
 import com.devries48.elitecommander.events.FrontierDiscoverySummary
 import com.devries48.elitecommander.events.FrontierRanksEvent
 import com.devries48.elitecommander.models.response.FrontierJournalRankProgressResponse
+import com.devries48.elitecommander.models.response.FrontierJournalRankReputationResponse
 import com.devries48.elitecommander.models.response.FrontierJournalRankResponse
 import com.devries48.elitecommander.utils.DiscoveryValueCalculator
 import com.google.gson.Gson
@@ -35,16 +36,17 @@ class FrontierJournal {
 
     fun getRanks(context: Context): FrontierRanksEvent {
         try {
-            val rawRank = mRawEvents.firstOrNull { it.event == JOURNAL_EVENT_RANK }
-            val rawProgress = mRawEvents.firstOrNull { it.event == JOURNAL_EVENT_PROGRESS }
+            val rawRank = mRawEvents.lastOrNull { it.event == JOURNAL_EVENT_RANK }
+            val rawProgress = mRawEvents.lastOrNull { it.event == JOURNAL_EVENT_PROGRESS }
+            val rawReputation = mRawEvents.lastOrNull { it.event == JOURNAL_EVENT_REPUTATION }
 
-            if (rawRank == null || rawProgress == null) {
+            if (rawRank == null || rawProgress == null || rawReputation == null) {
                 throw error("Error parsing rank events from journal")
             }
 
             val rank = Gson().fromJson(rawRank.json, FrontierJournalRankResponse::class.java)
-            val progress =
-                Gson().fromJson(rawProgress.json, FrontierJournalRankProgressResponse::class.java)
+            val progress = Gson().fromJson(rawProgress.json, FrontierJournalRankProgressResponse::class.java)
+            val reputation = Gson().fromJson(rawProgress.json, FrontierJournalRankReputationResponse::class.java)
 
             val combatRank = FrontierRanksEvent.FrontierRank(
                 context.resources.getStringArray(R.array.ranks_combat)[rank.combat],
@@ -69,12 +71,14 @@ class FrontierJournal {
             val federationRank = FrontierRanksEvent.FrontierRank(
                 context.resources.getStringArray(R.array.ranks_federation)[rank.federation],
                 rank.federation,
-                progress.federation
+                progress.federation,
+                reputation.federation
             )
             val empireRank = FrontierRanksEvent.FrontierRank(
                 context.resources.getStringArray(R.array.ranks_empire)[rank.empire],
                 rank.empire,
-                progress.empire
+                progress.empire,
+                reputation.empire
             )
 
             return FrontierRanksEvent(
@@ -189,8 +193,8 @@ class FrontierJournal {
                 currentDiscovery.firstDiscoveredAndMappedCount += addFirstDiscoveredAndMapped
                 currentDiscovery.estimatedValue += estimatedValue
 
-                summary.DiscoveryTotal += 1 - addFirstDiscovered- addFirstDiscoveredAndMapped
-                summary.MappedTotal += addMapCount - addFirstMapped- addFirstDiscoveredAndMapped
+                summary.DiscoveryTotal += 1 - addFirstDiscovered - addFirstDiscoveredAndMapped
+                summary.MappedTotal += addMapCount - addFirstMapped - addFirstDiscoveredAndMapped
                 summary.efficiencyBonusTotal += addBonusCount
                 summary.firstDiscoveryTotal += addFirstDiscovered
                 summary.firstMappedTotal += addFirstMapped
@@ -294,6 +298,7 @@ class FrontierJournal {
         private const val JOURNAL_EVENT_STATISTICS = "Statistics"
         private const val JOURNAL_EVENT_RANK = "Rank"
         private const val JOURNAL_EVENT_PROGRESS = "Progress"
+        private const val JOURNAL_EVENT_REPUTATION = "Reputation"
         private const val JOURNAL_EVENT_DISCOVERY = "Scan"
         private const val JOURNAL_EVENT_MAP = "SAAScanComplete"
 

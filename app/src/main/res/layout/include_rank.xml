@@ -39,13 +39,48 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/titleTextView" />
 
+        <TextView
+            android:id="@+id/repText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:rankAutoHide="@{rankModel}"
+            android:rankTextColor="@{rankModel}"
+            android:text="@string/rep"
+            android:textAppearance="@style/eliteStyle.SmallText"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/titleTextView" />
+
+        <ProgressBar
+            android:id="@+id/reputationBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:progress="@{rankModel.rank.reputation}"
+            android:rankAutoHide="@{rankModel}"
+            android:rankProgressTint="@{rankModel}"
+            app:layout_constraintLeft_toRightOf="@id/repText"
+            app:layout_constraintRight_toLeftOf="@+id/reputationText"
+            app:layout_constraintTop_toTopOf="@+id/repText" />
+
+        <TextView
+            android:id="@+id/reputationText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:rankAutoHide="@{rankModel}"
+            android:rankTextColor="@{rankModel}"
+            android:text="@{@string/format_percentage(rankModel.rank.reputation)}"
+            android:textAppearance="@style/eliteStyle.SmallText"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/repText" />
+
         <ProgressBar
             android:id="@+id/progressBar"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:progress="@{rankModel.rank.progress}"
-            android:rankProgressAutoHide="@{rankModel.rank.progress}"
+            android:rankAutoHide="@{rankModel}"
             android:rankProgressTint="@{rankModel}"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/progressTextView"
@@ -55,7 +90,7 @@
             android:id="@+id/progressTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:rankTextAutoHide="@{rankModel.rank.progress}"
+            android:rankAutoHide="@{rankModel}"
             android:rankTextColor="@{rankModel}"
             android:text="@{@string/format_percentage(rankModel.rank.progress)}"
             android:textAppearance="@style/eliteStyle.SmallText"

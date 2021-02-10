@@ -38,7 +38,7 @@ object DistanceCalculatorNetwork {
                 val distanceSearch: DistanceSearchEvent = try {
                     DistanceSearchEvent(
                         true,
-                        round(distance * 10) / 10,
+                        round(distance),
                         "Sol",
                         system
                     )

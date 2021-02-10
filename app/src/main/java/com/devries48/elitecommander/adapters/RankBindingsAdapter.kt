@@ -23,9 +23,9 @@ object RankModelAdapter {
     @JvmStatic
     fun rankTextColor(view: TextView, model: RankModel) {
         val context: Context = view.context
-
         var color = getAssociatedColor(context, model)
-        if (view.id == R.id.titleTextView)
+
+        if (view.id == R.id.titleTextView || view.id == R.id.reputationText || view.id == R.id.repText)
             color = darkenColor(color)
 
         view.setTextColor(color)
@@ -39,25 +39,24 @@ object RankModelAdapter {
     @JvmStatic
     fun rankProgressTint(view: ProgressBar, model: RankModel) {
         val context: Context = view.context
-        view.progressTintList = ColorStateList.valueOf(getAssociatedColor(context, model))
+        var color = getAssociatedColor(context, model)
+
+        if (view.id == R.id.reputationBar)
+            color = darkenColor(color)
+
+        view.progressTintList = ColorStateList.valueOf(color)
     }
 
     /**
-     * Binding Adapter to hide a view if the number is hundred.
+     * Binding Adapter to hide a view if the rank is the top-level rank.
      */
-    @BindingAdapter("android:rankProgressAutoHide")
+    @BindingAdapter("android:rankAutoHide")
     @JvmStatic
-    fun rankProgressAutoHide(view: ProgressBar, value: Int) {
-        view.visibility = if (value == 100) View.GONE else View.VISIBLE
-    }
+    fun rankAutoHide(view: View, model: RankModel) {
+        val isEndRank = !model.isFactionRank && model.rank.value == 9 || model.isFactionRank && model.rank.value == 14
+        val isReputationView = view.id == R.id.reputationText || view.id == R.id.repText || view.id == R.id.reputationBar
 
-    /**
-     * Binding Adapter to hide a view if the number is zero or hundred.
-     */
-    @BindingAdapter("android:rankTextAutoHide")
-    @JvmStatic
-    fun rankTextAutoHide(view: TextView, value: Int) {
-        view.visibility = if (value == 0 || value == 100) View.GONE else View.VISIBLE
+        view.visibility = if (isEndRank || isReputationView && !model.isFactionRank) View.GONE else View.VISIBLE
     }
 
     /**

@@ -9,5 +9,5 @@ data class RankModel(
     val rank: FrontierRanksEvent.FrontierRank,
     val name: String,
     @StringRes val titleResId: Int = 0,
-    val isFactionRank: Boolean=false
+    val isFactionRank: Boolean = false
 )
