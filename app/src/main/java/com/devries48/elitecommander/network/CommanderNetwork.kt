@@ -23,7 +23,7 @@ class CommanderNetwork {
     private lateinit var mJournal: FrontierJournal
 
     private var mIsJournalParsed by Delegates.observable(false) { _, _, newValue ->
-        if (newValue) loadJournal()
+        if (newValue) loadLatestJournal()
     }
 
     init {
@@ -105,23 +105,31 @@ class CommanderNetwork {
      *  - Loads ranks from journal,capture FrontierRanksEvent for the result.
      *  - Loads discoveries from journal, capture FrontierDiscoveriesEvent for the result.
      */
-    fun loadJournal() {
+    fun loadLatestJournal() {
         if (mIsJournalParsed) {
             sendResultMessage(mJournal.getRanks(App.getContext()))
             sendResultMessage(mJournal.getCurrentDiscoveries())
         } else {
-            parseJournal()
+            getJournal()
+
+//            lifecycleScope.launch {
+//                delay(5000L)
+//                editAccountDetails()
+//                val intent = Intent(this@editProfileActivity, viewProfileActivity::class.java)
+//                finish()
+//                startActivity(intent)
+//            }
         }
     }
 
     fun getDistanceToSol(systemName: String?) {
         if (systemName != null) {
-            DistanceCalculatorNetwork.getDistanceToSol(App.getContext(),  systemName)
+            DistanceCalculatorNetwork.getDistanceToSol(App.getContext(), systemName)
         }
     }
 
-    private fun parseJournal() {
-        mFrontierApi?.journalRaw?.enqueueWrap {
+    private fun getJournal() {
+        mFrontierApi?.getJournal("2021/01/14")?.enqueueWrap {
             onResponse = {
                 if (it.code() != 200) {
                     onFailure?.let { it1 -> it1(Exception(it.code().toString())) }
@@ -134,8 +142,6 @@ class CommanderNetwork {
                         mIsJournalParsed = true
                     } catch (e: Exception) {
                         onFailure?.let { it1 -> it1(Exception(it.code().toString())) }
-
-                        println(java.lang.Exception(e.message))
                     }
                 }
             }

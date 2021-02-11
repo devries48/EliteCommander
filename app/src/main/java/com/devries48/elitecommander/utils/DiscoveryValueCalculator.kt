@@ -99,9 +99,7 @@ object DiscoveryValueCalculator {
                 if (hasEfficiencyBonus) mapMultiplier *= 1.25
             }
 
-            //double value = Math.Max(500,(k + k * q * Math.Pow(mass,0.2)) * mappingMultiplier);
-            value= max(500.0, (value + value * q * mass.pow(0.2)) * mapMultiplier)
-
+            // $value = max(($value + ($value * pow($mass, 0.2) * $q)) * $mapMultiplier, 500);
             value = max((value + (value * mass.pow(0.2) * q)) * mapMultiplier, 500.0)
 
             if (!discovery.wasDiscovered) value *= 2.6

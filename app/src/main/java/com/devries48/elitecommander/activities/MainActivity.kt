@@ -117,7 +117,7 @@ class MainActivity : AppCompatActivity() {
         mCommanderNetwork.loadProfile()
         // TODO: iterate through journals from today to the journal's last 'Docked' event.
 
-        mCommanderNetwork.loadJournal()
+        mCommanderNetwork.loadLatestJournal()
     }
 
     private fun findNavController(): NavController {
