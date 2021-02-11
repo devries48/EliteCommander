@@ -46,7 +46,7 @@ class FrontierJournal {
 
             val rank = Gson().fromJson(rawRank.json, FrontierJournalRankResponse::class.java)
             val progress = Gson().fromJson(rawProgress.json, FrontierJournalRankProgressResponse::class.java)
-            val reputation = Gson().fromJson(rawProgress.json, FrontierJournalRankReputationResponse::class.java)
+            val reputation = Gson().fromJson(rawReputation.json, FrontierJournalRankReputationResponse::class.java)
 
             val combatRank = FrontierRanksEvent.FrontierRank(
                 context.resources.getStringArray(R.array.ranks_combat)[rank.combat],
@@ -81,9 +81,16 @@ class FrontierJournal {
                 reputation.empire
             )
 
+            val allianceRank = FrontierRanksEvent.FrontierRank(
+                context.resources.getString(R.string.rank_alliance),
+                rank.alliance,
+                0,
+                reputation.alliance
+            )
+
             return FrontierRanksEvent(
                 true, combatRank, tradeRank, exploreRank,
-                cqcRank, federationRank, empireRank
+                cqcRank, federationRank, empireRank,allianceRank
             )
         } catch (e: Exception) {
             println("LOG: Error parsing ranking events from journal." + e.message)

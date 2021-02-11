@@ -53,10 +53,16 @@ object RankModelAdapter {
     @BindingAdapter("android:rankAutoHide")
     @JvmStatic
     fun rankAutoHide(view: View, model: RankModel) {
-        val isEndRank = !model.isFactionRank && model.rank.value == 9 || model.isFactionRank && model.rank.value == 14
-        val isReputationView = view.id == R.id.reputationText || view.id == R.id.repText || view.id == R.id.reputationBar
+        if (view.id == R.id.progressBar && model.name.isEmpty()  || view.id == R.id.progressTextView && model.name.isEmpty()) // Alliance has no ranks
+            view.visibility = View.GONE
+        else {
+            val isEndRank =
+                !model.isFactionRank && model.rank.value == 8 || model.isFactionRank && model.rank.value == 13
+            val isReputationView =
+                view.id == R.id.reputationText || view.id == R.id.repText || view.id == R.id.reputationBar
 
-        view.visibility = if (isEndRank || isReputationView && !model.isFactionRank) View.GONE else View.VISIBLE
+            view.visibility = if (isEndRank || isReputationView && !model.isFactionRank) View.GONE else View.VISIBLE
+        }
     }
 
     /**
@@ -88,6 +94,7 @@ object RankModelAdapter {
             R.string.rank_explore -> ContextCompat.getColor(context, R.color.elite_exploration)
             R.string.rank_cqc -> ContextCompat.getColor(context, R.color.elite_cqc)
             R.string.rank_federation -> ContextCompat.getColor(context, R.color.elite_federation)
+            R.string.rank_alliance -> ContextCompat.getColor(context, R.color.elite_alliance)
             else -> ContextCompat.getColor(context, R.color.elite_empire)
         }
     }

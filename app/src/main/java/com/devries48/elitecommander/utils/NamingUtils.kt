@@ -133,6 +133,11 @@ object NamingUtils {
         }
     }
 
+    fun getAllianceRankDrawableId(): Int {
+        return R.drawable.rank_alliance_1
+    }
+
+
     /* List of number aliases for star types received from Frontier.
     * Returns the corresponding value of the requested star type. */
     fun getStarTypeAlias(starType: String): Int {
@@ -442,5 +447,6 @@ object NamingUtils {
 
         return stringResId to drawableResId
     }
+
 
 }

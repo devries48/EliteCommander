@@ -8,7 +8,8 @@ constructor(
     val explore: FrontierRank? = null,
     val cqc: FrontierRank? = null,
     val federation: FrontierRank? = null,
-    val empire: FrontierRank? = null
+    val empire: FrontierRank? = null,
+    val alliance: FrontierRank? = null
 ) {
 
     data class FrontierRank(

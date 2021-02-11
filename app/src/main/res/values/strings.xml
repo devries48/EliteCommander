@@ -199,4 +199,5 @@
     <string name="hull">hull</string>
     <string name="estimated_value">Estimated value</string>
     <string name="rep">RP</string>
+    <string name="rank_alliance">Alliance</string>
 </resources>

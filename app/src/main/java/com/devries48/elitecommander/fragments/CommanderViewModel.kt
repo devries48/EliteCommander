@@ -28,6 +28,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
     val cqcRank: LiveData<RankModel> = mCqcRank
     val federationRank: LiveData<RankModel> = mFederationRank
     val empireRank: LiveData<RankModel> = mEmpireRank
+    val allianceRank: LiveData<RankModel> = mAllianceRank
     val currentDiscoverySummary: LiveData<FrontierDiscoverySummary> = mCurrentDiscoverySummary
 
     init {
@@ -88,7 +89,6 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onFrontierRanksEvent(ranksEvent: FrontierRanksEvent) {
-
         // Check download error
         if (!ranksEvent.success) {
             //NotificationsUtils.displayGenericDownloadErrorSnackbar(getActivity()) TODO: Error Handling
@@ -133,6 +133,14 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
                 ranksEvent.empire,
                 ranksEvent.empire.name,
                 R.string.rank_empire,
+                true
+            )
+        mAllianceRank.value =
+            RankModel(
+                NamingUtils.getAllianceRankDrawableId(),
+                ranksEvent.alliance!!,
+                "",
+                R.string.rank_alliance,
                 true
             )
     }
@@ -244,6 +252,17 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
                 )
             )
         private val mEmpireRank =
+            MutableLiveData(
+                RankModel(
+                    0,
+                    FrontierRanksEvent.FrontierRank("", 0, 0),
+                    "",
+                    R.string.empty_string,
+                    true
+                )
+            )
+
+        private val mAllianceRank =
             MutableLiveData(
                 RankModel(
                     0,

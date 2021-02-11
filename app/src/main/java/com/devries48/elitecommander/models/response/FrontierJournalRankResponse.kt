@@ -16,12 +16,15 @@ class FrontierJournalRankResponse : FrontierJournalBase() {
     @SerializedName("Explore")
     var explore: Int = 0
 
+    @SerializedName("CQC")
+    var cqc: Int = 0
+
     @SerializedName("Empire")
     var empire: Int = 0
 
     @SerializedName("Federation")
     var federation: Int = 0
 
-    @SerializedName("CQC")
-    var cqc: Int = 0
+    @SerializedName("Alliance")
+    var alliance: Int = 0
 }
