@@ -68,7 +68,17 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             R.string.CurrentShip,
             R.string.hull,
             "$hullPercentage%",
-            R.style.eliteStyle_LightOrangeText
+            if (hullPercentage >= 50) R.style.eliteStyle_LightOrangeText else R.style.eliteStyle_RedText
+        )
+
+        // Integrity
+        val integrityPercentage: Int = profileEvent.integrity /10000
+
+        setMainStatisticMiddle(
+            R.string.CurrentShip,
+            R.string.integrity,
+            "$integrityPercentage%",
+            if (integrityPercentage >= 50) R.style.eliteStyle_LightOrangeText else R.style.eliteStyle_RedText
         )
 
         // Check error case
@@ -309,6 +319,21 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             val stat: FrontierStatistic? = mMainStatisticsList.find { it.stringRes == stringRes }
             if (stat != null) {
                 stat.value = value
+                mMainStatistics!!.postValue(mMainStatisticsList)
+            }
+        }
+
+        private fun setMainStatisticMiddle(
+            @StringRes nameRes: Int,
+            @StringRes middleStringRes: Int,
+            middleValue: String,
+            @StyleRes middleValueStyleRes: Int
+        ) {
+            val stat: FrontierStatistic? = mMainStatisticsList.find { it.stringRes == nameRes }
+            if (stat != null) {
+                stat.middleValue = middleValue
+                stat.middleStringRes = middleStringRes
+                stat.middleValueStyleRes = middleValueStyleRes
                 mMainStatistics!!.postValue(mMainStatisticsList)
             }
         }

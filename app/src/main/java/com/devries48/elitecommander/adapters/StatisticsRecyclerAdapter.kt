@@ -21,6 +21,8 @@ class StatisticsRecyclerAdapter(var data: List<FrontierStatistic>) :
         val valueTextView: TextView = view.findViewById(R.id.valueTextView)
         val rightNameTextView: TextView = view.findViewById(R.id.rightNameTextView)
         val rightValueTextView: TextView = view.findViewById(R.id.rightValueTextView)
+        val middleNameTextView: TextView = view.findViewById(R.id.middleNameTextView)
+        val middleValueTextView: TextView = view.findViewById(R.id.middleValueTextView)
     }
 
     // Create new views (invoked by the layout manager)
@@ -33,7 +35,7 @@ class StatisticsRecyclerAdapter(var data: List<FrontierStatistic>) :
     }
 
     override fun getItemCount(): Int {
-        Log.d("Adapter Size ", data.size.toString())
+        Log.d("Main Statistics items:  ", data.size.toString())
         return data.size
     }
 
@@ -52,12 +54,18 @@ class StatisticsRecyclerAdapter(var data: List<FrontierStatistic>) :
             viewHolder.rightValueTextView.text = item.rightValue
             viewHolder.rightValueTextView.setTextAppearance(item.rightValueStyleRes)
         }
+
+        if (item.middleStringRes != 0) {
+            viewHolder.middleNameTextView.text = item.middleStringRes.let { ctx.getString(it) }
+        }
+        if (item.middleValue?.isNotEmpty() == true) {
+            viewHolder.middleValueTextView.text = item.middleValue
+            viewHolder.middleValueTextView.setTextAppearance(item.middleValueStyleRes)
+        }
     }
 
     fun updateList(stats: List<FrontierStatistic>) {
         data = stats
         notifyDataSetChanged()
     }
-
 }
-

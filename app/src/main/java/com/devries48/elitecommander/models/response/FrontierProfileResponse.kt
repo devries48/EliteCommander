@@ -23,7 +23,7 @@ class FrontierProfileResponse {
         var debt: Long = 0
 
         @SerializedName("currentShipId")
-        var currentShipId :Int= 0
+        var currentShipId: Int = 0
 
         @SerializedName("rank")
         var rank: FrontierProfileCommanderRankResponse? = null
@@ -74,6 +74,9 @@ class FrontierProfileResponse {
     inner class FrontierProfileShipHealthResponse {
         @SerializedName("hull")
         var hull: Int = 0
+
+        @SerializedName("integrity")  // (1,000,000 - integrity) / 10,000 = percentage left (so integrity 0 = 100%)
+        var integrity: Int = 0
     }
 
 }

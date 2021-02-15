@@ -53,7 +53,7 @@ object RankModelAdapter {
     @BindingAdapter("android:rankAutoHide")
     @JvmStatic
     fun rankAutoHide(view: View, model: RankModel) {
-        if (view.id == R.id.progressBar && model.name.isEmpty()  || view.id == R.id.progressTextView && model.name.isEmpty()) // Alliance has no ranks
+        if (view.id == R.id.progressBar && model.name.isEmpty() || view.id == R.id.progressTextView && model.name.isEmpty()) // Alliance has no ranks
             view.visibility = View.GONE
         else {
             val isEndRank =
@@ -61,7 +61,8 @@ object RankModelAdapter {
             val isReputationView =
                 view.id == R.id.reputationText || view.id == R.id.repText || view.id == R.id.reputationBar
 
-            view.visibility = if (isEndRank || isReputationView && !model.isFactionRank) View.GONE else View.VISIBLE
+            view.visibility =
+                if (isEndRank || isReputationView && !model.isFactionRank || model.rank.name.isEmpty()) View.GONE else View.VISIBLE
         }
     }
 
@@ -73,8 +74,8 @@ object RankModelAdapter {
     fun rankIsFaction(view: ImageView, isFaction: Boolean) {
         if (isFaction) {
             val layoutParams = view.layoutParams
-            layoutParams.height = 110 // R.dimen.img_rank_faction_size
-            layoutParams.width = 110 // R.dimen.img_rank_faction_size
+            layoutParams.height = 110
+            layoutParams.width = 110
             view.layoutParams = layoutParams
         }
     }

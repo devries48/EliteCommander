@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit
 // Singleton safe from serialization/reflection...
 // From https://medium.com/exploring-code/how-to-make-the-perfect-singleton-de6b951dfdb0
 
-open class RetrofitSingleton private constructor() : Serializable {
+open class RetrofitClient private constructor() : Serializable {
     private var frontierAuthInterface: FrontierAuthInterface? = null
     private var frontierInterface: FrontierInterface? = null
     private var edsmInterface: EdsmInterface? = null
@@ -134,13 +134,13 @@ open class RetrofitSingleton private constructor() : Serializable {
 
     companion object {
         @Volatile
-        private var instance: RetrofitSingleton? = null
+        private var instance: RetrofitClient? = null
 
-        fun getInstance(): RetrofitSingleton? {
+        fun getInstance(): RetrofitClient? {
             if (instance == null) {
-                synchronized(RetrofitSingleton::class.java) {
+                synchronized(RetrofitClient::class.java) {
                     if (instance == null) instance =
-                        RetrofitSingleton()
+                        RetrofitClient()
                 }
             }
             return instance

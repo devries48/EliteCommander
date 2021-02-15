@@ -88,7 +88,7 @@ open class FrontierAuthNetwork private constructor() : Serializable {
             )
         }
 
-        val retrofit: RetrofitSingleton? = RetrofitSingleton.getInstance()
+        val retrofit: RetrofitClient? = RetrofitClient.getInstance()
         val frontierAuth = retrofit?.getFrontierAuthRetrofit(ctx)
         val requestBody: FrontierAccessTokenRequestBody =
             getAuthorizationCodeRequestBody(

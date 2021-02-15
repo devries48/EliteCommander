@@ -334,7 +334,8 @@ class FrontierJournal {
                 "FSDJump",
                 "FSSDiscoveryScan",
                 "FSSAllBodiesFound",
-                "FuelScoop"
+                "FuelScoop",
+                "MultiSellExplorationData"
             )
 
         private val mRawEvents: MutableList<RawEvent> = ArrayList()

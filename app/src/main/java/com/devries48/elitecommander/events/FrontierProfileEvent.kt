@@ -6,5 +6,6 @@ data class FrontierProfileEvent(
     val balance: Long,
     val loan: Long,
     val systemName: String,
-    val hull: Int
+    val hull: Int,
+    val integrity: Int
 )

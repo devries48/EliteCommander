@@ -12,7 +12,7 @@ import kotlin.math.sqrt
 object DistanceCalculatorNetwork {
 
     fun getDistanceToSol(ctx: Context, system: String) {
-        val edsm: EdsmInterface? = RetrofitSingleton.getInstance()
+        val edsm: EdsmInterface? = RetrofitClient.getInstance()
             ?.getEdsmRetrofit(ctx.applicationContext)
 
         edsm?.getSystems(system, 0, 1, 0, 1)!!.enqueueWrap {

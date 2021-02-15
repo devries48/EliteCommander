@@ -14,12 +14,16 @@ import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
+import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.properties.Delegates
 
 class CommanderNetwork {
 
     private var mFrontierApi: FrontierInterface? = null
+    private var mJournalWorker: JournalWorker? = null
     private lateinit var mJournal: FrontierJournal
 
     private var mIsJournalParsed by Delegates.observable(false) { _, _, newValue ->
@@ -27,10 +31,13 @@ class CommanderNetwork {
     }
 
     init {
-        mFrontierApi = RetrofitSingleton.getInstance()
-            ?.getFrontierRetrofit(App.getContext())
+        mFrontierApi = RetrofitClient.getInstance()?.getFrontierRetrofit(App.getContext())
+        mJournalWorker = JournalWorker(mFrontierApi)
     }
 
+    /**
+     *  - Loads profile,capture FrontierProfileEvent for the result.
+     */
     fun loadProfile() {
         mFrontierApi?.profileRaw?.enqueueWrap {
             onResponse = response@{
@@ -67,6 +74,7 @@ class CommanderNetwork {
                     val debt: Long = profileResponse.commander?.debt!!
                     val systemName = profileResponse.lastSystem?.name!!
                     val hull = profileResponse.ship?.health?.hull!!
+                    val integrity = 1000000 - profileResponse.ship?.health?.integrity!!
 
                     frontierProfileEvent = profileResponse.commander?.let {
                         FrontierProfileEvent(
@@ -75,7 +83,8 @@ class CommanderNetwork {
                             credits,
                             debt,
                             systemName,
-                            hull
+                            hull,
+                            integrity
                         )
                     }!!
                     sendResultMessage(frontierProfileEvent)
@@ -88,7 +97,7 @@ class CommanderNetwork {
             }
             onFailure = {
                 println(it?.message)
-                val pos = FrontierProfileEvent(false, "", 0, 0, "", 0)
+                val pos = FrontierProfileEvent(false, "", 0, 0, "", 0, 0)
                 val ranks = FrontierRanksEvent(
                     false, null, null,
                     null, null, null, null
@@ -110,25 +119,11 @@ class CommanderNetwork {
             sendResultMessage(mJournal.getRanks(App.getContext()))
             sendResultMessage(mJournal.getCurrentDiscoveries())
         } else {
-            getJournal()
-
-//            lifecycleScope.launch {
-//                delay(5000L)
-//                editAccountDetails()
-//                val intent = Intent(this@editProfileActivity, viewProfileActivity::class.java)
-//                finish()
-//                startActivity(intent)
-//            }
+            mJournalWorker?.findLatestJournal()
         }
     }
 
-    fun getDistanceToSol(systemName: String?) {
-        if (systemName != null) {
-            DistanceCalculatorNetwork.getDistanceToSol(App.getContext(), systemName)
-        }
-    }
-
-    private fun getJournal() {
+    private suspend fun loadJournal() {
         mFrontierApi?.getJournal("2021/01/14")?.enqueueWrap {
             onResponse = {
                 if (it.code() != 200) {
@@ -148,6 +143,12 @@ class CommanderNetwork {
             onFailure = {
                 println("LOG: Response failure - " + it?.message)
             }
+        }
+    }
+
+    fun getDistanceToSol(systemName: String?) {
+        if (systemName != null) {
+            DistanceCalculatorNetwork.getDistanceToSol(App.getContext(), systemName)
         }
     }
 

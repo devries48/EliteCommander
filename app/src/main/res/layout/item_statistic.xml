@@ -32,6 +32,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
+                android:layout_marginBottom="2dp"
                 android:text=""
                 android:textAppearance="@style/eliteStyle.YellowText"
                 app:layout_constraintStart_toStartOf="@+id/nameTextView"
@@ -51,11 +52,27 @@
                 android:id="@+id/rightValueTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="2dp"
-                android:text=""
                 app:layout_constraintEnd_toEndOf="@+id/rightNameTextView"
+                app:layout_constraintTop_toTopOf="@+id/valueTextView" />
+
+            <TextView
+                android:id="@+id/middleNameTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="32dp"
+                android:text=""
+                android:textAppearance="@style/eliteStyle"
+                app:layout_constraintEnd_toStartOf="@+id/rightNameTextView"
                 app:layout_constraintTop_toTopOf="@+id/rightNameTextView" />
+
+            <TextView
+                android:id="@+id/middleValueTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                app:layout_constraintEnd_toEndOf="@+id/middleNameTextView"
+                app:layout_constraintTop_toTopOf="@+id/valueTextView" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 </FrameLayout>

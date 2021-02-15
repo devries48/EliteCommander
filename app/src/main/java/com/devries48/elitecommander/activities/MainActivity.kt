@@ -91,7 +91,7 @@ class MainActivity : AppCompatActivity() {
                 startActivityForResult(intent, FRONTIER_LOGIN_REQUEST_CODE)
             } else {
                 if (navDestinationId == R.id.mainFragment) {
-                    navDestinationId =  R.id.discoveriesFragment // R.id.action_main_to_commander
+                    navDestinationId =  R.id.action_main_to_commander  // R.id.discoveriesFragment
                     navController.navigate(navDestinationId)
                 }
             }
@@ -115,8 +115,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadData(){
         mCommanderNetwork.loadProfile()
-        // TODO: iterate through journals from today to the journal's last 'Docked' event.
-
         mCommanderNetwork.loadLatestJournal()
     }
 

@@ -1,10 +1,14 @@
 package com.devries48.elitecommander.activities
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -16,12 +20,16 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
+
 class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
         val button: Button = findViewById(R.id.frontierLoginButton)
+        val loginText: TextView = findViewById(R.id.loginTextView)
+        val redirectText: TextView = findViewById(R.id.redirectTextView)
+        val loginImage:ImageView= findViewById(R.id.loginImageView)
 
         // Check step (back from browser or just opened)
         if (intent != null && intent!!.action != null &&
@@ -33,7 +41,11 @@ class LoginActivity : AppCompatActivity() {
             val state = uri?.getQueryParameter("state")
 
             if (code != null && state != null) {
+                shrinkImage(loginImage)
                 button.isVisible = false
+                loginText.isVisible = false
+                redirectText.isVisible = true
+
                 launchTokensStep(code, state)
                 return
             }
@@ -114,4 +126,15 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    private fun shrinkImage(view: ImageView) {
+        val scaleDownX = ObjectAnimator.ofFloat(view, "scaleX", 0.5f)
+        val scaleDownY = ObjectAnimator.ofFloat(view, "scaleY", 0.5f)
+        scaleDownX.duration = 200
+        scaleDownY.duration = 200
+
+        val scaleDown = AnimatorSet()
+        scaleDown.play(scaleDownX).with(scaleDownY)
+
+        scaleDown.start()
+    }
 }

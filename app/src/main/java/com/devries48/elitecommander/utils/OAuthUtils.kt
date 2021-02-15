@@ -7,7 +7,7 @@ import com.devries48.elitecommander.BuildConfig
 import com.devries48.elitecommander.R
 import com.devries48.elitecommander.models.httpRequest.FrontierAccessTokenRequestBody
 import com.devries48.elitecommander.models.response.FrontierAccessTokenResponse
-import com.devries48.elitecommander.network.RetrofitSingleton
+import com.devries48.elitecommander.network.RetrofitClient
 import okhttp3.Interceptor
 import okhttp3.Request
 import retrofit2.Call
@@ -62,7 +62,7 @@ object OAuthUtils {
     @Throws(IOException::class)
     fun makeRefreshRequest(ctx: Context): FrontierAccessTokenResponse? {
         val requestBody = getRefreshTokenRequestBody(ctx)
-        val retrofit = RetrofitSingleton.getInstance()
+        val retrofit = RetrofitClient.getInstance()
         val frontierRetrofit = retrofit?.getFrontierAuthRetrofit(ctx)
 
         if (frontierRetrofit != null) {
