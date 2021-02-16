@@ -1,15 +1,9 @@
 package com.devries48.elitecommander.models
 
-import android.content.Context
-import com.devries48.elitecommander.R
 import com.devries48.elitecommander.declarations.toStringOrEmpty
 import com.devries48.elitecommander.events.FrontierDiscoveriesEvent
 import com.devries48.elitecommander.events.FrontierDiscovery
 import com.devries48.elitecommander.events.FrontierDiscoverySummary
-import com.devries48.elitecommander.events.FrontierRanksEvent
-import com.devries48.elitecommander.models.response.FrontierJournalRankProgressResponse
-import com.devries48.elitecommander.models.response.FrontierJournalRankReputationResponse
-import com.devries48.elitecommander.models.response.FrontierJournalRankResponse
 import com.devries48.elitecommander.utils.DiscoveryValueCalculator
 import com.google.gson.Gson
 import com.google.gson.JsonObject
@@ -19,87 +13,6 @@ import com.google.gson.annotations.SerializedName
 //TODO: Cache result and cleanup raw events
 class FrontierJournal {
 
-    fun parseResponse(response: String) {
-
-        response.replace("\r\n", "").replace("\n", "")
-            .trim().drop(1).dropLast(1).split("}{").map {
-                try {
-                    val raw = RawEvent(it.trim())
-                    if (raw.event !in mIgnoreEvents) mRawEvents.add(raw)
-                } catch (e: java.lang.Exception) {
-                    println("-----------------------")
-                    println(it.trim())
-                }
-            }
-        println("Journal events present: " + mRawEvents.size)
-    }
-
-    fun getRanks(context: Context): FrontierRanksEvent {
-        try {
-            val rawRank = mRawEvents.lastOrNull { it.event == JOURNAL_EVENT_RANK }
-            val rawProgress = mRawEvents.lastOrNull { it.event == JOURNAL_EVENT_PROGRESS }
-            val rawReputation = mRawEvents.lastOrNull { it.event == JOURNAL_EVENT_REPUTATION }
-
-            if (rawRank == null || rawProgress == null || rawReputation == null) {
-                throw error("Error parsing rank events from journal")
-            }
-
-            val rank = Gson().fromJson(rawRank.json, FrontierJournalRankResponse::class.java)
-            val progress = Gson().fromJson(rawProgress.json, FrontierJournalRankProgressResponse::class.java)
-            val reputation = Gson().fromJson(rawReputation.json, FrontierJournalRankReputationResponse::class.java)
-
-            val combatRank = FrontierRanksEvent.FrontierRank(
-                context.resources.getStringArray(R.array.ranks_combat)[rank.combat],
-                rank.combat,
-                progress.combat
-            )
-            val tradeRank = FrontierRanksEvent.FrontierRank(
-                context.resources.getStringArray(R.array.ranks_trade)[rank.trade],
-                rank.trade,
-                progress.trade
-            )
-            val exploreRank = FrontierRanksEvent.FrontierRank(
-                context.resources.getStringArray(R.array.ranks_explorer)[rank.explore],
-                rank.explore,
-                progress.explore
-            )
-            val cqcRank = FrontierRanksEvent.FrontierRank(
-                context.resources.getStringArray(R.array.ranks_cqc)[rank.cqc],
-                rank.cqc,
-                progress.cqc
-            )
-            val federationRank = FrontierRanksEvent.FrontierRank(
-                context.resources.getStringArray(R.array.ranks_federation)[rank.federation],
-                rank.federation,
-                progress.federation,
-                reputation.federation
-            )
-            val empireRank = FrontierRanksEvent.FrontierRank(
-                context.resources.getStringArray(R.array.ranks_empire)[rank.empire],
-                rank.empire,
-                progress.empire,
-                reputation.empire
-            )
-
-            val allianceRank = FrontierRanksEvent.FrontierRank(
-                context.resources.getString(R.string.rank_alliance),
-                rank.alliance,
-                0,
-                reputation.alliance
-            )
-
-            return FrontierRanksEvent(
-                true, combatRank, tradeRank, exploreRank,
-                cqcRank, federationRank, empireRank,allianceRank
-            )
-        } catch (e: Exception) {
-            println("LOG: Error parsing ranking events from journal." + e.message)
-            return FrontierRanksEvent(
-                false, null, null,
-                null, null, null, null
-            )
-        }
-    }
 
     fun getCurrentDiscoveries(): FrontierDiscoveriesEvent {
 

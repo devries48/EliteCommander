@@ -27,7 +27,7 @@ class CommanderNetwork {
     private lateinit var mJournal: FrontierJournal
 
     private var mIsJournalParsed by Delegates.observable(false) { _, _, newValue ->
-        if (newValue) loadLatestJournal()
+        if (newValue) loadCurrentJournal()
     }
 
     init {
@@ -114,16 +114,15 @@ class CommanderNetwork {
      *  - Loads ranks from journal,capture FrontierRanksEvent for the result.
      *  - Loads discoveries from journal, capture FrontierDiscoveriesEvent for the result.
      */
-    fun loadLatestJournal() {
+    fun loadCurrentJournal() {
         if (mIsJournalParsed) {
-            sendResultMessage(mJournal.getRanks(App.getContext()))
             sendResultMessage(mJournal.getCurrentDiscoveries())
         } else {
-            mJournalWorker?.findLatestJournal()
+            mJournalWorker?.getCurrentJournal()
         }
     }
 
-    private suspend fun loadJournal() {
+ /*   private suspend fun loadJournal() {
         mFrontierApi?.getJournal("2021/01/14")?.enqueueWrap {
             onResponse = {
                 if (it.code() != 200) {
@@ -133,7 +132,7 @@ class CommanderNetwork {
 
                     try {
                         val responseString: String? = it.body()?.string()
-                        mJournal.parseResponse(responseString!!)
+                        //mJournal.parseResponse(responseString!!)
                         mIsJournalParsed = true
                     } catch (e: Exception) {
                         onFailure?.let { it1 -> it1(Exception(it.code().toString())) }
@@ -145,7 +144,7 @@ class CommanderNetwork {
             }
         }
     }
-
+*/
     fun getDistanceToSol(systemName: String?) {
         if (systemName != null) {
             DistanceCalculatorNetwork.getDistanceToSol(App.getContext(), systemName)

@@ -115,7 +115,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadData(){
         mCommanderNetwork.loadProfile()
-        mCommanderNetwork.loadLatestJournal()
+        mCommanderNetwork.loadCurrentJournal()
     }
 
     private fun findNavController(): NavController {
