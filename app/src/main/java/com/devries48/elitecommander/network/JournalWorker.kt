@@ -10,22 +10,21 @@ import com.devries48.elitecommander.models.response.FrontierJournalRankReputatio
 import com.devries48.elitecommander.models.response.FrontierJournalRankResponse
 import com.devries48.elitecommander.utils.DateUtils
 import com.devries48.elitecommander.utils.DateUtils.removeDays
+import com.devries48.elitecommander.utils.DateUtils.toDateString
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
+import okhttp3.ResponseBody
 import org.greenrobot.eventbus.EventBus
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.properties.Delegates
 
 class JournalWorker(frontierApi: FrontierInterface?) {
 
     private lateinit var mFrontierApi: FrontierInterface
     private lateinit var mCrawlerType: CrawlerType
+    private var journalDate: Date? = DateUtils.getCurrentDate()
 
     init {
         if (frontierApi != null) {
@@ -33,16 +32,23 @@ class JournalWorker(frontierApi: FrontierInterface?) {
         }
     }
 
-    private var journalDate: Date? by Delegates.observable(null) { _, _, newDate ->
-        if (newDate != null) {
+    // Raises FrontierRanksEvent,
+    fun getCurrentJournal() {
+        mCrawlerType = CrawlerType.CURRENT_JOURNAL
+
+        processJournal(journalDate)
+    }
+
+    private fun processJournal(date: Date?) {
+        if (date != null) {
             GlobalScope.launch {
                 var code: Int? = 0
                 var response: String? = null
                 var rawEvents: List<RawEvent>? = null
 
-                getJournal(newDate) { c, r ->
+                getJournal(date) { c, r ->
                     code = c
-                    response = r
+                    response = r?.string()
                 }
                 if (code == 200)
                     rawEvents = response?.let { parseResponse(it) }
@@ -52,43 +58,15 @@ class JournalWorker(frontierApi: FrontierInterface?) {
         }
     }
 
-    private suspend fun crawlJournal(code: Int?, rawEvents: List<RawEvent>?) {
-        withContext(Dispatchers.IO) {
-            if (code != 200) {
-                //return
-                println("CODE:$code")
-                throw Exception("Not Implemented yet!")
-                val minimumDate = DateUtils.eliteStartDate
-                journalDate = journalDate?.removeDays()
-            }
-
-            if (mCrawlerType == CrawlerType.CURRENT_JOURNAL) {
-                raiseFrontierRanksEvent(rawEvents!!)
-            }
-        }
-    }
-
-    // Raises FrontierRanksEvent,
-    fun getCurrentJournal() {
-        mCrawlerType = CrawlerType.CURRENT_JOURNAL
-
-        // Start searching for the latest journal
-        journalDate = DateUtils.getCurrentDate().removeDays()
-    }
-
-    @Suppress("BlockingMethodInNonBlockingContext")
-    private suspend fun getJournal(date: Date, callback: (c: Int?, r: String?) -> Unit) {
+    private suspend fun getJournal(date: Date, callback: (c: Int?, r: ResponseBody?) -> Unit) {
         val dateString: String = SimpleDateFormat("yyyy/MM/dd", Locale.ROOT).format(date)
 
         try {
-
-            withContext(Dispatchers.IO) {
-                val result = mFrontierApi.getJournal(dateString)?.getResult()
-                callback.invoke(200, result?.string())
-            }
-
+            val result = mFrontierApi.getJournal(dateString)?.getResult()
+            callback.invoke(result?.first, result?.second)
         } catch (e: Exception) {
             println(e.message.toString())
+            callback.invoke(1313, null)
         }
     }
 
@@ -112,6 +90,42 @@ class JournalWorker(frontierApi: FrontierInterface?) {
             println("Journal events present: " + rawEvents.size)
         }
         return rawEvents
+    }
+
+    private suspend fun crawlJournal(code: Int?, rawEvents: List<RawEvent>?) {
+        withContext(Dispatchers.IO) {
+            if (code != 200) {
+                when (code) {
+                    204 ->  // No content, go one day back
+                    {
+                        journalDate = journalDate?.removeDays()
+                        processJournal(journalDate)
+                    }
+                    206 -> // Partial content, wait a moment and try again...
+                    {
+                        delay(1000)
+                        processJournal(journalDate)
+                    }
+                    else -> {
+                        if (journalDate?.coerceAtLeast(DateUtils.eliteStartDate) == DateUtils.eliteStartDate) {
+                            println(
+                                "LOG: Cannot get journals earlier than the date cap ${
+                                    journalDate!!.toDateString(
+                                        DateUtils.shortDateFormat
+                                    )
+                                }"
+                            )
+                            return@withContext
+                        }
+                    }
+                }
+
+            } else {
+                if (mCrawlerType == CrawlerType.CURRENT_JOURNAL) {
+                    raiseFrontierRanksEvent(rawEvents!!)
+                }
+            }
+        }
     }
 
     private fun raiseFrontierRanksEvent(rawEvents: List<RawEvent>) {

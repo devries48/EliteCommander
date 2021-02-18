@@ -58,29 +58,22 @@ open class RetrofitClient private constructor() : Serializable {
 
         // Add interceptor for tokens in response
         httpClient.addInterceptor { chain: Interceptor.Chain ->
-            var request: Request =
-                OAuthUtils.getRequestWithFrontierAuthorization(ctx, chain)
+            var request: Request = OAuthUtils.getRequestWithFrontierAuthorization(ctx, chain)
             var response = chain.proceed(request)
 
             // Check if access token expired and renew it if needed
             if (response.code() == 403 || response.code() == 422 || response.code() == 401) {
                 try{
-                    val responseBody: FrontierAccessTokenResponse? = OAuthUtils.makeRefreshRequest(
-                        ctx
-                    )
+                    val responseBody: FrontierAccessTokenResponse? = OAuthUtils.makeRefreshRequest(ctx)
                     if (responseBody == null) {
-                        // Send event to renew login
-                        EventBus.getDefault().post(FrontierAuthNeededEvent(true))
+                        EventBus.getDefault().post(FrontierAuthNeededEvent(true)) // Send event to renew login
                         return@addInterceptor response
                     }
 
                     // Retry request
                     responseBody.accessToken?.let {
                         responseBody.refreshToken?.let { it1 ->
-                            OAuthUtils.storeUpdatedTokens(
-                                ctx, it,
-                                it1
-                            )
+                            OAuthUtils.storeUpdatedTokens(ctx, it, it1)
                         }
                     }
                     response.close()
@@ -98,6 +91,7 @@ open class RetrofitClient private constructor() : Serializable {
             }
             response
         }
+
         val customRetrofitBuilder = Retrofit.Builder()
             .client(httpClient.build())
             .addConverterFactory(commonGsonConverterFactory)
@@ -118,6 +112,7 @@ open class RetrofitClient private constructor() : Serializable {
                 .addConverterFactory(commonGsonConverterFactory)
             return retrofitBuilder
         }
+
     private val commonGsonConverterFactory: GsonConverterFactory
         get() {
             val gson = GsonBuilder()
@@ -126,6 +121,7 @@ open class RetrofitClient private constructor() : Serializable {
                 .create()
             return GsonConverterFactory.create(gson)
         }
+
     private val commonOkHttpClientBuilder: OkHttpClient.Builder
          get() = OkHttpClient().newBuilder()
             .connectTimeout(15, TimeUnit.SECONDS)
@@ -147,9 +143,7 @@ open class RetrofitClient private constructor() : Serializable {
         }
     }
 
-    // Private constructor.
     init {
-
         // Prevent form the reflection api.
         if (instance != null) {
             throw RuntimeException("Use getInstance() method to get an instance of this class.")

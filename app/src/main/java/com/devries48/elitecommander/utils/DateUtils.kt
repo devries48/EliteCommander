@@ -12,7 +12,7 @@ object DateUtils {
             return fromDateString("2018/01/01", shortDateFormat)
         }
 
-    private fun Date.toDateString(format: String = defaultFormat): String {
+    fun Date.toDateString(format: String = defaultFormat): String {
         val formatter = SimpleDateFormat(format, Locale.getDefault())
         return formatter.format(this)
     }
