@@ -1,6 +1,6 @@
 package com.devries48.elitecommander.utils
 
-import com.devries48.elitecommander.models.FrontierJournal
+import com.devries48.elitecommander.network.JournalWorker
 import kotlin.math.max
 import kotlin.math.pow
 import kotlin.math.round
@@ -15,7 +15,7 @@ object DiscoveryValueCalculator {
 
     @JvmStatic
     fun calculate(
-        discovery: FrontierJournal.Discovery,
+        discovery: JournalWorker.Discovery,
         isMapped: Boolean,
         hasEfficiencyBonus: Boolean
     ): Long {

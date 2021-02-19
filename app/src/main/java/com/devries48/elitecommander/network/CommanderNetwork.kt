@@ -115,36 +115,9 @@ class CommanderNetwork {
      *  - Loads discoveries from journal, capture FrontierDiscoveriesEvent for the result.
      */
     fun loadCurrentJournal() {
-        if (mIsJournalParsed) {
-            sendResultMessage(mJournal.getCurrentDiscoveries())
-        } else {
             mJournalWorker?.getCurrentJournal()
-        }
     }
 
- /*   private suspend fun loadJournal() {
-        mFrontierApi?.getJournal("2021/01/14")?.enqueueWrap {
-            onResponse = {
-                if (it.code() != 200) {
-                    onFailure?.let { it1 -> it1(Exception(it.code().toString())) }
-                } else {
-                    mJournal = FrontierJournal()
-
-                    try {
-                        val responseString: String? = it.body()?.string()
-                        //mJournal.parseResponse(responseString!!)
-                        mIsJournalParsed = true
-                    } catch (e: Exception) {
-                        onFailure?.let { it1 -> it1(Exception(it.code().toString())) }
-                    }
-                }
-            }
-            onFailure = {
-                println("LOG: Response failure - " + it?.message)
-            }
-        }
-    }
-*/
     fun getDistanceToSol(systemName: String?) {
         if (systemName != null) {
             DistanceCalculatorNetwork.getDistanceToSol(App.getContext(), systemName)

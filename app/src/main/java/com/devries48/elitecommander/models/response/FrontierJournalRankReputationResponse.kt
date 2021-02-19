@@ -1,12 +1,11 @@
 package com.devries48.elitecommander.models.response
 
-import com.devries48.elitecommander.models.FrontierJournalBase
 import com.google.gson.annotations.SerializedName
 
 /**
  * Response class for journal event: 'Reputation'
  */
-class FrontierJournalRankReputationResponse : FrontierJournalBase() {
+class FrontierJournalRankReputationResponse : FrontierJournalResponseBase() {
     @SerializedName("Empire")
     var empire: Int = 0
 

@@ -1,9 +1,8 @@
 package com.devries48.elitecommander.models.response
 
-import com.devries48.elitecommander.models.FrontierJournalBase
 import com.google.gson.annotations.SerializedName
 
-class FrontierJournalDiscoveriesResponse : FrontierJournalBase() {
+class FrontierJournalDiscoveriesResponse : FrontierJournalResponseBase() {
     /**
      * System identifier, together with 'BodyID' a ΅ScanSurface' event can find the matching body.
      */
@@ -42,7 +41,7 @@ class FrontierJournalDiscoveriesResponse : FrontierJournalBase() {
  * Response class for journal event: 'SAAScanComplete'
  */
 
-class FrontierJournalScanSurface : FrontierJournalBase() {
+class FrontierJournalScanSurface : FrontierJournalResponseBase() {
     /**
      * System identifier, together with 'BodyID' find the matching body in the 'Scan' events.
      */

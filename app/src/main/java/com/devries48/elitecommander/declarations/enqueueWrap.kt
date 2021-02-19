@@ -29,6 +29,7 @@ class CallBackKt<T> : Callback<T> {
 @Suppress("UNCHECKED_CAST")
 suspend fun <T> Call<T>.getResult(): Pair<Int, T> = suspendCoroutine { cont ->
     enqueue(object : Callback<T> {
+
         override fun onFailure(call: Call<T>, t: Throwable) {
             cont.resumeWithException(t)
         }
@@ -41,11 +42,9 @@ suspend fun <T> Call<T>.getResult(): Pair<Int, T> = suspendCoroutine { cont ->
                     else -> cont.resume(Pair(response.code(), response.body()!! as T))
                 }
             } else {
-                cont.resumeWithException(ErrorResponse(response.message(), response.code()))
+                cont.resume(Pair(response.code(),response.message() as T ))
             }
         }
 
     })
 }
-
-class ErrorResponse(message: String, code: Int) : Throwable(message)
