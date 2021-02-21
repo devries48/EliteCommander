@@ -6,6 +6,7 @@ import java.util.*
 object DateUtils {
     private const val defaultFormat = "yyyy/MM/dd HH:mm:ss"
     const val shortDateFormat = "yyyy/MM/dd"
+    const val journalDateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
 
     val eliteStartDate: Date
         get() {
@@ -17,8 +18,11 @@ object DateUtils {
         return formatter.format(this)
     }
 
-    private fun fromDateString(value: String, format: String = this@DateUtils.defaultFormat): Date {
-        return SimpleDateFormat(format, Locale.getDefault()).parse(value)!!
+    fun fromDateString(value: String, format: String = this@DateUtils.defaultFormat): Date {
+        val sdf = SimpleDateFormat(format, Locale.getDefault())
+        sdf.timeZone = TimeZone.getTimeZone("GMT")
+
+        return sdf.parse(value)!!
     }
 
     fun getCurrentDate(): Date {
@@ -35,7 +39,7 @@ object DateUtils {
         return calender.time
     }
 
-    fun Date.removeDays( n: Int = 1): Date {
+    fun Date.removeDays(n: Int = 1): Date {
         return addDays(this, n * -1)
     }
 

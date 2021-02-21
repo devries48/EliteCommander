@@ -1,42 +1,6 @@
-package com.devries48.elitecommander.models
+package com.devries48.elitecommander.models.response
 
-import com.devries48.elitecommander.models.response.FrontierJournalResponseBase
-import com.google.gson.Gson
-import com.google.gson.JsonObject
-import com.google.gson.JsonParser
 import com.google.gson.annotations.SerializedName
-
-//TODO: Cache result and cleanup raw events
-class FrontierJournal {
-
-
-
-    fun getStatistics(): FrontierJournalStatisticsResponse? {
-        val event = mRawEvents.firstOrNull { it.event == JOURNAL_EVENT_STATISTICS }
-
-        if (event != null) {
-            return Gson().fromJson(
-                event.json,
-                FrontierJournalStatisticsResponse::class.java
-            )
-        }
-        return null
-    }
-
-    private class RawEvent(value: String) {
-        var event: String
-        val json: JsonObject = JsonParser.parseString("{$value}").asJsonObject
-
-        init {
-            event = json.get("event").asString
-        }
-    }
-
-    companion object {
-        private const val JOURNAL_EVENT_STATISTICS = "Statistics"
-        private val mRawEvents: MutableList<RawEvent> = ArrayList()
-    }
-}
 
 class FrontierJournalStatisticsResponse : FrontierJournalResponseBase() {
     @SerializedName("Bank_Account")
@@ -120,4 +84,3 @@ class FrontierJournalStatisticsResponse : FrontierJournalResponseBase() {
         var highestSingleTransaction: Long = 0
     }
 }
-

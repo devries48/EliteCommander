@@ -7,7 +7,6 @@ import com.devries48.elitecommander.events.FrontierProfileEvent
 import com.devries48.elitecommander.events.FrontierRanksEvent
 import com.devries48.elitecommander.events.FrontierShip
 import com.devries48.elitecommander.interfaces.FrontierInterface
-import com.devries48.elitecommander.models.FrontierJournal
 import com.devries48.elitecommander.models.response.FrontierProfileResponse
 import com.devries48.elitecommander.utils.NamingUtils
 import com.google.gson.Gson
@@ -24,7 +23,6 @@ class CommanderNetwork {
 
     private var mFrontierApi: FrontierInterface? = null
     private var mJournalWorker: JournalWorker? = null
-    private lateinit var mJournal: FrontierJournal
 
     private var mIsJournalParsed by Delegates.observable(false) { _, _, newValue ->
         if (newValue) loadCurrentJournal()

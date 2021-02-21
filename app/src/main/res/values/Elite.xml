@@ -14,7 +14,6 @@
         <item name="android:textSize">12sp</item>
     </style>
 
-
     <style name="eliteStyle.YellowText">
         <item name="android:textColor">@color/elite_yellow</item>
     </style>
@@ -55,8 +54,13 @@
     <style name="EliteRankCardView" parent="@style/Widget.MaterialComponents.CardView">
         <item name="cardBackgroundColor">@color/black</item>
     </style>
+
     <style name="EliteCardViewItem" parent="@style/Widget.MaterialComponents.CardView">
         <item name="cardBackgroundColor">@color/item_background</item>
+    </style>
+
+    <style name="BusyRankStyle">
+        <item name="colorAccent">@color/elite_orange</item>
     </style>
 
 </resources>

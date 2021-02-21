@@ -28,11 +28,6 @@ import java.util.*
 
 class JournalWorker(frontierApi: FrontierInterface?) {
 
-    private lateinit var mFrontierApi: FrontierInterface
-    private lateinit var mCrawlerType: CrawlerType
-    private var latestJournalDate: Date? = DateUtils.getCurrentDate()
-    private var currentDiscoveriesDate: Date? = null
-
     init {
         if (frontierApi != null) {
             mFrontierApi = frontierApi
@@ -42,14 +37,14 @@ class JournalWorker(frontierApi: FrontierInterface?) {
     // Raises FrontierRanksEvent
     fun getCurrentJournal() {
         mCrawlerType = CrawlerType.CURRENT_JOURNAL
-        processJournal(latestJournalDate)
+        processJournal(mLatestJournalDate)
     }
 
     // Raises FrontierDiscoveriesEvent
     private fun getCurrentDiscoveries() {
         mCrawlerType = CrawlerType.CURRENT_DISCOVERIES
-        currentDiscoveriesDate = latestJournalDate
-        processJournal(currentDiscoveriesDate)
+        mCurrentDiscoveriesDate = mLatestJournalDate
+        processJournal(mCurrentDiscoveriesDate)
     }
 
     private fun processJournal(date: Date?) {
@@ -98,9 +93,9 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                     try {
                         val raw = RawEvent(it.trim())
                         if (raw.event !in mIgnoreEvents) rawEvents.add(raw)
-                    } catch (e: java.lang.Exception) {
-                        println("-----------------------")
-                        println(it.trim())
+                    } catch (e: Exception) {
+                        println("LOG: Error parsing journal event, " + e.message)
+                        println("LOG: Event: " + it.trim())
                     }
                 }
 
@@ -113,19 +108,18 @@ class JournalWorker(frontierApi: FrontierInterface?) {
         withContext(Dispatchers.IO) {
 
             var journalDate = when (mCrawlerType) {
-                CrawlerType.CURRENT_JOURNAL -> latestJournalDate!!
-                else -> currentDiscoveriesDate
+                CrawlerType.CURRENT_JOURNAL -> Companion.mLatestJournalDate!!
+                else -> mCurrentDiscoveriesDate
             }
             println("LOG: Process journal: $journalDate type: $mCrawlerType")
 
             if (code == 200) {
                 if (mCrawlerType == CrawlerType.CURRENT_JOURNAL) {
                     raiseFrontierRanksEvent(rawEvents!!)
-                    latestJournalDate = journalDate
+                    mLatestJournalDate = journalDate
                 } else if (mCrawlerType == CrawlerType.CURRENT_DISCOVERIES) {
                     raiseFrontierDiscoveriesEvents(rawEvents!!)
-                    currentDiscoveriesDate = journalDate
-
+                    mCurrentDiscoveriesDate = journalDate
                 }
             } else {
                 when (code) {
@@ -135,8 +129,8 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                         processJournal(journalDate)
 
                         when (mCrawlerType) {
-                            CrawlerType.CURRENT_JOURNAL -> latestJournalDate = journalDate
-                            else -> currentDiscoveriesDate = journalDate
+                            CrawlerType.CURRENT_JOURNAL -> mLatestJournalDate = journalDate
+                            else -> mCurrentDiscoveriesDate = journalDate
                         }
                     }
                     206 -> // Partial content, wait and try again...
@@ -168,13 +162,92 @@ class JournalWorker(frontierApi: FrontierInterface?) {
         }
     }
 
+    private suspend fun raiseFrontierRanksEvent(rawEvents: List<RawEvent>) {
+        withContext(Dispatchers.IO) {
+            if (mEventCache.sendCachedRanksEvent()) return@withContext // Raise cached event if available
+            val context = App.getContext()
+
+            try {
+                val rawRank = rawEvents.lastOrNull { it.event == JOURNAL_EVENT_RANK }
+                val rawProgress = rawEvents.lastOrNull { it.event == JOURNAL_EVENT_PROGRESS }
+                val rawReputation = rawEvents.lastOrNull { it.event == JOURNAL_EVENT_REPUTATION }
+
+                if (rawRank == null || rawProgress == null || rawReputation == null) {
+                    throw error("Error parsing rank events from journal")
+                }
+
+                val rank = Gson().fromJson(rawRank.json, FrontierJournalRankResponse::class.java)
+                val progress = Gson().fromJson(rawProgress.json, FrontierJournalRankProgressResponse::class.java)
+                val reputation = Gson().fromJson(rawReputation.json, FrontierJournalRankReputationResponse::class.java)
+
+                val combatRank = FrontierRanksEvent.FrontierRank(
+                    context.resources.getStringArray(R.array.ranks_combat)[rank.combat],
+                    rank.combat,
+                    progress.combat
+                )
+                val tradeRank = FrontierRanksEvent.FrontierRank(
+                    context.resources.getStringArray(R.array.ranks_trade)[rank.trade],
+                    rank.trade,
+                    progress.trade
+                )
+                val exploreRank = FrontierRanksEvent.FrontierRank(
+                    context.resources.getStringArray(R.array.ranks_explorer)[rank.explore],
+                    rank.explore,
+                    progress.explore
+                )
+                val cqcRank = FrontierRanksEvent.FrontierRank(
+                    context.resources.getStringArray(R.array.ranks_cqc)[rank.cqc],
+                    rank.cqc,
+                    progress.cqc
+                )
+                val federationRank = FrontierRanksEvent.FrontierRank(
+                    context.resources.getStringArray(R.array.ranks_federation)[rank.federation],
+                    rank.federation,
+                    progress.federation,
+                    reputation.federation
+                )
+                val empireRank = FrontierRanksEvent.FrontierRank(
+                    context.resources.getStringArray(R.array.ranks_empire)[rank.empire],
+                    rank.empire,
+                    progress.empire,
+                    reputation.empire
+                )
+
+                val allianceRank = FrontierRanksEvent.FrontierRank(
+                    context.resources.getString(R.string.rank_alliance),
+                    rank.alliance,
+                    0,
+                    reputation.alliance
+                )
+
+                mEventCache.setRanksEvent(
+                    FrontierRanksEvent(
+                        true, combatRank, tradeRank, exploreRank,
+                        cqcRank, federationRank, empireRank, allianceRank
+                    )
+                )
+            } catch (e: Exception) {
+                println("LOG: Error parsing ranking events from journal." + e.message)
+                mEventCache.sendEvent(
+                    FrontierRanksEvent(
+                        false, null, null,
+                        null, null, null, null
+                    )
+                )
+            }
+        }
+    }
+
     private suspend fun raiseFrontierDiscoveriesEvents(rawEvents: List<RawEvent>) {
         withContext(Dispatchers.IO) {
             if (mEventCache.sendCachedCurrentDiscoveriesEvent()) return@withContext // Raise cached event if available
 
             try {
-                val rawDiscoveries = rawEvents.filter { it.event == JOURNAL_EVENT_DISCOVERY }
+                var rawDiscoveries = rawEvents.filter { it.event == JOURNAL_EVENT_DISCOVERY }
                 val rawMappings = rawEvents.filter { it.event == JOURNAL_EVENT_MAP }
+
+                val rawDataSold = rawEvents.lastOrNull { it.event == JOURNAL_EVENT_DISCOVERIES_SOLD }
+                if (rawDataSold != null) rawDiscoveries = rawDiscoveries.filter { it.timeStamp > rawDataSold.timeStamp }
 
                 if (rawDiscoveries.count() == 0) {
                     mEventCache.sendEvent(FrontierDiscoveriesEvent(true, null, null))
@@ -319,6 +392,7 @@ class JournalWorker(frontierApi: FrontierInterface?) {
         private const val JOURNAL_EVENT_REPUTATION = "Reputation"
         private const val JOURNAL_EVENT_DISCOVERY = "Scan"
         private const val JOURNAL_EVENT_MAP = "SAAScanComplete"
+        private const val JOURNAL_EVENT_DISCOVERIES_SOLD = "MultiSellExplorationData"
 
         var mIgnoreEvents =
             arrayOf(
@@ -345,95 +419,26 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                 "FSDJump",
                 "FSSDiscoveryScan",
                 "FSSAllBodiesFound",
-                "FuelScoop",
-                "MultiSellExplorationData"
+                "FuelScoop"
             )
 
         private var mEventCache: EventCache = EventCache()
-
-        private fun raiseFrontierRanksEvent(rawEvents: List<RawEvent>) {
-            if (mEventCache.sendCachedRanksEvent()) return // Raise cached event if available
-
-            val context = App.getContext()
-
-            try {
-                val rawRank = rawEvents.lastOrNull { it.event == JOURNAL_EVENT_RANK }
-                val rawProgress = rawEvents.lastOrNull { it.event == JOURNAL_EVENT_PROGRESS }
-                val rawReputation = rawEvents.lastOrNull { it.event == JOURNAL_EVENT_REPUTATION }
-
-                if (rawRank == null || rawProgress == null || rawReputation == null) {
-                    throw error("Error parsing rank events from journal")
-                }
-
-                val rank = Gson().fromJson(rawRank.json, FrontierJournalRankResponse::class.java)
-                val progress = Gson().fromJson(rawProgress.json, FrontierJournalRankProgressResponse::class.java)
-                val reputation = Gson().fromJson(rawReputation.json, FrontierJournalRankReputationResponse::class.java)
-
-                val combatRank = FrontierRanksEvent.FrontierRank(
-                    context.resources.getStringArray(R.array.ranks_combat)[rank.combat],
-                    rank.combat,
-                    progress.combat
-                )
-                val tradeRank = FrontierRanksEvent.FrontierRank(
-                    context.resources.getStringArray(R.array.ranks_trade)[rank.trade],
-                    rank.trade,
-                    progress.trade
-                )
-                val exploreRank = FrontierRanksEvent.FrontierRank(
-                    context.resources.getStringArray(R.array.ranks_explorer)[rank.explore],
-                    rank.explore,
-                    progress.explore
-                )
-                val cqcRank = FrontierRanksEvent.FrontierRank(
-                    context.resources.getStringArray(R.array.ranks_cqc)[rank.cqc],
-                    rank.cqc,
-                    progress.cqc
-                )
-                val federationRank = FrontierRanksEvent.FrontierRank(
-                    context.resources.getStringArray(R.array.ranks_federation)[rank.federation],
-                    rank.federation,
-                    progress.federation,
-                    reputation.federation
-                )
-                val empireRank = FrontierRanksEvent.FrontierRank(
-                    context.resources.getStringArray(R.array.ranks_empire)[rank.empire],
-                    rank.empire,
-                    progress.empire,
-                    reputation.empire
-                )
-
-                val allianceRank = FrontierRanksEvent.FrontierRank(
-                    context.resources.getString(R.string.rank_alliance),
-                    rank.alliance,
-                    0,
-                    reputation.alliance
-                )
-
-                mEventCache.setRanksEvent(
-                    FrontierRanksEvent(
-                        true, combatRank, tradeRank, exploreRank,
-                        cqcRank, federationRank, empireRank, allianceRank
-                    )
-                )
-            } catch (e: Exception) {
-                println("LOG: Error parsing ranking events from journal." + e.message)
-                mEventCache.sendEvent(
-                    FrontierRanksEvent(
-                        false, null, null,
-                        null, null, null, null
-                    )
-                )
-            }
-        }
+        private lateinit var mFrontierApi: FrontierInterface
+        private lateinit var mCrawlerType: CrawlerType
+        private var mLatestJournalDate: Date? = DateUtils.getCurrentDate()
+        private var mCurrentDiscoveriesDate: Date? = null
 
     }
 
     private class RawEvent(value: String) {
         var event: String
+        var timeStamp: Date
         val json: JsonObject = JsonParser.parseString("{$value}").asJsonObject
 
         init {
             event = json.get("event").asString
+            val timestampString = json.get("timestamp").asString
+            timeStamp = DateUtils.fromDateString(timestampString, DateUtils.journalDateFormat)
         }
     }
 
@@ -468,7 +473,6 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                 true
             } else false
         }
-
 
     }
 
@@ -511,7 +515,6 @@ class JournalWorker(frontierApi: FrontierInterface?) {
         @SerializedName("ProbesUsed")
         val probesUsed: Int
     )
-
 
 }
 

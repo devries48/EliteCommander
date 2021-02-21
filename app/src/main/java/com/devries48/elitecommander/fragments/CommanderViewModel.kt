@@ -1,5 +1,6 @@
 package com.devries48.elitecommander.fragments
 
+import android.annotation.SuppressLint
 import android.icu.text.DecimalFormat
 import androidx.annotation.StringRes
 import androidx.annotation.StyleRes
@@ -8,6 +9,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.devries48.elitecommander.R
+import com.devries48.elitecommander.declarations.default
 import com.devries48.elitecommander.events.*
 import com.devries48.elitecommander.models.FrontierStatistic
 import com.devries48.elitecommander.models.RankModel
@@ -30,6 +32,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
     val empireRank: LiveData<RankModel> = mEmpireRank
     val allianceRank: LiveData<RankModel> = mAllianceRank
     val currentDiscoverySummary: LiveData<FrontierDiscoverySummary> = mCurrentDiscoverySummary
+    var isRanksBusy: MutableLiveData<Boolean> = mIsRanksBusy
 
     init {
         EventBus.getDefault().register(this)
@@ -72,7 +75,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
         )
 
         // Integrity
-        val integrityPercentage: Int = profileEvent.integrity /10000
+        val integrityPercentage: Int = profileEvent.integrity / 10000
 
         setMainStatisticMiddle(
             R.string.CurrentShip,
@@ -102,6 +105,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
         // Check download error
         if (!ranksEvent.success) {
             //NotificationsUtils.displayGenericDownloadErrorSnackbar(getActivity()) TODO: Error Handling
+            mIsRanksBusy.postValue(false)
             return
         }
 
@@ -153,6 +157,8 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
                 R.string.rank_alliance,
                 true
             )
+
+        mIsRanksBusy.postValue(false)
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -201,14 +207,16 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
         }
     }
 
+    @SuppressLint("NullSafeMutableLiveData")
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onCurrentDiscoveries(discoveries: FrontierDiscoveriesEvent) {
         if (!discoveries.success) {
             //NotificationsUtils.displayGenericDownloadErrorSnackbar(getActivity()) TODO: Error Handling
             return
         }
-        mCurrentDiscoverySummary.value = discoveries.summary!!
-        mCurrentDiscoveries.value = discoveries.discoveries
+        mCurrentDiscoverySummary.postValue(discoveries.summary!!)
+        if (discoveries.discoveries != null)
+            mCurrentDiscoveries.postValue(discoveries.discoveries)
     }
 
     companion object {
@@ -288,9 +296,12 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
         private val mMainStatisticsList = ArrayList<FrontierStatistic>()
         private var mCurrentDiscoverySummary = MutableLiveData(
             FrontierDiscoverySummary(
-                0, 0, 0, 0, 0, 0, 0, 0, 0,0
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0
             )
         )
+
+        private val mIsRanksBusy = MutableLiveData<Boolean>().default(true)
+
 
         private fun currencyFormat(amount: Long): String {
             val formatter = DecimalFormat("###,###,###,###")

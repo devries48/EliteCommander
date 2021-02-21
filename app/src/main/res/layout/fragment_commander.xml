@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <import type="android.view.View"/>
         <variable
             name="viewModel"
             type="com.devries48.elitecommander.fragments.CommanderViewModel" />
@@ -134,6 +134,17 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:rankModel="@{viewModel.cqcRank}" />
 
+                <ProgressBar
+                    android:id="@+id/playerRankBusyBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:theme="@style/BusyRankStyle"
+                    android:visibility="@{viewModel.isRanksBusy ? View.VISIBLE : View.GONE}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
 
@@ -156,7 +167,7 @@
                     layout="@layout/include_rank"
                     android:layout_width="wrap_content"
                     android:layout_height="170dp"
-                    android:layout_marginStart="@dimen/margin_small"
+                    android:layout_marginStart="@dimen/margin_medium"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:rankModel="@{viewModel.federationRank}" />
@@ -180,6 +191,17 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:rankModel="@{viewModel.allianceRank}" />
+
+                <ProgressBar
+                    android:id="@+id/factionRankBusyBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:theme="@style/BusyRankStyle"
+                    android:visibility="@{viewModel.isRanksBusy ? View.VISIBLE : View.GONE}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
