@@ -108,7 +108,7 @@ class JournalWorker(frontierApi: FrontierInterface?) {
         withContext(Dispatchers.IO) {
 
             var journalDate = when (mCrawlerType) {
-                CrawlerType.CURRENT_JOURNAL -> Companion.mLatestJournalDate!!
+                CrawlerType.CURRENT_JOURNAL -> mLatestJournalDate!!
                 else -> mCurrentDiscoveriesDate
             }
             println("LOG: Process journal: $journalDate type: $mCrawlerType")

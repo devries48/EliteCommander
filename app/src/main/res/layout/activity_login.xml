@@ -58,7 +58,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/login_logo" />
+        app:srcCompat="@mipmap/login_logo" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
