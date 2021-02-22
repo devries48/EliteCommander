@@ -13,26 +13,26 @@
 ## FUNCTIONALITY
 
 Displays:
-- "Earnings"
-- "Ranks"
-- "Current trip discoveries with estimated values"
+- Earnings
+- Ranks
+- Current trip discoveries with estimated values
  
  
 ## API's USED:
-- "Frontier"
-- "EDSM"
+- Frontier
+- EDSM
 
 ## RESOURCES USED
 
 Code:
- - "EDCompanion"
- - 
+ - EDCompanion
+ 
 Planet & stars images:
- - "https://www.edsm.net/en/statistics/bodies"
- - "https://www.edsm.net/en/statistics/bodies/planets"
+ - https://www.edsm.net/en/statistics/bodies
+ - https://www.edsm.net/en/statistics/bodies/planets
   
 Exploration value calculator: 
- - "https://forums.frontier.co.uk/threads/exploration-value-formulae.232000"
+ - https://forums.frontier.co.uk/threads/exploration-value-formulae.232000
 
 Distance calculator: 
- - "https://forums.frontier.co.uk/threads/is-there-a-tool-that-will-measure-the-distance-between-two-systems.331772"
+ - https://forums.frontier.co.uk/threads/is-there-a-tool-that-will-measure-the-distance-between-two-systems.331772
