@@ -2,6 +2,8 @@
 
 **Elite Dangerous companion displays statistics, earnings and rankings**
 
+[![Build Status](https://github.com/devries48/elitecommander/workflows/master/badge.svg)](https://github.com/devries48/elitecommander/actions)
+
 ## Table of content
 - [FUNCTIONALITY](#functionality)
 - [API's USED](#apis-used)
