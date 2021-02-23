@@ -1,23 +1,38 @@
 # ELITE COMMANDER
-Yet Another Elite Dangerous companion
 
-Shows:
-    -   Earning
-    -   Ranks
-    -   Current trip discoveries with estimated values
+**Elite Dangerous companion displays statistics, earnings and rankings**
 
-Inspired by EDCompanion
+[![Build Status](https://github.com/devries48/elitecommander/workflows/master/badge.svg)](https://github.com/devries48/elitecommander/actions)
 
-API's USED:
-    -   Frontier
-    -   EDSM
+## Table of content
+- [FUNCTIONALITY](#functionality)
+- [API's USED](#apis-used)
+- [RESOURCES USED](#resources-used)
 
-RESOURCES USED:
 
+## FUNCTIONALITY
+
+Displays:
+- Earnings
+- Ranks
+- Current trip discoveries with estimated values
+ 
+ 
+## API's USED:
+- Frontier
+- EDSM
+
+## RESOURCES USED
+
+Code:
+ - EDCompanion
+ 
 Planet & stars images:
-    https://www.edsm.net/en/statistics/bodies
-    https://www.edsm.net/en/statistics/bodies/planets
+ - https://www.edsm.net/en/statistics/bodies
+ - https://www.edsm.net/en/statistics/bodies/planets
   
-Exploration value calculator: https://forums.frontier.co.uk/threads/exploration-value-formulae.232000/
-Distance calculator: https://forums.frontier.co.uk/threads/is-there-a-tool-that-will-measure-the-distance-between-two-systems.331772/
+Exploration value calculator: 
+ - https://forums.frontier.co.uk/threads/exploration-value-formulae.232000
 
+Distance calculator: 
+ - https://forums.frontier.co.uk/threads/is-there-a-tool-that-will-measure-the-distance-between-two-systems.331772
