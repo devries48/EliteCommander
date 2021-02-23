@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.GestureDetector
 import android.view.MotionEvent
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GestureDetectorCompat
 import androidx.lifecycle.ViewModelProvider
@@ -137,11 +136,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     internal fun onSwipeRightToLeft() {
-        Toast.makeText(this, "Right to left Swipe", Toast.LENGTH_LONG).show()
+        when (navDestinationId) {
+            R.id.commanderFragment ->  doNavigate(R.id.action_commander_to_discoveries)
+            R.id.discoveriesFragment -> doNavigate(R.id.action_discoveries_to_earnings)
+            R.id.earningsFragment -> doNavigate(R.id.action_earnings_to_commander)
+        }
     }
 
+    // Navigate back
     internal fun onSwipeLeftToRight() {
-        Toast.makeText(this, "Left to right Swipe", Toast.LENGTH_LONG).show()
+        when (navDestinationId) {
+            R.id.action_main_to_commander, R.id.commanderFragment -> doNavigate(R.id.action_commander_to_earnings)
+            R.id.discoveriesFragment -> doNavigate(R.id.action_discoveries_to_commander)
+            R.id.earningsFragment -> doNavigate(R.id.action_earnings_to_discoveries)
+        }
     }
 
     private fun onSwipeTopToBottom() {

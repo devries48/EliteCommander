@@ -202,4 +202,7 @@
     <string name="rep">RP</string>
     <string name="rank_alliance">Alliance</string>
     <string name="integrity">Integrity</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="earnings">Earnings</string>
 </resources>

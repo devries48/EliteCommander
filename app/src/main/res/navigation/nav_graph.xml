@@ -19,6 +19,9 @@
         <action
             android:id="@+id/action_commander_to_discoveries"
             app:destination="@id/discoveriesFragment" />
+        <action
+            android:id="@+id/action_commander_to_earnings"
+            app:destination="@id/earningsFragment" />
     </fragment>
     <fragment
         android:id="@+id/mainFragment"
@@ -37,6 +40,9 @@
         android:label="fragment_discoveries"
         tools:layout="@layout/fragment_discoveries" >
         <action
+            android:id="@+id/action_discoveries_to_earnings"
+            app:destination="@id/earningsFragment" />
+        <action
             android:id="@+id/action_discoveries_to_commander"
             app:destination="@id/commanderFragment" />
     </fragment>
@@ -45,4 +51,15 @@
         android:name="com.devries48.elitecommander.activities.LoginActivity"
         android:label="activity_login"
         tools:layout="@layout/activity_login" />
+    <fragment
+        android:id="@+id/earningsFragment"
+        android:name="com.devries48.elitecommander.fragments.EarningsFragment"
+        android:label="EarningsFragment" >
+        <action
+            android:id="@+id/action_earnings_to_commander"
+            app:destination="@id/commanderFragment" />
+        <action
+            android:id="@+id/action_earnings_to_discoveries"
+            app:destination="@id/discoveriesFragment" />
+    </fragment>
 </navigation>

@@ -4,14 +4,12 @@ import com.devries48.elitecommander.App
 import com.devries48.elitecommander.R
 import com.devries48.elitecommander.declarations.getResult
 import com.devries48.elitecommander.declarations.toStringOrEmpty
-import com.devries48.elitecommander.events.FrontierDiscoveriesEvent
-import com.devries48.elitecommander.events.FrontierDiscovery
-import com.devries48.elitecommander.events.FrontierDiscoverySummary
-import com.devries48.elitecommander.events.FrontierRanksEvent
+import com.devries48.elitecommander.events.*
 import com.devries48.elitecommander.interfaces.FrontierInterface
 import com.devries48.elitecommander.models.response.FrontierJournalRankProgressResponse
 import com.devries48.elitecommander.models.response.FrontierJournalRankReputationResponse
 import com.devries48.elitecommander.models.response.FrontierJournalRankResponse
+import com.devries48.elitecommander.models.response.FrontierJournalStatisticsResponse
 import com.devries48.elitecommander.utils.DateUtils
 import com.devries48.elitecommander.utils.DateUtils.removeDays
 import com.devries48.elitecommander.utils.DateUtils.toDateString
@@ -35,6 +33,7 @@ class JournalWorker(frontierApi: FrontierInterface?) {
     }
 
     // Raises FrontierRanksEvent
+    // Raises FrontierStatisticsEvent
     fun getCurrentJournal() {
         mCrawlerType = CrawlerType.CURRENT_JOURNAL
         processJournal(mLatestJournalDate)
@@ -116,6 +115,7 @@ class JournalWorker(frontierApi: FrontierInterface?) {
             if (code == 200) {
                 if (mCrawlerType == CrawlerType.CURRENT_JOURNAL) {
                     raiseFrontierRanksEvent(rawEvents!!)
+                    raiseFrontierStatisticsEvent(rawEvents)
                     mLatestJournalDate = journalDate
                 } else if (mCrawlerType == CrawlerType.CURRENT_DISCOVERIES) {
                     raiseFrontierDiscoveriesEvents(rawEvents!!)
@@ -235,6 +235,76 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                     )
                 )
             }
+        }
+    }
+
+    private suspend fun raiseFrontierStatisticsEvent(rawEvents: List<RawEvent>) {
+        withContext(Dispatchers.IO) {
+            if (mEventCache.sendCachedStatisticsEvent()) return@withContext // Raise cached event if available
+
+            try {
+                val rawStatistics = rawEvents.lastOrNull { it.event == JOURNAL_EVENT_STATISTICS }
+                    ?: throw error("Error parsing statistics event from journal")
+
+                val statistics = Gson().fromJson(rawStatistics.json, FrontierJournalStatisticsResponse::class.java)
+
+                mEventCache.setStatisticsEvent(
+                    FrontierStatisticsEvent(
+                        true, FrontierBankAccount(
+                            statistics.bankAccount.currentWealth,
+                            statistics.bankAccount.insuranceClaims,
+                            statistics.bankAccount.ownedShipCount,
+                            statistics.bankAccount.spentOnAmmoConsumables,
+                            statistics.bankAccount.spentOnFuel,
+                            statistics.bankAccount.spentOnInsurance,
+                            statistics.bankAccount.spentOnOutfitting,
+                            statistics.bankAccount.spentOnRepairs,
+                            statistics.bankAccount.spentOnShips
+                        ), FrontierCombat(
+                            statistics.combat.assassinationProfits,
+                            statistics.combat.assassinations,
+                            statistics.combat.bountiesClaimed,
+                            statistics.combat.bountyHuntingProfit,
+                            statistics.combat.combatBondProfits,
+                            statistics.combat.combatBonds,
+                            statistics.combat.highestSingleReward,
+                            statistics.combat.skimmersKilled
+                        ), FrontierExploration(
+                            statistics.exploration.efficientScans,
+                            statistics.exploration.explorationProfits,
+                            statistics.exploration.greatestDistanceFromStart,
+                            statistics.exploration.highestPayout,
+                            statistics.exploration.planetsScannedToLevel2,
+                            statistics.exploration.planetsScannedToLevel3,
+                            statistics.exploration.systemsVisited,
+                            statistics.exploration.timePlayed,
+                            statistics.exploration.totalHyperspaceDistance,
+                            statistics.exploration.totalHyperspaceJumps
+                        )
+                            , FrontierMining(
+                    statistics.mining.materialsCollected,
+                            statistics.mining.miningProfits,
+                            statistics.mining.quantityMined
+                )
+                ,
+                        FrontierTrading(
+                                statistics.trading.averageProfit,
+                            statistics.trading.highestSingleTransaction,
+                            statistics.trading.marketProfits,
+                            statistics.trading.marketsTradedWith,
+                            statistics.trading.resourcesTraded
+                        )
+                    )
+
+                )
+
+            } catch (e: Exception) {
+                println("LOG: Error parsing statistics event from journal." + e.message)
+                mEventCache.sendEvent(
+                    FrontierStatisticsEvent(false, null, null, null, null, null)
+                )
+            }
+
         }
     }
 
@@ -444,10 +514,16 @@ class JournalWorker(frontierApi: FrontierInterface?) {
 
     private class EventCache {
         private var ranksEvent: FrontierRanksEvent? = null
+        private var statisticsEvent: FrontierStatisticsEvent? = null
         private var currentDiscoveriesEvent: FrontierDiscoveriesEvent? = null
 
         fun setRanksEvent(event: FrontierRanksEvent) {
             ranksEvent = event
+            sendEvent(event)
+        }
+
+        fun setStatisticsEvent(event: FrontierStatisticsEvent) {
+            statisticsEvent = event
             sendEvent(event)
         }
 
@@ -470,6 +546,13 @@ class JournalWorker(frontierApi: FrontierInterface?) {
         fun sendCachedCurrentDiscoveriesEvent(): Boolean {
             return if (currentDiscoveriesEvent != null) {
                 sendEvent(currentDiscoveriesEvent)
+                true
+            } else false
+        }
+
+        fun sendCachedStatisticsEvent(): Boolean {
+            return if (statisticsEvent != null) {
+                sendEvent(statisticsEvent)
                 true
             } else false
         }

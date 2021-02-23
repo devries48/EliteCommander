@@ -214,10 +214,20 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             //NotificationsUtils.displayGenericDownloadErrorSnackbar(getActivity()) TODO: Error Handling
             return
         }
-        mCurrentDiscoverySummary.postValue(discoveries.summary!!)
+        if (discoveries.summary != null)
+            mCurrentDiscoverySummary.postValue(discoveries.summary)
         if (discoveries.discoveries != null)
             mCurrentDiscoveries.postValue(discoveries.discoveries)
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onStatistics(statistics: FrontierStatisticsEvent) {
+        if (!statistics.success) {
+            //NotificationsUtils.displayGenericDownloadErrorSnackbar(getActivity()) TODO: Error Handling
+            return
+        }
+    }
+
 
     companion object {
 

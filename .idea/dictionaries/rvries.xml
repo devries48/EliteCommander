@@ -12,9 +12,16 @@
       <w>edsm</w>
       <w>elitecommander</w>
       <w>eurocaps</w>
+      <w>gencounters</w>
+      <w>gencountertotal</w>
+      <w>gencountertotallastship</w>
+      <w>gencountertotallastsystem</w>
+      <w>gencountertotallasttimestamp</w>
+      <w>gscoutcount</w>
       <w>gson</w>
       <w>herbig</w>
       <w>loadout</w>
+      <w>multicrew</w>
       <w>orangegiant</w>
       <w>powerplay</w>
       <w>rayet</w>
@@ -30,6 +37,7 @@
       <w>supermassiveblackhole</w>
       <w>tauri</w>
       <w>terraformable</w>
+      <w>tgencounters</w>
       <w>viewmodel</w>
       <w>whitesupergiant</w>
     </words>
