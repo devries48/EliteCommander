@@ -2,10 +2,7 @@ package com.devries48.elitecommander.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.GestureDetector
-import android.view.MotionEvent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.GestureDetectorCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -14,21 +11,21 @@ import com.devries48.elitecommander.databinding.ActivityMainBinding
 import com.devries48.elitecommander.events.FrontierAuthNeededEvent
 import com.devries48.elitecommander.fragments.CommanderViewModel
 import com.devries48.elitecommander.fragments.CommanderViewModelFactory
+import com.devries48.elitecommander.fragments.MainFragment
 import com.devries48.elitecommander.network.CommanderNetwork
 import com.devries48.elitecommander.utils.OAuthUtils.storeUpdatedTokens
+import kotlinx.android.synthetic.main.fragment_main.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import kotlin.math.abs
 import kotlin.properties.Delegates
 
 class MainActivity : AppCompatActivity() {
 
-    private val navController by lazy { findNavController() }
-
     private lateinit var mBinding: ActivityMainBinding
     private lateinit var mCommanderNetwork: CommanderNetwork
     private var mCommanderViewModel: CommanderViewModel? = null
+    private val mNavController by lazy { findNavController() }
 
     private var mIsLoggedIn by Delegates.observable(false) { _, _, newValue ->
         if (newValue) loadData()
@@ -40,16 +37,6 @@ class MainActivity : AppCompatActivity() {
         setupDataBinding()
         setupViewModel()
         setupNavigation()
-
-        detector = GestureDetectorCompat(this, NavigationGestureListener())
-    }
-
-    override fun onTouchEvent(event: MotionEvent?): Boolean {
-        return if (detector.onTouchEvent(event)) {
-            true
-        } else {
-            super.onTouchEvent(event)
-        }
     }
 
     public override fun onStart() {
@@ -67,7 +54,6 @@ class MainActivity : AppCompatActivity() {
 
         if (requestCode == FRONTIER_LOGIN_REQUEST_CODE) {
             mIsLoggedIn = true
-            doNavigate(navDestinationId)
         }
     }
 
@@ -90,7 +76,6 @@ class MainActivity : AppCompatActivity() {
                 startActivityForResult(intent, FRONTIER_LOGIN_REQUEST_CODE)
             } else {
                 if (navDestinationId == R.id.mainFragment) {
-                    navDestinationId =  R.id.action_main_to_commander  // R.id.discoveriesFragment
                     navController.navigate(navDestinationId)
                 }
             }
@@ -102,7 +87,7 @@ class MainActivity : AppCompatActivity() {
             mCommanderNetwork = CommanderNetwork()
 
             val viewModelProvider = ViewModelProvider(
-                navController.getViewModelStoreOwner(R.id.nav_graph),
+                mNavController.getViewModelStoreOwner(R.id.nav_graph),
                 CommanderViewModelFactory(mCommanderNetwork)
             )
             mCommanderViewModel = viewModelProvider.get(CommanderViewModel::class.java)
@@ -112,9 +97,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadData(){
+    private fun loadData() {
         mCommanderNetwork.loadProfile()
         mCommanderNetwork.loadCurrentJournal()
+
+        hideRedirectFragment()
     }
 
     private fun findNavController(): NavController {
@@ -129,86 +116,15 @@ class MainActivity : AppCompatActivity() {
         storeUpdatedTokens(this, "", "")
     }
 
-    private fun onSwipeBottomToTop() {
-        when (navDestinationId) {
-            R.id.action_main_to_commander, R.id.commanderFragment -> doNavigate(R.id.action_commander_to_discoveries)
-        }
-    }
-
-    internal fun onSwipeRightToLeft() {
-        when (navDestinationId) {
-            R.id.commanderFragment ->  doNavigate(R.id.action_commander_to_discoveries)
-            R.id.discoveriesFragment -> doNavigate(R.id.action_discoveries_to_earnings)
-            R.id.earningsFragment -> doNavigate(R.id.action_earnings_to_commander)
-        }
-    }
-
-    // Navigate back
-    internal fun onSwipeLeftToRight() {
-        when (navDestinationId) {
-            R.id.action_main_to_commander, R.id.commanderFragment -> doNavigate(R.id.action_commander_to_earnings)
-            R.id.discoveriesFragment -> doNavigate(R.id.action_discoveries_to_commander)
-            R.id.earningsFragment -> doNavigate(R.id.action_earnings_to_discoveries)
-        }
-    }
-
-    private fun onSwipeTopToBottom() {
-        if (navDestinationId == R.id.discoveriesFragment)
-            doNavigate(R.id.action_discoveries_to_commander)
-    }
-
-    private fun doNavigate(destinationId: Int) {
-        navDestinationId = destinationId
-        val navController = findNavController()
-        navController.navigate(destinationId)
-    }
-
-    inner class NavigationGestureListener : GestureDetector.SimpleOnGestureListener() {
-
-        override fun onFling(
-            downEvent: MotionEvent?,
-            moveEvent: MotionEvent?,
-            velocityX: Float,
-            velocityY: Float
-        ): Boolean {
-            val diffX = moveEvent?.x?.minus(downEvent!!.x) ?: 0.0F
-            val diffY = moveEvent?.y?.minus(downEvent!!.y) ?: 0.0F
-
-            return if (abs(diffX) > abs(diffY)) {
-                if (abs(diffX) > SWIPE_THRESHOLD && abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
-                    if (diffX > 0) {
-                        this@MainActivity.onSwipeLeftToRight()
-                    } else {
-                        this@MainActivity.onSwipeRightToLeft()
-                    }
-                    true
-                } else {
-                    super.onFling(downEvent, moveEvent, velocityX, velocityY)
-                }
-            } else {
-                if (abs(diffY) > SWIPE_THRESHOLD && abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
-                    if (diffY > 0) {
-                        this@MainActivity.onSwipeTopToBottom()
-                    } else {
-                        this@MainActivity.onSwipeBottomToTop()
-                    }
-                    true
-                } else {
-                    super.onFling(downEvent, moveEvent, velocityX, velocityY)
-                }
-            }
-        }
+    private fun hideRedirectFragment() {
+        val navHostFragment: NavHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        (navHostFragment.childFragmentManager.fragments[0] as MainFragment).removeItem()
     }
 
     companion object {
         private const val FRONTIER_LOGIN_REQUEST_CODE = 999
-        private const val SWIPE_THRESHOLD = 100
-        private const val SWIPE_VELOCITY_THRESHOLD = 100
-
-        private lateinit var detector: GestureDetectorCompat
-
         private var navDestinationId: Int = 0
     }
-
 }
 

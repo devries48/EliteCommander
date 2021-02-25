@@ -1,7 +1,5 @@
 package com.devries48.elitecommander.activities
 
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
@@ -9,7 +7,6 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.devries48.elitecommander.R
@@ -20,8 +17,8 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
-
 class LoginActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -29,19 +26,20 @@ class LoginActivity : AppCompatActivity() {
         val button: Button = findViewById(R.id.frontierLoginButton)
         val loginText: TextView = findViewById(R.id.loginTextView)
         val redirectText: TextView = findViewById(R.id.redirectTextView)
-        val loginImage:ImageView= findViewById(R.id.loginImageView)
+        val loginImage: ImageView = findViewById(R.id.loginImageView)
 
         // Check step (back from browser or just opened)
         if (intent != null && intent!!.action != null &&
             intent!!.action == Intent.ACTION_VIEW
         ) {
             val uri = intent!!.data
-
             val code = uri?.getQueryParameter("code")
             val state = uri?.getQueryParameter("state")
 
             if (code != null && state != null) {
-                shrinkImage(loginImage)
+                loginImage.scaleX = 0.5f
+                loginImage.scaleY = 0.5f
+
                 button.isVisible = false
                 loginText.isVisible = false
                 redirectText.isVisible = true
@@ -60,8 +58,6 @@ class LoginActivity : AppCompatActivity() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onFrontierTokensEvent(tokens: FrontierTokensEvent) {
         if (tokens.success) {
-            val t = Toast.makeText(this, R.string.login_success, Toast.LENGTH_LONG)
-            t.show()
             setResult(Activity.RESULT_OK)
             finish()
         } else {
@@ -89,13 +85,8 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun launchAuthCodeStep() {
-        // Authorization step
-        val url = FrontierAuthNetwork.getInstance()
-            ?.getAuthorizationUrl(applicationContext)
-
-        if (url != null) {
-            launchBrowserIntent(url)
-        }
+        val url = FrontierAuthNetwork.getInstance()?.getAuthorizationUrl(applicationContext)
+        if (url != null) launchBrowserIntent(url)
         finish()
     }
 
@@ -119,22 +110,11 @@ class LoginActivity : AppCompatActivity() {
     }
 
     override fun onNewIntent(intent: Intent?) {
-        if (intent != null && intent.action == "org.chromium.arc.intent.action.VIEW") {
-            super.onNewIntent(Intent(intent).setAction(Intent.ACTION_VIEW))
-        } else {
-            super.onNewIntent(intent)
-        }
+        if (intent != null && intent.action == "org.chromium.arc.intent.action.VIEW") super.onNewIntent(
+            Intent(intent).setAction(
+                Intent.ACTION_VIEW
+            )
+        ) else super.onNewIntent(intent)
     }
 
-    private fun shrinkImage(view: ImageView) {
-        val scaleDownX = ObjectAnimator.ofFloat(view, "scaleX", 0.5f)
-        val scaleDownY = ObjectAnimator.ofFloat(view, "scaleY", 0.5f)
-        scaleDownX.duration = 200
-        scaleDownY.duration = 200
-
-        val scaleDown = AnimatorSet()
-        scaleDown.play(scaleDownX).with(scaleDownY)
-
-        scaleDown.start()
-    }
 }

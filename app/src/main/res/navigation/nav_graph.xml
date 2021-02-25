@@ -12,54 +12,13 @@
         tools:layout="@layout/activity_main" />
 
     <fragment
-        android:id="@+id/commanderFragment"
-        android:name="com.devries48.elitecommander.fragments.CommanderFragment"
-        android:label="commander_fragment"
-        tools:layout="@layout/fragment_commander" >
-        <action
-            android:id="@+id/action_commander_to_discoveries"
-            app:destination="@id/discoveriesFragment" />
-        <action
-            android:id="@+id/action_commander_to_earnings"
-            app:destination="@id/earningsFragment" />
-    </fragment>
-    <fragment
         android:id="@+id/mainFragment"
         android:name="com.devries48.elitecommander.fragments.MainFragment"
         android:label="fragment_main"
-        tools:layout="@layout/fragment_main" >
-        <action
-            android:id="@+id/action_main_to_commander"
-            app:destination="@id/commanderFragment"
-            app:popUpTo="@id/commanderFragment"
-            app:popUpToInclusive="true" />
-    </fragment>
-    <fragment
-        android:id="@+id/discoveriesFragment"
-        android:name="com.devries48.elitecommander.fragments.DiscoveriesFragment"
-        android:label="fragment_discoveries"
-        tools:layout="@layout/fragment_discoveries" >
-        <action
-            android:id="@+id/action_discoveries_to_earnings"
-            app:destination="@id/earningsFragment" />
-        <action
-            android:id="@+id/action_discoveries_to_commander"
-            app:destination="@id/commanderFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_main" />
     <activity
         android:id="@+id/loginActivity"
         android:name="com.devries48.elitecommander.activities.LoginActivity"
         android:label="activity_login"
         tools:layout="@layout/activity_login" />
-    <fragment
-        android:id="@+id/earningsFragment"
-        android:name="com.devries48.elitecommander.fragments.EarningsFragment"
-        android:label="EarningsFragment" >
-        <action
-            android:id="@+id/action_earnings_to_commander"
-            app:destination="@id/commanderFragment" />
-        <action
-            android:id="@+id/action_earnings_to_discoveries"
-            app:destination="@id/discoveriesFragment" />
-    </fragment>
 </navigation>
