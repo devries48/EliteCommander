@@ -8,29 +8,30 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
-import com.devries48.elitecommander.R
-import kotlinx.android.synthetic.main.fragment_redirect.*
+import com.devries48.elitecommander.databinding.FragmentRedirectBinding
 
 class RedirectFragment : Fragment() {
+
+    private lateinit var mBinding: FragmentRedirectBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_redirect, container, false)
+    ): View {
+        mBinding = FragmentRedirectBinding.inflate(inflater, container, false)
+        return mBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        shrinkImage(loginImageView)
+        shrinkImage(mBinding.loginImageView)
     }
 
     private fun shrinkImage(view: ImageView) {
         val scaleDownX = ObjectAnimator.ofFloat(view, "scaleX", 0.5f)
         val scaleDownY = ObjectAnimator.ofFloat(view, "scaleY", 0.5f)
-        scaleDownX.duration = 200
-        scaleDownY.duration = 200
+        scaleDownX.duration = 2000
+        scaleDownY.duration = 2000
 
         val scaleDown = AnimatorSet()
         scaleDown.play(scaleDownX).with(scaleDownY)

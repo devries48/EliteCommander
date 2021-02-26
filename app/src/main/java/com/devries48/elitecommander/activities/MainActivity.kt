@@ -14,7 +14,6 @@ import com.devries48.elitecommander.fragments.CommanderViewModelFactory
 import com.devries48.elitecommander.fragments.MainFragment
 import com.devries48.elitecommander.network.CommanderNetwork
 import com.devries48.elitecommander.utils.OAuthUtils.storeUpdatedTokens
-import kotlinx.android.synthetic.main.fragment_main.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
