@@ -21,7 +21,6 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
-        val view = binding.root
 
         val fragmentList = arrayListOf(
             RedirectFragment(),
@@ -39,7 +38,7 @@ class MainFragment : Fragment() {
         binding.viewPager.setPageTransformer(ViewPagerTransformer())
         binding.viewPager.adapter = mAdapter
 
-        return view
+        return binding.root
     }
 
     override fun onDestroyView() {

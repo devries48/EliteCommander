@@ -17,16 +17,11 @@ import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.properties.Delegates
 
 class CommanderNetwork {
 
     private var mFrontierApi: FrontierInterface? = null
     private var mJournalWorker: JournalWorker? = null
-
-    private var mIsJournalParsed by Delegates.observable(false) { _, _, newValue ->
-        if (newValue) loadCurrentJournal()
-    }
 
     init {
         mFrontierApi = RetrofitClient.getInstance()?.getFrontierRetrofit(App.getContext())

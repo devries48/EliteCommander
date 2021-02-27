@@ -12,19 +12,26 @@ import com.devries48.elitecommander.databinding.FragmentRedirectBinding
 
 class RedirectFragment : Fragment() {
 
-    private lateinit var mBinding: FragmentRedirectBinding
+    private var _binding: FragmentRedirectBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        mBinding = FragmentRedirectBinding.inflate(inflater, container, false)
-        return mBinding.root
+        _binding = FragmentRedirectBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        shrinkImage(mBinding.loginImageView)
+        shrinkImage(binding.loginImageView)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun shrinkImage(view: ImageView) {

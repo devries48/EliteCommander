@@ -21,7 +21,7 @@ import kotlin.properties.Delegates
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var mBinding: ActivityMainBinding
+    private lateinit var binding: ActivityMainBinding
     private lateinit var mCommanderNetwork: CommanderNetwork
     private var mCommanderViewModel: CommanderViewModel? = null
     private val mNavController by lazy { findNavController() }
@@ -32,8 +32,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        setupDataBinding()
         setupViewModel()
         setupNavigation()
     }
@@ -54,12 +55,6 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == FRONTIER_LOGIN_REQUEST_CODE) {
             mIsLoggedIn = true
         }
-    }
-
-    private fun setupDataBinding() {
-        mBinding = ActivityMainBinding.inflate(layoutInflater)
-        val view = mBinding.root
-        setContentView(view)
     }
 
     private fun setupNavigation() {

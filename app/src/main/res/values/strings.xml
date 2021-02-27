@@ -16,7 +16,6 @@
     <string name="login_dialog_error_text">Error logging in to Frontier, please try again.</string>
     <string name="login_dialog_text">The browser will open to allow you to connect to your Frontier account.</string>
     <string name="login_redirect">Redirecting from Frontier website…</string>
-    <string name="login_success">Login succeeded</string>
     <string name="access_token_key">access_token_key</string>
     <string name="refresh_token_key">refresh_token_key</string>
     <string name="frontier_login">FRONTIER LOGIN</string>
@@ -203,6 +202,5 @@
     <string name="rank_alliance">Alliance</string>
     <string name="integrity">Integrity</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="earnings">Earnings</string>
 </resources>

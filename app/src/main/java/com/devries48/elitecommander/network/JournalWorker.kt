@@ -34,16 +34,10 @@ class JournalWorker(frontierApi: FrontierInterface?) {
 
     // Raises FrontierRanksEvent
     // Raises FrontierStatisticsEvent
+    // Raises FrontierDiscoveriesEvent
     fun getCurrentJournal() {
         mCrawlerType = CrawlerType.CURRENT_JOURNAL
         processJournal(mLatestJournalDate)
-    }
-
-    // Raises FrontierDiscoveriesEvent
-    private fun getCurrentDiscoveries() {
-        mCrawlerType = CrawlerType.CURRENT_DISCOVERIES
-        mCurrentDiscoveriesDate = mLatestJournalDate
-        processJournal(mCurrentDiscoveriesDate)
     }
 
     private fun processJournal(date: Date?) {
@@ -62,8 +56,11 @@ class JournalWorker(frontierApi: FrontierInterface?) {
 
                 crawlJournal(code, rawEvents)
 
-                if (code == 200 && mCrawlerType == CrawlerType.CURRENT_JOURNAL)
-                    getCurrentDiscoveries()
+                if (code == 200 && mCrawlerType == CrawlerType.CURRENT_JOURNAL) {
+                    mCrawlerType = CrawlerType.CURRENT_DISCOVERIES
+                    mCurrentDiscoveriesDate = mLatestJournalDate
+                    crawlJournal(code, rawEvents)
+                }
             }
         }
     }
@@ -466,30 +463,56 @@ class JournalWorker(frontierApi: FrontierInterface?) {
 
         var mIgnoreEvents =
             arrayOf(
-                "Commander",
-                "Materials",
-                "LoadGame",
-                "LoadGame",
-                "EngineerProgress",
-                "Location",
-                "Powerplay",
-                "Music",
-                "Touchdown",
-                "Missions",
-                "Loadout",
-                "SAASignalsFound",
+                "ApproachBody",
+                "ApproachSettlement",
+                "BuyAmmo",
+                "BuyDrones",
                 "Cargo",
-                "Liftoff",
-                "ReservoirReplenished",
-                "NavRoute",
-                "FSDTarget",  // RemainingJumpsInRoute (multiple)
-                "StartJump",
-                "SupercruiseEntry",
-                "LeaveBody",
-                "FSDJump",
-                "FSSDiscoveryScan",
+                "CargoDepot",
+                "Commander",
+                "CommunityGoal",
+                "Docked",
+                "DockingGranted",
+                "DockingRequested",
+                "EngineerProgress",
                 "FSSAllBodiesFound",
-                "FuelScoop"
+                "FSSDiscoveryScan",
+                "FSDJump",
+                "FSDTarget",  // RemainingJumpsInRoute (multiple)
+                "FSSSignalDiscovered",
+                "FuelScoop",
+                "HullDamage",
+                "LeaveBody",
+                "Loadout",
+                "Liftoff",
+                "LoadGame",
+                "Location",
+                "MaterialCollected",
+                "Materials",
+                "MissionAccepted",
+                "Missions",
+                "Music",
+                "NavBeaconScan",
+                "NavRoute",
+                "Outfitting",
+                "Powerplay",
+                "ReceiveText",
+                "ReservoirReplenished",
+                "RefuelAll",
+                "RepairAll",
+                "SAASignalsFound",
+                "Scanned",
+                "ShipTargeted",
+                "Shipyard",
+                "ShipyardTransfer",
+                "StartJump",
+                "StoredModules",
+                "StoredShips",
+                "SupercruiseEntry",
+                "SupercruiseExit",
+                "Touchdown",
+                "UnderAttack",
+                "Undocked"
             )
 
         private var mEventCache: EventCache = EventCache()

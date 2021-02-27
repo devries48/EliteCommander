@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,22 +15,22 @@ import com.devries48.elitecommander.databinding.FragmentDiscoveriesBinding
 class DiscoveriesFragment : Fragment() {
 
     private val mViewModel: CommanderViewModel by navGraphViewModels(R.id.nav_graph)
-    private lateinit var mBinding: FragmentDiscoveriesBinding
     private lateinit var mAdapter: DiscoveriesRecyclerAdapter
+
+    private var _binding: FragmentDiscoveriesBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        mBinding = DataBindingUtil.inflate(
-            inflater,
-            R.layout.fragment_discoveries, container, false
-        )
-        mBinding.viewModel = mViewModel
-        mBinding.lifecycleOwner = this
+        _binding = FragmentDiscoveriesBinding.inflate(inflater, container, false)
 
-        return mBinding.root
+        binding.viewModel = mViewModel
+        binding.lifecycleOwner = this
+
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -41,8 +40,8 @@ class DiscoveriesFragment : Fragment() {
         val list = mViewModel.getCurrentDiscoveries()
 
         mAdapter = DiscoveriesRecyclerAdapter(list.value)
-        mBinding.discoveriesRecyclerView.layoutManager = layoutManager
-        mBinding.discoveriesRecyclerView.adapter = mAdapter
+        binding.discoveriesRecyclerView.layoutManager = layoutManager
+        binding.discoveriesRecyclerView.adapter = mAdapter
 
         list.observe(viewLifecycleOwner,
             { discoveries ->
@@ -52,4 +51,8 @@ class DiscoveriesFragment : Fragment() {
             })
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }

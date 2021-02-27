@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,23 +15,19 @@ import com.devries48.elitecommander.databinding.FragmentCommanderBinding
 class CommanderFragment : Fragment() {
 
     private val mViewModel: CommanderViewModel by navGraphViewModels(R.id.nav_graph)
-    private lateinit var mBinding: FragmentCommanderBinding
     private lateinit var mAdapter: StatisticsRecyclerAdapter
 
-    // This property is only valid between onCreateView and  onDestroyView.
-    private val binding get() = mBinding
+    private var _binding: FragmentCommanderBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        mBinding = DataBindingUtil.inflate(
-            inflater,
-            R.layout.fragment_commander, container, false
-        )
-        mBinding.viewModel = mViewModel
-        mBinding.lifecycleOwner = this
+        _binding = FragmentCommanderBinding.inflate(inflater, container, false)
+        binding.viewModel = mViewModel
+        binding.lifecycleOwner = this
 
         return binding.root
     }
@@ -44,8 +39,8 @@ class CommanderFragment : Fragment() {
         val list = mViewModel.getMainStatistics()
 
         mAdapter = StatisticsRecyclerAdapter(list.value!!)
-        mBinding.statsRecyclerView.layoutManager = layoutManager
-        mBinding.statsRecyclerView.adapter = mAdapter
+        binding.statsRecyclerView.layoutManager = layoutManager
+        binding.statsRecyclerView.adapter = mAdapter
 
         list.observe(viewLifecycleOwner,
             { stats ->
@@ -53,6 +48,11 @@ class CommanderFragment : Fragment() {
                     mAdapter.updateList(stats)
                 }
             })
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 }

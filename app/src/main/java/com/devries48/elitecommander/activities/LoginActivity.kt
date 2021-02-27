@@ -4,12 +4,10 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.devries48.elitecommander.R
+import com.devries48.elitecommander.databinding.ActivityLoginBinding
 import com.devries48.elitecommander.events.FrontierTokensEvent
 import com.devries48.elitecommander.network.FrontierAuthNetwork
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -19,14 +17,12 @@ import org.greenrobot.eventbus.ThreadMode
 
 class LoginActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityLoginBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
-
-        val button: Button = findViewById(R.id.frontierLoginButton)
-        val loginText: TextView = findViewById(R.id.loginTextView)
-        val redirectText: TextView = findViewById(R.id.redirectTextView)
-        val loginImage: ImageView = findViewById(R.id.loginImageView)
+        binding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         // Check step (back from browser or just opened)
         if (intent != null && intent!!.action != null &&
@@ -37,20 +33,20 @@ class LoginActivity : AppCompatActivity() {
             val state = uri?.getQueryParameter("state")
 
             if (code != null && state != null) {
-                loginImage.scaleX = 0.5f
-                loginImage.scaleY = 0.5f
+                binding.loginImageView.scaleX = 0.5f
+                binding.loginImageView.scaleY = 0.5f
 
-                button.isVisible = false
-                loginText.isVisible = false
-                redirectText.isVisible = true
+                binding.frontierLoginButton.isVisible = false
+                binding.loginTextView.isVisible = false
+                binding.redirectTextView.isVisible = true
 
                 launchTokensStep(code, state)
                 return
             }
         }
 
-        button.setOnClickListener {
-            button.isEnabled = false
+        binding.frontierLoginButton.setOnClickListener {
+            binding.frontierLoginButton.isEnabled = false
             launchAuthCodeStep()
         }
     }
