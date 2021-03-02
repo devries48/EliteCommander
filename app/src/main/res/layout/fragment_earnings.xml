@@ -9,11 +9,12 @@
             name="viewModel"
             type="com.devries48.elitecommander.fragments.CommanderViewModel" />
     </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="@dimen/margin_large"
-        tools:context="com.devries48.elitecommander.fragments.DiscoveriesFragment">
+        tools:context="com.devries48.elitecommander.fragments.EarningsFragment">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/card_earnings"
@@ -32,7 +33,7 @@
                 android:layout_marginBottom="@dimen/margin_medium">
 
                 <TextView
-                    android:id="@+id/summary"
+                    android:id="@+id/earningsTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
@@ -43,5 +44,38 @@
                     app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_earningsGraph"
+            style="@style/EliteCardView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="16dp"
+            app:cardElevation="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/card_earnings">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="@dimen/margin_large">
+
+                <app.futured.donut.DonutProgressView
+                    android:id="@+id/donut_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:donut_bgLineColor="@color/background"
+                    app:donut_gapWidth="0"
+                    app:donut_strokeCap="butt"
+                    app:donut_strokeWidth="32dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

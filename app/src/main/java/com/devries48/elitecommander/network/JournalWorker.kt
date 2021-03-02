@@ -88,7 +88,10 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                 .trim().drop(1).dropLast(1).split("}{").map {
                     try {
                         val raw = RawEvent(it.trim())
-                        if (raw.event !in mIgnoreEvents) rawEvents.add(raw)
+                        if (raw.event !in mIgnoreEvents) {
+                            rawEvents.add(raw)
+                            println(raw.event)
+                        }
                     } catch (e: Exception) {
                         println("LOG: Error parsing journal event, " + e.message)
                         println("LOG: Event: " + it.trim())
@@ -465,6 +468,7 @@ class JournalWorker(frontierApi: FrontierInterface?) {
             arrayOf(
                 "ApproachBody",
                 "ApproachSettlement",
+                "Bounty",
                 "BuyAmmo",
                 "BuyDrones",
                 "Cargo",
@@ -474,6 +478,8 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                 "Docked",
                 "DockingGranted",
                 "DockingRequested",
+                "EngineerContribution",
+                "EngineerCraft",
                 "EngineerProgress",
                 "FSSAllBodiesFound",
                 "FSSDiscoveryScan",
@@ -481,6 +487,7 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                 "FSDTarget",  // RemainingJumpsInRoute (multiple)
                 "FSSSignalDiscovered",
                 "FuelScoop",
+                "HeatWarning",
                 "HullDamage",
                 "LeaveBody",
                 "Loadout",
@@ -489,21 +496,29 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                 "Location",
                 "MaterialCollected",
                 "Materials",
+                "MaterialTrade",
+                "ModuleInfo",
                 "MissionAccepted",
+                "MissionCompleted",
+                "MissionRedirected",
                 "Missions",
+                "ModuleBuy",
                 "Music",
                 "NavBeaconScan",
                 "NavRoute",
                 "Outfitting",
                 "Powerplay",
                 "ReceiveText",
-                "ReservoirReplenished",
+                "RedeemVoucher",
                 "RefuelAll",
+                "Repair",
                 "RepairAll",
+                "ReservoirReplenished",
                 "SAASignalsFound",
                 "Scanned",
                 "ShipTargeted",
                 "Shipyard",
+                "ShipyardSwap",
                 "ShipyardTransfer",
                 "StartJump",
                 "StoredModules",
@@ -512,7 +527,8 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                 "SupercruiseExit",
                 "Touchdown",
                 "UnderAttack",
-                "Undocked"
+                "Undocked",
+                "USSDrop"
             )
 
         private var mEventCache: EventCache = EventCache()

@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.devries48.elitecommander.R
 import com.devries48.elitecommander.declarations.default
 import com.devries48.elitecommander.events.*
+import com.devries48.elitecommander.models.EarningModel
 import com.devries48.elitecommander.models.FrontierStatistic
 import com.devries48.elitecommander.models.RankModel
 import com.devries48.elitecommander.network.CommanderNetwork
@@ -18,6 +19,7 @@ import com.devries48.elitecommander.utils.NamingUtils
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import kotlin.math.round
 
 class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
 
@@ -51,6 +53,10 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
 
     internal fun getCurrentDiscoveries(): LiveData<List<FrontierDiscovery>> {
         return mCurrentDiscoveries
+    }
+
+    internal fun getEarningStatistics(): LiveData<List<EarningModel>> {
+        return mEarningStats
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -226,11 +232,40 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             //NotificationsUtils.displayGenericDownloadErrorSnackbar(getActivity()) TODO: Error Handling
             return
         }
+
+        val earnings = ArrayList<EarningModel>()
+        val combatTotal: Long =
+            statistics.combat?.assassinationProfits!! + statistics.combat.bountyHuntingProfit + statistics.combat.combatBondProfits
+        val total: Long =
+            combatTotal + statistics.exploration?.explorationProfits!! + statistics.trading?.marketProfits!! + statistics.mining?.miningProfits!!
+
+        val explorationEarnings =
+            EarningModel(EarningModel.EarningType.EXPLORATION, statistics.exploration.explorationProfits)
+
+        earnings.add(explorationEarnings)
+        earnings.add(EarningModel(EarningModel.EarningType.COMBAT, combatTotal, round((combatTotal / total.toFloat()) * 1000)/10))
+        earnings.add(
+            EarningModel(
+                EarningModel.EarningType.TRADING,
+                statistics.trading.marketProfits,
+                round((statistics.trading.marketProfits / total.toFloat()) * 1000)/10))
+
+        earnings.add(
+            EarningModel(
+                EarningModel.EarningType.MINING,
+                statistics.mining.miningProfits,
+                round((statistics.mining.miningProfits / total.toFloat()) * 1000)/10))
+
+        var percentageTotal = 0f
+        earnings.forEach {
+            percentageTotal += it.percentage
+        }
+        explorationEarnings.percentage = 100f - percentageTotal
+
+        mEarningStats.postValue(earnings)
     }
 
-
     companion object {
-
         private val mName = MutableLiveData("")
 
         private val mCombatRank =
@@ -302,16 +337,15 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             )
 
         private var mMainStatistics: MutableLiveData<List<FrontierStatistic>>? = null
-        private var mCurrentDiscoveries = MutableLiveData<List<FrontierDiscovery>>()
         private val mMainStatisticsList = ArrayList<FrontierStatistic>()
+        private var mCurrentDiscoveries = MutableLiveData<List<FrontierDiscovery>>()
         private var mCurrentDiscoverySummary = MutableLiveData(
             FrontierDiscoverySummary(
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
             )
         )
-
+        private var mEarningStats = MutableLiveData<List<EarningModel>>()
         private val mIsRanksBusy = MutableLiveData<Boolean>().default(true)
-
 
         private fun currencyFormat(amount: Long): String {
             val formatter = DecimalFormat("###,###,###,###")

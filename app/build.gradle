@@ -71,6 +71,7 @@ dependencies {
 
     // Futured donut
     ext.futuredVersion = '2.1.0'
+    implementation("app.futured.donut:library:$futuredVersion")
     implementation("app.futured.donut:library-compose:$futuredVersion")
 
     testImplementation 'junit:junit:4.13.2'

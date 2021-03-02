@@ -38,42 +38,42 @@ data class FrontierJournalStatisticsResponse(
 
     data class BankAccount(
         @SerializedName("Current_Wealth")
-        val currentWealth: Int, // 1859946639
+        val currentWealth: Long,
         @SerializedName("Insurance_Claims")
-        val insuranceClaims: Int, // 24
+        val insuranceClaims: Int,
         @SerializedName("Owned_Ship_Count")
-        val ownedShipCount: Int, // 9
+        val ownedShipCount: Int,
         @SerializedName("Spent_On_Ammo_Consumables")
-        val spentOnAmmoConsumables: Int, // 661191
+        val spentOnAmmoConsumables: Long,
         @SerializedName("Spent_On_Fuel")
-        val spentOnFuel: Int, // 615965
+        val spentOnFuel: Long,
         @SerializedName("Spent_On_Insurance")
-        val spentOnInsurance: Int, // 30282726
+        val spentOnInsurance: Long,
         @SerializedName("Spent_On_Outfitting")
-        val spentOnOutfitting: Int, // 299547117
+        val spentOnOutfitting: Long,
         @SerializedName("Spent_On_Repairs")
-        val spentOnRepairs: Int, // 3581066
+        val spentOnRepairs: Long,
         @SerializedName("Spent_On_Ships")
-        val spentOnShips: Int // 176881313
+        val spentOnShips: Long
     )
 
     data class Combat(
         @SerializedName("Assassination_Profits")
-        val assassinationProfits: Int, // 1477104
+        val assassinationProfits: Long,
         @SerializedName("Assassinations")
-        val assassinations: Int, // 9
+        val assassinations: Int,
         @SerializedName("Bounties_Claimed")
-        val bountiesClaimed: Int, // 180
+        val bountiesClaimed: Int,
         @SerializedName("Bounty_Hunting_Profit")
-        val bountyHuntingProfit: Int, // 3938978
+        val bountyHuntingProfit: Long,
         @SerializedName("Combat_Bond_Profits")
-        val combatBondProfits: Int, // 7138468
+        val combatBondProfits: Long,
         @SerializedName("Combat_Bonds")
-        val combatBonds: Int, // 276
+        val combatBonds: Int,
         @SerializedName("Highest_Single_Reward")
-        val highestSingleReward: Int, // 106400
+        val highestSingleReward: Int,
         @SerializedName("Skimmers_Killed")
-        val skimmersKilled: Int // 14
+        val skimmersKilled: Int
     )
 
     data class Crafting(
@@ -99,7 +99,7 @@ data class FrontierJournalStatisticsResponse(
         @SerializedName("NpcCrew_Hired")
         val npcCrewHired: Int, // 6
         @SerializedName("NpcCrew_TotalWages")
-        val npcCrewTotalWages: Int // 51906960
+        val npcCrewTotalWages: Long // 51906960
     )
 
     data class Crime(
@@ -112,16 +112,16 @@ data class FrontierJournalStatisticsResponse(
         @SerializedName("Notoriety")
         val notoriety: Int, // 0
         @SerializedName("Total_Bounties")
-        val totalBounties: Int, // 49500
+        val totalBounties: Long, // 49500
         @SerializedName("Total_Fines")
-        val totalFines: Int // 665079
+        val totalFines: Long // 665079
     )
 
     data class Exploration(
         @SerializedName("Efficient_Scans")
         val efficientScans: Int, // 731
         @SerializedName("Exploration_Profits")
-        val explorationProfits: Int, // 897847545
+        val explorationProfits: Long, // 897847545
         @SerializedName("Greatest_Distance_From_Start")
         val greatestDistanceFromStart: Double, // 25115.590148702
         @SerializedName("Highest_Payout")
@@ -163,14 +163,14 @@ data class FrontierJournalStatisticsResponse(
         @SerializedName("Materials_Collected")
         val materialsCollected: Int, // 7317
         @SerializedName("Mining_Profits")
-        val miningProfits: Int, // 14267710
+        val miningProfits: Long, // 14267710
         @SerializedName("Quantity_Mined")
         val quantityMined: Int // 326
     )
 
     data class Multicrew(
         @SerializedName("Multicrew_Credits_Total")
-        val multicrewCreditsTotal: Int, // 0
+        val multicrewCreditsTotal: Long, // 0
         @SerializedName("Multicrew_Fighter_Time_Total")
         val multicrewFighterTimeTotal: Int, // 0
         @SerializedName("Multicrew_Fines_Total")
@@ -200,7 +200,7 @@ data class FrontierJournalStatisticsResponse(
         @SerializedName("SearchRescue_Count")
         val searchRescueCount: Int, // 9
         @SerializedName("SearchRescue_Profit")
-        val searchRescueProfit: Int, // 230502
+        val searchRescueProfit: Long, // 230502
         @SerializedName("SearchRescue_Traded")
         val searchRescueTraded: Int // 10
     )
@@ -209,7 +209,7 @@ data class FrontierJournalStatisticsResponse(
         @SerializedName("Average_Profit")
         val averageProfit: Int, // 16920
         @SerializedName("Black_Markets_Profits")
-        val blackMarketsProfits: Int, // 33840
+        val blackMarketsProfits: Long, // 33840
         @SerializedName("Black_Markets_Traded_With")
         val blackMarketsTradedWith: Int, // 2
         @SerializedName("Highest_Single_Transaction")
@@ -237,7 +237,7 @@ data class FrontierJournalStatisticsResponse(
         @SerializedName("Highest_Single_Transaction")
         val highestSingleTransaction: Int, // 8364224
         @SerializedName("Market_Profits")
-        val marketProfits: Int, // 715014122
+        val marketProfits: Long, // 715014122
         @SerializedName("Markets_Traded_With")
         val marketsTradedWith: Int, // 114
         @SerializedName("Resources_Traded")

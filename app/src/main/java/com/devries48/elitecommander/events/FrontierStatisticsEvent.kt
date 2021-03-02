@@ -10,23 +10,23 @@ data class FrontierStatisticsEvent (
 )
 
 data class FrontierBankAccount(
-    val currentWealth: Int,
+    val currentWealth: Long,
     val insuranceClaims: Int,
     val ownedShipCount: Int,
-    val spentOnAmmoConsumables: Int,
-    val spentOnFuel: Int,
-    val spentOnInsurance: Int,
-    val spentOnOutfitting: Int,
-    val spentOnRepairs: Int,
-    val spentOnShips: Int
+    val spentOnAmmoConsumables: Long,
+    val spentOnFuel: Long,
+    val spentOnInsurance: Long,
+    val spentOnOutfitting: Long,
+    val spentOnRepairs: Long,
+    val spentOnShips: Long
 )
 
 data class FrontierCombat(
-    val assassinationProfits: Int,
+    val assassinationProfits: Long,
     val assassinations: Int,
     val bountiesClaimed: Int,
-    val bountyHuntingProfit: Int,
-    val combatBondProfits: Int,
+    val bountyHuntingProfit: Long,
+    val combatBondProfits: Long,
     val combatBonds: Int,
     val highestSingleReward: Int,
     val skimmersKilled: Int
@@ -34,7 +34,7 @@ data class FrontierCombat(
 
 data class FrontierExploration(
     val efficientScans: Int,
-    val explorationProfits: Int,
+    val explorationProfits: Long,
     val greatestDistanceFromStart: Double,
     val highestPayout: Int,
     val planetsScannedToLevel2: Int,
@@ -47,14 +47,14 @@ data class FrontierExploration(
 
 data class FrontierMining(
     val materialsCollected: Int,
-    val miningProfits: Int,
+    val miningProfits: Long,
     val quantityMined: Int
 )
 
 data class FrontierTrading(
     val averageProfit: Double,
     val highestSingleTransaction: Int,
-    val marketProfits: Int,
+    val marketProfits: Long,
     val marketsTradedWith: Int,
     val resourcesTraded: Int
 )
