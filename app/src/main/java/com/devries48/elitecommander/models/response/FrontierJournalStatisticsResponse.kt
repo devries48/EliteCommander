@@ -213,7 +213,7 @@ data class FrontierJournalStatisticsResponse(
         @SerializedName("Black_Markets_Traded_With")
         val blackMarketsTradedWith: Int, // 2
         @SerializedName("Highest_Single_Transaction")
-        val highestSingleTransaction: Int, // 33354
+        val highestSingleTransaction: Long, // 33354
         @SerializedName("Resources_Smuggled")
         val resourcesSmuggled: Int // 4
     )

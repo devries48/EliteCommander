@@ -11,11 +11,15 @@ import androidx.lifecycle.ViewModelProvider
 import com.devries48.elitecommander.R
 import com.devries48.elitecommander.declarations.default
 import com.devries48.elitecommander.events.*
-import com.devries48.elitecommander.models.EarningModel
-import com.devries48.elitecommander.models.FrontierStatistic
-import com.devries48.elitecommander.models.RankModel
+import com.devries48.elitecommander.models.*
+import com.devries48.elitecommander.models.ProfitModel.ProfitType.*
+import com.devries48.elitecommander.models.StatisticsBuilder.StatisticFormat.CURRENCY
+import com.devries48.elitecommander.models.StatisticsBuilder.StatisticPosition.LEFT
+import com.devries48.elitecommander.models.StatisticsBuilder.StatisticType.*
 import com.devries48.elitecommander.network.CommanderNetwork
 import com.devries48.elitecommander.utils.NamingUtils
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -47,16 +51,20 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
         EventBus.getDefault().unregister(this)
     }
 
-    internal fun getMainStatistics(): LiveData<List<FrontierStatistic>> {
-        return mMainStatistics as MutableLiveData<List<FrontierStatistic>>
+    internal fun getMainStatistics(): LiveData<List<StatisticModel1>> {
+        return mMainStatistics as MutableLiveData<List<StatisticModel1>>
     }
 
     internal fun getCurrentDiscoveries(): LiveData<List<FrontierDiscovery>> {
         return mCurrentDiscoveries
     }
 
-    internal fun getEarningStatistics(): LiveData<List<EarningModel>> {
-        return mEarningStats
+    internal fun getProfitStatistics(): LiveData<List<StatisticModel>> {
+        return mBuilderProfit.statistics
+    }
+
+    internal fun getProfitChart(): LiveData<List<ProfitModel>> {
+        return mProfitChart
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -233,40 +241,142 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             return
         }
 
-        val earnings = ArrayList<EarningModel>()
+        GlobalScope.launch {
+            launchProfitChart(statistics)
+        }
+
+
+        // Profit stats
+        mBuilderProfit.addStatistic(
+            PROFIT_COMBAT_BOUNTIES,
+            LEFT,
+            R.string.bounties,
+            statistics.combat!!.bountyHuntingProfit,
+            true,
+            CURRENCY
+        )
+        mBuilderProfit.addStatistic(
+            PROFIT_COMBAT_BONDS,
+            LEFT,
+            R.string.combat_bonds,
+            statistics.combat.combatBondProfits,
+            true,
+            CURRENCY
+        )
+        mBuilderProfit.addStatistic(
+            PROFIT_COMBAT_ASSASSINATIONS,
+            LEFT,
+            R.string.assassinations,
+            statistics.combat.assassinationProfits,
+            true,
+            CURRENCY
+        )
+        mBuilderProfit.addStatistic(
+            PROFIT_TRADING,
+            LEFT,
+            R.string.trading,
+            statistics.trading!!.marketProfits,
+            true,
+            CURRENCY
+        )
+        mBuilderProfit.addStatistic(
+            PROFIT_EXPLORATION,
+            LEFT,
+            R.string.exploration,
+            statistics.exploration!!.explorationProfits,
+            true,
+            CURRENCY
+        )
+        mBuilderProfit.addStatistic(
+            PROFIT_SMUGGLING,
+            LEFT,
+            R.string.smuggling,
+            statistics.smuggling!!.blackMarketsProfits,
+            true,
+            CURRENCY
+        )
+        mBuilderProfit.addStatistic(
+            PROFIT_SEARCH_RESCUE,
+            LEFT,
+            R.string.search_rescue,
+            statistics.searchAndRescue!!.searchRescueProfit,
+            true,
+            CURRENCY
+        )
+
+        // mBuilderProfit.postValue()
+    }
+
+    private fun launchProfitChart(statistics: FrontierStatisticsEvent) {
         val combatTotal: Long =
             statistics.combat?.assassinationProfits!! + statistics.combat.bountyHuntingProfit + statistics.combat.combatBondProfits
         val total: Long =
             combatTotal + statistics.exploration?.explorationProfits!! + statistics.trading?.marketProfits!! + statistics.mining?.miningProfits!!
 
-        val explorationEarnings =
-            EarningModel(EarningModel.EarningType.EXPLORATION, statistics.exploration.explorationProfits)
+        val smugglingProfit = statistics.smuggling?.let {
+            ProfitModel(
+                SMUGGLING,
+                it.blackMarketsProfits,
+                round((statistics.smuggling.blackMarketsProfits / total.toFloat()) * 1000) / 10
+            )
+        }
 
-        earnings.add(explorationEarnings)
-        earnings.add(EarningModel(EarningModel.EarningType.COMBAT, combatTotal, round((combatTotal / total.toFloat()) * 1000)/10))
-        earnings.add(
-            EarningModel(
-                EarningModel.EarningType.TRADING,
+        val rescueProfit = statistics.searchAndRescue?.let {
+            ProfitModel(
+                SEARCH_RESCUE,
+                it.searchRescueProfit,
+                round((statistics.searchAndRescue.searchRescueProfit / total.toFloat()) * 1000) / 10
+            )
+        }
+
+        val models = arrayListOf(
+            ProfitModel(EXPLORATION, statistics.exploration.explorationProfits),
+            ProfitModel(COMBAT, combatTotal, round((combatTotal / total.toFloat()) * 1000) / 10),
+            ProfitModel(
+                TRADING,
                 statistics.trading.marketProfits,
-                round((statistics.trading.marketProfits / total.toFloat()) * 1000)/10))
+                round((statistics.trading.marketProfits / total.toFloat()) * 1000) / 10
+            ),
+            ProfitModel(
+                MINING,
+                statistics.trading.marketProfits,
+                round((statistics.mining.miningProfits / total.toFloat()) * 1000) / 10
+            ),
+            smugglingProfit!!,
+            rescueProfit!!
+        )
 
-        earnings.add(
-            EarningModel(
-                EarningModel.EarningType.MINING,
-                statistics.mining.miningProfits,
-                round((statistics.mining.miningProfits / total.toFloat()) * 1000)/10))
-
+        var lowPercentage = 0f
+        var lowTotal = 0L
         var percentageTotal = 0f
-        earnings.forEach {
+
+        models.forEach {
+            if (it.percentage < 1.0) {
+                lowPercentage += it.percentage
+                lowTotal += it.amount
+            }
             percentageTotal += it.percentage
         }
-        explorationEarnings.percentage = 100f - percentageTotal
+        models.first().percentage = 100f - percentageTotal
 
-        mEarningStats.postValue(earnings)
+        if (lowPercentage >= 1.0) {
+            models.removeAll { it.percentage < 1.0 }
+
+            models.add(
+                ProfitModel(
+                    OTHER,
+                    lowTotal,
+                    lowPercentage
+                )
+            )
+        }
+
+        mProfitChart.postValue(models)
     }
 
     companion object {
         private val mName = MutableLiveData("")
+        private val mIsRanksBusy = MutableLiveData<Boolean>().default(true)
 
         private val mCombatRank =
             MutableLiveData(
@@ -336,16 +446,16 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
                 )
             )
 
-        private var mMainStatistics: MutableLiveData<List<FrontierStatistic>>? = null
-        private val mMainStatisticsList = ArrayList<FrontierStatistic>()
+        private var mMainStatistics: MutableLiveData<List<StatisticModel1>>? = null
+        private val mMainStatisticsList = ArrayList<StatisticModel1>()
         private var mCurrentDiscoveries = MutableLiveData<List<FrontierDiscovery>>()
         private var mCurrentDiscoverySummary = MutableLiveData(
             FrontierDiscoverySummary(
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
             )
         )
-        private var mEarningStats = MutableLiveData<List<EarningModel>>()
-        private val mIsRanksBusy = MutableLiveData<Boolean>().default(true)
+        private var mProfitChart = MutableLiveData<List<ProfitModel>>()
+        private val mBuilderProfit: StatisticsBuilder = StatisticsBuilder()
 
         private fun currencyFormat(amount: Long): String {
             val formatter = DecimalFormat("###,###,###,###")
@@ -361,17 +471,17 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             if (mMainStatistics == null) {
                 mMainStatistics = MutableLiveData()
 
-                mMainStatisticsList.add(FrontierStatistic(R.string.Credits))
-                mMainStatisticsList.add(FrontierStatistic(R.string.AssetsValue))
-                mMainStatisticsList.add(FrontierStatistic(R.string.CurrentLocation))
-                mMainStatisticsList.add(FrontierStatistic(R.string.CurrentShip))
+                mMainStatisticsList.add(StatisticModel1(R.string.Credits))
+                mMainStatisticsList.add(StatisticModel1(R.string.AssetsValue))
+                mMainStatisticsList.add(StatisticModel1(R.string.CurrentLocation))
+                mMainStatisticsList.add(StatisticModel1(R.string.CurrentShip))
 
                 mMainStatistics!!.value = mMainStatisticsList
             }
         }
 
         private fun setMainStatistic(@StringRes stringRes: Int, value: String) {
-            val stat: FrontierStatistic? = mMainStatisticsList.find { it.stringRes == stringRes }
+            val stat: StatisticModel1? = mMainStatisticsList.find { it.stringRes == stringRes }
             if (stat != null) {
                 stat.value = value
                 mMainStatistics!!.postValue(mMainStatisticsList)
@@ -384,7 +494,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             middleValue: String,
             @StyleRes middleValueStyleRes: Int
         ) {
-            val stat: FrontierStatistic? = mMainStatisticsList.find { it.stringRes == nameRes }
+            val stat: StatisticModel1? = mMainStatisticsList.find { it.stringRes == nameRes }
             if (stat != null) {
                 stat.middleValue = middleValue
                 stat.middleStringRes = middleStringRes
@@ -399,7 +509,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             rightValue: String,
             @StyleRes rightValueStyleRes: Int
         ) {
-            val stat: FrontierStatistic? = mMainStatisticsList.find { it.stringRes == nameRes }
+            val stat: StatisticModel1? = mMainStatisticsList.find { it.stringRes == nameRes }
             if (stat != null) {
                 stat.rightValue = rightValue
                 stat.rightStringRes = rightStringRes

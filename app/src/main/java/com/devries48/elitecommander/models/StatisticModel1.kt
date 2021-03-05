@@ -5,7 +5,7 @@ import androidx.annotation.StyleRes
 import org.jetbrains.annotations.NotNull
 
 //TODO: Setup as row and column class
-data class FrontierStatistic(
+data class StatisticModel1(
     @StringRes val stringRes: Int = 0,
     var value: String? = null,
 

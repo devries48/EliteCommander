@@ -201,6 +201,12 @@
     <string name="rep">RP</string>
     <string name="rank_alliance">Alliance</string>
     <string name="integrity">Integrity</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="earnings">Earnings</string>
+    <string name="profit">Profit</string>
+    <string name="bounties">Bounties</string>
+    <string name="combat_bonds">Combat bonds</string>
+    <string name="assassinations">Assassinations</string>
+    <string name="trading">Trading</string>
+    <string name="exploration">Exploration</string>
+    <string name="smuggling">Smuggling</string>
+    <string name="search_rescue"><![CDATA[Search & Rescue]]></string>
 </resources>

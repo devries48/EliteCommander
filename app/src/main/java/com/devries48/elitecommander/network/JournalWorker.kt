@@ -280,28 +280,37 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                             statistics.exploration.timePlayed,
                             statistics.exploration.totalHyperspaceDistance,
                             statistics.exploration.totalHyperspaceJumps
-                        )
-                            , FrontierMining(
-                    statistics.mining.materialsCollected,
+                        ), FrontierMining(
+                            statistics.mining.materialsCollected,
                             statistics.mining.miningProfits,
                             statistics.mining.quantityMined
-                )
-                ,
+                        ),
                         FrontierTrading(
-                                statistics.trading.averageProfit,
+                            statistics.trading.averageProfit,
                             statistics.trading.highestSingleTransaction,
                             statistics.trading.marketProfits,
                             statistics.trading.marketsTradedWith,
                             statistics.trading.resourcesTraded
+                        ),
+                        FrontierSmuggling(
+                            statistics.smuggling.averageProfit,
+                            statistics.smuggling.blackMarketsProfits,
+                            statistics.smuggling.blackMarketsTradedWith,
+                            statistics.smuggling.highestSingleTransaction,
+                            statistics.smuggling.resourcesSmuggled
+                        ),
+                        FrontierSearchAndRescue(
+                            statistics.searchAndRescue.searchRescueCount,
+                            statistics.searchAndRescue.searchRescueProfit,
+                            statistics.searchAndRescue.searchRescueTraded
                         )
                     )
-
                 )
 
             } catch (e: Exception) {
                 println("LOG: Error parsing statistics event from journal." + e.message)
                 mEventCache.sendEvent(
-                    FrontierStatisticsEvent(false, null, null, null, null, null)
+                    FrontierStatisticsEvent(false, null, null, null, null, null, null,null)
                 )
             }
 
@@ -473,14 +482,18 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                 "BuyDrones",
                 "Cargo",
                 "CargoDepot",
+                "CollectCargo",
                 "Commander",
                 "CommunityGoal",
                 "Docked",
+                "DockingDenied",
                 "DockingGranted",
                 "DockingRequested",
+                "DockSRV",
                 "EngineerContribution",
                 "EngineerCraft",
                 "EngineerProgress",
+                "EscapeInterdiction",
                 "FSSAllBodiesFound",
                 "FSSDiscoveryScan",
                 "FSDJump",
@@ -489,6 +502,9 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                 "FuelScoop",
                 "HeatWarning",
                 "HullDamage",
+                "Interdicted",
+                "Interdiction",
+                "LaunchSRV",
                 "LeaveBody",
                 "Loadout",
                 "Liftoff",

@@ -9,13 +9,13 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.navGraphViewModels
 import app.futured.donut.DonutSection
 import com.devries48.elitecommander.R
-import com.devries48.elitecommander.databinding.FragmentEarningsBinding
-import com.devries48.elitecommander.models.EarningModel
+import com.devries48.elitecommander.databinding.FragmentProfitBinding
+import com.devries48.elitecommander.models.ProfitModel
 
-class EarningsFragment : Fragment() {
+class ProfitFragment : Fragment() {
 
     private val mViewModel: CommanderViewModel by navGraphViewModels(R.id.nav_graph)
-    private var _binding: FragmentEarningsBinding? = null
+    private var _binding: FragmentProfitBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -23,7 +23,7 @@ class EarningsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentEarningsBinding.inflate(inflater, container, false)
+        _binding = FragmentProfitBinding.inflate(inflater, container, false)
 
         binding.viewModel = mViewModel
         binding.lifecycleOwner = this
@@ -34,8 +34,8 @@ class EarningsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val list = mViewModel.getEarningStatistics()
-        val ctx= requireActivity().applicationContext!!
+        val list = mViewModel.getProfitChart()
+        val ctx = requireActivity().applicationContext!!
 
         list.observe(viewLifecycleOwner,
             {
@@ -44,26 +44,45 @@ class EarningsFragment : Fragment() {
 
                     list.value?.forEach {
                         when (it.t) {
-                            EarningModel.EarningType.COMBAT -> sections.add(
+                            ProfitModel.ProfitType.COMBAT -> sections.add(
                                 DonutSection(
                                     "Combat", ContextCompat.getColor(ctx, R.color.elite_combat), it.percentage
                                 )
                             )
-                            EarningModel.EarningType.EXPLORATION -> sections.add(
+                            ProfitModel.ProfitType.EXPLORATION -> sections.add(
                                 DonutSection(
                                     "Exploration", ContextCompat.getColor(ctx, R.color.elite_exploration), it.percentage
                                 )
                             )
-                            EarningModel.EarningType.MINING -> sections.add(
+                            ProfitModel.ProfitType.TRADING -> sections.add(
+                                DonutSection(
+                                    "Trading", ContextCompat.getColor(ctx, R.color.elite_trading),
+                                    it.percentage
+                                )
+                            )
+                            ProfitModel.ProfitType.MINING -> sections.add(
                                 DonutSection(
                                     "Mining", ContextCompat.getColor(ctx, R.color.elite_mining),
                                     it.percentage
                                 )
                             )
+                            ProfitModel.ProfitType.SMUGGLING -> sections.add(
+                                DonutSection(
+                                    "Smuggling", ContextCompat.getColor(ctx, R.color.elite_yellow),
+                                    it.percentage
+                                )
+                            )
+                            ProfitModel.ProfitType.SEARCH_RESCUE -> sections.add(
+                                DonutSection(
+                                    "Search & Rescue", ContextCompat.getColor(ctx, R.color.elite_orange),
+                                    it.percentage
+                                )
+                            )
+
                             else ->
                                 sections.add(
                                     DonutSection(
-                                        "Trading", ContextCompat.getColor(ctx, R.color.elite_trading),
+                                        "Other", ContextCompat.getColor(ctx, R.color.elite_light_orange),
                                         it.percentage
                                     )
                                 )

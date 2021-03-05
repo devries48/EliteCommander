@@ -26,7 +26,7 @@ class MainFragment : Fragment() {
             RedirectFragment(),
             CommanderFragment(),
             DiscoveriesFragment(),
-            EarningsFragment()
+            ProfitFragment()
         )
 
         mAdapter = ViewPagerAdapter(

@@ -14,10 +14,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="@dimen/margin_large"
-        tools:context="com.devries48.elitecommander.fragments.EarningsFragment">
+        tools:context="com.devries48.elitecommander.fragments.ProfitFragment">
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/card_earnings"
+            android:id="@+id/card_profit"
             style="@style/EliteCardView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -33,11 +33,11 @@
                 android:layout_marginBottom="@dimen/margin_medium">
 
                 <TextView
-                    android:id="@+id/earningsTitle"
+                    android:id="@+id/profitTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="@string/earnings"
+                    android:text="@string/profit"
                     android:textAppearance="@style/eliteStyle.Title"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
@@ -46,7 +46,7 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/card_earningsGraph"
+            android:id="@+id/card_profitGraph"
             style="@style/EliteCardView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -55,7 +55,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/card_earnings">
+            app:layout_constraintTop_toBottomOf="@id/card_profit">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"

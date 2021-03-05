@@ -6,7 +6,9 @@ data class FrontierStatisticsEvent (
     val combat: FrontierCombat?,
     val exploration: FrontierExploration?,
     val mining: FrontierMining?,
-    val trading: FrontierTrading?
+    val trading: FrontierTrading?,
+    val smuggling: FrontierSmuggling?,
+    val searchAndRescue: FrontierSearchAndRescue?
 )
 
 data class FrontierBankAccount(
@@ -57,4 +59,18 @@ data class FrontierTrading(
     val marketProfits: Long,
     val marketsTradedWith: Int,
     val resourcesTraded: Int
+)
+
+data class FrontierSearchAndRescue(
+    val searchRescueCount: Int,
+    val searchRescueProfit: Long,
+    val searchRescueTraded: Int
+)
+
+data class FrontierSmuggling(
+    val averageProfit: Int,
+    val blackMarketsProfits: Long,
+    val blackMarketsTradedWith: Int,
+    val highestSingleTransaction: Long,
+    val resourcesSmuggled: Int
 )

@@ -7,9 +7,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.devries48.elitecommander.R
-import com.devries48.elitecommander.models.FrontierStatistic
+import com.devries48.elitecommander.models.StatisticModel1
 
-class StatisticsRecyclerAdapter(var data: List<FrontierStatistic>) :
+class StatisticsRecyclerAdapter(var data: List<StatisticModel1>) :
     RecyclerView.Adapter<StatisticsRecyclerAdapter.ViewHolder>() {
 
     /**
@@ -64,7 +64,7 @@ class StatisticsRecyclerAdapter(var data: List<FrontierStatistic>) :
         }
     }
 
-    fun updateList(stats: List<FrontierStatistic>) {
+    fun updateList(stats: List<StatisticModel1>) {
         data = stats
         notifyDataSetChanged()
     }
