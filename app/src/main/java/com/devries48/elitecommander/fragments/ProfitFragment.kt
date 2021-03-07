@@ -7,14 +7,19 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.navGraphViewModels
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import app.futured.donut.DonutSection
 import com.devries48.elitecommander.R
+import com.devries48.elitecommander.adapters.StatisticsRecyclerAdapter
 import com.devries48.elitecommander.databinding.FragmentProfitBinding
 import com.devries48.elitecommander.models.ProfitModel
 
 class ProfitFragment : Fragment() {
 
     private val mViewModel: CommanderViewModel by navGraphViewModels(R.id.nav_graph)
+    private lateinit var mAdapter: StatisticsRecyclerAdapter
+
     private var _binding: FragmentProfitBinding? = null
     private val binding get() = _binding!!
 
@@ -34,15 +39,28 @@ class ProfitFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val list = mViewModel.getProfitChart()
         val ctx = requireActivity().applicationContext!!
+        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
+        val list = mViewModel.getProfitStatistics()
+        val chartList = mViewModel.getProfitChart()
+
+        mAdapter = StatisticsRecyclerAdapter(list.value!!)
+        binding.profitRecyclerView.layoutManager = layoutManager
+        binding.profitRecyclerView.adapter = mAdapter
 
         list.observe(viewLifecycleOwner,
+            { stats ->
+                run {
+                    mAdapter.updateList(stats)
+                }
+            })
+
+        chartList.observe(viewLifecycleOwner,
             {
                 run {
                     val sections = ArrayList<DonutSection>()
 
-                    list.value?.forEach {
+                    chartList.value?.forEach {
                         when (it.t) {
                             ProfitModel.ProfitType.COMBAT -> sections.add(
                                 DonutSection(

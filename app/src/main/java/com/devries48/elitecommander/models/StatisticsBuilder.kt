@@ -8,7 +8,7 @@ class StatisticsBuilder {
 
     var statistics= MutableLiveData<List<StatisticModel>>()
     private val mStatisticsList = ArrayList<StatisticModel>()
-    private val mCurrencyFormat = DecimalFormat("###,###,###,###")
+    private val mCurrencyFormat = DecimalFormat("###,###,###,### CR")
     private val mDoubleFormat = DecimalFormat("###,###,###.#")
 
     enum class StatisticType {
@@ -26,8 +26,7 @@ class StatisticsBuilder {
 
     enum class StatisticPosition {
         LEFT,
-        CENTER_LEFT,
-        CENTER_RIGHT,
+        CENTER,
         RIGHT
     }
 
@@ -85,12 +84,11 @@ class StatisticsBuilder {
                 stat.leftValue = formattedValue
                 stat.leftShowDelta = showDelta
             }
-            StatisticPosition.CENTER_LEFT, StatisticPosition.CENTER_RIGHT -> {
+            StatisticPosition.CENTER -> {
                 stat.middleTitleResId = titleResId
                 stat.middleValue = formattedValue
                 stat.middleColor = color
                 stat.middleShowDelta = showDelta
-                stat.middleValueAlignLeft = pos == StatisticPosition.CENTER_LEFT
             }
             else -> {
                 stat.rightTitleResId = titleResId
@@ -102,7 +100,7 @@ class StatisticsBuilder {
 
     }
 
-    fun postValue() {
-        TODO("Not yet implemented")
+    fun postValues() {
+        statistics.postValue(mStatisticsList)
     }
 }

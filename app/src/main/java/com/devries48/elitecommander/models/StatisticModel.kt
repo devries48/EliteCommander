@@ -14,7 +14,6 @@ class StatisticModel {
     @StringRes
     var middleTitleResId: Int = 0
     var middleValue: String? = null
-    var middleValueAlignLeft: Boolean = false
     var middleShowDelta:Boolean=false
     var middleColor: StatisticsBuilder.StatisticColor = StatisticsBuilder.StatisticColor.DEFAULT
 

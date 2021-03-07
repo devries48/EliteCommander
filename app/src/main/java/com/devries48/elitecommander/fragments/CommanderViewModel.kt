@@ -47,7 +47,6 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
 
     override fun onCleared() {
         super.onCleared()
-
         EventBus.getDefault().unregister(this)
     }
 
@@ -68,18 +67,82 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onFrontierProfileEvent(profileEvent: FrontierProfileEvent) {
-        if (!profileEvent.success) {
-            //NotificationsUtils.displayGenericDownloadErrorSnackbar(getActivity()) TODO: Error Handling
-            return
+    fun onFrontierProfileEvent(profile: FrontierProfileEvent) {
+        GlobalScope.launch {
+            if (!profile.success) {
+                //NotificationsUtils.displayGenericDownloadErrorSnackbar(getActivity()) TODO: Error Handling
+                return@launch
+            }
+            launchProfile(profile)
         }
+    }
 
-        mName.value = profileEvent.name
-        setMainStatistic(R.string.CurrentLocation, profileEvent.systemName)
-        commanderApi?.getDistanceToSol(profileEvent.systemName)
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onFrontierRanksEvent(ranks: FrontierRanksEvent) {
+        GlobalScope.launch {
+            if (!ranks.success) {
+                //NotificationsUtils.displayGenericDownloadErrorSnackbar(getActivity()) TODO: Error Handling
+                mIsRanksBusy.postValue(false)
+                return@launch
+            }
+            launchRanks(ranks)
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onFrontierFleetEvent(fleet: FrontierFleetEvent) {
+        GlobalScope.launch {
+            if (!fleet.success) {
+                //NotificationsUtils.displayGenericDownloadErrorSnackbar(getActivity()) TODO: Error Handling
+                return@launch
+            }
+            launchFleet(fleet)
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onDistanceSearch(distanceSearch: DistanceSearchEvent) {
+        GlobalScope.launch {
+            if (!distanceSearch.success) {
+                //NotificationsUtils.displayGenericDownloadErrorSnackbar(getActivity()) TODO: Error Handling
+                return@launch
+            }
+            launchDistanceSearch(distanceSearch)
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onCurrentDiscoveries(discoveries: FrontierDiscoveriesEvent) {
+        GlobalScope.launch {
+            if (!discoveries.success) {
+                //NotificationsUtils.displayGenericDownloadErrorSnackbar(getActivity()) TODO: Error Handling
+                return@launch
+            }
+            launchCurrentDiscoveries(discoveries)
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onStatistics(statistics: FrontierStatisticsEvent) {
+        GlobalScope.launch {
+            if (!statistics.success) {
+                //NotificationsUtils.displayGenericDownloadErrorSnackbar(getActivity()) TODO: Error Handling
+                return@launch
+            }
+
+            launchProfitChart(statistics)
+            launchProfitStats(statistics)
+        }
+    }
+
+
+    private fun launchProfile(profile: FrontierProfileEvent) {
+        mName.postValue(profile.name)
+        setMainStatistic(R.string.CurrentLocation, profile.systemName)
+        commanderApi?.getDistanceToSol(profile.systemName)
 
         // Hull damage
-        val hullPercentage: Int = profileEvent.hull / 10000
+        val hullPercentage: Int = profile.hull / 10000
 
         setMainStatisticRight(
             R.string.CurrentShip,
@@ -89,7 +152,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
         )
 
         // Integrity
-        val integrityPercentage: Int = profileEvent.integrity / 10000
+        val integrityPercentage: Int = profile.integrity / 10000
 
         setMainStatisticMiddle(
             R.string.CurrentShip,
@@ -99,93 +162,91 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
         )
 
         // Check error case
-        if (profileEvent.balance == -1L) {
+        if (profile.balance == -1L) {
             setMainStatistic(R.string.Credits, "Unknown")
             return
         }
 
-        val amount = currencyFormat(profileEvent.balance)
+        val amount = currencyFormat(profile.balance)
 
-        if (profileEvent.loan != 0L) {
-            val loan: String = currencyFormat(profileEvent.loan)
+        if (profile.loan != 0L) {
+            val loan: String = currencyFormat(profile.loan)
             setMainStatistic(R.string.Credits, "$amount CR (with a $loan CR loan)")
         } else {
             setMainStatistic(R.string.Credits, "$amount CR")
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onFrontierRanksEvent(ranksEvent: FrontierRanksEvent) {
-        // Check download error
-        if (!ranksEvent.success) {
-            //NotificationsUtils.displayGenericDownloadErrorSnackbar(getActivity()) TODO: Error Handling
-            mIsRanksBusy.postValue(false)
-            return
-        }
-
-        mCombatRank.value = RankModel(
-            NamingUtils.getCombatRankDrawableId(ranksEvent.combat!!.value),
-            ranksEvent.combat,
-            ranksEvent.combat.name,
-            R.string.rank_combat
-        )
-        mTradeRank.value = RankModel(
-            NamingUtils.getTradeRankDrawableId(ranksEvent.trade!!.value),
-            ranksEvent.trade,
-            ranksEvent.trade.name,
-            R.string.rank_trading
-        )
-        mExploreRank.value = RankModel(
-            NamingUtils.getExplorationRankDrawableId(ranksEvent.explore!!.value),
-            ranksEvent.explore,
-            ranksEvent.explore.name,
-            R.string.rank_explore
-        )
-        mCqcRank.value = RankModel(
-            NamingUtils.getCqcRankDrawableId(ranksEvent.cqc!!.value),
-            ranksEvent.cqc,
-            ranksEvent.cqc.name,
-            R.string.rank_cqc
-        )
-        mFederationRank.value =
+    private fun launchRanks(ranks: FrontierRanksEvent) {
+        mCombatRank.postValue(
             RankModel(
-                NamingUtils.getFederationRankDrawableId(ranksEvent.federation!!.value),
-                ranksEvent.federation,
-                ranksEvent.federation.name,
+                NamingUtils.getCombatRankDrawableId(ranks.combat!!.value),
+                ranks.combat,
+                ranks.combat.name,
+                R.string.rank_combat
+            )
+        )
+        mTradeRank.postValue(
+            RankModel(
+                NamingUtils.getTradeRankDrawableId(ranks.trade!!.value),
+                ranks.trade,
+                ranks.trade.name,
+                R.string.rank_trading
+            )
+        )
+
+        mExploreRank.postValue(
+            RankModel(
+                NamingUtils.getExplorationRankDrawableId(ranks.explore!!.value),
+                ranks.explore,
+                ranks.explore.name,
+                R.string.rank_explore
+            )
+        )
+        mCqcRank.postValue(
+            RankModel(
+                NamingUtils.getCqcRankDrawableId(ranks.cqc!!.value),
+                ranks.cqc,
+                ranks.cqc.name,
+                R.string.rank_cqc
+            )
+        )
+        mFederationRank.postValue(
+            RankModel(
+                NamingUtils.getFederationRankDrawableId(ranks.federation!!.value),
+                ranks.federation,
+                ranks.federation.name,
                 R.string.rank_federation,
                 true
             )
-        mEmpireRank.value =
+        )
+        mEmpireRank.postValue(
             RankModel(
-                NamingUtils.getEmpireRankDrawableId(ranksEvent.empire!!.value),
-                ranksEvent.empire,
-                ranksEvent.empire.name,
+                NamingUtils.getEmpireRankDrawableId(ranks.empire!!.value),
+                ranks.empire,
+                ranks.empire.name,
                 R.string.rank_empire,
                 true
             )
-        mAllianceRank.value =
+        )
+        mAllianceRank.postValue(
             RankModel(
                 NamingUtils.getAllianceRankDrawableId(),
-                ranksEvent.alliance!!,
+                ranks.alliance!!,
                 "",
                 R.string.rank_alliance,
                 true
             )
+        )
 
         mIsRanksBusy.postValue(false)
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onFrontierFleetEvent(fleetEvent: FrontierFleetEvent) {
-        if (!fleetEvent.success) {
-            //NotificationsUtils.displayGenericDownloadErrorSnackbar(getActivity()) TODO: Error Handling
-            return
-        }
-
+    private fun launchFleet(fleet: FrontierFleetEvent) {
         var assetsValue: Long = 0
 
-        if (fleetEvent.frontierShips.any()) {
-            fleetEvent.frontierShips.forEach {
+        if (fleet.frontierShips.any()) {
+            fleet.frontierShips.forEach {
                 if (it.isCurrentShip) {
                     setMainStatistic(R.string.CurrentShip, it.model)
                 }
@@ -197,13 +258,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onDistanceSearch(distanceSearch: DistanceSearchEvent) {
-        if (!distanceSearch.success) {
-            //NotificationsUtils.displayGenericDownloadErrorSnackbar(getActivity()) TODO: Error Handling
-            return
-        }
-
+    private fun launchDistanceSearch(distanceSearch: DistanceSearchEvent) {
         if (distanceSearch.distance == 0.0) {
             setMainStatisticRight(
                 R.string.CurrentLocation,
@@ -222,89 +277,11 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
     }
 
     @SuppressLint("NullSafeMutableLiveData")
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onCurrentDiscoveries(discoveries: FrontierDiscoveriesEvent) {
-        if (!discoveries.success) {
-            //NotificationsUtils.displayGenericDownloadErrorSnackbar(getActivity()) TODO: Error Handling
-            return
-        }
+    private fun launchCurrentDiscoveries(discoveries: FrontierDiscoveriesEvent) {
         if (discoveries.summary != null)
             mCurrentDiscoverySummary.postValue(discoveries.summary)
         if (discoveries.discoveries != null)
             mCurrentDiscoveries.postValue(discoveries.discoveries)
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onStatistics(statistics: FrontierStatisticsEvent) {
-        if (!statistics.success) {
-            //NotificationsUtils.displayGenericDownloadErrorSnackbar(getActivity()) TODO: Error Handling
-            return
-        }
-
-        GlobalScope.launch {
-            launchProfitChart(statistics)
-        }
-
-
-        // Profit stats
-        mBuilderProfit.addStatistic(
-            PROFIT_COMBAT_BOUNTIES,
-            LEFT,
-            R.string.bounties,
-            statistics.combat!!.bountyHuntingProfit,
-            true,
-            CURRENCY
-        )
-        mBuilderProfit.addStatistic(
-            PROFIT_COMBAT_BONDS,
-            LEFT,
-            R.string.combat_bonds,
-            statistics.combat.combatBondProfits,
-            true,
-            CURRENCY
-        )
-        mBuilderProfit.addStatistic(
-            PROFIT_COMBAT_ASSASSINATIONS,
-            LEFT,
-            R.string.assassinations,
-            statistics.combat.assassinationProfits,
-            true,
-            CURRENCY
-        )
-        mBuilderProfit.addStatistic(
-            PROFIT_TRADING,
-            LEFT,
-            R.string.trading,
-            statistics.trading!!.marketProfits,
-            true,
-            CURRENCY
-        )
-        mBuilderProfit.addStatistic(
-            PROFIT_EXPLORATION,
-            LEFT,
-            R.string.exploration,
-            statistics.exploration!!.explorationProfits,
-            true,
-            CURRENCY
-        )
-        mBuilderProfit.addStatistic(
-            PROFIT_SMUGGLING,
-            LEFT,
-            R.string.smuggling,
-            statistics.smuggling!!.blackMarketsProfits,
-            true,
-            CURRENCY
-        )
-        mBuilderProfit.addStatistic(
-            PROFIT_SEARCH_RESCUE,
-            LEFT,
-            R.string.search_rescue,
-            statistics.searchAndRescue!!.searchRescueProfit,
-            true,
-            CURRENCY
-        )
-
-        // mBuilderProfit.postValue()
     }
 
     private fun launchProfitChart(statistics: FrontierStatisticsEvent) {
@@ -374,86 +351,93 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
         mProfitChart.postValue(models)
     }
 
+    private fun launchProfitStats(statistics: FrontierStatisticsEvent) {
+        // Profit stats
+        mBuilderProfit.addStatistic(
+            PROFIT_COMBAT_BOUNTIES,
+            LEFT,
+            R.string.bounties,
+            statistics.combat!!.bountyHuntingProfit,
+            true,
+            CURRENCY
+        )
+        mBuilderProfit.addStatistic(
+            PROFIT_COMBAT_BONDS,
+            LEFT,
+            R.string.combat_bonds,
+            statistics.combat.combatBondProfits,
+            true,
+            CURRENCY
+        )
+        mBuilderProfit.addStatistic(
+            PROFIT_COMBAT_ASSASSINATIONS,
+            LEFT,
+            R.string.assassinations,
+            statistics.combat.assassinationProfits,
+            true,
+            CURRENCY
+        )
+        mBuilderProfit.addStatistic(
+            PROFIT_TRADING,
+            LEFT,
+            R.string.trading,
+            statistics.trading!!.marketProfits,
+            true,
+            CURRENCY
+        )
+        mBuilderProfit.addStatistic(
+            PROFIT_EXPLORATION,
+            LEFT,
+            R.string.exploration,
+            statistics.exploration!!.explorationProfits,
+            true,
+            CURRENCY
+        )
+        mBuilderProfit.addStatistic(
+            PROFIT_SMUGGLING,
+            LEFT,
+            R.string.smuggling,
+            statistics.smuggling!!.blackMarketsProfits,
+            true,
+            CURRENCY
+        )
+        mBuilderProfit.addStatistic(
+            PROFIT_SEARCH_RESCUE,
+            LEFT,
+            R.string.search_rescue,
+            statistics.searchAndRescue!!.searchRescueProfit,
+            true,
+            CURRENCY
+        )
+
+        mBuilderProfit.postValues()
+    }
+
+
     companion object {
         private val mName = MutableLiveData("")
         private val mIsRanksBusy = MutableLiveData<Boolean>().default(true)
 
         private val mCombatRank =
-            MutableLiveData(
-                RankModel(
-                    0,
-                    FrontierRanksEvent.FrontierRank("", 0, 0),
-                    "",
-                    R.string.empty_string
-                )
-            )
+            MutableLiveData(RankModel(0, FrontierRanksEvent.FrontierRank("", 0, 0), "", R.string.empty_string))
         private val mTradeRank =
-            MutableLiveData(
-                RankModel(
-                    0,
-                    FrontierRanksEvent.FrontierRank("", 0, 0),
-                    "",
-                    R.string.empty_string
-                )
-            )
+            MutableLiveData(RankModel(0, FrontierRanksEvent.FrontierRank("", 0, 0), "", R.string.empty_string))
         private val mExploreRank =
-            MutableLiveData(
-                RankModel(
-                    0,
-                    FrontierRanksEvent.FrontierRank("", 0, 0),
-                    "",
-                    R.string.empty_string
-                )
-            )
+            MutableLiveData(RankModel(0, FrontierRanksEvent.FrontierRank("", 0, 0), "", R.string.empty_string))
         private val mCqcRank =
-            MutableLiveData(
-                RankModel(
-                    0,
-                    FrontierRanksEvent.FrontierRank("", 0, 0),
-                    "",
-                    R.string.empty_string
-                )
-            )
+            MutableLiveData(RankModel(0, FrontierRanksEvent.FrontierRank("", 0, 0), "", R.string.empty_string))
         private val mFederationRank =
-            MutableLiveData(
-                RankModel(
-                    0,
-                    FrontierRanksEvent.FrontierRank("", 0, 0),
-                    "",
-                    R.string.empty_string,
-                    true
-                )
-            )
+            MutableLiveData(RankModel(0, FrontierRanksEvent.FrontierRank("", 0, 0), "", R.string.empty_string, true))
         private val mEmpireRank =
-            MutableLiveData(
-                RankModel(
-                    0,
-                    FrontierRanksEvent.FrontierRank("", 0, 0),
-                    "",
-                    R.string.empty_string,
-                    true
-                )
-            )
-
+            MutableLiveData(RankModel(0, FrontierRanksEvent.FrontierRank("", 0, 0), "", R.string.empty_string, true))
         private val mAllianceRank =
-            MutableLiveData(
-                RankModel(
-                    0,
-                    FrontierRanksEvent.FrontierRank("", 0, 0),
-                    "",
-                    R.string.empty_string,
-                    true
-                )
-            )
+            MutableLiveData(RankModel(0, FrontierRanksEvent.FrontierRank("", 0, 0), "", R.string.empty_string, true))
 
         private var mMainStatistics: MutableLiveData<List<StatisticModel1>>? = null
         private val mMainStatisticsList = ArrayList<StatisticModel1>()
         private var mCurrentDiscoveries = MutableLiveData<List<FrontierDiscovery>>()
-        private var mCurrentDiscoverySummary = MutableLiveData(
-            FrontierDiscoverySummary(
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-            )
-        )
+        private var mCurrentDiscoverySummary = MutableLiveData(FrontierDiscoverySummary(0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+
         private var mProfitChart = MutableLiveData<List<ProfitModel>>()
         private val mBuilderProfit: StatisticsBuilder = StatisticsBuilder()
 
