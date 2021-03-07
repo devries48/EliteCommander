@@ -209,4 +209,5 @@
     <string name="exploration">Exploration</string>
     <string name="smuggling">Smuggling</string>
     <string name="search_rescue"><![CDATA[Search & Rescue]]></string>
+    <string name="time_played">Time played</string>
 </resources>
