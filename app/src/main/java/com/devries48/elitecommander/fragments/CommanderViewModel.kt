@@ -1,9 +1,6 @@
 package com.devries48.elitecommander.fragments
 
 import android.annotation.SuppressLint
-import android.icu.text.DecimalFormat
-import androidx.annotation.StringRes
-import androidx.annotation.StyleRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,8 +10,9 @@ import com.devries48.elitecommander.declarations.default
 import com.devries48.elitecommander.events.*
 import com.devries48.elitecommander.models.*
 import com.devries48.elitecommander.models.ProfitModel.ProfitType.*
-import com.devries48.elitecommander.models.StatisticsBuilder.StatisticFormat.CURRENCY
-import com.devries48.elitecommander.models.StatisticsBuilder.StatisticPosition.LEFT
+import com.devries48.elitecommander.models.StatisticsBuilder.StatisticColor.*
+import com.devries48.elitecommander.models.StatisticsBuilder.StatisticFormat.*
+import com.devries48.elitecommander.models.StatisticsBuilder.StatisticPosition.*
 import com.devries48.elitecommander.models.StatisticsBuilder.StatisticType.*
 import com.devries48.elitecommander.network.CommanderNetwork
 import com.devries48.elitecommander.utils.NamingUtils
@@ -42,7 +40,6 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
 
     init {
         EventBus.getDefault().register(this)
-        loadMainStatistics()
     }
 
     override fun onCleared() {
@@ -50,8 +47,8 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
         EventBus.getDefault().unregister(this)
     }
 
-    internal fun getMainStatistics(): LiveData<List<StatisticModel1>> {
-        return mMainStatistics as MutableLiveData<List<StatisticModel1>>
+    internal fun getMainStatistics(): LiveData<List<StatisticModel>> {
+        return mBuilderMain.statistics
     }
 
     internal fun getCurrentDiscoveries(): LiveData<List<FrontierDiscovery>> {
@@ -130,51 +127,93 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
                 return@launch
             }
 
+            launchPlayedStats(statistics)
             launchProfitChart(statistics)
             launchProfitStats(statistics)
         }
     }
 
+    private fun launchPlayedStats(statistics: FrontierStatisticsEvent) {
+        mBuilderMain.addStatistic(
+            CMDR_TIME_PLAYED,
+            LEFT,
+            R.string.time_played,
+            statistics.exploration!!.timePlayed,
+            true,
+            TIME,
+            DIMMED
+        )
+
+        mBuilderMain.postValues()
+    }
+
 
     private fun launchProfile(profile: FrontierProfileEvent) {
         mName.postValue(profile.name)
-        setMainStatistic(R.string.CurrentLocation, profile.systemName)
+
+        val amount = mBuilderMain.formatCurrency(profile.balance)
+        var credits = if (profile.loan != 0L) {
+            val loan = mBuilderMain.formatCurrency(profile.loan)
+            "$amount CR (with a $loan CR loan)"
+        } else "$amount CR"
+
+        // error case
+        if (profile.balance == -1L) {
+            credits="Unknown"
+        }
+
+        mBuilderMain.addStatistic(
+            CMDR_CREDITS,
+            LEFT,
+            R.string.Credits,
+            credits,
+            true,
+            CURRENCY
+        )
+
+        mBuilderMain.addStatistic(
+            CMDR_CREDITS,
+            RIGHT,
+            R.string.AssetsValue,
+            credits,
+            true,
+            CURRENCY
+        )
+
+        mBuilderMain.addStatistic(
+            CMDR_LOCATION,
+            LEFT,
+            R.string.CurrentLocation,
+            profile.systemName
+        )
+
         commanderApi?.getDistanceToSol(profile.systemName)
 
-        // Hull damage
         val hullPercentage: Int = profile.hull / 10000
 
-        setMainStatisticRight(
-            R.string.CurrentShip,
+        mBuilderMain.addStatistic(
+            CMDR_SHIP,
+            RIGHT,
             R.string.hull,
             "$hullPercentage%",
-            if (hullPercentage >= 50) R.style.eliteStyle_LightOrangeText else R.style.eliteStyle_RedText
+            false,
+            NONE,
+            if (hullPercentage >= 50) DIMMED else WARNING
         )
 
-        // Integrity
         val integrityPercentage: Int = profile.integrity / 10000
 
-        setMainStatisticMiddle(
-            R.string.CurrentShip,
+        mBuilderMain.addStatistic(
+            CMDR_SHIP,
+            CENTER,
             R.string.integrity,
             "$integrityPercentage%",
-            if (integrityPercentage >= 50) R.style.eliteStyle_LightOrangeText else R.style.eliteStyle_RedText
+            false,
+            NONE,
+            if (integrityPercentage >= 50) DIMMED else WARNING
         )
 
-        // Check error case
-        if (profile.balance == -1L) {
-            setMainStatistic(R.string.Credits, "Unknown")
-            return
-        }
-
-        val amount = currencyFormat(profile.balance)
-
-        if (profile.loan != 0L) {
-            val loan: String = currencyFormat(profile.loan)
-            setMainStatistic(R.string.Credits, "$amount CR (with a $loan CR loan)")
-        } else {
-            setMainStatistic(R.string.Credits, "$amount CR")
-        }
+        mBuilderProfit.postValues()
     }
 
     private fun launchRanks(ranks: FrontierRanksEvent) {
@@ -248,32 +287,41 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
         if (fleet.frontierShips.any()) {
             fleet.frontierShips.forEach {
                 if (it.isCurrentShip) {
-                    setMainStatistic(R.string.CurrentShip, it.model)
+                    mBuilderMain.addStatistic(
+                        CMDR_SHIP,
+                        LEFT,
+                        R.string.CurrentShip,
+                        it.model
+                    )
                 }
                 assetsValue += it.totalValue
             }
 
-            val assets: String = currencyFormat(assetsValue)
-            setMainStatistic(R.string.AssetsValue, "$assets CR")
+            mBuilderMain.addStatistic(
+                CMDR_CREDITS,
+                RIGHT,
+                R.string.AssetsValue,
+                assetsValue,
+                true,
+                CURRENCY
+            )
+
+            mBuilderProfit.postValues()
         }
     }
 
     private fun launchDistanceSearch(distanceSearch: DistanceSearchEvent) {
-        if (distanceSearch.distance == 0.0) {
-            setMainStatisticRight(
-                R.string.CurrentLocation,
-                0,
-                "Discovered",
-                R.style.eliteStyle_LightOrangeText
-            )
-        } else {
-            setMainStatisticRight(
-                R.string.CurrentLocation,
-                R.string.distance_sol,
-                "${doubleFormat(distanceSearch.distance)} LY",
-                R.style.eliteStyle_LightOrangeText
-            )
-        }
+        mBuilderMain.addStatistic(
+            CMDR_LOCATION,
+            RIGHT,
+            if (distanceSearch.distance == 0.0) R.string.CurrentLocation else R.string.distance_sol,
+            if (distanceSearch.distance == 0.0) "Discovered" else "${mBuilderMain.formatDouble(distanceSearch.distance)} LY",
+            false,
+            NONE,
+            DIMMED
+        )
+
+        mBuilderProfit.postValues()
     }
 
     @SuppressLint("NullSafeMutableLiveData")
@@ -352,7 +400,6 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
     }
 
     private fun launchProfitStats(statistics: FrontierStatisticsEvent) {
-        // Profit stats
         mBuilderProfit.addStatistic(
             PROFIT_COMBAT_BOUNTIES,
             LEFT,
@@ -433,74 +480,14 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
         private val mAllianceRank =
             MutableLiveData(RankModel(0, FrontierRanksEvent.FrontierRank("", 0, 0), "", R.string.empty_string, true))
 
-        private var mMainStatistics: MutableLiveData<List<StatisticModel1>>? = null
-        private val mMainStatisticsList = ArrayList<StatisticModel1>()
         private var mCurrentDiscoveries = MutableLiveData<List<FrontierDiscovery>>()
         private var mCurrentDiscoverySummary = MutableLiveData(FrontierDiscoverySummary(0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
 
         private var mProfitChart = MutableLiveData<List<ProfitModel>>()
+
         private val mBuilderProfit: StatisticsBuilder = StatisticsBuilder()
+        private val mBuilderMain: StatisticsBuilder = StatisticsBuilder()
 
-        private fun currencyFormat(amount: Long): String {
-            val formatter = DecimalFormat("###,###,###,###")
-            return formatter.format(amount)
-        }
-
-        private fun doubleFormat(value: Double): String {
-            val formatter = DecimalFormat("###,###,###.#")
-            return formatter.format(value)
-        }
-
-        private fun loadMainStatistics() {
-            if (mMainStatistics == null) {
-                mMainStatistics = MutableLiveData()
-
-                mMainStatisticsList.add(StatisticModel1(R.string.Credits))
-                mMainStatisticsList.add(StatisticModel1(R.string.AssetsValue))
-                mMainStatisticsList.add(StatisticModel1(R.string.CurrentLocation))
-                mMainStatisticsList.add(StatisticModel1(R.string.CurrentShip))
-
-                mMainStatistics!!.value = mMainStatisticsList
-            }
-        }
-
-        private fun setMainStatistic(@StringRes stringRes: Int, value: String) {
-            val stat: StatisticModel1? = mMainStatisticsList.find { it.stringRes == stringRes }
-            if (stat != null) {
-                stat.value = value
-                mMainStatistics!!.postValue(mMainStatisticsList)
-            }
-        }
-
-        private fun setMainStatisticMiddle(
-            @StringRes nameRes: Int,
-            @StringRes middleStringRes: Int,
-            middleValue: String,
-            @StyleRes middleValueStyleRes: Int
-        ) {
-            val stat: StatisticModel1? = mMainStatisticsList.find { it.stringRes == nameRes }
-            if (stat != null) {
-                stat.middleValue = middleValue
-                stat.middleStringRes = middleStringRes
-                stat.middleValueStyleRes = middleValueStyleRes
-                mMainStatistics!!.postValue(mMainStatisticsList)
-            }
-        }
-
-        private fun setMainStatisticRight(
-            @StringRes nameRes: Int,
-            @StringRes rightStringRes: Int,
-            rightValue: String,
-            @StyleRes rightValueStyleRes: Int
-        ) {
-            val stat: StatisticModel1? = mMainStatisticsList.find { it.stringRes == nameRes }
-            if (stat != null) {
-                stat.rightValue = rightValue
-                stat.rightStringRes = rightStringRes
-                stat.rightValueStyleRes = rightValueStyleRes
-                mMainStatistics!!.postValue(mMainStatisticsList)
-            }
-        }
     }
 }
 

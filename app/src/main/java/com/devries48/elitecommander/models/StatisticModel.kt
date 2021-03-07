@@ -10,6 +10,7 @@ class StatisticModel {
     var leftTitleResId: Int = 0
     var leftValue: String? = null
     var leftShowDelta:Boolean=false
+    var leftColor: StatisticsBuilder.StatisticColor = StatisticsBuilder.StatisticColor.DEFAULT
 
     @StringRes
     var middleTitleResId: Int = 0

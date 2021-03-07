@@ -10,7 +10,7 @@ import com.devries48.elitecommander.R
 import com.devries48.elitecommander.models.StatisticModel
 import com.devries48.elitecommander.models.StatisticsBuilder
 
-class StatisticsRecyclerAdapter(var data: List<StatisticModel>) :
+class StatisticsRecyclerAdapter(var data: List<StatisticModel>?) :
     RecyclerView.Adapter<StatisticsRecyclerAdapter.ViewHolder>() {
 
     /**
@@ -18,8 +18,8 @@ class StatisticsRecyclerAdapter(var data: List<StatisticModel>) :
      * (custom ViewHolder).
      */
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val nameTextView: TextView = view.findViewById(R.id.nameTextView)
-        val valueTextView: TextView = view.findViewById(R.id.valueTextView)
+        val leftNameTextView: TextView = view.findViewById(R.id.nameTextView)
+        val leftValueTextView: TextView = view.findViewById(R.id.valueTextView)
         val rightNameTextView: TextView = view.findViewById(R.id.rightNameTextView)
         val rightValueTextView: TextView = view.findViewById(R.id.rightValueTextView)
         val middleNameTextView: TextView = view.findViewById(R.id.middleNameTextView)
@@ -36,42 +36,44 @@ class StatisticsRecyclerAdapter(var data: List<StatisticModel>) :
     }
 
     override fun getItemCount(): Int {
-        Log.d("Main Statistics items:  ", data.size.toString())
-        return data.size
+        Log.d("Main Statistics items:  ", data?.size.toString())
+        return data?.size ?: 0
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        val ctx = viewHolder.nameTextView.context
-        val item = data[position]
+        if (data == null) return
 
-        viewHolder.nameTextView.text = item.leftTitleResId.let { ctx.getString(it) }
-        viewHolder.valueTextView.text = item.leftValue
+        val item = data!![position]
+        val ctx = viewHolder.leftNameTextView.context
 
-        if (item.rightTitleResId != 0) {
-            viewHolder.rightNameTextView.text = item.rightTitleResId.let { ctx.getString(it) }
+        if (item.leftTitleResId != 0) {
+            viewHolder.leftNameTextView.text = item.leftTitleResId.let { ctx.getString(it) }
+            if (item.leftValue?.isNotEmpty() == true) {
+                viewHolder.leftValueTextView.text = item.leftValue
+                viewHolder.leftValueTextView.setTextAppearance(getItemStyle(item.leftColor))
+            }
         }
+
+        if (item.rightTitleResId != 0)
+            viewHolder.rightNameTextView.text = item.rightTitleResId.let { ctx.getString(it) }
         if (item.rightValue?.isNotEmpty() == true) {
             viewHolder.rightValueTextView.text = item.rightValue
-
-            if (item.rightColor == StatisticsBuilder.StatisticColor.DIMMED)
-                viewHolder.rightValueTextView.setTextAppearance(R.style.eliteStyle_LightOrangeText)
-            else if (item.rightColor == StatisticsBuilder.StatisticColor.WARNING)
-                viewHolder.rightValueTextView.setTextAppearance(R.style.eliteStyle_RedText)
+            viewHolder.rightValueTextView.setTextAppearance(getItemStyle(item.rightColor))
         }
 
-        if (item.middleTitleResId != 0) {
+        if (item.middleTitleResId != 0)
             viewHolder.middleNameTextView.text = item.middleTitleResId.let { ctx.getString(it) }
-        }
         if (item.middleValue?.isNotEmpty() == true) {
             viewHolder.middleValueTextView.text = item.middleValue
+            viewHolder.middleValueTextView.setTextAppearance(getItemStyle(item.middleColor))
+        }
+    }
 
-            if (item.middleValue?.isNotEmpty() == true) {
-                viewHolder.middleValueTextView.text = item.middleValue
-                if (item.middleColor == StatisticsBuilder.StatisticColor.DIMMED)
-                    viewHolder.middleValueTextView.setTextAppearance(R.style.eliteStyle_LightOrangeText)
-                else if (item.middleColor == StatisticsBuilder.StatisticColor.WARNING)
-                    viewHolder.middleValueTextView.setTextAppearance(R.style.eliteStyle_RedText)
-            }
+    private fun getItemStyle(color: StatisticsBuilder.StatisticColor): Int {
+        return when (color) {
+            StatisticsBuilder.StatisticColor.DIMMED -> R.style.eliteStyle_LightOrangeText
+            StatisticsBuilder.StatisticColor.WARNING -> R.style.eliteStyle_RedText
+            else -> R.style.eliteStyle_YellowText
         }
     }
 
