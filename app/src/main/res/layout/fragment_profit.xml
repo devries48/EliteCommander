@@ -80,7 +80,7 @@
                     app:donut_bgLineColor="@color/background"
                     app:donut_gapWidth="0"
                     app:donut_strokeCap="butt"
-                    app:donut_strokeWidth="32dp"
+                    app:donut_strokeWidth="16dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

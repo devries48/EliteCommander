@@ -210,4 +210,9 @@
     <string name="smuggling">Smuggling</string>
     <string name="search_rescue"><![CDATA[Search & Rescue]]></string>
     <string name="time_played">Time played</string>
+    <string name="highest_reward">Highest</string>
+    <string name="total">Total</string>
+    <string name="traded">Traded</string>
+    <string name="mining">Mining</string>
+    <string name="quantity">Quantity</string>
 </resources>

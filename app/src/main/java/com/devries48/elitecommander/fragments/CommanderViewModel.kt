@@ -144,9 +144,8 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             DIMMED
         )
 
-        mBuilderMain.postValues()
+        mBuilderMain.post()
     }
-
 
     private fun launchProfile(profile: FrontierProfileEvent) {
         mName.postValue(profile.name)
@@ -213,7 +212,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             if (integrityPercentage >= 50) DIMMED else WARNING
         )
 
-        mBuilderProfit.postValues()
+        mBuilderProfit.post()
     }
 
     private fun launchRanks(ranks: FrontierRanksEvent) {
@@ -306,7 +305,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
                 CURRENCY
             )
 
-            mBuilderProfit.postValues()
+            mBuilderProfit.post()
         }
     }
 
@@ -321,7 +320,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             DIMMED
         )
 
-        mBuilderProfit.postValues()
+        mBuilderProfit.post()
     }
 
     @SuppressLint("NullSafeMutableLiveData")
@@ -409,6 +408,24 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             CURRENCY
         )
         mBuilderProfit.addStatistic(
+            PROFIT_COMBAT_BOUNTIES,
+            CENTER,
+            R.string.highest_reward,
+            statistics.combat.highestSingleReward,
+            true,
+            CURRENCY,
+            DIMMED
+        )
+        mBuilderProfit.addStatistic(
+            PROFIT_COMBAT_BOUNTIES,
+            RIGHT,
+            R.string.total,
+            statistics.combat.bountiesClaimed,
+            true,
+            INTEGER,
+            DIMMED
+        )
+        mBuilderProfit.addStatistic(
             PROFIT_COMBAT_BONDS,
             LEFT,
             R.string.combat_bonds,
@@ -416,6 +433,16 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             true,
             CURRENCY
         )
+        mBuilderProfit.addStatistic(
+            PROFIT_COMBAT_BONDS,
+            RIGHT,
+            R.string.total,
+            statistics.combat.combatBonds,
+            true,
+            INTEGER,
+            DIMMED
+        )
+
         mBuilderProfit.addStatistic(
             PROFIT_COMBAT_ASSASSINATIONS,
             LEFT,
@@ -425,13 +452,15 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             CURRENCY
         )
         mBuilderProfit.addStatistic(
-            PROFIT_TRADING,
-            LEFT,
-            R.string.trading,
-            statistics.trading!!.marketProfits,
+            PROFIT_COMBAT_ASSASSINATIONS,
+            RIGHT,
+            R.string.total,
+            statistics.combat.assassinations,
             true,
-            CURRENCY
+            INTEGER,
+            DIMMED
         )
+
         mBuilderProfit.addStatistic(
             PROFIT_EXPLORATION,
             LEFT,
@@ -441,6 +470,34 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             CURRENCY
         )
         mBuilderProfit.addStatistic(
+            PROFIT_EXPLORATION,
+            RIGHT,
+            R.string.highest_reward,
+            statistics.exploration.highestPayout,
+            true,
+            CURRENCY,
+            DIMMED
+        )
+
+        mBuilderProfit.addStatistic(
+            PROFIT_TRADING,
+            LEFT,
+            R.string.trading,
+            statistics.trading!!.marketProfits,
+            true,
+            CURRENCY
+        )
+        mBuilderProfit.addStatistic(
+            PROFIT_TRADING,
+            RIGHT,
+            R.string.highest_reward,
+            statistics.trading.highestSingleTransaction,
+            true,
+            CURRENCY,
+            DIMMED
+        )
+
+        mBuilderProfit.addStatistic(
             PROFIT_SMUGGLING,
             LEFT,
             R.string.smuggling,
@@ -449,6 +506,34 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             CURRENCY
         )
         mBuilderProfit.addStatistic(
+            PROFIT_SMUGGLING,
+            RIGHT,
+            R.string.highest_reward,
+            statistics.smuggling.highestSingleTransaction,
+            true,
+            CURRENCY,
+            DIMMED
+        )
+
+        mBuilderProfit.addStatistic(
+            PROFIT_MINING,
+            LEFT,
+            R.string.mining,
+            statistics.mining!!.miningProfits,
+            true,
+            CURRENCY
+        )
+        mBuilderProfit.addStatistic(
+            PROFIT_MINING,
+            RIGHT,
+            R.string.quantity,
+            statistics.mining.quantityMined,
+            true,
+            TONS,
+            DIMMED
+        )
+
+        mBuilderProfit.addStatistic(
             PROFIT_SEARCH_RESCUE,
             LEFT,
             R.string.search_rescue,
@@ -456,8 +541,17 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             true,
             CURRENCY
         )
+        mBuilderProfit.addStatistic(
+            PROFIT_SEARCH_RESCUE,
+            RIGHT,
+            R.string.total,
+            statistics.searchAndRescue.searchRescueCount,
+            true,
+            INTEGER,
+            DIMMED
+        )
 
-        mBuilderProfit.postValues()
+        mBuilderProfit.post()
     }
 
 

@@ -5,11 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import java.text.DecimalFormat
 
 class StatisticsBuilder {
-    private val mStatisticsList = ArrayList<StatisticModel>()
+    private var mStatisticsList = ArrayList<StatisticModel>()
     var statistics = MutableLiveData<List<StatisticModel>>()
 
     init {
-        postValues()
+        post()
     }
 
     enum class StatisticType {
@@ -20,9 +20,10 @@ class StatisticsBuilder {
         PROFIT_COMBAT_BOUNTIES,
         PROFIT_COMBAT_BONDS,
         PROFIT_COMBAT_ASSASSINATIONS,
-        PROFIT_TRADING,
         PROFIT_EXPLORATION,
+        PROFIT_TRADING,
         PROFIT_SMUGGLING,
+        PROFIT_MINING,
         PROFIT_SEARCH_RESCUE
     }
 
@@ -42,7 +43,9 @@ class StatisticsBuilder {
         NONE,
         CURRENCY,
         DOUBLE,
-        TIME
+        INTEGER,
+        TIME,
+        TONS
     }
 
     fun addStatistic(
@@ -66,7 +69,10 @@ class StatisticsBuilder {
             val formattedValue: String = when (format) {
                 StatisticFormat.CURRENCY -> {
                     when (value) {
+                        is Int -> formatCurrency(value)
                         is Long -> formatCurrency(value)
+                        is Double -> formatCurrency(value)
+
                         else -> value.toString()
                     }
                 }
@@ -80,7 +86,12 @@ class StatisticsBuilder {
                 StatisticFormat.TIME -> {
                     formatHours(value as Int)
                 }
-
+                StatisticFormat.INTEGER -> {
+                    formatInteger(value as Int)
+                }
+                StatisticFormat.TONS -> {
+                    formatInteger(value as Int) + " TONS"
+                }
                 else -> value.toString()
             }
 
@@ -108,12 +119,17 @@ class StatisticsBuilder {
     }
 
     private fun formatHours(seconds: Int): String {
-        return String.format("%d hours", seconds / (60 * 60))
+        return String.format("%,d hours", seconds / (60 * 60))
     }
 
-    fun formatCurrency(amount: Long): String {
-        val formatter = DecimalFormat("###,###,###,###")
+    fun <T> formatCurrency(amount: T): String {
+        val formatter = DecimalFormat("###,###,###,### CR")
         return formatter.format(amount)
+    }
+
+    private fun formatInteger(value: Int): String {
+        val formatter = DecimalFormat("###,###")
+        return formatter.format(value)
     }
 
     fun <T> formatDouble(value: T): String {
@@ -121,7 +137,7 @@ class StatisticsBuilder {
         return formatter.format(value)
     }
 
-    fun postValues() {
+    fun post() {
         statistics.postValue(mStatisticsList)
     }
 }
