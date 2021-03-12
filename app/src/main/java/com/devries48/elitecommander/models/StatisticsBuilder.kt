@@ -12,43 +12,20 @@ class StatisticsBuilder {
         post()
     }
 
-    enum class StatisticType {
-        CMDR_CREDITS,
-        CMDR_LOCATION,
-        CMDR_SHIP,
-        CMDR_TIME_PLAYED,
-        PROFIT_COMBAT_BOUNTIES,
-        PROFIT_COMBAT_BONDS,
-        PROFIT_COMBAT_ASSASSINATIONS,
-        PROFIT_EXPLORATION,
-        PROFIT_TRADING,
-        PROFIT_SMUGGLING,
-        PROFIT_MINING,
-        PROFIT_SEARCH_RESCUE
-    }
-
-    enum class StatisticPosition {
-        LEFT,
-        CENTER,
-        RIGHT
-    }
-
-    enum class StatisticColor {
-        DEFAULT,
-        DIMMED,
-        WARNING
-    }
-
-    enum class StatisticFormat {
-        NONE,
-        CURRENCY,
-        DOUBLE,
-        INTEGER,
-        TIME,
-        TONS
-    }
-
     fun addStatistic(
+        type: StatisticType,
+        pos: StatisticPosition,
+        @StringRes titleResId: Int,
+        value: Any,
+        showDelta: Boolean = false,
+        format: StatisticFormat = StatisticFormat.NONE,
+        color: StatisticColor = StatisticColor.DEFAULT,
+    ) {
+        insertStatistic(-1, type, pos, titleResId, value, showDelta, format, color)
+    }
+
+    fun insertStatistic(
+        position: Int,
         type: StatisticType,
         pos: StatisticPosition,
         @StringRes titleResId: Int,
@@ -63,7 +40,9 @@ class StatisticsBuilder {
             if (stat == null) {
                 stat = StatisticModel()
                 stat.type = type
-                mStatisticsList.add(stat)
+                if (position == -1)
+                    mStatisticsList.add(stat) else
+                    mStatisticsList.add(position, stat)
             }
 
             val formattedValue: String = when (format) {
@@ -118,6 +97,7 @@ class StatisticsBuilder {
         }
     }
 
+
     private fun formatHours(seconds: Int): String {
         return String.format("%,d hours", seconds / (60 * 60))
     }
@@ -139,5 +119,43 @@ class StatisticsBuilder {
 
     fun post() {
         statistics.postValue(mStatisticsList)
+    }
+
+    companion object {
+        enum class StatisticType {
+            CMDR_CREDITS,
+            CMDR_LOCATION,
+            CMDR_SHIP,
+            CMDR_TIME_PLAYED,
+            PROFIT_COMBAT_BOUNTIES,
+            PROFIT_COMBAT_BONDS,
+            PROFIT_COMBAT_ASSASSINATIONS,
+            PROFIT_EXPLORATION,
+            PROFIT_TRADING,
+            PROFIT_SMUGGLING,
+            PROFIT_MINING,
+            PROFIT_SEARCH_RESCUE
+        }
+
+        enum class StatisticPosition {
+            LEFT,
+            CENTER,
+            RIGHT
+        }
+
+        enum class StatisticColor {
+            DEFAULT,
+            DIMMED,
+            WARNING
+        }
+
+        enum class StatisticFormat {
+            NONE,
+            CURRENCY,
+            DOUBLE,
+            INTEGER,
+            TIME,
+            TONS
+        }
     }
 }

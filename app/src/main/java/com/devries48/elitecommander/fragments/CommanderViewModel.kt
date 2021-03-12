@@ -10,12 +10,13 @@ import com.devries48.elitecommander.declarations.default
 import com.devries48.elitecommander.events.*
 import com.devries48.elitecommander.models.*
 import com.devries48.elitecommander.models.ProfitModel.ProfitType.*
-import com.devries48.elitecommander.models.StatisticsBuilder.StatisticColor.*
-import com.devries48.elitecommander.models.StatisticsBuilder.StatisticFormat.*
-import com.devries48.elitecommander.models.StatisticsBuilder.StatisticPosition.*
-import com.devries48.elitecommander.models.StatisticsBuilder.StatisticType.*
+import com.devries48.elitecommander.models.StatisticsBuilder.Companion.StatisticColor.*
+import com.devries48.elitecommander.models.StatisticsBuilder.Companion.StatisticFormat.*
+import com.devries48.elitecommander.models.StatisticsBuilder.Companion.StatisticPosition.*
+import com.devries48.elitecommander.models.StatisticsBuilder.Companion.StatisticType.*
 import com.devries48.elitecommander.network.CommanderNetwork
 import com.devries48.elitecommander.utils.NamingUtils
+import com.devries48.elitecommander.utils.SettingsUtils
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
@@ -25,7 +26,37 @@ import kotlin.math.round
 
 class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
 
-    private val commanderApi = network
+    //<editor-fold desc="Private definitions">
+
+    private val mCommanderApi = network
+    private lateinit var mSettings: SettingsModel
+
+    private val mName = MutableLiveData("")
+    private val mIsRanksBusy = MutableLiveData<Boolean>().default(true)
+
+    private val mCombatRank =
+        MutableLiveData(RankModel(0, FrontierRanksEvent.FrontierRank("", 0, 0), "", R.string.empty_string))
+    private val mTradeRank =
+        MutableLiveData(RankModel(0, FrontierRanksEvent.FrontierRank("", 0, 0), "", R.string.empty_string))
+    private val mExploreRank =
+        MutableLiveData(RankModel(0, FrontierRanksEvent.FrontierRank("", 0, 0), "", R.string.empty_string))
+    private val mCqcRank =
+        MutableLiveData(RankModel(0, FrontierRanksEvent.FrontierRank("", 0, 0), "", R.string.empty_string))
+    private val mFederationRank =
+        MutableLiveData(RankModel(0, FrontierRanksEvent.FrontierRank("", 0, 0), "", R.string.empty_string, true))
+    private val mEmpireRank =
+        MutableLiveData(RankModel(0, FrontierRanksEvent.FrontierRank("", 0, 0), "", R.string.empty_string, true))
+    private val mAllianceRank =
+        MutableLiveData(RankModel(0, FrontierRanksEvent.FrontierRank("", 0, 0), "", R.string.empty_string, true))
+
+    private var mCurrentDiscoveries = MutableLiveData<List<FrontierDiscovery>>()
+    private var mCurrentDiscoverySummary = MutableLiveData(FrontierDiscoverySummary(0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+
+    private var mProfitChart = MutableLiveData<List<ProfitModel>>()
+
+    private val mBuilderProfit: StatisticsBuilder = StatisticsBuilder()
+    private val mBuilderMain: StatisticsBuilder = StatisticsBuilder()
+    //</editor-fold>
 
     val name: LiveData<String> = mName
     val combatRank: LiveData<RankModel> = mCombatRank
@@ -40,6 +71,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
 
     init {
         EventBus.getDefault().register(this)
+        mSettings= SettingsUtils.getSettingsModel()
     }
 
     override fun onCleared() {
@@ -153,15 +185,15 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
         val amount = mBuilderMain.formatCurrency(profile.balance)
         var credits = if (profile.loan != 0L) {
             val loan = mBuilderMain.formatCurrency(profile.loan)
-            "$amount CR (with a $loan CR loan)"
-        } else "$amount CR"
+            "$amount CR and loan $loan"
+        } else amount
 
         // error case
         if (profile.balance == -1L) {
-            credits="Unknown"
+            credits = "Unknown"
         }
 
-        mBuilderMain.addStatistic(
+        mBuilderMain.insertStatistic(0,
             CMDR_CREDITS,
             LEFT,
             R.string.Credits,
@@ -179,14 +211,14 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             CURRENCY
         )
 
-        mBuilderMain.addStatistic(
+        mBuilderMain.insertStatistic(1,
             CMDR_LOCATION,
             LEFT,
             R.string.CurrentLocation,
             profile.systemName
         )
 
-        commanderApi?.getDistanceToSol(profile.systemName)
+        mCommanderApi?.getDistanceToSol(profile.systemName)
 
         val hullPercentage: Int = profile.hull / 10000
 
@@ -554,35 +586,6 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
         mBuilderProfit.post()
     }
 
-
-    companion object {
-        private val mName = MutableLiveData("")
-        private val mIsRanksBusy = MutableLiveData<Boolean>().default(true)
-
-        private val mCombatRank =
-            MutableLiveData(RankModel(0, FrontierRanksEvent.FrontierRank("", 0, 0), "", R.string.empty_string))
-        private val mTradeRank =
-            MutableLiveData(RankModel(0, FrontierRanksEvent.FrontierRank("", 0, 0), "", R.string.empty_string))
-        private val mExploreRank =
-            MutableLiveData(RankModel(0, FrontierRanksEvent.FrontierRank("", 0, 0), "", R.string.empty_string))
-        private val mCqcRank =
-            MutableLiveData(RankModel(0, FrontierRanksEvent.FrontierRank("", 0, 0), "", R.string.empty_string))
-        private val mFederationRank =
-            MutableLiveData(RankModel(0, FrontierRanksEvent.FrontierRank("", 0, 0), "", R.string.empty_string, true))
-        private val mEmpireRank =
-            MutableLiveData(RankModel(0, FrontierRanksEvent.FrontierRank("", 0, 0), "", R.string.empty_string, true))
-        private val mAllianceRank =
-            MutableLiveData(RankModel(0, FrontierRanksEvent.FrontierRank("", 0, 0), "", R.string.empty_string, true))
-
-        private var mCurrentDiscoveries = MutableLiveData<List<FrontierDiscovery>>()
-        private var mCurrentDiscoverySummary = MutableLiveData(FrontierDiscoverySummary(0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
-
-        private var mProfitChart = MutableLiveData<List<ProfitModel>>()
-
-        private val mBuilderProfit: StatisticsBuilder = StatisticsBuilder()
-        private val mBuilderMain: StatisticsBuilder = StatisticsBuilder()
-
-    }
 }
 
 class CommanderViewModelFactory(private val network: CommanderNetwork?) :

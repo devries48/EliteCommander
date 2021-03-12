@@ -14,8 +14,12 @@ object DateUtils {
         }
 
     fun Date.toDateString(format: String = defaultFormat): String {
+        return toDateString(format, this)
+    }
+
+    fun toDateString(format: String = defaultFormat, date: Date): String {
         val formatter = SimpleDateFormat(format, Locale.getDefault())
-        return formatter.format(this)
+        return formatter.format(date)
     }
 
     fun fromDateString(value: String, format: String = this@DateUtils.defaultFormat): Date {
@@ -27,6 +31,10 @@ object DateUtils {
 
     fun getCurrentDate(): Date {
         return Calendar.getInstance().time
+    }
+
+    fun getCurrentDateString(format: String = defaultFormat): String {
+        return toDateString(format, getCurrentDate())
     }
 
     private fun addDays(value: Date, n: Int = 1): Date {
@@ -43,4 +51,10 @@ object DateUtils {
         return addDays(this, n * -1)
     }
 
+    fun getLastThursday(): Date? {
+        val cal = Calendar.getInstance()
+        cal.add(Calendar.WEEK_OF_YEAR, -1)
+        cal[Calendar.DAY_OF_WEEK] = Calendar.THURSDAY
+        return cal.time
+    }
 }

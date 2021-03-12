@@ -3,6 +3,7 @@ package com.devries48.elitecommander.adapters
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.text.TextUtils
 import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
@@ -29,6 +30,11 @@ object RankModelAdapter {
             color = darkenColor(color)
 
         view.setTextColor(color)
+
+        if (view.ellipsize==TextUtils.TruncateAt.MARQUEE)
+        {
+            view.isSelected=true
+        }
     }
 
     /**

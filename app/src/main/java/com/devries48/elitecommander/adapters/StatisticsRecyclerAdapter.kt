@@ -18,8 +18,8 @@ class StatisticsRecyclerAdapter(var data: List<StatisticModel>?) :
      * (custom ViewHolder).
      */
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val leftNameTextView: TextView = view.findViewById(R.id.nameTextView)
-        val leftValueTextView: TextView = view.findViewById(R.id.valueTextView)
+        val leftNameTextView: TextView = view.findViewById(R.id.leftNameTextView)
+        val leftValueTextView: TextView = view.findViewById(R.id.leftValueTextView)
         val rightNameTextView: TextView = view.findViewById(R.id.rightNameTextView)
         val rightValueTextView: TextView = view.findViewById(R.id.rightValueTextView)
         val middleNameTextView: TextView = view.findViewById(R.id.middleNameTextView)
@@ -69,10 +69,10 @@ class StatisticsRecyclerAdapter(var data: List<StatisticModel>?) :
         }
     }
 
-    private fun getItemStyle(color: StatisticsBuilder.StatisticColor): Int {
+    private fun getItemStyle(color: StatisticsBuilder.Companion.StatisticColor): Int {
         return when (color) {
-            StatisticsBuilder.StatisticColor.DIMMED -> R.style.eliteStyle_LightOrangeText
-            StatisticsBuilder.StatisticColor.WARNING -> R.style.eliteStyle_RedText
+            StatisticsBuilder.Companion.StatisticColor.DIMMED -> R.style.eliteStyle_LightOrangeText
+            StatisticsBuilder.Companion.StatisticColor.WARNING -> R.style.eliteStyle_RedText
             else -> R.style.eliteStyle_YellowText
         }
     }

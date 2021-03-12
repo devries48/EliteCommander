@@ -4,7 +4,6 @@ package com.devries48.elitecommander.utils
 import android.content.Context
 import android.util.Log
 import com.devries48.elitecommander.BuildConfig
-import com.devries48.elitecommander.R
 import com.devries48.elitecommander.models.httpRequest.FrontierAccessTokenRequestBody
 import com.devries48.elitecommander.models.response.FrontierAccessTokenResponse
 import com.devries48.elitecommander.network.RetrofitClient
@@ -21,21 +20,21 @@ object OAuthUtils {
             Log.d("Tokens", "Refresh token: $refreshToken")
         }
         SettingsUtils.setString(
-            context, context.getString(R.string.access_token_key),
+            context, SettingsUtils.Key.ACCESS_TOKEN,
             accessToken
         )
         SettingsUtils.setString(
-            context, context.getString(R.string.refresh_token_key),
+            context, SettingsUtils.Key.REFRESH_TOKEN,
             refreshToken
         )
     }
 
     private fun getAccessToken(context: Context): String {
-        return SettingsUtils.getString(context, context.getString(R.string.access_token_key))!!
+        return SettingsUtils.getString(context, SettingsUtils.Key.ACCESS_TOKEN)!!
     }
 
     private fun getRefreshToken(context: Context): String {
-        return SettingsUtils.getString(context, context.getString(R.string.refresh_token_key))!!
+        return SettingsUtils.getString(context, SettingsUtils.Key.REFRESH_TOKEN)!!
     }
 
     private fun getRefreshTokenRequestBody(ctx: Context): FrontierAccessTokenRequestBody {

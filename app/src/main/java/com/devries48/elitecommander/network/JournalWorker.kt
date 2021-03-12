@@ -26,6 +26,12 @@ import java.util.*
 
 class JournalWorker(frontierApi: FrontierInterface?) {
 
+    private var mEventCache: EventCache = EventCache()
+    private lateinit var mFrontierApi: FrontierInterface
+    private lateinit var mCrawlerType: CrawlerType
+    private var mLatestJournalDate: Date? = DateUtils.getCurrentDate()
+    private var mCurrentDiscoveriesDate: Date? = null
+
     init {
         if (frontierApi != null) {
             mFrontierApi = frontierApi
@@ -482,11 +488,13 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                 "BuyDrones",
                 "Cargo",
                 "CargoDepot",
+                "CockpitBreached",
                 "CollectCargo",
                 "Commander",
                 "CommunityGoal",
                 "CommunityGoalJoin",
                 "CommunityGoalReward",
+                "Died",
                 "Docked",
                 "DockingDenied",
                 "DockingGranted",
@@ -496,6 +504,7 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                 "EngineerCraft",
                 "EngineerProgress",
                 "EscapeInterdiction",
+                "FactionKillBond",
                 "FSSAllBodiesFound",
                 "FSSDiscoveryScan",
                 "FSDJump",
@@ -537,6 +546,7 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                 "Repair",
                 "RepairAll",
                 "ReservoirReplenished",
+                "Resurrect",
                 "SAASignalsFound",
                 "Scanned",
                 "ShipTargeted",
@@ -553,13 +563,6 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                 "Undocked",
                 "USSDrop"
             )
-
-        private var mEventCache: EventCache = EventCache()
-        private lateinit var mFrontierApi: FrontierInterface
-        private lateinit var mCrawlerType: CrawlerType
-        private var mLatestJournalDate: Date? = DateUtils.getCurrentDate()
-        private var mCurrentDiscoveriesDate: Date? = null
-
     }
 
     private class RawEvent(value: String) {
