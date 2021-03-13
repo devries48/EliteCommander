@@ -155,7 +155,7 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                             println(
                                 "LOG: Cannot get journals earlier than the date cap ${
                                     journalDate.toDateString(
-                                        DateUtils.shortDateFormat
+                                        DateUtils.dateFormatShort
                                     )
                                 }"
                             )
@@ -334,6 +334,9 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                 val rawDataSold = rawEvents.lastOrNull { it.event == JOURNAL_EVENT_DISCOVERIES_SOLD }
                 if (rawDataSold != null) rawDiscoveries = rawDiscoveries.filter { it.timeStamp > rawDataSold.timeStamp }
 
+                val rawDied = rawEvents.lastOrNull { it.event == JOURNAL_EVENT_DIED }
+                if (rawDied != null) rawDiscoveries = rawDiscoveries.filter { it.timeStamp > rawDied.timeStamp }
+
                 if (rawDiscoveries.count() == 0) {
                     mEventCache.sendEvent(FrontierDiscoveriesEvent(true, null, null))
                 }
@@ -478,6 +481,7 @@ class JournalWorker(frontierApi: FrontierInterface?) {
         private const val JOURNAL_EVENT_DISCOVERY = "Scan"
         private const val JOURNAL_EVENT_MAP = "SAAScanComplete"
         private const val JOURNAL_EVENT_DISCOVERIES_SOLD = "MultiSellExplorationData"
+        private const val JOURNAL_EVENT_DIED = "Died"
 
         var mIgnoreEvents =
             arrayOf(
@@ -491,11 +495,12 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                 "CockpitBreached",
                 "CollectCargo",
                 "Commander",
+                "CommitCrime",
                 "CommunityGoal",
                 "CommunityGoalJoin",
                 "CommunityGoalReward",
-                "Died",
                 "Docked",
+                "DockingCancelled",
                 "DockingDenied",
                 "DockingGranted",
                 "DockingRequested",
@@ -511,6 +516,7 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                 "FSDTarget",  // RemainingJumpsInRoute (multiple)
                 "FSSSignalDiscovered",
                 "FuelScoop",
+                "HeatDamage",
                 "HeatWarning",
                 "HullDamage",
                 "Interdicted",
@@ -538,6 +544,7 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                 "NavBeaconScan",
                 "NavRoute",
                 "Outfitting",
+                "PayFines",
                 "Powerplay",
                 "PowerplaySalary",
                 "ReceiveText",
@@ -573,7 +580,7 @@ class JournalWorker(frontierApi: FrontierInterface?) {
         init {
             event = json.get("event").asString
             val timestampString = json.get("timestamp").asString
-            timeStamp = DateUtils.fromDateString(timestampString, DateUtils.journalDateFormat)
+            timeStamp = DateUtils.fromDateString(timestampString, DateUtils.dateFormatGMT)
         }
     }
 

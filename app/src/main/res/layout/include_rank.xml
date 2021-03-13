@@ -71,7 +71,6 @@
             android:rankTextColor="@{rankModel}"
             android:text="@{@string/format_percentage(rankModel.rank.reputation)}"
             android:textAppearance="@style/eliteStyle.SmallText"
-            android:autoSizeTextType="uniform"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@+id/repText" />
 
@@ -108,7 +107,6 @@
             android:text="@{rankModel.name}"
             android:textAppearance="@style/eliteStyle.Rank"
             android:ellipsize="marquee"
-            android:freezesText="false"
             android:marqueeRepeatLimit="marquee_forever"
             android:scrollHorizontally="true"
             android:singleLine="true"

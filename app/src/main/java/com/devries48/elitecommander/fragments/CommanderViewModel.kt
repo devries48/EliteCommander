@@ -29,7 +29,8 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
     //<editor-fold desc="Private definitions">
 
     private val mCommanderApi = network
-    private lateinit var mSettings: SettingsModel
+    private val mStatisticSettings: StatisticSettingsModel
+    private var mCurrentSettings=StatisticSettingsModel()
 
     private val mName = MutableLiveData("")
     private val mIsRanksBusy = MutableLiveData<Boolean>().default(true)
@@ -71,7 +72,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
 
     init {
         EventBus.getDefault().register(this)
-        mSettings= SettingsUtils.getSettingsModel()
+        mStatisticSettings= SettingsUtils.getStatisticSettings()
     }
 
     override fun onCleared() {
@@ -159,13 +160,13 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
                 return@launch
             }
 
-            launchPlayedStats(statistics)
+            launchPlayerStats(statistics)
             launchProfitChart(statistics)
             launchProfitStats(statistics)
         }
     }
 
-    private fun launchPlayedStats(statistics: FrontierStatisticsEvent) {
+    private fun launchPlayerStats(statistics: FrontierStatisticsEvent) {
         mBuilderMain.addStatistic(
             CMDR_TIME_PLAYED,
             LEFT,
@@ -197,15 +198,6 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             CMDR_CREDITS,
             LEFT,
             R.string.Credits,
-            credits,
-            true,
-            CURRENCY
-        )
-
-        mBuilderMain.addStatistic(
-            CMDR_CREDITS,
-            RIGHT,
-            R.string.AssetsValue,
             credits,
             true,
             CURRENCY
@@ -245,6 +237,8 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
         )
 
         mBuilderProfit.post()
+
+        mCurrentSettings.credits=profile.balance
     }
 
     private fun launchRanks(ranks: FrontierRanksEvent) {
@@ -313,31 +307,32 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
     }
 
     private fun launchFleet(fleet: FrontierFleetEvent) {
-        var assetsValue: Long = 0
+        var assets: Long = 0
 
         if (fleet.frontierShips.any()) {
             fleet.frontierShips.forEach {
                 if (it.isCurrentShip) {
-                    mBuilderMain.addStatistic(
+                    mBuilderMain.insertStatistic(2,
                         CMDR_SHIP,
                         LEFT,
                         R.string.CurrentShip,
                         it.model
                     )
                 }
-                assetsValue += it.totalValue
+                assets += it.totalValue
             }
 
             mBuilderMain.addStatistic(
                 CMDR_CREDITS,
                 RIGHT,
                 R.string.AssetsValue,
-                assetsValue,
-                true,
+                assets,
+                0,
                 CURRENCY
             )
+            mBuilderMain.post()
 
-            mBuilderProfit.post()
+            mCurrentSettings.assets=assets
         }
     }
 
@@ -584,6 +579,10 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
         )
 
         mBuilderProfit.post()
+    }
+
+    fun destroy() {
+        SettingsUtils.setStatisticsSettings(mCurrentSettings)
     }
 
 }

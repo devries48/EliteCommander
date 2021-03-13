@@ -5,12 +5,13 @@ import java.util.*
 
 object DateUtils {
     private const val defaultFormat = "yyyy/MM/dd HH:mm:ss"
-    const val shortDateFormat = "yyyy/MM/dd"
-    const val journalDateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+    const val dateFormatShort = "yyyy/MM/dd"
+    const val dateFormatGMT = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+    private const val dateFormatCycleGMT = "yyyy-MM-dd'T'07:00:00'Z'"
 
     val eliteStartDate: Date
         get() {
-            return fromDateString("2018/01/01", shortDateFormat)
+            return fromDateString("2018/01/01", dateFormatShort)
         }
 
     fun Date.toDateString(format: String = defaultFormat): String {
@@ -33,6 +34,11 @@ object DateUtils {
         return Calendar.getInstance().time
     }
 
+    fun getCurrentDateGMT(): Date {
+        Calendar.getInstance(TimeZone.getTimeZone("GMT"))
+        return Calendar.getInstance().time
+    }
+
     fun getCurrentDateString(format: String = defaultFormat): String {
         return toDateString(format, getCurrentDate())
     }
@@ -40,21 +46,23 @@ object DateUtils {
     private fun addDays(value: Date, n: Int = 1): Date {
         val date = value.toDateString()
         val formatter = SimpleDateFormat(defaultFormat, Locale.getDefault())
-        val calender = Calendar.getInstance()
-        calender.time = formatter.parse(date)!!
-        calender.add(Calendar.DATE, n)
+        val cal = Calendar.getInstance()
+        cal.time = formatter.parse(date)!!
+        cal.add(Calendar.DATE, n)
 
-        return calender.time
+        return cal.time
     }
 
     fun Date.removeDays(n: Int = 1): Date {
         return addDays(this, n * -1)
     }
 
-    fun getLastThursday(): Date? {
+    fun getLastCycleDateGMT(): Date {
         val cal = Calendar.getInstance()
         cal.add(Calendar.WEEK_OF_YEAR, -1)
         cal[Calendar.DAY_OF_WEEK] = Calendar.THURSDAY
-        return cal.time
+        val cycleDate = cal.time.toDateString(dateFormatCycleGMT)
+
+        return fromDateString(cycleDate, dateFormatGMT)
     }
 }

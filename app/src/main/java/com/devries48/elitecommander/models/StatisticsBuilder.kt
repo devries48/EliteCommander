@@ -17,11 +17,11 @@ class StatisticsBuilder {
         pos: StatisticPosition,
         @StringRes titleResId: Int,
         value: Any,
-        showDelta: Boolean = false,
+        delta: Any? = null,
         format: StatisticFormat = StatisticFormat.NONE,
         color: StatisticColor = StatisticColor.DEFAULT,
     ) {
-        insertStatistic(-1, type, pos, titleResId, value, showDelta, format, color)
+        insertStatistic(-1, type, pos, titleResId, value, delta, format, color)
     }
 
     fun insertStatistic(
@@ -30,7 +30,7 @@ class StatisticsBuilder {
         pos: StatisticPosition,
         @StringRes titleResId: Int,
         value: Any,
-        showDelta: Boolean = false,
+        delta: Any? = null,
         format: StatisticFormat = StatisticFormat.NONE,
         color: StatisticColor = StatisticColor.DEFAULT,
     ) {
@@ -45,55 +45,68 @@ class StatisticsBuilder {
                     mStatisticsList.add(position, stat)
             }
 
-            val formattedValue: String = when (format) {
-                StatisticFormat.CURRENCY -> {
-                    when (value) {
-                        is Int -> formatCurrency(value)
-                        is Long -> formatCurrency(value)
-                        is Double -> formatCurrency(value)
-
-                        else -> value.toString()
-                    }
-                }
-                StatisticFormat.DOUBLE -> {
-                    when (value) {
-                        is Int -> formatDouble(value)
-                        is Long -> formatDouble(value)
-                        else -> value.toString()
-                    }
-                }
-                StatisticFormat.TIME -> {
-                    formatHours(value as Int)
-                }
-                StatisticFormat.INTEGER -> {
-                    formatInteger(value as Int)
-                }
-                StatisticFormat.TONS -> {
-                    formatInteger(value as Int) + " TONS"
-                }
-                else -> value.toString()
-            }
+            val formattedValue = formatValue(value, format)
+            val formattedDelta = delta?.let { formatValue(it, format, false) }
 
             when (pos) {
                 StatisticPosition.LEFT -> {
                     stat.leftTitleResId = titleResId
                     stat.leftValue = formattedValue
                     stat.leftColor = color
-                    stat.leftShowDelta = showDelta
+                    stat.leftDelta = formattedDelta
                 }
                 StatisticPosition.CENTER -> {
                     stat.middleTitleResId = titleResId
                     stat.middleValue = formattedValue
                     stat.middleColor = color
-                    stat.middleShowDelta = showDelta
+                    stat.middleDelta = formattedDelta
                 }
                 else -> {
                     stat.rightTitleResId = titleResId
                     stat.rightValue = formattedValue
                     stat.rightColor = color
-                    stat.rightShowDelta = showDelta
+                    stat.rightDelta = formattedDelta
                 }
             }
+        }
+    }
+
+    private fun formatValue(value: Any, format: StatisticFormat, formatZero: Boolean = true): String? {
+        if (!formatZero) {
+            when (value) {
+                is Int -> if (value == 0) return null
+                is Long -> if (value == 0L) return null
+                is Double -> if (value == 0.0) return null
+            }
+        }
+
+        return when (format) {
+            StatisticFormat.CURRENCY -> {
+                when (value) {
+                    is Int -> formatCurrency(value)
+                    is Long -> formatCurrency(value)
+                    is Double -> formatCurrency(value)
+
+                    else -> value.toString()
+                }
+            }
+            StatisticFormat.DOUBLE -> {
+                when (value) {
+                    is Int -> formatDouble(value)
+                    is Long -> formatDouble(value)
+                    else -> value.toString()
+                }
+            }
+            StatisticFormat.TIME -> {
+                formatHours(value as Int)
+            }
+            StatisticFormat.INTEGER -> {
+                formatInteger(value as Int)
+            }
+            StatisticFormat.TONS -> {
+                formatInteger(value as Int) + " TONS"
+            }
+            else -> value.toString()
         }
     }
 

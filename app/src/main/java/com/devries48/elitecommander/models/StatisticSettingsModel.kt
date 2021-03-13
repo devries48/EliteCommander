@@ -2,13 +2,13 @@ package com.devries48.elitecommander.models
 
 import com.google.gson.annotations.SerializedName
 
-class SettingsModel {
+class StatisticSettingsModel {
     @SerializedName("timestamp")
     var timestamp: String?=null
 
     @SerializedName("credits")
-    val credits:Long=0
-    @SerializedName("assets")
+    var credits:Long?=null
 
-    val assets:Long=0
+    @SerializedName("assets")
+    var assets:Long?=null
 }

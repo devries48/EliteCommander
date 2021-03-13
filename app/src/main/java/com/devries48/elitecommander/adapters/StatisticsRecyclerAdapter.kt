@@ -20,6 +20,7 @@ class StatisticsRecyclerAdapter(var data: List<StatisticModel>?) :
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val leftNameTextView: TextView = view.findViewById(R.id.leftNameTextView)
         val leftValueTextView: TextView = view.findViewById(R.id.leftValueTextView)
+        val leftDeltaTextView: TextView = view.findViewById(R.id.leftDeltaTextView)
         val rightNameTextView: TextView = view.findViewById(R.id.rightNameTextView)
         val rightValueTextView: TextView = view.findViewById(R.id.rightValueTextView)
         val middleNameTextView: TextView = view.findViewById(R.id.middleNameTextView)
@@ -51,6 +52,9 @@ class StatisticsRecyclerAdapter(var data: List<StatisticModel>?) :
             if (item.leftValue?.isNotEmpty() == true) {
                 viewHolder.leftValueTextView.text = item.leftValue
                 viewHolder.leftValueTextView.setTextAppearance(getItemStyle(item.leftColor))
+            }
+            if (item.leftDelta?.isNotEmpty() == true) {
+                viewHolder.leftDeltaTextView.text = item.leftDelta
             }
         }
 

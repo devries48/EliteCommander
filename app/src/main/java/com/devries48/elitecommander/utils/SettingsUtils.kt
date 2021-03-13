@@ -3,7 +3,7 @@ package com.devries48.elitecommander.utils
 import android.content.Context
 import androidx.preference.PreferenceManager
 import com.devries48.elitecommander.App
-import com.devries48.elitecommander.models.SettingsModel
+import com.devries48.elitecommander.models.StatisticSettingsModel
 import com.google.gson.Gson
 
 object SettingsUtils {
@@ -11,7 +11,7 @@ object SettingsUtils {
     enum class Key {
         ACCESS_TOKEN,
         REFRESH_TOKEN,
-        SETTINGS_MODEL,
+        STATISTIC_VALUES,
     }
 
     fun getString(c: Context, key: Key): String? {
@@ -26,26 +26,37 @@ object SettingsUtils {
         editor.apply()
     }
 
-    fun setSettingsModel(model: SettingsModel) {
-        model.timestamp= DateUtils.getCurrentDateString()
-        val json: String =  Gson().toJson(model)
-        if (json.isNotEmpty()) setString(App.getContext(), Key.SETTINGS_MODEL, json)
+    fun setStatisticsSettings(model: StatisticSettingsModel) {
+        if (model.timestamp != null)
+            return
+
+        model.timestamp = DateUtils.getCurrentDateString(DateUtils.dateFormatGMT)
+        val json: String = Gson().toJson(model)
+        if (json.isNotEmpty()) setString(App.getContext(), Key.STATISTIC_VALUES, json)
     }
 
-    fun getSettingsModel(): SettingsModel {
-        val jsonString = getString(App.getContext() ,Key.SETTINGS_MODEL)
+    fun getStatisticSettings(): StatisticSettingsModel {
+        val jsonString = getString(App.getContext(), Key.STATISTIC_VALUES)
         if (jsonString != null) {
-            try {
-                val model=Gson().fromJson(jsonString, SettingsModel::class.java)
-                // Is
-                return model
-            }  finally {
-                return SettingsModel()
+            return try {
+                val model = Gson().fromJson(jsonString, StatisticSettingsModel::class.java)
+
+                // If a power cycle has occurred since last session, clear the values
+                val modelDate = DateUtils.fromDateString(model.timestamp!!, DateUtils.dateFormatGMT)
+                val cycleDate = DateUtils.getLastCycleDateGMT()
+
+                if (modelDate.before(cycleDate))
+                    StatisticSettingsModel()
+                else
+                    model
+            } catch (e: Exception) {
+                StatisticSettingsModel()
             }
-            //
         } else {
-            return SettingsModel()
+            return StatisticSettingsModel()
         }
     }
+
+
 
 }
