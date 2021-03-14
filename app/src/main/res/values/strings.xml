@@ -16,8 +16,6 @@
     <string name="login_dialog_error_text">Error logging in to Frontier, please try again.</string>
     <string name="login_dialog_text">The browser will open to allow you to connect to your Frontier account.</string>
     <string name="login_redirect">Redirecting from Frontier website…</string>
-    <string name="access_token_key">access_token_key</string>
-    <string name="refresh_token_key">refresh_token_key</string>
     <string name="frontier_login">FRONTIER LOGIN</string>
 
     <!--FrontierRanksEvent-->
@@ -212,7 +210,6 @@
     <string name="time_played">Time played</string>
     <string name="highest_reward">Highest</string>
     <string name="total">Total</string>
-    <string name="traded">Traded</string>
     <string name="mining">Mining</string>
     <string name="quantity">Quantity</string>
 </resources>
