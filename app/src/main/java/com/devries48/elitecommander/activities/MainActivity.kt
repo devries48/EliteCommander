@@ -27,15 +27,13 @@ class MainActivity : AppCompatActivity() {
     private val mNavController by lazy { findNavController() }
 
     private var mIsLoggedIn by Delegates.observable(false) { _, _, newValue ->
-        if (newValue) loadData()
+        if (newValue) setupActivity()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        setupViewModel()
         setupNavigation()
     }
 
@@ -58,23 +56,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupNavigation() {
-        val navController = findNavController()
+    private fun setupActivity() {
+        setupViewModel()
 
-        //TODO: check connection (refresh?) and set IsUserLoggedIn
+        mCommanderNetwork.loadProfile()
+        mCommanderNetwork.loadCurrentJournal()
 
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            navDestinationId = destination.id
-
-            if (!mIsLoggedIn) {
-                val intent = Intent(this@MainActivity, LoginActivity::class.java)
-                startActivityForResult(intent, FRONTIER_LOGIN_REQUEST_CODE)
-            } else {
-                if (navDestinationId == R.id.mainFragment) {
-                    navController.navigate(navDestinationId)
-                }
-            }
-        }
+        hideRedirectFragment()
     }
 
     private fun setupViewModel() {
@@ -92,11 +80,23 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadData() {
-        mCommanderNetwork.loadProfile()
-        mCommanderNetwork.loadCurrentJournal()
+    private fun setupNavigation() {
+        val navController = findNavController()
 
-        hideRedirectFragment()
+        //TODO: check connection (refresh?) and set IsUserLoggedIn
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            navDestinationId = destination.id
+
+            if (!mIsLoggedIn) {
+                val intent = Intent(this@MainActivity, LoginActivity::class.java)
+                startActivityForResult(intent, FRONTIER_LOGIN_REQUEST_CODE)
+            } else {
+                if (navDestinationId == R.id.mainFragment) {
+                    navController.navigate(navDestinationId)
+                }
+            }
+        }
     }
 
     private fun findNavController(): NavController {

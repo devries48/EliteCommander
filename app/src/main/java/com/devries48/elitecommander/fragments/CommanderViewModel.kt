@@ -172,7 +172,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             LEFT,
             R.string.time_played,
             statistics.exploration!!.timePlayed,
-            true,
+            null,
             TIME,
             DIMMED
         )
@@ -194,16 +194,16 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             credits = "Unknown"
         }
 
-        mBuilderMain.insertStatistic(0,
+        mBuilderMain.addStatistic(
             CMDR_CREDITS,
             LEFT,
             R.string.Credits,
             credits,
-            true,
+            null,
             CURRENCY
         )
 
-        mBuilderMain.insertStatistic(1,
+        mBuilderMain.addStatistic(
             CMDR_LOCATION,
             LEFT,
             R.string.CurrentLocation,
@@ -312,7 +312,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
         if (fleet.frontierShips.any()) {
             fleet.frontierShips.forEach {
                 if (it.isCurrentShip) {
-                    mBuilderMain.insertStatistic(2,
+                    mBuilderMain.addStatistic(
                         CMDR_SHIP,
                         LEFT,
                         R.string.CurrentShip,
@@ -431,7 +431,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             LEFT,
             R.string.bounties,
             statistics.combat!!.bountyHuntingProfit,
-            true,
+            null,
             CURRENCY
         )
         mBuilderProfit.addStatistic(
@@ -439,7 +439,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             CENTER,
             R.string.highest_reward,
             statistics.combat.highestSingleReward,
-            true,
+            null,
             CURRENCY,
             DIMMED
         )
@@ -448,7 +448,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             RIGHT,
             R.string.total,
             statistics.combat.bountiesClaimed,
-            true,
+            null,
             INTEGER,
             DIMMED
         )
@@ -457,7 +457,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             LEFT,
             R.string.combat_bonds,
             statistics.combat.combatBondProfits,
-            true,
+            null,
             CURRENCY
         )
         mBuilderProfit.addStatistic(
@@ -465,7 +465,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             RIGHT,
             R.string.total,
             statistics.combat.combatBonds,
-            true,
+            null,
             INTEGER,
             DIMMED
         )
@@ -475,7 +475,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             LEFT,
             R.string.assassinations,
             statistics.combat.assassinationProfits,
-            true,
+            null,
             CURRENCY
         )
         mBuilderProfit.addStatistic(
@@ -483,7 +483,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             RIGHT,
             R.string.total,
             statistics.combat.assassinations,
-            true,
+            null,
             INTEGER,
             DIMMED
         )
@@ -493,7 +493,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             LEFT,
             R.string.exploration,
             statistics.exploration!!.explorationProfits,
-            true,
+            null,
             CURRENCY
         )
         mBuilderProfit.addStatistic(
@@ -501,7 +501,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             RIGHT,
             R.string.highest_reward,
             statistics.exploration.highestPayout,
-            true,
+            null,
             CURRENCY,
             DIMMED
         )
@@ -511,7 +511,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             LEFT,
             R.string.trading,
             statistics.trading!!.marketProfits,
-            true,
+            null,
             CURRENCY
         )
         mBuilderProfit.addStatistic(
@@ -519,7 +519,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             RIGHT,
             R.string.highest_reward,
             statistics.trading.highestSingleTransaction,
-            true,
+            null,
             CURRENCY,
             DIMMED
         )
@@ -529,7 +529,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             LEFT,
             R.string.smuggling,
             statistics.smuggling!!.blackMarketsProfits,
-            true,
+            null,
             CURRENCY
         )
         mBuilderProfit.addStatistic(
@@ -537,7 +537,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             RIGHT,
             R.string.highest_reward,
             statistics.smuggling.highestSingleTransaction,
-            true,
+            null,
             CURRENCY,
             DIMMED
         )
@@ -547,7 +547,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             LEFT,
             R.string.mining,
             statistics.mining!!.miningProfits,
-            true,
+            null,
             CURRENCY
         )
         mBuilderProfit.addStatistic(
@@ -555,7 +555,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             RIGHT,
             R.string.quantity,
             statistics.mining.quantityMined,
-            true,
+            null,
             TONS,
             DIMMED
         )
@@ -565,7 +565,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             LEFT,
             R.string.search_rescue,
             statistics.searchAndRescue!!.searchRescueProfit,
-            true,
+            null,
             CURRENCY
         )
         mBuilderProfit.addStatistic(
@@ -573,7 +573,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             RIGHT,
             R.string.total,
             statistics.searchAndRescue.searchRescueCount,
-            true,
+            null,
             INTEGER,
             DIMMED
         )

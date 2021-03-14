@@ -21,28 +21,13 @@ class StatisticsBuilder {
         format: StatisticFormat = StatisticFormat.NONE,
         color: StatisticColor = StatisticColor.DEFAULT,
     ) {
-        insertStatistic(-1, type, pos, titleResId, value, delta, format, color)
-    }
-
-    fun insertStatistic(
-        position: Int,
-        type: StatisticType,
-        pos: StatisticPosition,
-        @StringRes titleResId: Int,
-        value: Any,
-        delta: Any? = null,
-        format: StatisticFormat = StatisticFormat.NONE,
-        color: StatisticColor = StatisticColor.DEFAULT,
-    ) {
         synchronized(mStatisticsList) {
             var stat: StatisticModel? = mStatisticsList.find { it.type == type }
 
             if (stat == null) {
                 stat = StatisticModel()
                 stat.type = type
-                if (position == -1)
-                    mStatisticsList.add(stat) else
-                    mStatisticsList.add(position, stat)
+                mStatisticsList.add(stat)
             }
 
             val formattedValue = formatValue(value, format)

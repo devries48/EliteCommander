@@ -186,6 +186,17 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                 val progress = Gson().fromJson(rawProgress.json, FrontierJournalRankProgressResponse::class.java)
                 val reputation = Gson().fromJson(rawReputation.json, FrontierJournalRankReputationResponse::class.java)
 
+                rawEvents.filter { it.event == JOURNAL_EVENT_PROMOTION }.forEach {
+                    val promotion = Gson().fromJson(it.json, FrontierJournalRankProgressResponse::class.java)
+
+                    if (promotion.combat > 0) rank.combat = promotion.combat
+                    if (promotion.cqc > 0) rank.cqc = promotion.cqc
+                    if (promotion.empire > 0) rank.empire = promotion.empire
+                    if (promotion.explore > 0) rank.explore = promotion.explore
+                    if (promotion.federation > 0) rank.federation = promotion.federation
+                    if (promotion.trade > 0) rank.trade = promotion.trade
+                }
+
                 val combatRank = FrontierRanksEvent.FrontierRank(
                     context.resources.getStringArray(R.array.ranks_combat)[rank.combat],
                     rank.combat,
@@ -316,7 +327,7 @@ class JournalWorker(frontierApi: FrontierInterface?) {
             } catch (e: Exception) {
                 println("LOG: Error parsing statistics event from journal." + e.message)
                 mEventCache.sendEvent(
-                    FrontierStatisticsEvent(false, null, null, null, null, null, null,null)
+                    FrontierStatisticsEvent(false, null, null, null, null, null, null, null)
                 )
             }
 
@@ -482,6 +493,8 @@ class JournalWorker(frontierApi: FrontierInterface?) {
         private const val JOURNAL_EVENT_MAP = "SAAScanComplete"
         private const val JOURNAL_EVENT_DISCOVERIES_SOLD = "MultiSellExplorationData"
         private const val JOURNAL_EVENT_DIED = "Died"
+        private const val JOURNAL_EVENT_PROMOTION = "Promotion"
+
 
         var mIgnoreEvents =
             arrayOf(
@@ -505,6 +518,7 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                 "DockingGranted",
                 "DockingRequested",
                 "DockSRV",
+                "EjectCargo",
                 "EngineerContribution",
                 "EngineerCraft",
                 "EngineerProgress",
@@ -521,6 +535,7 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                 "HullDamage",
                 "Interdicted",
                 "Interdiction",
+                "LaunchDrone",
                 "LaunchSRV",
                 "LeaveBody",
                 "Loadout",
@@ -547,6 +562,7 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                 "PayFines",
                 "Powerplay",
                 "PowerplaySalary",
+                "RebootRepair",
                 "ReceiveText",
                 "RedeemVoucher",
                 "RefuelAll",
