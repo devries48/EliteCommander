@@ -112,7 +112,7 @@ class CommanderNetwork {
     }
 
     fun getDistanceToSol(systemName: String?) {
-        if (systemName != null) {
+        if (systemName != null && systemName != "Sol") {
             DistanceCalculatorNetwork.getDistanceToSol(App.getContext(), systemName)
         }
     }

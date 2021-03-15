@@ -78,6 +78,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
     override fun onCleared() {
         super.onCleared()
         EventBus.getDefault().unregister(this)
+        SettingsUtils.setStatisticsSettings(mCurrentSettings)
     }
 
     internal fun getMainStatistics(): LiveData<List<StatisticModel>> {
@@ -183,9 +184,9 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
     private fun launchProfile(profile: FrontierProfileEvent) {
         mName.postValue(profile.name)
 
-        val amount = mBuilderMain.formatCurrency(profile.balance)
+        val amount = StatisticsBuilder.formatCurrency(profile.balance)
         var credits = if (profile.loan != 0L) {
-            val loan = mBuilderMain.formatCurrency(profile.loan)
+            val loan = StatisticsBuilder.formatCurrency(profile.loan)
             "$amount CR and loan $loan"
         } else amount
 
@@ -199,7 +200,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             LEFT,
             R.string.Credits,
             credits,
-            null,
+            StatisticsBuilder.getDelta(profile.balance, mCurrentSettings.credits),
             CURRENCY
         )
 
@@ -341,7 +342,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             CMDR_LOCATION,
             RIGHT,
             if (distanceSearch.distance == 0.0) R.string.CurrentLocation else R.string.distance_sol,
-            if (distanceSearch.distance == 0.0) "Discovered" else "${mBuilderMain.formatDouble(distanceSearch.distance)} LY",
+            if (distanceSearch.distance == 0.0) "Discovered" else "${StatisticsBuilder.formatDouble(distanceSearch.distance)} LY",
             false,
             NONE,
             DIMMED
@@ -580,11 +581,6 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
 
         mBuilderProfit.post()
     }
-
-    fun destroy() {
-        SettingsUtils.setStatisticsSettings(mCurrentSettings)
-    }
-
 }
 
 class CommanderViewModelFactory(private val network: CommanderNetwork?) :

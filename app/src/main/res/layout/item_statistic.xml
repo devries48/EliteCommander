@@ -33,7 +33,6 @@
                 android:layout_marginStart="@dimen/margin_medium"
                 android:text=""
                 android:textAppearance="@style/eliteStyle.SmallText"
-                android:textColor="@color/elite_exploration"
                 app:layout_constraintStart_toEndOf="@+id/leftNameTextView"
                 app:layout_constraintTop_toTopOf="@id/leftNameTextView" />
             <TextView

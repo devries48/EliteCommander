@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.devries48.elitecommander.R
 import com.devries48.elitecommander.models.StatisticModel
 import com.devries48.elitecommander.models.StatisticsBuilder
+import com.devries48.elitecommander.models.StatisticsBuilder.Companion.StatisticColor.DIMMED
+import com.devries48.elitecommander.models.StatisticsBuilder.Companion.StatisticColor.WARNING
 
 class StatisticsRecyclerAdapter(var data: List<StatisticModel>?) :
     RecyclerView.Adapter<StatisticsRecyclerAdapter.ViewHolder>() {
@@ -55,6 +57,7 @@ class StatisticsRecyclerAdapter(var data: List<StatisticModel>?) :
             }
             if (item.leftDelta?.isNotEmpty() == true) {
                 viewHolder.leftDeltaTextView.text = item.leftDelta
+                viewHolder.leftDeltaTextView.setTextAppearance(getDeltaStyle(item.leftDelta!!))
             }
         }
 
@@ -73,10 +76,14 @@ class StatisticsRecyclerAdapter(var data: List<StatisticModel>?) :
         }
     }
 
+    private fun getDeltaStyle(leftDelta: String): Int {
+        return if (leftDelta.startsWith("-")) R.style.eliteStyle_RedText else R.style.eliteStyle_AzureText
+    }
+
     private fun getItemStyle(color: StatisticsBuilder.Companion.StatisticColor): Int {
         return when (color) {
-            StatisticsBuilder.Companion.StatisticColor.DIMMED -> R.style.eliteStyle_LightOrangeText
-            StatisticsBuilder.Companion.StatisticColor.WARNING -> R.style.eliteStyle_RedText
+            DIMMED -> R.style.eliteStyle_LightOrangeText
+            WARNING -> R.style.eliteStyle_RedText
             else -> R.style.eliteStyle_YellowText
         }
     }

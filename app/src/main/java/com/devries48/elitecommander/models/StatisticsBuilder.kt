@@ -96,25 +96,6 @@ class StatisticsBuilder {
     }
 
 
-    private fun formatHours(seconds: Int): String {
-        return String.format("%,d hours", seconds / (60 * 60))
-    }
-
-    fun <T> formatCurrency(amount: T): String {
-        val formatter = DecimalFormat("###,###,###,### CR")
-        return formatter.format(amount)
-    }
-
-    private fun formatInteger(value: Int): String {
-        val formatter = DecimalFormat("###,###")
-        return formatter.format(value)
-    }
-
-    fun <T> formatDouble(value: T): String {
-        val formatter = DecimalFormat("###,###,###.#")
-        return formatter.format(value)
-    }
-
     fun post() {
         statistics.postValue(mStatisticsList)
     }
@@ -154,6 +135,39 @@ class StatisticsBuilder {
             INTEGER,
             TIME,
             TONS
+        }
+
+        private fun formatHours(seconds: Int): String {
+            return String.format("%,d hours", seconds / (60 * 60))
+        }
+
+        fun <T> formatCurrency(amount: T): String {
+            val formatter = DecimalFormat("###,###,###,### CR")
+            return formatter.format(amount)
+        }
+
+        private fun formatInteger(value: Int): String {
+            val formatter = DecimalFormat("###,###")
+            return formatter.format(value)
+        }
+
+        fun <T> formatDouble(value: T): String {
+            val formatter = DecimalFormat("###,###,###.#")
+            return formatter.format(value)
+        }
+
+        @Suppress("UNCHECKED_CAST")
+        fun < T:Any>getDelta(value: T, oldValue: T?): T? {
+            if (oldValue == null)
+                return null
+
+            return when (value) {
+                is Int -> ((value as Int) - (oldValue as Int)) as T
+                is Long -> ((value as Long) - (oldValue as Long)) as T
+                is Double -> ((value as Double) - (oldValue as Double)) as T
+
+                else -> null
+            }
         }
     }
 }

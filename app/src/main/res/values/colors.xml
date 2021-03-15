@@ -11,6 +11,7 @@
     <color name="elite_light_orange">#ffb000</color>
     <color name="elite_yellow">#FFEB3B</color>
     <color name="elite_red">#FFFF0507</color>
+    <color name="elite_azure">#FF08FADC</color>
 
     <!-- elite rank colors -->
     <color name="elite_exploration">#FF08FADC</color>

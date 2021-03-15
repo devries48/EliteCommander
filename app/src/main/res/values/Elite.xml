@@ -26,6 +26,10 @@
         <item name="android:textColor">@color/elite_red</item>
     </style>
 
+    <style name="eliteStyle_AzureText">
+        <item name="android:textColor">@color/elite_azure</item>
+    </style>
+
     <style name="eliteStyle.Rank">
         <item name="android:textSize">16sp</item>
     </style>
