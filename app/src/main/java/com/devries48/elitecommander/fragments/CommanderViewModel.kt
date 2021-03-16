@@ -30,7 +30,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
 
     private val mCommanderApi = network
     private val mStatisticSettings: StatisticSettingsModel
-    private var mCurrentSettings=StatisticSettingsModel()
+    private var mCurrentSettings = StatisticSettingsModel()
 
     private val mName = MutableLiveData("")
     private val mIsRanksBusy = MutableLiveData<Boolean>().default(true)
@@ -72,7 +72,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
 
     init {
         EventBus.getDefault().register(this)
-        mStatisticSettings= SettingsUtils.getStatisticSettings()
+        mStatisticSettings = SettingsUtils.getStatisticSettings()
     }
 
     override fun onCleared() {
@@ -173,12 +173,14 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             LEFT,
             R.string.time_played,
             statistics.exploration!!.timePlayed,
-            null,
-            TIME,
-            DIMMED
+            StatisticsBuilder.getDelta(statistics.exploration.timePlayed, mStatisticSettings.timePlayed),
+            TIME
         )
 
         mBuilderMain.post()
+
+        mCurrentSettings.timePlayed = statistics.exploration.timePlayed
+
     }
 
     private fun launchProfile(profile: FrontierProfileEvent) {
@@ -200,7 +202,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             LEFT,
             R.string.Credits,
             credits,
-            StatisticsBuilder.getDelta(profile.balance, mCurrentSettings.credits),
+            StatisticsBuilder.getDelta(profile.balance, mStatisticSettings.credits),
             CURRENCY
         )
 
@@ -220,7 +222,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             RIGHT,
             R.string.hull,
             "$hullPercentage%",
-            false,
+            null,
             NONE,
             if (hullPercentage >= 50) DIMMED else WARNING
         )
@@ -232,14 +234,14 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             CENTER,
             R.string.integrity,
             "$integrityPercentage%",
-            false,
+            null,
             NONE,
             if (integrityPercentage >= 50) DIMMED else WARNING
         )
 
         mBuilderProfit.post()
 
-        mCurrentSettings.credits=profile.balance
+        mCurrentSettings.credits = profile.balance
     }
 
     private fun launchRanks(ranks: FrontierRanksEvent) {
@@ -328,12 +330,12 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
                 RIGHT,
                 R.string.AssetsValue,
                 assets,
-                0,
+                StatisticsBuilder.getDelta(assets, mStatisticSettings.assets),
                 CURRENCY
             )
             mBuilderMain.post()
 
-            mCurrentSettings.assets=assets
+            mCurrentSettings.assets = assets
         }
     }
 
@@ -427,29 +429,21 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
     }
 
     private fun launchProfitStats(statistics: FrontierStatisticsEvent) {
+
         mBuilderProfit.addStatistic(
-            PROFIT_COMBAT_BOUNTIES,
+            PROFIT_COMBAT_ASSASSINATIONS,
             LEFT,
-            R.string.bounties,
-            statistics.combat!!.bountyHuntingProfit,
-            null,
+            R.string.assassinations,
+            statistics.combat!!.assassinationProfits,
+            StatisticsBuilder.getDelta(statistics.combat.assassinationProfits,mStatisticSettings.assassinationsProfit),
             CURRENCY
         )
         mBuilderProfit.addStatistic(
-            PROFIT_COMBAT_BOUNTIES,
+            PROFIT_COMBAT_ASSASSINATIONS,
             CENTER,
-            R.string.highest_reward,
-            statistics.combat.highestSingleReward,
-            null,
-            CURRENCY,
-            DIMMED
-        )
-        mBuilderProfit.addStatistic(
-            PROFIT_COMBAT_BOUNTIES,
-            RIGHT,
             R.string.total,
-            statistics.combat.bountiesClaimed,
-            null,
+            statistics.combat.assassinations,
+            StatisticsBuilder.getDelta(statistics.combat.assassinations,mStatisticSettings.assassinationsTotal),
             INTEGER,
             DIMMED
         )
@@ -458,34 +452,44 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             LEFT,
             R.string.combat_bonds,
             statistics.combat.combatBondProfits,
-            null,
+            StatisticsBuilder.getDelta(statistics.combat.combatBondProfits,mStatisticSettings.bondsProfit),
             CURRENCY
         )
         mBuilderProfit.addStatistic(
             PROFIT_COMBAT_BONDS,
-            RIGHT,
+            CENTER,
             R.string.total,
             statistics.combat.combatBonds,
-            null,
+            StatisticsBuilder.getDelta(statistics.combat.combatBonds,mStatisticSettings.bondsTotal),
+            INTEGER,
+            DIMMED
+        )
+        mBuilderProfit.addStatistic(
+            PROFIT_COMBAT_BOUNTIES,
+            LEFT,
+            R.string.bounties,
+            statistics.combat.bountyHuntingProfit,
+            StatisticsBuilder.getDelta(statistics.combat.bountyHuntingProfit,mStatisticSettings.bountiesProfit),
+            CURRENCY
+        )
+
+        mBuilderProfit.addStatistic(
+            PROFIT_COMBAT_BOUNTIES,
+            CENTER,
+            R.string.total,
+            statistics.combat.bountiesClaimed,
+            StatisticsBuilder.getDelta(statistics.combat.bountiesClaimed,mStatisticSettings.bountiesTotal),
             INTEGER,
             DIMMED
         )
 
         mBuilderProfit.addStatistic(
-            PROFIT_COMBAT_ASSASSINATIONS,
-            LEFT,
-            R.string.assassinations,
-            statistics.combat.assassinationProfits,
-            null,
-            CURRENCY
-        )
-        mBuilderProfit.addStatistic(
-            PROFIT_COMBAT_ASSASSINATIONS,
+            PROFIT_COMBAT_BOUNTIES,
             RIGHT,
-            R.string.total,
-            statistics.combat.assassinations,
+            R.string.highest_reward,
+            statistics.combat.highestSingleReward,
             null,
-            INTEGER,
+            CURRENCY,
             DIMMED
         )
 
@@ -494,7 +498,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             LEFT,
             R.string.exploration,
             statistics.exploration!!.explorationProfits,
-            null,
+            StatisticsBuilder.getDelta(statistics.exploration.explorationProfits,mStatisticSettings.explorationProfit),
             CURRENCY
         )
         mBuilderProfit.addStatistic(
@@ -502,7 +506,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             RIGHT,
             R.string.highest_reward,
             statistics.exploration.highestPayout,
-            null,
+        null,
             CURRENCY,
             DIMMED
         )
@@ -512,9 +516,20 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             LEFT,
             R.string.trading,
             statistics.trading!!.marketProfits,
-            null,
+            StatisticsBuilder.getDelta(statistics.trading.marketProfits,mStatisticSettings.tradingProfit),
             CURRENCY
         )
+
+        mBuilderProfit.addStatistic(
+            PROFIT_TRADING,
+            CENTER,
+            R.string.markets,
+            statistics.trading.marketsTradedWith,
+            StatisticsBuilder.getDelta(statistics.trading.marketsTradedWith,mStatisticSettings.tradingMarkets),
+            INTEGER,
+            DIMMED
+        )
+
         mBuilderProfit.addStatistic(
             PROFIT_TRADING,
             RIGHT,
@@ -530,7 +545,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             LEFT,
             R.string.smuggling,
             statistics.smuggling!!.blackMarketsProfits,
-            null,
+            StatisticsBuilder.getDelta(statistics.smuggling.blackMarketsProfits,mStatisticSettings.blackMarketProfit),
             CURRENCY
         )
         mBuilderProfit.addStatistic(
@@ -548,7 +563,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             LEFT,
             R.string.mining,
             statistics.mining!!.miningProfits,
-            null,
+            StatisticsBuilder.getDelta(statistics.mining.miningProfits,mStatisticSettings.miningProfit),
             CURRENCY
         )
         mBuilderProfit.addStatistic(
@@ -556,7 +571,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             RIGHT,
             R.string.quantity,
             statistics.mining.quantityMined,
-            null,
+            StatisticsBuilder.getDelta(statistics.mining.quantityMined,mStatisticSettings.miningTotal),
             TONS,
             DIMMED
         )
@@ -566,7 +581,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             LEFT,
             R.string.search_rescue,
             statistics.searchAndRescue!!.searchRescueProfit,
-            null,
+            StatisticsBuilder.getDelta(statistics.searchAndRescue.searchRescueProfit,mStatisticSettings.rescueProfit),
             CURRENCY
         )
         mBuilderProfit.addStatistic(
@@ -578,6 +593,21 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             INTEGER,
             DIMMED
         )
+
+        mCurrentSettings.bountiesProfit = statistics.combat.bountyHuntingProfit
+        mCurrentSettings.bountiesTotal = statistics.combat.bountiesClaimed
+        mCurrentSettings.bondsProfit = statistics.combat.combatBondProfits
+        mCurrentSettings.bondsTotal = statistics.combat.combatBonds
+        mCurrentSettings.assassinationsProfit = statistics.combat.assassinationProfits
+        mCurrentSettings.assassinationsTotal = statistics.combat.assassinations
+        mCurrentSettings.explorationProfit = statistics.exploration.explorationProfits
+        mCurrentSettings.tradingProfit = statistics.trading.marketProfits
+        mCurrentSettings.tradingMarkets = statistics.trading.marketsTradedWith
+        mCurrentSettings.blackMarketProfit = statistics.smuggling.blackMarketsProfits
+        mCurrentSettings.miningProfit = statistics.mining.miningProfits
+        mCurrentSettings.miningTotal = statistics.mining.quantityMined
+        mCurrentSettings.rescueProfit = statistics.searchAndRescue.searchRescueProfit
+        mCurrentSettings.rescueTotal = statistics.searchAndRescue.searchRescueCount
 
         mBuilderProfit.post()
     }

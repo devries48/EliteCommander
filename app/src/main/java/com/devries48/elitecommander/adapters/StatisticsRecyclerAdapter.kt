@@ -25,8 +25,10 @@ class StatisticsRecyclerAdapter(var data: List<StatisticModel>?) :
         val leftDeltaTextView: TextView = view.findViewById(R.id.leftDeltaTextView)
         val rightNameTextView: TextView = view.findViewById(R.id.rightNameTextView)
         val rightValueTextView: TextView = view.findViewById(R.id.rightValueTextView)
+        val rightDeltaTextView: TextView = view.findViewById(R.id.rightDeltaTextView)
         val middleNameTextView: TextView = view.findViewById(R.id.middleNameTextView)
         val middleValueTextView: TextView = view.findViewById(R.id.middleValueTextView)
+        val middleDeltaTextView: TextView = view.findViewById(R.id.middleDeltaTextView)
     }
 
     // Create new views (invoked by the layout manager)
@@ -61,18 +63,28 @@ class StatisticsRecyclerAdapter(var data: List<StatisticModel>?) :
             }
         }
 
-        if (item.rightTitleResId != 0)
+        if (item.rightTitleResId != 0) {
             viewHolder.rightNameTextView.text = item.rightTitleResId.let { ctx.getString(it) }
-        if (item.rightValue?.isNotEmpty() == true) {
-            viewHolder.rightValueTextView.text = item.rightValue
-            viewHolder.rightValueTextView.setTextAppearance(getItemStyle(item.rightColor))
+            if (item.rightValue?.isNotEmpty() == true) {
+                viewHolder.rightValueTextView.text = item.rightValue
+                viewHolder.rightValueTextView.setTextAppearance(getItemStyle(item.rightColor))
+            }
+            if (item.rightDelta?.isNotEmpty() == true) {
+                viewHolder.rightDeltaTextView.text = item.rightDelta
+                viewHolder.rightDeltaTextView.setTextAppearance(getDeltaStyle(item.rightDelta!!))
+            }
         }
 
-        if (item.middleTitleResId != 0)
+        if (item.middleTitleResId != 0) {
             viewHolder.middleNameTextView.text = item.middleTitleResId.let { ctx.getString(it) }
-        if (item.middleValue?.isNotEmpty() == true) {
-            viewHolder.middleValueTextView.text = item.middleValue
-            viewHolder.middleValueTextView.setTextAppearance(getItemStyle(item.middleColor))
+            if (item.middleValue?.isNotEmpty() == true) {
+                viewHolder.middleValueTextView.text = item.middleValue
+                viewHolder.middleValueTextView.setTextAppearance(getItemStyle(item.middleColor))
+            }
+            if (item.middleDelta?.isNotEmpty() == true) {
+                viewHolder.middleDeltaTextView.text = item.middleDelta
+                viewHolder.middleDeltaTextView.setTextAppearance(getDeltaStyle(item.middleDelta!!))
+            }
         }
     }
 

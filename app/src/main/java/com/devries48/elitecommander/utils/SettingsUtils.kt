@@ -41,25 +41,27 @@ object SettingsUtils {
     fun getStatisticSettings(): StatisticSettingsModel {
         val jsonString = getString(App.getContext(), Key.STATISTIC_VALUES)
         if (jsonString != null) {
-            return try {
+            try {
                 val model = Gson().fromJson(jsonString, StatisticSettingsModel::class.java)
 
                 // If a power cycle has occurred since last session, clear the values
                 val modelDate = DateUtils.fromDateString(model.timestamp!!, DateUtils.dateFormatGMT)
                 val cycleDate = DateUtils.getLastCycleDateGMT()
 
-                if (modelDate.before(cycleDate))
+                return if (modelDate.before(cycleDate)) {
+                    println("STATISTIC_VALUES cycled")
                     StatisticSettingsModel()
-                else
+                } else {
+                    println("STATISTIC_VALUES loaded")
                     model
+                }
             } catch (e: Exception) {
-                StatisticSettingsModel()
+                return StatisticSettingsModel()
             }
         } else {
             return StatisticSettingsModel()
         }
     }
-
 
 
 }

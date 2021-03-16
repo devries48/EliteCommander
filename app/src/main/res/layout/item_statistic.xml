@@ -57,6 +57,16 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
+                android:id="@+id/rightDeltaTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_medium"
+                android:text=""
+                android:textAppearance="@style/eliteStyle.SmallText"
+                app:layout_constraintEnd_toStartOf="@+id/rightNameTextView"
+                app:layout_constraintTop_toTopOf="@id/rightNameTextView" />
+
+            <TextView
                 android:id="@+id/rightValueTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -67,11 +77,23 @@
                 android:id="@+id/middleNameTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="32dp"
+                android:layout_marginStart="@dimen/margin_large"
                 android:text=""
                 android:textAppearance="@style/eliteStyle"
-                app:layout_constraintEnd_toStartOf="@+id/rightNameTextView"
+                android:layout_marginEnd="48dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/rightNameTextView" />
+
+            <TextView
+                android:id="@+id/middleDeltaTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/margin_medium"
+                android:text=""
+                android:textAppearance="@style/eliteStyle.SmallText"
+                app:layout_constraintStart_toEndOf="@+id/middleNameTextView"
+                app:layout_constraintTop_toTopOf="@id/middleNameTextView" />
 
             <TextView
                 android:id="@+id/middleValueTextView"
