@@ -31,7 +31,7 @@ class StatisticsBuilder {
             }
 
             val formattedValue = formatValue(value, format)
-            val formattedDelta = delta?.let { formatValue(it, format, false) }
+            val formattedDelta = delta?.let { formatValue(it, format, false, true) }
 
             when (pos) {
                 StatisticPosition.LEFT -> {
@@ -56,16 +56,19 @@ class StatisticsBuilder {
         }
     }
 
-    private fun formatValue(value: Any, format: StatisticFormat, formatZero: Boolean = true): String? {
-        if (!formatZero) {
-            when (value) {
-                is Int -> if (value == 0) return null
-                is Long -> if (value == 0L) return null
-                is Double -> if (value == 0.0) return null
-            }
+    private fun formatValue(
+        value: Any,
+        format: StatisticFormat,
+        formatZero: Boolean = true,
+        addPlus: Boolean = false
+    ): String? {
+        if (!formatZero) when (value) {
+            is Int -> if (value == 0) return null
+            is Long -> if (value == 0L) return null
+            is Double -> if (value == 0.0) return null
         }
 
-        return when (format) {
+        val formatted = when (format) {
             StatisticFormat.CURRENCY -> {
                 when (value) {
                     is Int -> formatCurrency(value)
@@ -93,6 +96,12 @@ class StatisticsBuilder {
             }
             else -> value.toString()
         }
+
+        if (addPlus)
+            if (value is Int && value > 0 || value is Long && value > 0L || value is Double && value > 0.0)
+                return "+$formatted"
+
+        return formatted
     }
 
 
@@ -157,7 +166,7 @@ class StatisticsBuilder {
         }
 
         @Suppress("UNCHECKED_CAST")
-        fun < T:Any>getDelta(value: T, oldValue: T?): T? {
+        fun <T : Any> getDelta(value: T, oldValue: T?): T? {
             if (oldValue == null)
                 return null
 

@@ -574,6 +574,8 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                 "Resurrect",
                 "SAASignalsFound",
                 "Scanned",
+                "SearchAndRescue",
+                "SellDrones",
                 "SetUserShipName",
                 "ShipTargeted",
                 "Shipyard",
