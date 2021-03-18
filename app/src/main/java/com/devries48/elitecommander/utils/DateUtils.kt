@@ -58,10 +58,16 @@ object DateUtils {
     }
 
     fun getLastCycleDateGMT(): Date {
-        val cal = Calendar.getInstance()
+        val cal = Calendar.getInstance(TimeZone.getTimeZone("GMT"))
+        val currentDate: Date? = if (cal[Calendar.DAY_OF_WEEK] == Calendar.THURSDAY)
+            getCurrentDateGMT() else null
+
         cal.add(Calendar.WEEK_OF_YEAR, -1)
         cal[Calendar.DAY_OF_WEEK] = Calendar.THURSDAY
-        val cycleDate = cal.time.toDateString(dateFormatCycleGMT)
+        var cycleDate = cal.time.toDateString(dateFormatCycleGMT)
+
+        if (currentDate != null && currentDate > fromDateString(cycleDate, dateFormatGMT))
+            cycleDate = currentDate.toDateString(dateFormatCycleGMT)
 
         return fromDateString(cycleDate, dateFormatGMT)
     }
