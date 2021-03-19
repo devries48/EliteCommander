@@ -41,100 +41,100 @@ object NamingUtils {
 
     fun getCombatRankDrawableId(rankValue: Int): Int {
         return when (rankValue + 1) {
-            2 -> R.mipmap.rank_combat_2
-            3 -> R.mipmap.rank_combat_3
-            4 -> R.mipmap.rank_combat_4
-            5 -> R.mipmap.rank_combat_5
-            6 -> R.mipmap.rank_combat_6
-            7 -> R.mipmap.rank_combat_7
-            8 -> R.mipmap.rank_combat_8
-            9 -> R.mipmap.rank_combat_9
-            else -> R.mipmap.rank_combat_1
+            2 -> R.drawable.rank_combat_2
+            3 -> R.drawable.rank_combat_3
+            4 -> R.drawable.rank_combat_4
+            5 -> R.drawable.rank_combat_5
+            6 -> R.drawable.rank_combat_6
+            7 -> R.drawable.rank_combat_7
+            8 -> R.drawable.rank_combat_8
+            9 -> R.drawable.rank_combat_9
+            else -> R.drawable.rank_combat_1
         }
     }
 
     fun getTradeRankDrawableId(rankValue: Int): Int {
         return when (rankValue + 1) {
-            2 -> R.mipmap.rank_trading_2
-            3 -> R.mipmap.rank_trading_3
-            4 -> R.mipmap.rank_trading_4
-            5 -> R.mipmap.rank_trading_5
-            6 -> R.mipmap.rank_trading_6
-            7 -> R.mipmap.rank_trading_7
-            8 -> R.mipmap.rank_trading_8
-            9 -> R.mipmap.rank_trading_9
-            else -> R.mipmap.rank_trading_1
+            2 -> R.drawable.rank_trading_2
+            3 -> R.drawable.rank_trading_3
+            4 -> R.drawable.rank_trading_4
+            5 -> R.drawable.rank_trading_5
+            6 -> R.drawable.rank_trading_6
+            7 -> R.drawable.rank_trading_7
+            8 -> R.drawable.rank_trading_8
+            9 -> R.drawable.rank_trading_9
+            else -> R.drawable.rank_trading_1
         }
     }
 
     fun getExplorationRankDrawableId(rankValue: Int): Int {
         return when (rankValue + 1) {
-            2 -> R.mipmap.rank_exploration_2
-            3 -> R.mipmap.rank_exploration_3
-            4 -> R.mipmap.rank_exploration_4
-            5 -> R.mipmap.rank_exploration_5
-            6 -> R.mipmap.rank_exploration_6
-            7 -> R.mipmap.rank_exploration_7
-            8 -> R.mipmap.rank_exploration_8
-            9 -> R.mipmap.rank_exploration_9
-            else -> R.mipmap.rank_exploration_1
+            2 -> R.drawable.rank_exploration_2
+            3 -> R.drawable.rank_exploration_3
+            4 -> R.drawable.rank_exploration_4
+            5 -> R.drawable.rank_exploration_5
+            6 -> R.drawable.rank_exploration_6
+            7 -> R.drawable.rank_exploration_7
+            8 -> R.drawable.rank_exploration_8
+            9 -> R.drawable.rank_exploration_9
+            else -> R.drawable.rank_exploration_1
         }
     }
 
     fun getCqcRankDrawableId(rankValue: Int): Int {
         return when (rankValue + 1) {
-            2 -> R.mipmap.rank_cqc_2
-            3 -> R.mipmap.rank_cqc_3
-            4 -> R.mipmap.rank_cqc_4
-            5 -> R.mipmap.rank_cqc_5
-            6 -> R.mipmap.rank_cqc_6
-            7 -> R.mipmap.rank_cqc_7
-            8 -> R.mipmap.rank_cqc_8
-            9 -> R.mipmap.rank_cqc_9
-            else -> R.mipmap.rank_cqc_1
+            2 -> R.drawable.rank_cqc_2
+            3 -> R.drawable.rank_cqc_3
+            4 -> R.drawable.rank_cqc_4
+            5 -> R.drawable.rank_cqc_5
+            6 -> R.drawable.rank_cqc_6
+            7 -> R.drawable.rank_cqc_7
+            8 -> R.drawable.rank_cqc_8
+            9 -> R.drawable.rank_cqc_9
+            else -> R.drawable.rank_cqc_1
         }
     }
 
     fun getFederationRankDrawableId(rankValue: Int): Int {
         return when (rankValue + 1) {
-            2 -> R.mipmap.rank_fed_2
-            3 -> R.mipmap.rank_fed_3
-            4 -> R.mipmap.rank_fed_4
-            5 -> R.mipmap.rank_fed_5
-            6 -> R.mipmap.rank_fed_6
-            7 -> R.mipmap.rank_fed_7
-            8 -> R.mipmap.rank_fed_8
-            9 -> R.mipmap.rank_fed_9
-            10 -> R.mipmap.rank_fed_10
-            11 -> R.mipmap.rank_fed_11
-            12 -> R.mipmap.rank_fed_12
-            13 -> R.mipmap.rank_fed_13
-            14 -> R.mipmap.rank_fed_14
-            else -> R.mipmap.rank_fed_1
+            2 -> R.drawable.rank_fed_2
+            3 -> R.drawable.rank_fed_3
+            4 -> R.drawable.rank_fed_4
+            5 -> R.drawable.rank_fed_5
+            6 -> R.drawable.rank_fed_6
+            7 -> R.drawable.rank_fed_7
+            8 -> R.drawable.rank_fed_8
+            9 -> R.drawable.rank_fed_9
+            10 -> R.drawable.rank_fed_10
+            11 -> R.drawable.rank_fed_11
+            12 -> R.drawable.rank_fed_12
+            13 -> R.drawable.rank_fed_13
+            14 -> R.drawable.rank_fed_14
+            else -> R.drawable.rank_fed_1
         }
     }
 
     fun getEmpireRankDrawableId(rankValue: Int): Int {
         return when (rankValue + 1) {
-            2 -> R.mipmap.rank_emp_2
-            3 -> R.mipmap.rank_emp_3
-            4 -> R.mipmap.rank_emp_4
-            5 -> R.mipmap.rank_emp_5
-            6 -> R.mipmap.rank_emp_6
-            7 -> R.mipmap.rank_emp_7
-            8 -> R.mipmap.rank_emp_8
-            9 -> R.mipmap.rank_emp_9
-            10 -> R.mipmap.rank_emp_10
-            11 -> R.mipmap.rank_emp_11
-            12 -> R.mipmap.rank_emp_12
-            13 -> R.mipmap.rank_emp_13
-            14 -> R.mipmap.rank_emp_14
-            else -> R.mipmap.rank_emp_1
+            2 -> R.drawable.rank_emp_2
+            3 -> R.drawable.rank_emp_3
+            4 -> R.drawable.rank_emp_4
+            5 -> R.drawable.rank_emp_5
+            6 -> R.drawable.rank_emp_6
+            7 -> R.drawable.rank_emp_7
+            8 -> R.drawable.rank_emp_8
+            9 -> R.drawable.rank_emp_9
+            10 -> R.drawable.rank_emp_10
+            11 -> R.drawable.rank_emp_11
+            12 -> R.drawable.rank_emp_12
+            13 -> R.drawable.rank_emp_13
+            14 -> R.drawable.rank_emp_14
+            else -> R.drawable.rank_emp_1
         }
     }
 
     fun getAllianceRankDrawableId(): Int {
-        return R.mipmap.rank_alliance_1
+        return R.drawable.rank_alliance_1
     }
 
 
@@ -252,36 +252,36 @@ object NamingUtils {
         if (starType.isNotEmpty() && starType.isNotBlank()) {
             when (val id = getStarTypeAlias(starType)) {
                 1 -> {
-                    drawableResId = R.mipmap.body_star_o
+                    drawableResId = R.drawable.body_star_o
                     stringResId = R.string.body_star_o
                 }
                 2, 201 -> {
-                    drawableResId = R.mipmap.body_star_b
+                    drawableResId = R.drawable.body_star_b
                     stringResId =
                         if (id == 2) R.string.body_star_b else R.string.body_star_b_blue_white_supergiant
                 }
                 3, 301 -> {
-                    drawableResId = R.mipmap.body_star_a
+                    drawableResId = R.drawable.body_star_a
                     stringResId =
                         if (id == 3) R.string.body_star_a else R.string.body_star_a_blue_white_supergiant
                 }
                 4, 401 -> {
-                    drawableResId = R.mipmap.body_star_f
+                    drawableResId = R.drawable.body_star_f
                     stringResId =
                         if (id == 4) R.string.body_star_f else R.string.body_star_f_whitesupergiant
                 }
                 5, 5001 -> {
-                    drawableResId = R.mipmap.body_star_g
+                    drawableResId = R.drawable.body_star_g
                     stringResId =
                         if (id == 5) R.string.body_star_g else R.string.body_star_g_white_yellow_supergiant
                 }
                 6, 601 -> {
-                    drawableResId = R.mipmap.body_star_k
+                    drawableResId = R.drawable.body_star_k
                     stringResId =
                         if (id == 5) R.string.body_star_k else R.string.body_star_k_yellow_orange_giant
                 }
                 7, 701, 702 -> {
-                    drawableResId = R.mipmap.body_star_m
+                    drawableResId = R.drawable.body_star_m
                     stringResId = when (id) {
                         7 -> R.string.body_star_m
                         701 -> R.string.body_star_m_red_giant
@@ -289,27 +289,27 @@ object NamingUtils {
                     }
                 }
                 8 -> {
-                    drawableResId = R.mipmap.body_star_l
+                    drawableResId = R.drawable.body_star_l
                     stringResId = R.string.body_star_l
                 }
                 9 -> {
-                    drawableResId = R.mipmap.body_star_t
+                    drawableResId = R.drawable.body_star_t
                     stringResId = R.string.body_star_t
                 }
                 10 -> {
-                    drawableResId = R.mipmap.body_star_y
+                    drawableResId = R.drawable.body_star_y
                     stringResId = R.string.body_star_y
                 }
                 11 -> {
-                    drawableResId = R.mipmap.body_star_tts
+                    drawableResId = R.drawable.body_star_tts
                     stringResId = R.string.body_star_tts
                 }
                 12 -> {
-                    drawableResId = R.mipmap.body_star_aebe
+                    drawableResId = R.drawable.body_star_aebe
                     stringResId = R.string.body_star_aebe
                 }
                 21, 22, 23, 24, 25 -> {
-                    drawableResId = R.mipmap.body_star_wolf
+                    drawableResId = R.drawable.body_star_wolf
                     stringResId = when (id) {
                         21 -> R.string.body_star_wolf
                         22 -> R.string.body_star_wolf_n
@@ -319,7 +319,7 @@ object NamingUtils {
                     }
                 }
                 31, 32, 33, 34, 35, 36, 41, 42 -> {
-                    drawableResId = R.mipmap.body_star_c
+                    drawableResId = R.drawable.body_star_c
                     stringResId = when (id) {
                         31 -> R.string.body_star_cs
                         32 -> R.string.body_star_c
@@ -332,7 +332,7 @@ object NamingUtils {
                     }
                 }
                 51, 501, 502, 503, 504, 505, 506, 507, 508, 509, 510, 511, 512, 513, 514 -> {
-                    drawableResId = R.mipmap.body_star_d
+                    drawableResId = R.drawable.body_star_d
                     stringResId = when (id) {
                         51 -> R.string.body_star_d
                         501 -> R.string.body_star_da
@@ -352,20 +352,20 @@ object NamingUtils {
                     }
                 }
                 91 -> {
-                    drawableResId = R.mipmap.body_star_neutron
+                    drawableResId = R.drawable.body_star_neutron
                     stringResId = R.string.body_star_neutron
                 }
                 92 -> {
-                    drawableResId = R.mipmap.body_black_hole
+                    drawableResId = R.drawable.body_black_hole
                     stringResId = R.string.body_black_hole
                 }
                 93 -> {
-                    drawableResId = R.mipmap.body_black_hole_super_massive
+                    drawableResId = R.drawable.body_black_hole_super_massive
                     stringResId = R.string.body_black_hole_super_massive
                 }
 
                 else -> {
-                    drawableResId = R.mipmap.body_unknown
+                    drawableResId = R.drawable.body_unknown
                     println(starType)
                 }
             }
@@ -373,77 +373,77 @@ object NamingUtils {
         } else {
             when (getPlanetBodyAlias(bodyName)) {
                 1 -> {
-                    drawableResId = R.mipmap.body_metal_rich
+                    drawableResId = R.drawable.body_metal_rich
                     stringResId = R.string.body_metal_rich
                 }
                 2 -> {
-                    drawableResId = R.mipmap.body_high_metal_content
+                    drawableResId = R.drawable.body_high_metal_content
                     stringResId = R.string.body_high_metal_content
                 }
                 11 -> {
-                    drawableResId = R.mipmap.body_rocky
+                    drawableResId = R.drawable.body_rocky
                     stringResId = R.string.body_rocky
                 }
                 12 -> {
-                    drawableResId = R.mipmap.body_rocky_ice
+                    drawableResId = R.drawable.body_rocky_ice
                     stringResId = R.string.body_rocky_ice
                 }
                 21 -> {
-                    drawableResId = R.mipmap.body_icy
+                    drawableResId = R.drawable.body_icy
                     stringResId = R.string.body_icy
                 }
                 31 -> {
-                    drawableResId = R.mipmap.body_earthlike
+                    drawableResId = R.drawable.body_earthlike
                     stringResId = R.string.body_earthlike
                 }
                 41 -> {
-                    drawableResId = R.mipmap.body_water_world
+                    drawableResId = R.drawable.body_water_world
                     stringResId = R.string.body_water_world
                 }
                 42 -> {
-                    drawableResId = R.mipmap.body_water_giant
+                    drawableResId = R.drawable.body_water_giant
                     stringResId = R.string.body_water_giant
                 }
                 51 -> {
-                    drawableResId = R.mipmap.body_ammonia_world
+                    drawableResId = R.drawable.body_ammonia_world
                     stringResId = R.string.body_ammonia_world
                 }
                 61 -> {
-                    drawableResId = R.mipmap.body_giant_water_based
+                    drawableResId = R.drawable.body_giant_water_based
                     stringResId = R.string.body_giant_water_based
                 }
                 62 -> {
-                    drawableResId = R.mipmap.body_giant_ammonia_based
+                    drawableResId = R.drawable.body_giant_ammonia_based
                     stringResId = R.string.body_giant_ammonia_based
                 }
 
                 71 -> {
-                    drawableResId = R.mipmap.body_sudarski_class1
+                    drawableResId = R.drawable.body_sudarski_class1
                     stringResId = R.string.body_sudarsky_class1
                 }
                 72 -> {
-                    drawableResId = R.mipmap.body_sudarski_class2
+                    drawableResId = R.drawable.body_sudarski_class2
                     stringResId = R.string.body_sudarsky_class2
                 }
                 73 -> {
-                    drawableResId = R.mipmap.body_sudarski_class3
+                    drawableResId = R.drawable.body_sudarski_class3
                     stringResId = R.string.body_sudarsky_class3
                 }
                 74 -> {
-                    drawableResId = R.mipmap.body_sudarski_class4
+                    drawableResId = R.drawable.body_sudarski_class4
                     stringResId = R.string.body_sudarsky_class4
                 }
                 75 -> {
-                    drawableResId = R.mipmap.body_sudarski_class5
+                    drawableResId = R.drawable.body_sudarski_class5
                     stringResId = R.string.body_sudarsky_class5
                 }
                 81, 82 -> {
-                    drawableResId = R.mipmap.body_helium_giant
+                    drawableResId = R.drawable.body_helium_giant
                     stringResId = R.string.body_helium_giant
                 }
                 else -> {
                     println(bodyName)
-                    drawableResId = R.mipmap.body_unknown
+                    drawableResId = R.drawable.body_unknown
                 }
             }
         }
