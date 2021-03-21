@@ -4,6 +4,7 @@
 
 [![Build Status](https://github.com/devries48/elitecommander/workflows/master/badge.svg)](https://github.com/devries48/elitecommander/actions)
 [![CodeFactor](https://www.codefactor.io/repository/github/devries48/elitecommander/badge)](https://www.codefactor.io/repository/github/devries48/elitecommander)[![Maintainability](https://api.codeclimate.com/v1/badges/48e342cdcbfb66584fca/maintainability)](https://codeclimate.com/github/devries48/EliteCommander/maintainability)
+[![BCH compliance](https://bettercodehub.com/edge/badge/devries48/EliteCommander?branch=master)](https://bettercodehub.com/)
 ## Table of content
 - [FUNCTIONALITY](#functionality)
 - [API's USED](#apis-used)
