@@ -3,8 +3,7 @@
 **Elite Dangerous companion displays statistics, earnings and rankings**
 
 [![Build Status](https://github.com/devries48/elitecommander/workflows/master/badge.svg)](https://github.com/devries48/elitecommander/actions)
-[![CodeFactor](https://www.codefactor.io/repository/github/devries48/elitecommander/badge)](https://www.codefactor.io/repository/github/devries48/elitecommander)
-[![Maintainability](https://api.codeclimate.com/v1/badges/a99a88d28ad37a79dbf6/maintainability)](https://codeclimate.com/github/codeclimate/codeclimate/maintainability)
+[![CodeFactor](https://www.codefactor.io/repository/github/devries48/elitecommander/badge)](https://www.codefactor.io/repository/github/devries48/elitecommander)[![Maintainability](https://api.codeclimate.com/v1/badges/48e342cdcbfb66584fca/maintainability)](https://codeclimate.com/github/devries48/EliteCommander/maintainability)
 ## Table of content
 - [FUNCTIONALITY](#functionality)
 - [API's USED](#apis-used)
