@@ -34,7 +34,7 @@ object DateUtils {
         return Calendar.getInstance().time
     }
 
-    fun getCurrentDateGMT(): Date {
+    private fun getCurrentDateGMT(): Date {
         Calendar.getInstance(TimeZone.getTimeZone("GMT"))
         return Calendar.getInstance().time
     }

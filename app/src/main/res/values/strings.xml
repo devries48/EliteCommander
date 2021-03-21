@@ -212,5 +212,12 @@
     <string name="total">Total</string>
     <string name="mining">Mining</string>
     <string name="quantity">Quantity</string>
-    <string name="markets">Markets</string>
+
+    <string name="download_error">Error downloading content</string>
+    <string name="frontier_profile">Frontier profile</string>
+    <string name="frontier_journal_ranks">Frontier journal ranks</string>
+    <string name="frontier_fleet">Frontier fleet</string>
+    <string name="edsm_distance">EDSM distance search</string>
+    <string name="Frontier_journal_discoveries">Frontier journal discoveries</string>
+    <string name="Frontier_journal_statistics">Frontier journal statistics</string>
 </resources>

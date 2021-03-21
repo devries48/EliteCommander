@@ -31,7 +31,7 @@ class StatisticsBuilder {
             }
 
             val formattedValue = formatValue(value, format)
-            val formattedDelta = delta?.let { formatValue(it, format, false, true) }
+            val formattedDelta = delta?.let { formatValue(it, format, formatZero = false, addPlus = true) }
 
             when (pos) {
                 StatisticPosition.LEFT -> {
@@ -171,9 +171,9 @@ class StatisticsBuilder {
                 return null
 
             return when (value) {
-                is Int -> ((value as Int) - (oldValue as Int)) as T
-                is Long -> ((value as Long) - (oldValue as Long)) as T
-                is Double -> ((value as Double) - (oldValue as Double)) as T
+                is Int -> (value as Int - oldValue as Int) as T
+                is Long -> (value as Long - oldValue as Long) as T
+                is Double -> (value as Double - oldValue as Double) as T
 
                 else -> null
             }

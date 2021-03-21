@@ -1,6 +1,7 @@
 package com.devries48.elitecommander.fragments
 
 import android.annotation.SuppressLint
+import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -82,6 +83,11 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
         SettingsUtils.setStatisticsSettings(mCurrentSettings)
     }
 
+    fun load() {
+        mCommanderApi?.loadProfile()
+        mCommanderApi?.loadCurrentJournal()
+    }
+
     internal fun getMainStatistics(): LiveData<List<StatisticModel>> {
         return mBuilderMain.statistics
     }
@@ -102,7 +108,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
     fun onFrontierProfileEvent(profile: FrontierProfileEvent) {
         GlobalScope.launch {
             if (!profile.success) {
-                //NotificationsUtils.displayGenericDownloadErrorSnackbar(getActivity()) TODO: Error Handling
+                sendAlert(R.string.frontier_profile)
                 return@launch
             }
             launchProfile(profile)
@@ -113,7 +119,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
     fun onFrontierRanksEvent(ranks: FrontierRanksEvent) {
         GlobalScope.launch {
             if (!ranks.success) {
-                //NotificationsUtils.displayGenericDownloadErrorSnackbar(getActivity()) TODO: Error Handling
+                sendAlert(R.string.frontier_journal_ranks)
                 mIsRanksBusy.postValue(false)
                 return@launch
             }
@@ -125,7 +131,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
     fun onFrontierFleetEvent(fleet: FrontierFleetEvent) {
         GlobalScope.launch {
             if (!fleet.success) {
-                //NotificationsUtils.displayGenericDownloadErrorSnackbar(getActivity()) TODO: Error Handling
+                sendAlert(R.string.frontier_fleet)
                 return@launch
             }
             launchFleet(fleet)
@@ -136,7 +142,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
     fun onDistanceSearch(distanceSearch: DistanceSearchEvent) {
         GlobalScope.launch {
             if (!distanceSearch.success) {
-                //NotificationsUtils.displayGenericDownloadErrorSnackbar(getActivity()) TODO: Error Handling
+                sendAlert(R.string.edsm_distance)
                 return@launch
             }
             launchDistanceSearch(distanceSearch)
@@ -147,7 +153,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
     fun onCurrentDiscoveries(discoveries: FrontierDiscoveriesEvent) {
         GlobalScope.launch {
             if (!discoveries.success) {
-                //NotificationsUtils.displayGenericDownloadErrorSnackbar(getActivity()) TODO: Error Handling
+                sendAlert(R.string.Frontier_journal_discoveries)
                 return@launch
             }
             launchCurrentDiscoveries(discoveries)
@@ -158,7 +164,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
     fun onStatistics(statistics: FrontierStatisticsEvent) {
         GlobalScope.launch {
             if (!statistics.success) {
-                //NotificationsUtils.displayGenericDownloadErrorSnackbar(getActivity()) TODO: Error Handling
+                sendAlert(R.string.Frontier_journal_statistics)
                 return@launch
             }
 
@@ -166,6 +172,10 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             launchProfitChart(statistics)
             launchProfitStats(statistics)
         }
+    }
+
+    private fun sendAlert(@StringRes message: Int) {
+        EventBus.getDefault().post(AlertEvent(R.string.download_error,message  ))
     }
 
     private fun launchPlayerStats(statistics: FrontierStatisticsEvent) {
@@ -372,7 +382,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             ProfitModel(
                 SMUGGLING,
                 it.blackMarketsProfits,
-                round((statistics.smuggling.blackMarketsProfits / total.toFloat()) * 1000) / 10
+                round(statistics.smuggling.blackMarketsProfits / total.toFloat() * 1000) / 10
             )
         }
 
@@ -380,7 +390,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             ProfitModel(
                 SEARCH_RESCUE,
                 it.searchRescueProfit,
-                round((statistics.searchAndRescue.searchRescueProfit / total.toFloat()) * 1000) / 10
+                round(statistics.searchAndRescue.searchRescueProfit / total.toFloat() * 1000) / 10
             )
         }
 
@@ -390,12 +400,12 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             ProfitModel(
                 TRADING,
                 statistics.trading.marketProfits,
-                round((statistics.trading.marketProfits / total.toFloat()) * 1000) / 10
+                round(statistics.trading.marketProfits / total.toFloat() * 1000) / 10
             ),
             ProfitModel(
                 MINING,
                 statistics.trading.marketProfits,
-                round((statistics.mining.miningProfits / total.toFloat()) * 1000) / 10
+                round(statistics.mining.miningProfits / total.toFloat() * 1000) / 10
             ),
             smugglingProfit!!,
             rescueProfit!!

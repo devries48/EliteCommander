@@ -26,7 +26,6 @@ import java.util.*
 
 class JournalWorker(frontierApi: FrontierInterface?) {
 
-    private var mEventCache: EventCache = EventCache()
     private lateinit var mFrontierApi: FrontierInterface
     private lateinit var mCrawlerType: CrawlerType
     private var mLatestJournalDate: Date? = DateUtils.getCurrentDate()
@@ -170,7 +169,6 @@ class JournalWorker(frontierApi: FrontierInterface?) {
 
     private suspend fun raiseFrontierRanksEvent(rawEvents: List<RawEvent>) {
         withContext(Dispatchers.IO) {
-            if (mEventCache.sendCachedRanksEvent()) return@withContext // Raise cached event if available
             val context = App.getContext()
 
             try {
@@ -237,7 +235,7 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                     reputation.alliance
                 )
 
-                mEventCache.setRanksEvent(
+                sendEvent(
                     FrontierRanksEvent(
                         true, combatRank, tradeRank, exploreRank,
                         cqcRank, federationRank, empireRank, allianceRank
@@ -245,7 +243,7 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                 )
             } catch (e: Exception) {
                 println("LOG: Error parsing ranking events from journal." + e.message)
-                mEventCache.sendEvent(
+                sendEvent(
                     FrontierRanksEvent(
                         false, null, null,
                         null, null, null, null
@@ -257,15 +255,13 @@ class JournalWorker(frontierApi: FrontierInterface?) {
 
     private suspend fun raiseFrontierStatisticsEvent(rawEvents: List<RawEvent>) {
         withContext(Dispatchers.IO) {
-            if (mEventCache.sendCachedStatisticsEvent()) return@withContext // Raise cached event if available
-
             try {
                 val rawStatistics = rawEvents.lastOrNull { it.event == JOURNAL_EVENT_STATISTICS }
                     ?: throw error("Error parsing statistics event from journal")
 
                 val statistics = Gson().fromJson(rawStatistics.json, FrontierJournalStatisticsResponse::class.java)
 
-                mEventCache.setStatisticsEvent(
+                sendEvent(
                     FrontierStatisticsEvent(
                         true, FrontierBankAccount(
                             statistics.bankAccount.currentWealth,
@@ -326,7 +322,7 @@ class JournalWorker(frontierApi: FrontierInterface?) {
 
             } catch (e: Exception) {
                 println("LOG: Error parsing statistics event from journal." + e.message)
-                mEventCache.sendEvent(
+                sendEvent(
                     FrontierStatisticsEvent(false, null, null, null, null, null, null, null)
                 )
             }
@@ -336,7 +332,6 @@ class JournalWorker(frontierApi: FrontierInterface?) {
 
     private suspend fun raiseFrontierDiscoveriesEvents(rawEvents: List<RawEvent>) {
         withContext(Dispatchers.IO) {
-            if (mEventCache.sendCachedCurrentDiscoveriesEvent()) return@withContext // Raise cached event if available
 
             try {
                 var rawDiscoveries = rawEvents.filter { it.event == JOURNAL_EVENT_DISCOVERY }
@@ -349,7 +344,7 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                 if (rawDied != null) rawDiscoveries = rawDiscoveries.filter { it.timeStamp > rawDied.timeStamp }
 
                 if (rawDiscoveries.count() == 0) {
-                    mEventCache.sendEvent(FrontierDiscoveriesEvent(true, null, null))
+                    sendEvent(FrontierDiscoveriesEvent(true, null, null))
                 }
 
                 val discoveries = mutableListOf<Discovery>()
@@ -450,7 +445,7 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                     summary.estimatedValue += estimatedValue
                 }
 
-                mEventCache.sendEvent(FrontierDiscoveriesEvent(
+                sendEvent(FrontierDiscoveriesEvent(
                     true,
                     summary,
                     discoveries.map { (_, _, planetClass, starType, _, _, _, _, _, discoveryCount, mapCount, bonusCount, firstDiscoveredCount, firstMappedCount, firstMappedAndDiscovered, estimatedValue) ->
@@ -473,9 +468,13 @@ class JournalWorker(frontierApi: FrontierInterface?) {
 
             } catch (e: Exception) {
                 println("LOG: Error parsing discovery events from journal." + e.message)
-                mEventCache.sendEvent(FrontierDiscoveriesEvent(false, null, null))
+                sendEvent(FrontierDiscoveriesEvent(false, null, null))
             }
         }
+    }
+
+    private fun sendEvent(data: Any?) {
+        EventBus.getDefault().post(data)
     }
 
     companion object {
@@ -495,7 +494,6 @@ class JournalWorker(frontierApi: FrontierInterface?) {
         private const val JOURNAL_EVENT_DIED = "Died"
         private const val JOURNAL_EVENT_PROMOTION = "Promotion"
 
-
         var mIgnoreEvents =
             arrayOf(
                 "ApproachBody",
@@ -503,9 +501,11 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                 "Bounty",
                 "BuyAmmo",
                 "BuyDrones",
+                "BuyTradeData",
                 "Cargo",
                 "CargoDepot",
                 "CockpitBreached",
+                "CodexEntry",
                 "CollectCargo",
                 "Commander",
                 "CommitCrime",
@@ -556,6 +556,11 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                 "MissionRedirected",
                 "Missions",
                 "ModuleBuy",
+                "ModuleRetrieve",
+                "ModuleSell",
+                "ModuleSellRemote",
+                "ModuleStore",
+                "ModuleSwap",
                 "Music",
                 "NavBeaconScan",
                 "NavRoute",
@@ -586,6 +591,7 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                 "StoredShips",
                 "SupercruiseEntry",
                 "SupercruiseExit",
+                "SquadronCreated",
                 "Touchdown",
                 "UnderAttack",
                 "Undocked",
@@ -603,53 +609,6 @@ class JournalWorker(frontierApi: FrontierInterface?) {
             val timestampString = json.get("timestamp").asString
             timeStamp = DateUtils.fromDateString(timestampString, DateUtils.dateFormatGMT)
         }
-    }
-
-    private class EventCache {
-        private var ranksEvent: FrontierRanksEvent? = null
-        private var statisticsEvent: FrontierStatisticsEvent? = null
-        private var currentDiscoveriesEvent: FrontierDiscoveriesEvent? = null
-
-        fun setRanksEvent(event: FrontierRanksEvent) {
-            ranksEvent = event
-            sendEvent(event)
-        }
-
-        fun setStatisticsEvent(event: FrontierStatisticsEvent) {
-            statisticsEvent = event
-            sendEvent(event)
-        }
-
-        fun setDiscoveriesEvent(event: FrontierDiscoveriesEvent) {
-            currentDiscoveriesEvent = event
-            sendEvent(event)
-        }
-
-        fun sendEvent(data: Any?) {
-            EventBus.getDefault().post(data)
-        }
-
-        fun sendCachedRanksEvent(): Boolean {
-            return if (ranksEvent != null) {
-                sendEvent(ranksEvent)
-                true
-            } else false
-        }
-
-        fun sendCachedCurrentDiscoveriesEvent(): Boolean {
-            return if (currentDiscoveriesEvent != null) {
-                sendEvent(currentDiscoveriesEvent)
-                true
-            } else false
-        }
-
-        fun sendCachedStatisticsEvent(): Boolean {
-            return if (statisticsEvent != null) {
-                sendEvent(statisticsEvent)
-                true
-            } else false
-        }
-
     }
 
     data class Discovery(

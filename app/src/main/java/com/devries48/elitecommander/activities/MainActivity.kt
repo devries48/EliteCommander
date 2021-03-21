@@ -1,19 +1,24 @@
 package com.devries48.elitecommander.activities
 
 import android.content.Intent
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.devries48.elitecommander.R
 import com.devries48.elitecommander.databinding.ActivityMainBinding
+import com.devries48.elitecommander.events.AlertEvent
 import com.devries48.elitecommander.events.FrontierAuthNeededEvent
 import com.devries48.elitecommander.fragments.CommanderViewModel
 import com.devries48.elitecommander.fragments.CommanderViewModelFactory
 import com.devries48.elitecommander.fragments.MainFragment
 import com.devries48.elitecommander.network.CommanderNetwork
 import com.devries48.elitecommander.utils.OAuthUtils.storeUpdatedTokens
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -25,6 +30,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mCommanderNetwork: CommanderNetwork
     private var mCommanderViewModel: CommanderViewModel? = null
     private val mNavController by lazy { findNavController() }
+    private var mNavDestinationId: Int = 0
+    private var mAlertList = ArrayList<@StringRes Int>()
+    private var mAlertDialog: androidx.appcompat.app.AlertDialog? = null
 
     private var mIsLoggedIn by Delegates.observable(false) { _, _, newValue ->
         if (newValue) setupActivity()
@@ -56,12 +64,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupActivity() {
-        setupViewModel()
-
-        mCommanderNetwork.loadProfile()
-        mCommanderNetwork.loadCurrentJournal()
-
         hideRedirectFragment()
+        if (mIsLoggedIn)
+            setupViewModel()
     }
 
     private fun setupViewModel() {
@@ -73,7 +78,7 @@ class MainActivity : AppCompatActivity() {
                 CommanderViewModelFactory(mCommanderNetwork)
             )
             mCommanderViewModel = viewModelProvider.get(CommanderViewModel::class.java)
-
+            mCommanderViewModel!!.load()
         } catch (e: IllegalArgumentException) {
             e.printStackTrace()
         }
@@ -85,14 +90,14 @@ class MainActivity : AppCompatActivity() {
         //TODO: check connection (refresh?) and set IsUserLoggedIn
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            navDestinationId = destination.id
+            mNavDestinationId = destination.id
 
             if (!mIsLoggedIn) {
                 val intent = Intent(this@MainActivity, LoginActivity::class.java)
                 startActivityForResult(intent, FRONTIER_LOGIN_REQUEST_CODE)
             } else {
-                if (navDestinationId == R.id.mainFragment) {
-                    navController.navigate(navDestinationId)
+                if (mNavDestinationId == R.id.mainFragment) {
+                    navController.navigate(mNavDestinationId)
                 }
             }
         }
@@ -110,6 +115,37 @@ class MainActivity : AppCompatActivity() {
         storeUpdatedTokens(this, "", "")
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onAlertEvent(alertEvent: AlertEvent) {
+        synchronized(mAlertList) {
+            mAlertList.add(alertEvent.message)
+            if (mAlertDialog == null) {
+                val builder = MaterialAlertDialogBuilder(this, R.style.AlertDialogTheme)
+                builder.setIcon(android.R.drawable.ic_dialog_alert)
+                builder.setTitle(alertEvent.title)
+                builder.setMessage(alertEvent.message)
+                builder.background = ColorDrawable(ContextCompat.getColor(this, R.color.black))
+                builder.setPositiveButton("OK") { _, _ ->
+                    mAlertDialog?.dismiss()
+                    mAlertDialog = null
+                }
+
+                builder.setCancelable(false)
+
+                mAlertDialog = builder.create()
+                mAlertDialog!!.show()
+            } else {
+                var message = ""
+                for ((index, it) in mAlertList.withIndex()) {
+                    message += "\u2022 " + this.getString(it)
+                    if (index< mAlertList.count()-1)
+                        message += "\n"
+                }
+                mAlertDialog!!.setMessage(message)
+            }
+        }
+    }
+
     private fun hideRedirectFragment() {
         val navHostFragment: NavHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
@@ -118,7 +154,5 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val FRONTIER_LOGIN_REQUEST_CODE = 999
-        private var navDestinationId: Int = 0
     }
 }
-
