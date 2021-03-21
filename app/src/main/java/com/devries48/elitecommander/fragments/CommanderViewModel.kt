@@ -396,7 +396,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
 
         val models = arrayListOf(
             ProfitModel(EXPLORATION, statistics.exploration.explorationProfits),
-            ProfitModel(COMBAT, combatTotal, round((combatTotal / total.toFloat()) * 1000) / 10),
+            ProfitModel(COMBAT, combatTotal, round(combatTotal / total.toFloat() * 1000) / 10),
             ProfitModel(
                 TRADING,
                 statistics.trading.marketProfits,

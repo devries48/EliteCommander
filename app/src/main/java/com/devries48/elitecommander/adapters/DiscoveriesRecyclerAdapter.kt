@@ -55,9 +55,9 @@ class DiscoveriesRecyclerAdapter(var data: List<FrontierDiscovery>?) :
             if (bodyResources.first == 0)
                 viewHolder.bodyNameTextView.text = if (item.star.isEmpty()) item.body else item.star
             else
-                viewHolder.bodyNameTextView.text = ctx.getString(bodyResources.first)
+                viewHolder.bodyNameTextView.text = ctx.getString(bodyResources.second)
 
-            viewHolder.bodyImageView.setImageResource(bodyResources.second)
+            viewHolder.bodyImageView.setImageResource(bodyResources.first)
 
             val totalFirstMapped: Int = item.firstMappedCount + item.firstDiscoveredAndMappedCount
             val totalFirstDiscovered: Int =

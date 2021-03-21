@@ -51,7 +51,7 @@ object DiscoveryValueCalculator {
                 value = 33.5678 // Supermassive Black Hole
 
             // (k + (m * k / 66.25))
-            return round(value + (mass * value / 66.25)).toLong()
+            return round(value + mass * value / 66.25).toLong()
 
         } else if (!discovery.planetClass.isNullOrEmpty()) {
             val planetId = NamingUtils.getPlanetBodyAlias(discovery.planetClass)
@@ -100,7 +100,7 @@ object DiscoveryValueCalculator {
             }
 
             // $value = max(($value + ($value * pow($mass, 0.2) * $q)) * $mapMultiplier, 500);
-            value = max((value + (value * mass.pow(0.2) * q)) * mapMultiplier, 500.0)
+            value = max((value + value * mass.pow(0.2) * q) * mapMultiplier, 500.0)
 
             if (!discovery.wasDiscovered) value *= 2.6
 
