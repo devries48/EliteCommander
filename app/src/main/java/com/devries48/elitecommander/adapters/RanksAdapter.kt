@@ -14,7 +14,7 @@ import androidx.databinding.BindingAdapter
 import com.devries48.elitecommander.R
 import com.devries48.elitecommander.models.RankModel
 
-object RankModelAdapter {
+object RanksAdapter {
 
     /**
      * A Binding Adapter that is called whenever the value of the attribute `android:rankTextColor`

@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.devries48.elitecommander.adapters.ViewPagerAdapter
-import com.devries48.elitecommander.adapters.ViewPagerTransformer
+import com.devries48.elitecommander.adapters.ViewPagerTransform
 import com.devries48.elitecommander.databinding.FragmentMainBinding
 
 class MainFragment : Fragment() {
@@ -35,7 +35,7 @@ class MainFragment : Fragment() {
             lifecycle
         )
 
-        binding.viewPager.setPageTransformer(ViewPagerTransformer())
+        binding.viewPager.setPageTransformer(ViewPagerTransform())
         binding.viewPager.adapter = mAdapter
 
         return binding.root

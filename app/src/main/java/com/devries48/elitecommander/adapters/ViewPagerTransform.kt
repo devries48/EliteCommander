@@ -4,7 +4,7 @@ import android.view.View
 import androidx.viewpager2.widget.ViewPager2
 import kotlin.math.abs
 
-class ViewPagerTransformer : ViewPager2.PageTransformer {
+class ViewPagerTransform : ViewPager2.PageTransformer {
     private  val mMinScale: Float = 0.8f
     private val mMinAlpha: Float = 0.9f
 

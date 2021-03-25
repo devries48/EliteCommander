@@ -220,4 +220,6 @@
     <string name="edsm_distance">EDSM distance search</string>
     <string name="Frontier_journal_discoveries">Frontier journal discoveries</string>
     <string name="Frontier_journal_statistics">Frontier journal statistics</string>
+    <string name="combat">Combat</string>
+    <string name="other">Other</string>
 </resources>

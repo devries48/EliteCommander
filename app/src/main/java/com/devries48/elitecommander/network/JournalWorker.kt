@@ -592,6 +592,7 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                 "SupercruiseEntry",
                 "SupercruiseExit",
                 "SquadronCreated",
+                "SquadronStartup",
                 "Touchdown",
                 "UnderAttack",
                 "Undocked",
