@@ -22,7 +22,7 @@ class ProfitModel(profitType: ProfitType,  profitAmount: Long) {
         OTHER
     }
 
-    private var typeList: ArrayList<ProfitTypeModel> = ArrayList<ProfitTypeModel>()
+    private var typeList: ArrayList<ProfitTypeModel> = ArrayList()
 
     var type: ProfitType? = profitType
     var amount: Long = profitAmount

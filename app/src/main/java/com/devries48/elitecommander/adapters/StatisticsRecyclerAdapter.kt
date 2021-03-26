@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.annotation.StringRes
 import androidx.recyclerview.widget.RecyclerView
 import com.devries48.elitecommander.R
 import com.devries48.elitecommander.models.StatisticModel
@@ -49,41 +50,56 @@ class StatisticsRecyclerAdapter(var data: List<StatisticModel>?) :
         if (data == null) return
 
         val item = data!![position]
-        val ctx = viewHolder.leftNameTextView.context
 
-        if (item.leftTitleResId != 0) {
-            viewHolder.leftNameTextView.text = item.leftTitleResId.let { ctx.getString(it) }
-            if (item.leftValue?.isNotEmpty() == true) {
-                viewHolder.leftValueTextView.text = item.leftValue
-                viewHolder.leftValueTextView.setTextAppearance(getItemStyle(item.leftColor))
-            }
-            if (item.leftDelta?.isNotEmpty() == true) {
-                viewHolder.leftDeltaTextView.text = item.leftDelta
-                viewHolder.leftDeltaTextView.setTextAppearance(getDeltaStyle(item.leftDelta!!))
-            }
-        }
+        setValues(
+            viewHolder.leftNameTextView,
+            viewHolder.leftValueTextView,
+            viewHolder.leftDeltaTextView,
+            item.leftTitleResId,
+            item.leftValue,
+            item.leftColor,
+            item.leftDelta
+        )
+        setValues(
+            viewHolder.middleNameTextView,
+            viewHolder.middleValueTextView,
+            viewHolder.middleDeltaTextView,
+            item.middleTitleResId,
+            item.middleValue,
+            item.middleColor,
+            item.middleDelta
+        )
+        setValues(
+            viewHolder.rightNameTextView,
+            viewHolder.rightValueTextView,
+            viewHolder.rightDeltaTextView,
+            item.rightTitleResId,
+            item.rightValue,
+            item.rightColor,
+            item.rightDelta
+        )
+    }
 
-        if (item.rightTitleResId != 0) {
-            viewHolder.rightNameTextView.text = item.rightTitleResId.let { ctx.getString(it) }
-            if (item.rightValue?.isNotEmpty() == true) {
-                viewHolder.rightValueTextView.text = item.rightValue
-                viewHolder.rightValueTextView.setTextAppearance(getItemStyle(item.rightColor))
-            }
-            if (item.rightDelta?.isNotEmpty() == true) {
-                viewHolder.rightDeltaTextView.text = item.rightDelta
-                viewHolder.rightDeltaTextView.setTextAppearance(getDeltaStyle(item.rightDelta!!))
-            }
-        }
+    private fun setValues(
+        nameTextView: TextView,
+        valueTextView: TextView,
+        deltaTextView: TextView,
+        @StringRes titleResId: Int,
+        value: String?,
+        color: StatisticsBuilder.Companion.StatisticColor,
+        delta: String?
+    ) {
+        val ctx = nameTextView.context
 
-        if (item.middleTitleResId != 0) {
-            viewHolder.middleNameTextView.text = item.middleTitleResId.let { ctx.getString(it) }
-            if (item.middleValue?.isNotEmpty() == true) {
-                viewHolder.middleValueTextView.text = item.middleValue
-                viewHolder.middleValueTextView.setTextAppearance(getItemStyle(item.middleColor))
+        if (titleResId != 0) {
+            nameTextView.text = titleResId.let { ctx.getString(it) }
+            if (value?.isNotEmpty() == true) {
+                valueTextView.text = value
+                valueTextView.setTextAppearance(getItemStyle(color))
             }
-            if (item.middleDelta?.isNotEmpty() == true) {
-                viewHolder.middleDeltaTextView.text = item.middleDelta
-                viewHolder.middleDeltaTextView.setTextAppearance(getDeltaStyle(item.middleDelta!!))
+            if (delta?.isNotEmpty() == true) {
+                deltaTextView.text = delta
+                deltaTextView.setTextAppearance(getDeltaStyle(delta))
             }
         }
     }

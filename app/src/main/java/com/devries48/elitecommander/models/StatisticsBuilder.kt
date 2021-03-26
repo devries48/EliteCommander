@@ -31,7 +31,7 @@ class StatisticsBuilder {
             }
 
             val formattedValue = formatValue(value, format)
-            val formattedDelta = delta?.let { formatValue(it, format, formatZero = false, addPlus = true) }
+            val formattedDelta = delta?.let { formatValue(it, format, formatZero = false, showPlus = true) }
 
             when (pos) {
                 StatisticPosition.LEFT -> {
@@ -60,23 +60,17 @@ class StatisticsBuilder {
         value: Any,
         format: StatisticFormat,
         formatZero: Boolean = true,
-        addPlus: Boolean = false
+        showPlus: Boolean = false
     ): String? {
-        if (!formatZero) when (value) {
-            is Int -> if (value == 0) return null
-            is Long -> if (value == 0L) return null
-            is Double -> if (value == 0.0) return null
-        }
+        if (!formatZero && isZero(value)) return null
 
         val formatted = when (format) {
-            StatisticFormat.CURRENCY -> {
-                when (value) {
-                    is Int -> formatCurrency(value)
-                    is Long -> formatCurrency(value)
-                    is Double -> formatCurrency(value)
+            StatisticFormat.CURRENCY -> when (value) {
+                is Int -> formatCurrency(value)
+                is Long -> formatCurrency(value)
+                is Double -> formatCurrency(value)
 
-                    else -> value.toString()
-                }
+                else -> value.toString()
             }
             StatisticFormat.DOUBLE -> {
                 when (value) {
@@ -85,25 +79,18 @@ class StatisticsBuilder {
                     else -> value.toString()
                 }
             }
-            StatisticFormat.TIME -> {
-                formatHours(value as Int)
-            }
-            StatisticFormat.INTEGER -> {
-                formatInteger(value as Int)
-            }
-            StatisticFormat.TONS -> {
-                formatInteger(value as Int) + " TONS"
-            }
+            StatisticFormat.TIME -> formatHours(value as Int)
+            StatisticFormat.INTEGER -> formatInteger(value as Int)
+            StatisticFormat.TONS -> formatInteger(value as Int) + " TONS"
             else -> value.toString()
         }
 
-        if (addPlus)
-            if (value is Int && value > 0 || value is Long && value > 0L || value is Double && value > 0.0)
-                return "+$formatted"
-
-        return formatted
+        return addPlus(formatted, value, showPlus)
     }
 
+    private fun addPlus(formatted: String, value: Any, showPlus: Boolean): String {
+        return if (showPlus && (value is Int && value > 0 || value is Long && value > 0L || value is Double && value > 0.0)) "+$formatted" else formatted
+    }
 
     fun post() {
         statistics.postValue(mStatisticsList)
@@ -163,6 +150,15 @@ class StatisticsBuilder {
         fun <T> formatDouble(value: T): String {
             val formatter = DecimalFormat("###,###,###.#")
             return formatter.format(value)
+        }
+
+        private fun <T> isZero(value: T): Boolean {
+            when (value) {
+                is Int -> if (value == 0) return true
+                is Long -> if (value == 0L) return true
+                is Double -> if (value == 0.0) return true
+            }
+            return false
         }
 
         @Suppress("UNCHECKED_CAST")

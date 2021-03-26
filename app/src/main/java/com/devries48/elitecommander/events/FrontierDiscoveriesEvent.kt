@@ -7,9 +7,9 @@ data class FrontierDiscoveriesEvent(
 )
 
 data class FrontierDiscoverySummary(
-    var DiscoveryTotal: Int,
-    var MappedTotal: Int,
-    val WasDiscovered: Int,
+    var discoveryTotal: Int,
+    var mappedTotal: Int,
+    val wasDiscovered: Int,
     val wasMapped: Int,
     var efficiencyBonusTotal: Int,
     var firstDiscoveryTotal: Int,

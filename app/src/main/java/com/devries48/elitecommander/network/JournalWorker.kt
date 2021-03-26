@@ -138,12 +138,7 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                             else -> mCurrentDiscoveriesDate = journalDate
                         }
                     }
-                    206 -> // Partial content, wait and try again...
-                    {
-                        delay(1000)
-                        processJournal(journalDate)
-                    }
-                    429 -> // Too many request, wait and try again
+                    206, 429 -> // Partial content, wait and try again / // Too many request, wait and try again
                     {
                         delay(1000)
                         processJournal(journalDate)
@@ -435,8 +430,8 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                     currentDiscovery.firstDiscoveredAndMappedCount += addFirstDiscoveredAndMapped
                     currentDiscovery.estimatedValue += estimatedValue
 
-                    summary.DiscoveryTotal += 1 - addFirstDiscovered - addFirstDiscoveredAndMapped
-                    summary.MappedTotal += addMapCount - addFirstMapped - addFirstDiscoveredAndMapped
+                    summary.discoveryTotal += 1 - addFirstDiscovered - addFirstDiscoveredAndMapped
+                    summary.mappedTotal += addMapCount - addFirstMapped - addFirstDiscoveredAndMapped
                     summary.efficiencyBonusTotal += addBonusCount
                     summary.firstDiscoveryTotal += addFirstDiscovered
                     summary.firstMappedTotal += addFirstMapped
@@ -621,7 +616,7 @@ class JournalWorker(frontierApi: FrontierInterface?) {
         val planetClass: String?,
         @SerializedName("StarType")
         val starType: String?,
-        @SerializedName("WasDiscovered")
+        @SerializedName("wasDiscovered")
         var wasDiscovered: Boolean = false,
         @SerializedName("WasMapped")
         var wasMapped: Boolean = false,

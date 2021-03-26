@@ -1,5 +1,6 @@
 package com.devries48.elitecommander.adapters
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -44,65 +45,78 @@ class DiscoveriesRecyclerAdapter(var data: List<FrontierDiscovery>?) :
             data?.size!!
     }
 
-    // Replace the contents of a view (invoked by the layout manager)
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        val ctx = viewHolder.bodyNameTextView.context
         val item = data?.get(position)
+        val ctx = viewHolder.bodyNameTextView.context
 
         if (item != null) {
-            val bodyResources = NamingUtils.getDiscoveryBodyResources(item.body, item.star)
 
-            if (bodyResources.first == 0)
-                viewHolder.bodyNameTextView.text = if (item.star.isEmpty()) item.body else item.star
-            else
-                viewHolder.bodyNameTextView.text = ctx.getString(bodyResources.second)
-
-            viewHolder.bodyImageView.setImageResource(bodyResources.first)
-
-            val totalFirstMapped: Int = item.firstMappedCount + item.firstDiscoveredAndMappedCount
-            val totalFirstDiscovered: Int =
-                item.firstDiscoveredCount + item.firstDiscoveredAndMappedCount
-
-            viewHolder.discoveredTextView.text =
-                String.format(ctx.getString(R.string.format_number), item.discoveryCount)
-
-            // No first discoveries and mappings, hide the 'first' label
-            if (item.firstDiscoveredCount + item.firstMappedCount + item.firstDiscoveredAndMappedCount == 0)
-                viewHolder.firstDiscoveredLabelTextView.visibility = View.GONE
-            else
-                viewHolder.firstDiscoveredLabelTextView.visibility = View.VISIBLE
-
-            // No first discoveries, display empty string
-            if (totalFirstDiscovered == 0)
-                viewHolder.firstDiscoveredTextView.text = ""
-            else
-                viewHolder.firstDiscoveredTextView.text =
-                    String.format(ctx.getString(R.string.format_number), totalFirstDiscovered)
-
-            if (item.mappedCount + totalFirstMapped == 0) {
-                viewHolder.mappedTitleTextView.visibility = View.GONE
-                viewHolder.mappedTextView.text = ""
-                viewHolder.firstMappedTextView.text = ""
-            } else {
-                viewHolder.mappedTitleTextView.visibility = View.VISIBLE
-
-                if (item.mappedCount == 0)
-                    viewHolder.mappedTextView.text = ""
-                else
-                    viewHolder.mappedTextView.text =
-                        String.format(ctx.getString(R.string.format_number), item.mappedCount)
-
-                if (totalFirstMapped == 0)
-                    viewHolder.firstMappedTextView.text = ""
-                else
-                    viewHolder.firstMappedTextView.text =
-                        String.format(ctx.getString(R.string.format_number), totalFirstMapped)
-            }
+            displayBody(item,ctx, viewHolder)
+            displayDiscovered(item,ctx, viewHolder)
+            displayMapped(item, ctx,viewHolder)
 
             viewHolder.valueTextView.text =
                 String.format(ctx.getString(R.string.format_currency), item.estimatedValue)
         }
     }
+
+    private fun displayBody(item: FrontierDiscovery, ctx:Context, view: ViewHolder) {
+        val bodyResources = NamingUtils.getDiscoveryBodyResources(item.body, item.star)
+
+        if (bodyResources.first == 0)
+            view.bodyNameTextView.text = if (item.star.isEmpty()) item.body else item.star
+        else
+            view.bodyNameTextView.text = ctx.getString(bodyResources.second)
+
+        view.bodyImageView.setImageResource(bodyResources.first)
+    }
+
+    private fun displayDiscovered(item: FrontierDiscovery, ctx:Context, view: ViewHolder) {
+        val totalFirstDiscovered: Int =
+            item.firstDiscoveredCount + item.firstDiscoveredAndMappedCount
+
+        view.discoveredTextView.text =
+            String.format(ctx.getString(R.string.format_number), item.discoveryCount)
+
+        // No first discoveries and mappings, hide the 'first' label
+        if (item.firstDiscoveredCount + item.firstMappedCount + item.firstDiscoveredAndMappedCount == 0)
+            view.firstDiscoveredLabelTextView.visibility = View.GONE
+        else
+            view.firstDiscoveredLabelTextView.visibility = View.VISIBLE
+
+        // No first discoveries, display empty string
+        if (totalFirstDiscovered == 0)
+            view.firstDiscoveredTextView.text = ""
+        else
+            view.firstDiscoveredTextView.text =
+                String.format(ctx.getString(R.string.format_number), totalFirstDiscovered)
+    }
+
+
+    private fun displayMapped(item: FrontierDiscovery, ctx:Context, view:ViewHolder) {
+        val totalFirstMapped: Int = item.firstMappedCount + item.firstDiscoveredAndMappedCount
+
+        if (item.mappedCount + totalFirstMapped == 0) {
+            view.mappedTitleTextView.visibility = View.GONE
+            view.mappedTextView.text = ""
+            view.firstMappedTextView.text = ""
+        } else {
+            view.mappedTitleTextView.visibility = View.VISIBLE
+
+            if (item.mappedCount == 0)
+                view.mappedTextView.text = ""
+            else
+                view.mappedTextView.text =
+                    String.format(ctx.getString(R.string.format_number), item.mappedCount)
+
+            if (totalFirstMapped == 0)
+                view.firstMappedTextView.text = ""
+            else
+                view.firstMappedTextView.text =
+                    String.format(ctx.getString(R.string.format_number), totalFirstMapped)
+        }
+    }
+
 
     fun updateList(discoveries: List<FrontierDiscovery>) {
         data = discoveries

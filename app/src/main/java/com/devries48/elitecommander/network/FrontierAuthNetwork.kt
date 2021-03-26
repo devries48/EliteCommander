@@ -24,11 +24,6 @@ open class FrontierAuthNetwork private constructor() : Serializable {
     private var codeChallenge: String? = null
     private var requestState: String? = null
 
-    //Make singleton from serialize and deserialize operation.
-    protected fun readResolve(): FrontierAuthNetwork? {
-        return getInstance()
-    }
-
     private fun generateCodeVerifierAndChallenge() {
         val sr = SecureRandom()
         val code = ByteArray(32)

@@ -1,31 +1,33 @@
+@file:Suppress("unused")
+
 package com.devries48.elitecommander.models
 import com.google.gson.annotations.SerializedName
 
 data class CodexEntry(
     @SerializedName("Category")
-    val category: String, // $Codex_Category_StellarBodies;
+    val category: String,
     @SerializedName("Category_Localised")
-    val categoryLocalised: String, // Astronomical Bodies
+    val categoryLocalised: String,
     @SerializedName("EntryID")
-    val entryID: Int, // 1101001
-    val event: String, // com.devries48.elitecommander.models.CodexEntry
+    val entryID: Int,
+    val event: String,
     @SerializedName("IsNewEntry")
-    val isNewEntry: Boolean, // true
+    val isNewEntry: Boolean,
     @SerializedName("Name")
-    val name: String, // $Codex_Ent_TTS_Type_Name;
+    val name: String,
     @SerializedName("Name_Localised")
-    val nameLocalised: String, // T Tauri Star
+    val nameLocalised: String,
     @SerializedName("Region")
-    val region: String, // $Codex_RegionName_2;
+    val region: String,
     @SerializedName("Region_Localised")
-    val regionLocalised: String, // Empyrean Straits
+    val regionLocalised: String,
     @SerializedName("SubCategory")
-    val subCategory: String, // $Codex_SubCategory_Stars;
+    val subCategory: String,
     @SerializedName("SubCategory_Localised")
-    val subCategoryLocalised: String, // Stars
+    val subCategoryLocalised: String,
     @SerializedName("System")
-    val system: String, // Dryoi Pri FB-W e2-1168
+    val system: String,
     @SerializedName("SystemAddress")
-    val systemAddress: Long, // 5017828321500
-    val timestamp: String // 2021-01-17T18:04:08Z
+    val systemAddress: Long,
+    val timestamp: String
 )
