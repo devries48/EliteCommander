@@ -87,10 +87,7 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController()
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            mNavDestinationId = destination.id
-
-            // if (!mIsLoggedIn) login() else if (mNavDestinationId == R.id.mainFragment) navController.navigate(mNavDestinationId)
-            if (mNavDestinationId == R.id.mainFragment)  navController.navigate(mNavDestinationId)
+            if (destination.id == R.id.mainFragment) navController.navigate(destination.id)
         }
     }
 

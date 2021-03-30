@@ -9,10 +9,11 @@ object DiscoveryValueCalculator {
 
     /*
  *  @SEE https://forums.frontier.co.uk/showthread.php/232000-Exploration-value-formulae/
- */
-    //TODO: Main star value = Normal Main Star Calculation + SUM(MAX(Planetary Body FSS Value / 3.0, 500)) + SUM(Stellar Body FSS Value / 3.0)
-    //TODO: There is a bonus of 1k per body for fully FSSing the system (so 8k), and a bonus of 10k per mappable body for fully mapping the system (so 70k).
 
+ * Not implemented calculations:
+ * Main star value = Normal Main Star Calculation + SUM(MAX(Planetary Body FSS Value / 3.0, 500)) + SUM(Stellar Body FSS Value / 3.0)
+ * There is a bonus of 1k per body for fully FSSing the system (so 8k), and a bonus of 10k per mappable body for fully mapping the system (so 70k).
+*/
     @JvmStatic
     fun calculate(
         discovery: JournalWorker.Discovery,

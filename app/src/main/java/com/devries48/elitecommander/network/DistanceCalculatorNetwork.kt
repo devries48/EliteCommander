@@ -4,6 +4,7 @@ import android.content.Context
 import com.devries48.elitecommander.declarations.enqueueWrap
 import com.devries48.elitecommander.events.DistanceSearchEvent
 import com.devries48.elitecommander.interfaces.EdsmInterface
+import com.devries48.elitecommander.models.response.EdsmSystemCoordinatesResponse
 import org.greenrobot.eventbus.EventBus
 import kotlin.math.pow
 import kotlin.math.round
@@ -28,42 +29,39 @@ object DistanceCalculatorNetwork {
                     onFailure?.let { it1 -> it1(Exception(msg)) }
                     return@response
                 }
+
                 val coords = body[0]?.information
                 if (coords == null) {
                     onFailure?.let { it1 -> it1(Exception("Invalid EDSM call")) }
                     return@response
                 }
-                val distance = sqrt(coords.x.pow(2) + coords.y.pow(2) + coords.z.pow(2))
 
-                val distanceSearch: DistanceSearchEvent = try {
-                    DistanceSearchEvent(
-                        true,
-                        round(distance),
-                        "Sol",
-                        system
-                    )
-                } catch (ex: Exception) {
-                    DistanceSearchEvent(
-                        false, 0.0, "",
-                        ""
-                    )
-                }
-                EventBus.getDefault().post(distanceSearch)
+                handleDistanceCalculation(system, coords)
             }
             onFailure = {
-                val success =
-                    it?.message == "400"  // newly discovered system, not added to eddb (yet!)
-                val distanceSearch = DistanceSearchEvent(
-                    success, 0.0, "",
-                    ""
-                )
-                if (!success)
-                    println("Distance calculation failed: " + it?.message)
-
-                EventBus.getDefault().post(distanceSearch)
+                handleDistanceFailure(it)
             }
         }
-
     }
 
+    private fun handleDistanceCalculation(system: String, coords: EdsmSystemCoordinatesResponse) {
+        val distance = sqrt(coords.x.pow(2) + coords.y.pow(2) + coords.z.pow(2))
+
+        val distanceSearch: DistanceSearchEvent = try {
+            DistanceSearchEvent(true, round(distance), "Sol", system)
+        } catch (ex: Exception) {
+            DistanceSearchEvent(false, 0.0, "", "")
+        }
+        EventBus.getDefault().post(distanceSearch)
+    }
+
+    private fun handleDistanceFailure(it: Throwable?) {
+        // newly discovered system, not added to eddb (yet!)
+        val success = it?.message == "400"
+        val distanceSearch = DistanceSearchEvent(success, 0.0, "", "")
+        if (!success)
+            println("Distance calculation failed: " + it?.message)
+
+        EventBus.getDefault().post(distanceSearch)
+    }
 }

@@ -29,7 +29,7 @@ class CommanderNetwork {
     }
 
     /**
-     *  - Loads profile,capture FrontierProfileEvent for the result.
+     *  - Loads profile & fleet, capture FrontierProfileEvent & FrontierFleetEvent for the result.
      */
     fun loadProfile() {
         mFrontierApi?.profileRaw?.enqueueWrap {
@@ -59,30 +59,8 @@ class CommanderNetwork {
                     return@response
                 }
 
-                val frontierProfileEvent: FrontierProfileEvent
-
                 try {
-                    val commanderName: String = profileResponse.commander?.name!!
-                    val credits: Long = profileResponse.commander?.credits!!
-                    val debt: Long = profileResponse.commander?.debt!!
-                    val systemName = profileResponse.lastSystem?.name!!
-                    val hull = profileResponse.ship?.health?.hull!!
-                    val integrity = 1000000 - profileResponse.ship?.health?.integrity!!
-
-                    frontierProfileEvent = profileResponse.commander?.let {
-                        FrontierProfileEvent(
-                            true,
-                            commanderName,
-                            credits,
-                            debt,
-                            systemName,
-                            hull,
-                            integrity
-                        )
-                    }!!
-                    sendResultMessage(frontierProfileEvent)
-
-                    // FrontierFleetEvent
+                    handleProfileParsing(profileResponse)
                     if (rawResponse != null) handleFleetParsing(this@CommanderNetwork, rawResponse)
                 } catch (ex: Exception) {
                     onFailure?.let { it1 -> it1(Exception(ex)) }
@@ -115,6 +93,29 @@ class CommanderNetwork {
         if (systemName != null && systemName != "Sol") {
             DistanceCalculatorNetwork.getDistanceToSol(App.getContext(), systemName)
         }
+    }
+
+    private fun handleProfileParsing(profileResponse: FrontierProfileResponse) {
+        val frontierProfileEvent: FrontierProfileEvent
+        val commanderName: String = profileResponse.commander?.name!!
+        val credits: Long = profileResponse.commander?.credits!!
+        val debt: Long = profileResponse.commander?.debt!!
+        val systemName = profileResponse.lastSystem?.name!!
+        val hull = profileResponse.ship?.health?.hull!!
+        val integrity = 1000000 - profileResponse.ship?.health?.integrity!!
+
+        frontierProfileEvent = profileResponse.commander?.let {
+            FrontierProfileEvent(
+                true,
+                commanderName,
+                credits,
+                debt,
+                systemName,
+                hull,
+                integrity
+            )
+        }!!
+        sendResultMessage(frontierProfileEvent)
     }
 
     private fun handleFleetParsing(commanderNetwork: CommanderNetwork, rawProfileResponse: JsonObject) {
@@ -163,7 +164,7 @@ class CommanderNetwork {
         commanderNetwork.sendResultMessage(FrontierFleetEvent(true, shipsList))
     }
 
-    private fun sendResultMessage(data: Any?) {
+        private fun sendResultMessage(data: Any?) {
         EventBus.getDefault().post(data)
     }
 

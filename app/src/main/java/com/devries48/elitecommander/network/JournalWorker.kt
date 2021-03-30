@@ -523,7 +523,7 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                 "FSSAllBodiesFound",
                 "FSSDiscoveryScan",
                 "FSDJump",
-                "FSDTarget",  // RemainingJumpsInRoute (multiple)
+                "FSDTarget",
                 "FSSSignalDiscovered",
                 "FuelScoop",
                 "HeatDamage",
