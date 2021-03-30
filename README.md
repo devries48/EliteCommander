@@ -7,7 +7,6 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/48e342cdcbfb66584fca/maintainability)](https://codeclimate.com/github/devries48/EliteCommander/maintainability)
 [![BCH compliance](https://bettercodehub.com/edge/badge/devries48/EliteCommander?branch=master)](https://bettercodehub.com/)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=devries48_EliteCommander&metric=code_smells)](https://sonarcloud.io/dashboard?id=devries48_EliteCommander)
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=devries48_EliteCommander&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=devries48_EliteCommander)
 ## Table of content
 - [FUNCTIONALITY](#functionality)
 - [API's USED](#apis-used)
