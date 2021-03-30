@@ -24,17 +24,12 @@ object RanksAdapter {
     @JvmStatic
     fun rankTextColor(view: TextView, model: RankModel) {
         val context: Context = view.context
-        var color = getAssociatedColor(context, model)
-
-        if (view.id == R.id.titleTextView || view.id == R.id.reputationText || view.id == R.id.repText)
-            color = darkenColor(color)
+        val color = getAssociatedColor(context, model, view)
 
         view.setTextColor(color)
 
         if (view.ellipsize==TextUtils.TruncateAt.MARQUEE)
-        {
             view.isSelected=true
-        }
     }
 
     /**
@@ -45,7 +40,7 @@ object RanksAdapter {
     @JvmStatic
     fun rankProgressTint(view: ProgressBar, model: RankModel) {
         val context: Context = view.context
-        var color = getAssociatedColor(context, model)
+        var color = getAssociatedColor(context, model, view)
 
         if (view.id == R.id.reputationBar)
             color = darkenColor(color)
@@ -62,11 +57,8 @@ object RanksAdapter {
         if (view.id == R.id.progressBar && model.name.isEmpty() || view.id == R.id.progressTextView && model.name.isEmpty()) // Alliance has no ranks
             view.visibility = View.GONE
         else {
-            val isEndRank =
-                !model.isFactionRank && model.rank.value == 8 || model.isFactionRank && model.rank.value == 13
-            val isReputationView =
-                view.id == R.id.reputationText || view.id == R.id.repText || view.id == R.id.reputationBar
-
+            val isEndRank = isEndRank(model)
+            val isReputationView = isReputationView(view)
             view.visibility =
                 if (isEndRank || isReputationView && !model.isFactionRank || model.rank.name.isEmpty()) View.GONE else View.VISIBLE
         }
@@ -94,8 +86,8 @@ object RanksAdapter {
         })
     }
 
-    private fun getAssociatedColor(context: Context, model: RankModel): Int {
-        return when (model.titleResId) {
+    private fun getAssociatedColor(context: Context, model: RankModel, view: View): Int {
+        var color=  when (model.titleResId) {
             R.string.rank_combat -> ContextCompat.getColor(context, R.color.elite_orange)
             R.string.rank_trading -> ContextCompat.getColor(context, R.color.elite_trading)
             R.string.rank_explore -> ContextCompat.getColor(context, R.color.elite_exploration)
@@ -104,5 +96,18 @@ object RanksAdapter {
             R.string.rank_alliance -> ContextCompat.getColor(context, R.color.elite_alliance)
             else -> ContextCompat.getColor(context, R.color.elite_empire)
         }
+
+        if ( view.id == R.id.titleTextView || view.id == R.id.reputationText || view.id == R.id.repText)
+            color = darkenColor(color)
+
+        return color
+    }
+
+    private fun isReputationView(view: View): Boolean {
+        return view.id == R.id.reputationText || view.id == R.id.repText || view.id == R.id.reputationBar
+    }
+
+    private fun isEndRank(model: RankModel): Boolean {
+        return !model.isFactionRank && model.rank.value == 8 || model.isFactionRank && model.rank.value == 13
     }
 }

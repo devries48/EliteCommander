@@ -72,7 +72,16 @@ open class FrontierAuthNetwork private constructor() : Serializable {
                 "&redirect_uri=elitecommander://oauth"
     }
 
-    fun sendTokensRequest(ctx: Context, authCode: String?, state: String) {
+    fun signOn(ctx: Context) {
+        val authCode = OAuthUtils.getAccessToken(ctx)
+        if (authCode !=null){
+            generateCodeVerifierAndChallenge()
+            generateState()
+            sendTokensRequest(ctx, authCode, requestState)
+        }
+    }
+
+    fun sendTokensRequest(ctx: Context, authCode: String?, state: String?) {
         // Check if same state
         if (state != requestState) {
             EventBus.getDefault().post(
@@ -86,9 +95,7 @@ open class FrontierAuthNetwork private constructor() : Serializable {
         val retrofit: RetrofitClient? = RetrofitClient.getInstance()
         val frontierAuth = retrofit?.getFrontierAuthRetrofit(ctx)
         val requestBody: FrontierAccessTokenRequestBody =
-            getAuthorizationCodeRequestBody(
-                codeVerifier, authCode
-            )
+            getAuthorizationCodeRequestBody(codeVerifier, authCode)
 
         frontierAuth?.getAccessToken(requestBody)?.enqueueWrap {
             onResponse = {

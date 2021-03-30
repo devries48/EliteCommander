@@ -51,27 +51,32 @@ class DiscoveriesRecyclerAdapter(var data: List<FrontierDiscovery>?) :
 
         if (item != null) {
 
-            displayBody(item,ctx, viewHolder)
-            displayDiscovered(item,ctx, viewHolder)
-            displayMapped(item, ctx,viewHolder)
+            displayBody(item, ctx, viewHolder)
+            displayDiscovered(item, ctx, viewHolder)
+            displayMapped(item, ctx, viewHolder)
 
             viewHolder.valueTextView.text =
                 String.format(ctx.getString(R.string.format_currency), item.estimatedValue)
         }
     }
 
-    private fun displayBody(item: FrontierDiscovery, ctx:Context, view: ViewHolder) {
+    private fun displayBody(item: FrontierDiscovery, ctx: Context, view: ViewHolder) {
         val bodyResources = NamingUtils.getDiscoveryBodyResources(item.body, item.star)
 
-        if (bodyResources.first == 0)
-            view.bodyNameTextView.text = if (item.star.isEmpty()) item.body else item.star
-        else
-            view.bodyNameTextView.text = ctx.getString(bodyResources.second)
+        try {
+            if (bodyResources.first == 0)
+                view.bodyNameTextView.text = if (item.star.isEmpty()) item.body else item.star
+            else
+                view.bodyNameTextView.text = ctx.getString(bodyResources.second)
 
-        view.bodyImageView.setImageResource(bodyResources.first)
+            view.bodyImageView.setImageResource(bodyResources.first)
+
+        } catch (e: Exception) {
+            println("ff")
+        }
     }
 
-    private fun displayDiscovered(item: FrontierDiscovery, ctx:Context, view: ViewHolder) {
+    private fun displayDiscovered(item: FrontierDiscovery, ctx: Context, view: ViewHolder) {
         val totalFirstDiscovered: Int =
             item.firstDiscoveredCount + item.firstDiscoveredAndMappedCount
 
@@ -93,7 +98,7 @@ class DiscoveriesRecyclerAdapter(var data: List<FrontierDiscovery>?) :
     }
 
 
-    private fun displayMapped(item: FrontierDiscovery, ctx:Context, view:ViewHolder) {
+    private fun displayMapped(item: FrontierDiscovery, ctx: Context, view: ViewHolder) {
         val totalFirstMapped: Int = item.firstMappedCount + item.firstDiscoveredAndMappedCount
 
         if (item.mappedCount + totalFirstMapped == 0) {

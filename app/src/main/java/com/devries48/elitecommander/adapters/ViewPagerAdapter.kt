@@ -27,7 +27,7 @@ class ViewPagerAdapter(list: ArrayList<Fragment>, fm: FragmentManager, lifecycle
         return mFragmentList[position].hashCode().toLong()
     }
 
-    fun removeItem(position: Int) {
+    fun removeRedirectPage(position: Int) {
         mFragmentManager?.beginTransaction()?.remove(mFragmentList[position])?.commit()
         mFragmentList.removeAt(position)
         notifyItemRangeRemoved(position, itemCount)

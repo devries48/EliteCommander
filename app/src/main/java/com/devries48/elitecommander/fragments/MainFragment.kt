@@ -23,10 +23,10 @@ class MainFragment : Fragment() {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
 
         val fragmentList = arrayListOf(
-            RedirectFragment(),
             CommanderFragment(),
             DiscoveriesFragment(),
-            ProfitFragment()
+            ProfitFragment(),
+            StatisticsFragment()
         )
 
         mAdapter = ViewPagerAdapter(
@@ -47,7 +47,7 @@ class MainFragment : Fragment() {
     }
 
     fun removeItem() {
-        mAdapter?.removeItem(0)
+        mAdapter?.removeRedirectPage(0)
 
     }
 }

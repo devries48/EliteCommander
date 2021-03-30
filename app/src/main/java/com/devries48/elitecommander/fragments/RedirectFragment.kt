@@ -37,8 +37,8 @@ class RedirectFragment : Fragment() {
     private fun shrinkImage(view: ImageView) {
         val scaleDownX = ObjectAnimator.ofFloat(view, "scaleX", 0.5f)
         val scaleDownY = ObjectAnimator.ofFloat(view, "scaleY", 0.5f)
-        scaleDownX.duration = 2000
-        scaleDownY.duration = 2000
+        scaleDownX.duration = 200
+        scaleDownY.duration = 200
 
         val scaleDown = AnimatorSet()
         scaleDown.play(scaleDownX).with(scaleDownY)

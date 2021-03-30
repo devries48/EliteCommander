@@ -21,6 +21,7 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -81,14 +82,13 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun launchAuthCodeStep() {
-        val url = FrontierAuthNetwork.getInstance()?.getAuthorizationUrl(applicationContext)
+        val url = FrontierAuthNetwork.getInstance()?.getAuthorizationUrl(this)
         if (url != null) launchBrowserIntent(url)
         finish()
     }
 
     private fun launchTokensStep(authCode: String, state: String) {
-        // Tokens exchange step
-        FrontierAuthNetwork.getInstance()?.sendTokensRequest(applicationContext, authCode, state)
+        FrontierAuthNetwork.getInstance()?.sendTokensRequest(this, authCode, state)
     }
 
     private fun launchBrowserIntent(url: String) {

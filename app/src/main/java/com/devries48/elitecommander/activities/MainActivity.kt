@@ -1,5 +1,6 @@
 package com.devries48.elitecommander.activities
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -13,6 +14,7 @@ import com.devries48.elitecommander.R
 import com.devries48.elitecommander.databinding.ActivityMainBinding
 import com.devries48.elitecommander.events.AlertEvent
 import com.devries48.elitecommander.events.FrontierAuthNeededEvent
+import com.devries48.elitecommander.events.FrontierTokensEvent
 import com.devries48.elitecommander.fragments.CommanderViewModel
 import com.devries48.elitecommander.fragments.CommanderViewModelFactory
 import com.devries48.elitecommander.fragments.MainFragment
@@ -28,6 +30,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var mCommanderNetwork: CommanderNetwork
+
     private var mCommanderViewModel: CommanderViewModel? = null
     private val mNavController by lazy { findNavController() }
     private var mNavDestinationId: Int = 0
@@ -35,7 +38,10 @@ class MainActivity : AppCompatActivity() {
     private var mAlertDialog: androidx.appcompat.app.AlertDialog? = null
 
     private var mIsLoggedIn by Delegates.observable(false) { _, _, newValue ->
-        if (newValue) setupActivity()
+        if (newValue) {
+            setupViewModel()
+            hideRedirectFragment()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,6 +49,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupNavigation()
+        setupViewModel()
     }
 
     public override fun onStart() {
@@ -58,15 +65,7 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == FRONTIER_LOGIN_REQUEST_CODE) {
-            mIsLoggedIn = true
-        }
-    }
-
-    private fun setupActivity() {
-        hideRedirectFragment()
-        if (mIsLoggedIn)
-            setupViewModel()
+        if (requestCode == FRONTIER_LOGIN_REQUEST_CODE) mIsLoggedIn = true
     }
 
     private fun setupViewModel() {
@@ -87,19 +86,11 @@ class MainActivity : AppCompatActivity() {
     private fun setupNavigation() {
         val navController = findNavController()
 
-        //TODO: check connection (refresh?) and set IsUserLoggedIn
-
         navController.addOnDestinationChangedListener { _, destination, _ ->
             mNavDestinationId = destination.id
 
-            if (!mIsLoggedIn) {
-                val intent = Intent(this@MainActivity, LoginActivity::class.java)
-                startActivityForResult(intent, FRONTIER_LOGIN_REQUEST_CODE)
-            } else {
-                if (mNavDestinationId == R.id.mainFragment) {
-                    navController.navigate(mNavDestinationId)
-                }
-            }
+            // if (!mIsLoggedIn) login() else if (mNavDestinationId == R.id.mainFragment) navController.navigate(mNavDestinationId)
+            if (mNavDestinationId == R.id.mainFragment)  navController.navigate(mNavDestinationId)
         }
     }
 
@@ -109,7 +100,18 @@ class MainActivity : AppCompatActivity() {
         return navHostFragment.navController
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    fun onFrontierTokensEvent(tokens: FrontierTokensEvent) {
+        if (tokens.success) {
+            setResult(Activity.RESULT_OK)
+            finish()
+        } else {
+            val intent = Intent(this@MainActivity, LoginActivity::class.java)
+            startActivityForResult(intent, FRONTIER_LOGIN_REQUEST_CODE)
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
     fun onFrontierAuthNeededEvent(frontierAuthNeededEvent: FrontierAuthNeededEvent) {
         mIsLoggedIn = false
         storeUpdatedTokens(this, "", "")
@@ -138,7 +140,7 @@ class MainActivity : AppCompatActivity() {
                 var message = ""
                 for ((index, it) in mAlertList.withIndex()) {
                     message += "\u2022 " + this.getString(it)
-                    if (index< mAlertList.count()-1)
+                    if (index < mAlertList.count() - 1)
                         message += "\n"
                 }
                 mAlertDialog!!.setMessage(message)

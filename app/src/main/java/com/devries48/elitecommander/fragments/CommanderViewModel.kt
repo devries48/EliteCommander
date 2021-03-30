@@ -104,7 +104,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
         return mProfitChart
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.ASYNC)
     fun onFrontierProfileEvent(profile: FrontierProfileEvent) {
         GlobalScope.launch {
             if (!profile.success) {
@@ -115,7 +115,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.ASYNC)
     fun onFrontierRanksEvent(ranks: FrontierRanksEvent) {
         GlobalScope.launch {
             if (!ranks.success) {
@@ -127,7 +127,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.ASYNC)
     fun onFrontierFleetEvent(fleet: FrontierFleetEvent) {
         GlobalScope.launch {
             if (!fleet.success) {
@@ -138,7 +138,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.ASYNC)
     fun onDistanceSearch(distanceSearch: DistanceSearchEvent) {
         GlobalScope.launch {
             if (!distanceSearch.success) {
@@ -149,7 +149,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.ASYNC)
     fun onCurrentDiscoveries(discoveries: FrontierDiscoveriesEvent) {
         GlobalScope.launch {
             if (!discoveries.success) {
@@ -160,7 +160,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.ASYNC)
     fun onStatistics(statistics: FrontierStatisticsEvent) {
         GlobalScope.launch {
             if (!statistics.success) {
@@ -412,29 +412,14 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
         )
 
         var lowPercentage = 0f
-        var lowTotal = 0L
         var percentageTotal = 0f
 
         models.forEach {
-            if (it.percentage < 1.0) {
-                lowPercentage += it.percentage
-                lowTotal += it.amount
-            }
+            if (it.percentage < 0.1) lowPercentage += it.percentage
             percentageTotal += it.percentage
         }
-        models.first().percentage = 100f - percentageTotal
-
-        if (lowPercentage >= 1.0) {
-            models.removeAll { it.percentage < 1.0 }
-
-            models.add(
-                ProfitModel(
-                    OTHER,
-                    lowTotal,
-                    lowPercentage
-                )
-            )
-        }
+        models.first().percentage = 100f - percentageTotal + lowPercentage
+        models.removeAll { it.percentage < 0.1 }
 
         mProfitChart.postValue(models)
     }

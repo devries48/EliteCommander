@@ -338,9 +338,7 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                 val rawDied = rawEvents.lastOrNull { it.event == JOURNAL_EVENT_DIED }
                 if (rawDied != null) rawDiscoveries = rawDiscoveries.filter { it.timeStamp > rawDied.timeStamp }
 
-                if (rawDiscoveries.count() == 0) {
-                    sendEvent(FrontierDiscoveriesEvent(true, null, null))
-                }
+                if (rawDiscoveries.count() == 0) sendEvent(FrontierDiscoveriesEvent(true, null, null))
 
                 val discoveries = mutableListOf<Discovery>()
                 val mappings = mutableListOf<Mapping>()
@@ -373,7 +371,8 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                     var addProbeCount = 0
                     var hasEfficiencyBonus = false
 
-                    if (!discovery.wasDiscovered) addFirstDiscovered += 1
+                    if (!discovery.wasDiscovered)
+                        addFirstDiscovered += 1
 
                     if (map != null) {
                         addProbeCount += map.probesUsed
@@ -507,6 +506,8 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                 "CommunityGoal",
                 "CommunityGoalJoin",
                 "CommunityGoalReward",
+                "DatalinkScan",
+                "DatalinkVoucher",
                 "Docked",
                 "DockingCancelled",
                 "DockingDenied",
@@ -561,6 +562,7 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                 "NavRoute",
                 "Outfitting",
                 "Passengers",
+                "PayBounties",
                 "PayFines",
                 "Powerplay",
                 "PowerplaySalary",
@@ -616,10 +618,10 @@ class JournalWorker(frontierApi: FrontierInterface?) {
         val planetClass: String?,
         @SerializedName("StarType")
         val starType: String?,
-        @SerializedName("wasDiscovered")
-        var wasDiscovered: Boolean = false,
+        @SerializedName("WasDiscovered")
+        var wasDiscovered: Boolean = true,
         @SerializedName("WasMapped")
-        var wasMapped: Boolean = false,
+        var wasMapped: Boolean = true,
         @SerializedName("MassEM")
         var mass: Double? = 0.0,
         @SerializedName("StellarMass")

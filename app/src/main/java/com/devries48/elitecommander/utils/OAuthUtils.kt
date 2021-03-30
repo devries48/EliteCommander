@@ -4,6 +4,7 @@ package com.devries48.elitecommander.utils
 import android.content.Context
 import android.util.Log
 import com.devries48.elitecommander.BuildConfig
+import com.devries48.elitecommander.interfaces.FrontierAuthInterface
 import com.devries48.elitecommander.models.httpRequest.FrontierAccessTokenRequestBody
 import com.devries48.elitecommander.models.response.FrontierAccessTokenResponse
 import com.devries48.elitecommander.network.RetrofitClient
@@ -29,12 +30,12 @@ object OAuthUtils {
         )
     }
 
-    private fun getAccessToken(context: Context): String {
-        return SettingsUtils.getString(context, SettingsUtils.Key.ACCESS_TOKEN)!!
+    fun getAccessToken(context: Context): String? {
+        return SettingsUtils.getString(context, SettingsUtils.Key.ACCESS_TOKEN)
     }
 
-    private fun getRefreshToken(context: Context): String {
-        return SettingsUtils.getString(context, SettingsUtils.Key.REFRESH_TOKEN)!!
+    private fun getRefreshToken(context: Context): String? {
+        return SettingsUtils.getString(context, SettingsUtils.Key.REFRESH_TOKEN)
     }
 
     private fun getRefreshTokenRequestBody(ctx: Context): FrontierAccessTokenRequestBody {
@@ -61,15 +62,19 @@ object OAuthUtils {
     @Throws(IOException::class)
     fun makeRefreshRequest(ctx: Context): FrontierAccessTokenResponse? {
         val requestBody = getRefreshTokenRequestBody(ctx)
-        val retrofit = RetrofitClient.getInstance()
-        val frontierRetrofit = retrofit?.getFrontierAuthRetrofit(ctx)
-
-        if (frontierRetrofit != null) {
+        val auth= getAuthRetrofit(ctx)
+        if (auth != null) {
             val authResponse: Call<FrontierAccessTokenResponse> =
-                frontierRetrofit.getAccessToken(requestBody)
+                auth.getAccessToken(requestBody)
             return authResponse.execute().body()!!
         }
         return null
+    }
+
+    private fun getAuthRetrofit(ctx: Context): FrontierAuthInterface?
+    {
+        val retrofit = RetrofitClient.getInstance()
+        return retrofit?.getFrontierAuthRetrofit(ctx)
     }
 
     fun getRequestWithFrontierAuthorization(ctx: Context, chain: Interceptor.Chain): Request {
@@ -82,4 +87,5 @@ object OAuthUtils {
             )
         return requestBuilder.build()
     }
+
 }

@@ -222,4 +222,5 @@
     <string name="Frontier_journal_statistics">Frontier journal statistics</string>
     <string name="combat">Combat</string>
     <string name="other">Other</string>
+    <string name="statistics">Statistics</string>
 </resources>

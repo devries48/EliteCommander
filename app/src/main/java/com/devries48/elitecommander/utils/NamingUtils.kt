@@ -158,7 +158,7 @@ object NamingUtils {
             "m_redsupergiant" -> 702
 
             "l" -> 8
-            "_type" -> 9
+            "t" -> 9
             "y" -> 10
 
             // Proto stars
