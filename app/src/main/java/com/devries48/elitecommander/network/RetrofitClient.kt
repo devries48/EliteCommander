@@ -104,7 +104,7 @@ open class RetrofitClient private constructor() : Serializable {
     }
 
     private fun isFailed(response: Response): Boolean {
-        return !response.isSuccessful || (response.code() == 403 || response.code() == 422 || response.code() == 401)
+        return !response.isSuccessful || response.code() == 403 || response.code() == 422 || response.code() == 401
     }
 
     private val retrofitInstance: Retrofit.Builder?

@@ -14,7 +14,9 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import kotlinx.coroutines.*
+import okhttp3.ResponseBody
 import org.greenrobot.eventbus.EventBus
+import retrofit2.Response
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -33,38 +35,8 @@ class CommanderNetwork {
      */
     fun loadProfile() {
         mFrontierApi?.profileRaw?.enqueueWrap {
-            onResponse = response@{
-                if (it.code() != 200) {
-                    onFailure?.let { it1 -> it1(Exception(it.code().toString())) }
-                    return@response
-                }
-
-                val profileResponse: FrontierProfileResponse?
-                val rawResponse: JsonObject?
-
-                try {
-                    val responseString: String? = it.body()?.string()
-                    rawResponse = JsonParser.parseString(responseString).asJsonObject
-                    profileResponse = Gson().fromJson(
-                        rawResponse,
-                        FrontierProfileResponse::class.java
-                    )
-                } catch (e: Exception) {
-                    onFailure?.let { it1 -> it1(e) }
-                    return@response
-                }
-
-                if (!it.isSuccessful || profileResponse == null) {
-                    onFailure?.let { it1 -> it1(Exception("Empty profile response")) }
-                    return@response
-                }
-
-                try {
-                    handleProfileParsing(profileResponse)
-                    if (rawResponse != null) handleFleetParsing(this@CommanderNetwork, rawResponse)
-                } catch (ex: Exception) {
-                    onFailure?.let { it1 -> it1(Exception(ex)) }
-                }
+            onResponse = {
+                handleProfileResponse(it)
             }
             onFailure = {
                 println(it?.message)
@@ -79,6 +51,25 @@ class CommanderNetwork {
                 sendResultMessage(fleet)
             }
         }
+    }
+
+    private fun handleProfileResponse(res: Response<ResponseBody?>) {
+        if (res.code() != 200) throw Exception(res.code().toString())
+
+        val profileResponse: FrontierProfileResponse?
+        val rawResponse: JsonObject?
+
+            val responseString: String? = res.body()?.string()
+            rawResponse = JsonParser.parseString(responseString).asJsonObject
+            profileResponse = Gson().fromJson(
+                rawResponse,
+                FrontierProfileResponse::class.java
+            )
+
+        if (!res.isSuccessful || profileResponse == null) throw Exception("Empty profile response")
+
+            handleProfileParsing(profileResponse)
+            if (rawResponse != null) handleFleetParsing(this@CommanderNetwork, rawResponse)
     }
 
     /**
