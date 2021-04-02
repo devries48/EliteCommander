@@ -1,6 +1,5 @@
 package com.devries48.elitecommander.activities
 
-import android.app.Activity
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -14,7 +13,6 @@ import com.devries48.elitecommander.R
 import com.devries48.elitecommander.databinding.ActivityMainBinding
 import com.devries48.elitecommander.events.AlertEvent
 import com.devries48.elitecommander.events.FrontierAuthNeededEvent
-import com.devries48.elitecommander.events.FrontierTokensEvent
 import com.devries48.elitecommander.fragments.CommanderViewModel
 import com.devries48.elitecommander.fragments.CommanderViewModelFactory
 import com.devries48.elitecommander.fragments.MainFragment
@@ -33,14 +31,13 @@ class MainActivity : AppCompatActivity() {
 
     private var mCommanderViewModel: CommanderViewModel? = null
     private val mNavController by lazy { findNavController() }
-    private var mNavDestinationId: Int = 0
     private var mAlertList = ArrayList<@StringRes Int>()
     private var mAlertDialog: androidx.appcompat.app.AlertDialog? = null
 
-    private var mIsLoggedIn by Delegates.observable(false) { _, _, newValue ->
-        if (newValue) {
+    private var mIsLoggedIn: Boolean? by Delegates.observable(null) { _, _, newValue ->
+        if (newValue == true) {
             setupViewModel()
-            hideRedirectFragment()
+            //hideRedirectFragment()
         }
     }
 
@@ -98,20 +95,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
-    fun onFrontierTokensEvent(tokens: FrontierTokensEvent) {
-        if (tokens.success) {
-            setResult(Activity.RESULT_OK)
-            finish()
-        } else {
+    fun onFrontierAuthNeededEvent(frontierAuthNeededEvent: FrontierAuthNeededEvent) {
+        if (mIsLoggedIn != false) {
+            mIsLoggedIn = false
+            storeUpdatedTokens(this, "", "")
             val intent = Intent(this@MainActivity, LoginActivity::class.java)
             startActivityForResult(intent, FRONTIER_LOGIN_REQUEST_CODE)
         }
-    }
-
-    @Subscribe(threadMode = ThreadMode.BACKGROUND)
-    fun onFrontierAuthNeededEvent(frontierAuthNeededEvent: FrontierAuthNeededEvent) {
-        mIsLoggedIn = false
-        storeUpdatedTokens(this, "", "")
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

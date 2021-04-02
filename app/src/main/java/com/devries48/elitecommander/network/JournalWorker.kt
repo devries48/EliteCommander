@@ -111,54 +111,58 @@ class JournalWorker(frontierApi: FrontierInterface?) {
     private suspend fun crawlJournal(code: Int?, rawEvents: List<RawEvent>?) {
         withContext(Dispatchers.IO) {
 
-            var journalDate = when (mCrawlerType) {
+            val journalDate = when (mCrawlerType) {
                 CrawlerType.CURRENT_JOURNAL -> mLatestJournalDate!!
                 else -> mCurrentDiscoveriesDate
             }
             println("LOG: Process journal: $journalDate type: $mCrawlerType")
 
-            if (code == 200) {
-                if (mCrawlerType == CrawlerType.CURRENT_JOURNAL) {
-                    raiseFrontierRanksEvent(rawEvents!!)
-                    raiseFrontierStatisticsEvent(rawEvents)
-                    mLatestJournalDate = journalDate
-                } else if (mCrawlerType == CrawlerType.CURRENT_DISCOVERIES) {
-                    raiseFrontierDiscoveriesEvents(rawEvents!!)
-                    mCurrentDiscoveriesDate = journalDate
+            when (code) {
+                200 -> {
+                    handleCrawlResult(journalDate, rawEvents)
+                    return@withContext
                 }
-            } else {
-                when (code) {
-                    204 ->  // No content, go one day back
-                    {
-                        journalDate = journalDate?.removeDays()
-                        processJournal(journalDate)
-
-                        when (mCrawlerType) {
-                            CrawlerType.CURRENT_JOURNAL -> mLatestJournalDate = journalDate
-                            else -> mCurrentDiscoveriesDate = journalDate
-                        }
-                    }
-                    206, 429 -> // Partial content, wait and try again / // Too many request, wait and try again
-                    {
-                        delay(1000)
-                        processJournal(journalDate)
-                    }
-
-                    else -> {
-                        if (journalDate?.coerceAtLeast(DateUtils.eliteStartDate) == DateUtils.eliteStartDate) {
-                            println(
-                                "LOG: Cannot get journals earlier than the date cap ${
-                                    journalDate.toDateString(
-                                        DateUtils.dateFormatShort
-                                    )
-                                }"
-                            )
-                            return@withContext
-                        }
+                204 -> handleCrawlNoResult(journalDate)
+                206, 429 -> {
+                    // Partial content, wait and try again / // Too many request, wait and try again
+                    delay(1000)
+                    processJournal(journalDate)
+                }
+                else -> {
+                    if (journalDate?.coerceAtLeast(DateUtils.eliteStartDate) == DateUtils.eliteStartDate) {
+                        println(
+                            "LOG: Cannot get journals earlier than the date cap ${
+                                journalDate.toDateString(
+                                    DateUtils.dateFormatShort
+                                )
+                            }"
+                        )
+                        return@withContext
                     }
                 }
-
             }
+        }
+    }
+
+    private suspend fun handleCrawlResult(journalDate: Date?, rawEvents: List<RawEvent>?) {
+        if (mCrawlerType == CrawlerType.CURRENT_JOURNAL) {
+            raiseFrontierRanksEvent(rawEvents!!)
+            raiseFrontierStatisticsEvent(rawEvents)
+            mLatestJournalDate = journalDate
+        } else if (mCrawlerType == CrawlerType.CURRENT_DISCOVERIES) {
+            raiseFrontierDiscoveriesEvents(rawEvents!!)
+            mCurrentDiscoveriesDate = journalDate
+        }
+    }
+
+    private fun handleCrawlNoResult(journalDate: Date?) {
+        // No content, go one day back
+        val date = journalDate?.removeDays()
+        processJournal(date)
+
+        when (mCrawlerType) {
+            CrawlerType.CURRENT_JOURNAL -> mLatestJournalDate = date
+            else -> mCurrentDiscoveriesDate = date
         }
     }
 

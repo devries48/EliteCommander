@@ -63,7 +63,9 @@ object DateUtils {
             getCurrentDateGMT() else null
 
         cal.add(Calendar.WEEK_OF_YEAR, -1)
-        cal[Calendar.DAY_OF_WEEK] = Calendar.THURSDAY
+        while (cal[Calendar.DAY_OF_WEEK] != Calendar.THURSDAY) {
+            cal.add(Calendar.DAY_OF_WEEK,1)
+        }
         var cycleDate = cal.time.toDateString(dateFormatCycleGMT)
 
         if (currentDate != null && currentDate > fromDateString(cycleDate, dateFormatGMT))

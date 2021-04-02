@@ -58,6 +58,8 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
 
     private val mBuilderProfit: StatisticsBuilder = StatisticsBuilder()
     private val mBuilderMain: StatisticsBuilder = StatisticsBuilder()
+    private val mBuilderCombat: StatisticsBuilder = StatisticsBuilder()
+
     //</editor-fold>
 
     val name: LiveData<String> = mName
@@ -102,6 +104,10 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
 
     internal fun getProfitChart(): LiveData<List<ProfitModel>> {
         return mProfitChart
+    }
+
+    internal fun getCombatStatistics(): LiveData<List<StatisticModel>> {
+        return mBuilderCombat.statistics
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
@@ -171,11 +177,12 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             launchPlayerStats(statistics)
             launchProfitChart(statistics)
             launchProfitStats(statistics)
+            launchCombatStats(statistics)
         }
     }
 
     private fun sendAlert(@StringRes message: Int) {
-        EventBus.getDefault().post(AlertEvent(R.string.download_error,message  ))
+        EventBus.getDefault().post(AlertEvent(R.string.download_error, message))
     }
 
     private fun launchPlayerStats(statistics: FrontierStatisticsEvent) {
@@ -250,7 +257,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             if (integrityPercentage >= 50) DIMMED else WARNING
         )
 
-        mBuilderProfit.post()
+        mBuilderMain.post()
 
         mCurrentSettings.credits = profile.balance
     }
@@ -552,11 +559,8 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
         )
 
         mCurrentSettings.bountiesProfit = statistics.combat.bountyHuntingProfit
-        mCurrentSettings.bountiesTotal = statistics.combat.bountiesClaimed
         mCurrentSettings.bondsProfit = statistics.combat.combatBondProfits
-        mCurrentSettings.bondsTotal = statistics.combat.combatBonds
         mCurrentSettings.assassinationsProfit = statistics.combat.assassinationProfits
-        mCurrentSettings.assassinationsTotal = statistics.combat.assassinations
         mCurrentSettings.explorationProfit = statistics.exploration.explorationProfits
         mCurrentSettings.tradingProfit = statistics.trading.marketProfits
         mCurrentSettings.tradingMarkets = statistics.trading.marketsTradedWith
@@ -567,6 +571,61 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
         mCurrentSettings.rescueTotal = statistics.searchAndRescue.searchRescueCount
 
         mBuilderProfit.post()
+    }
+
+    private fun launchCombatStats(statistics: FrontierStatisticsEvent) {
+
+        val totalKills =
+            statistics.combat!!.bountiesClaimed + statistics.combat.combatBonds + statistics.combat.assassinations
+
+        mBuilderCombat.addStatistic(
+            COMBAT_TOTAL_KILLS,
+            LEFT,
+            R.string.ships_destroyed,
+            totalKills,
+            StatisticsBuilder.getDelta(totalKills, mStatisticSettings.totalKills),
+            INTEGER
+        )
+        mBuilderCombat.addStatistic(
+            COMBAT_TOTAL_KILLS,
+            RIGHT,
+            R.string.skimmers_killed,
+            statistics.combat.skimmersKilled,
+            StatisticsBuilder.getDelta(statistics.combat.skimmersKilled, mStatisticSettings.skimmersKilled),
+            INTEGER
+        )
+        mBuilderCombat.addStatistic(
+            COMBAT_KILLS,
+            LEFT,
+            R.string.bounties,
+            statistics.combat.bountiesClaimed,
+            StatisticsBuilder.getDelta(statistics.combat.combatBonds, mStatisticSettings.bondsTotal),
+            INTEGER
+        )
+        mBuilderCombat.addStatistic(
+            COMBAT_KILLS,
+            CENTER,
+            R.string.bonds,
+            statistics.combat.combatBonds,
+            StatisticsBuilder.getDelta(statistics.combat.combatBonds, mStatisticSettings.bondsTotal),
+            INTEGER
+        )
+        mBuilderCombat.addStatistic(
+            COMBAT_KILLS,
+            RIGHT,
+            R.string.assassinations,
+            statistics.combat.assassinations,
+            StatisticsBuilder.getDelta(statistics.combat.assassinations, mStatisticSettings.assassinationsTotal),
+            INTEGER
+        )
+
+        mCurrentSettings.totalKills = totalKills
+        mCurrentSettings.skimmersKilled = statistics.combat.skimmersKilled
+        mCurrentSettings.bountiesTotal = statistics.combat.bountiesClaimed
+        mCurrentSettings.bondsTotal = statistics.combat.combatBonds
+        mCurrentSettings.assassinationsTotal = statistics.combat.assassinations
+
+        mBuilderCombat.post()
     }
 }
 

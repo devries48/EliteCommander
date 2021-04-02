@@ -12,6 +12,7 @@ import com.google.gson.GsonBuilder
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.Response
 import org.greenrobot.eventbus.EventBus
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -51,9 +52,7 @@ open class RetrofitClient private constructor() : Serializable {
     }
 
     fun getFrontierRetrofit(ctx: Context): FrontierInterface? {
-        if (frontierInterface != null) {
-            return frontierInterface
-        }
+        if (frontierInterface != null) return frontierInterface
         val httpClient = commonOkHttpClientBuilder
 
         // Add interceptor for tokens in response
@@ -62,7 +61,7 @@ open class RetrofitClient private constructor() : Serializable {
             var response = chain.proceed(request)
 
             // Check if access token expired and renew it if needed
-            if (response.code() == 403 || response.code() == 422 || response.code() == 401) {
+            if (isExpired(response.code())) {
                 try{
                     val responseBody: FrontierAccessTokenResponse? = OAuthUtils.makeRefreshRequest(ctx)
                     if (responseBody == null) {
@@ -86,9 +85,7 @@ open class RetrofitClient private constructor() : Serializable {
             }
 
             // If still not ok, need login
-            if (!response.isSuccessful && (response.code() == 403 || response.code() == 422 || response.code() == 401)) {
-                EventBus.getDefault().post(FrontierAuthNeededEvent(true))
-            }
+            if (isFailed(response)) EventBus.getDefault().post(FrontierAuthNeededEvent(true))
             response
         }
 
@@ -100,6 +97,14 @@ open class RetrofitClient private constructor() : Serializable {
             .build()
             .create(FrontierInterface::class.java)
         return frontierInterface
+    }
+
+    private fun isExpired(code: Int): Boolean {
+        return code == 403 || code == 422 || code == 401
+    }
+
+    private fun isFailed(response: Response): Boolean {
+        return !response.isSuccessful || (response.code() == 403 || response.code() == 422 || response.code() == 401)
     }
 
     private val retrofitInstance: Retrofit.Builder?

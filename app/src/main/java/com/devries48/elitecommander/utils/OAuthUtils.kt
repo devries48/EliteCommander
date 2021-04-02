@@ -62,17 +62,16 @@ object OAuthUtils {
     @Throws(IOException::class)
     fun makeRefreshRequest(ctx: Context): FrontierAccessTokenResponse? {
         val requestBody = getRefreshTokenRequestBody(ctx)
-        val auth= getAuthRetrofit(ctx)
+        val auth = getAuthRetrofit(ctx)
         if (auth != null) {
             val authResponse: Call<FrontierAccessTokenResponse> =
                 auth.getAccessToken(requestBody)
-            return authResponse.execute().body()!!
+            return authResponse.execute().body()
         }
         return null
     }
 
-    private fun getAuthRetrofit(ctx: Context): FrontierAuthInterface?
-    {
+    private fun getAuthRetrofit(ctx: Context): FrontierAuthInterface? {
         val retrofit = RetrofitClient.getInstance()
         return retrofit?.getFrontierAuthRetrofit(ctx)
     }

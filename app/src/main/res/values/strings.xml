@@ -223,4 +223,7 @@
     <string name="combat">Combat</string>
     <string name="other">Other</string>
     <string name="statistics">Statistics</string>
+    <string name="ships_destroyed">Ships destroyed</string>
+    <string name="skimmers_killed">Skimmers killed</string>
+    <string name="bonds">Bonds</string>
 </resources>

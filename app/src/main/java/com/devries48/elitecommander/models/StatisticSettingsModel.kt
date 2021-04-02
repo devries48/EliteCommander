@@ -3,6 +3,7 @@ package com.devries48.elitecommander.models
 import com.google.gson.annotations.SerializedName
 
 class StatisticSettingsModel {
+
     @SerializedName("timestamp")
     var timestamp: String? = null
 
@@ -56,4 +57,10 @@ class StatisticSettingsModel {
 
     @SerializedName("rescueTotal")
     var rescueTotal: Int? = null
+
+    @SerializedName("totalKills")
+    var totalKills: Int? = null
+
+    @SerializedName("skimmersKilled")
+    var skimmersKilled: Int? = null
 }

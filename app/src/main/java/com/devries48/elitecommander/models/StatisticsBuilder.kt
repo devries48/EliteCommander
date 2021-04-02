@@ -109,7 +109,9 @@ class StatisticsBuilder {
             PROFIT_TRADING,
             PROFIT_SMUGGLING,
             PROFIT_MINING,
-            PROFIT_SEARCH_RESCUE
+            PROFIT_SEARCH_RESCUE,
+            COMBAT_TOTAL_KILLS,
+            COMBAT_KILLS,
         }
 
         enum class StatisticPosition {
