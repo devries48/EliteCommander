@@ -19,7 +19,6 @@ class ProfitModel(profitType: ProfitType,  profitAmount: Long) {
         MINING,
         SMUGGLING,
         SEARCH_RESCUE,
-        OTHER
     }
 
     private var typeList: ArrayList<ProfitTypeModel> = ArrayList()
@@ -93,14 +92,6 @@ class ProfitModel(profitType: ProfitType,  profitAmount: Long) {
                 R.string.search_rescue,
                 ContextCompat.getColor(ctx, R.color.elite_orange),
                 R.drawable.ic_dot_search_rescue
-            )
-        )
-        typeList.add(
-            ProfitTypeModel(
-                ProfitType.OTHER,
-                R.string.other,
-                ContextCompat.getColor(ctx, R.color.elite_light_orange),
-                R.drawable.ic_dot_other
             )
         )
     }

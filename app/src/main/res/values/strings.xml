@@ -39,7 +39,7 @@
         <item>Deadly</item>
         <item>Elite</item>
     </string-array>
-    <string-array name="ranks_trade">
+    <string-array name="ranks_trading">
         <item>Penniless</item>
         <item>Mostly Penniless</item>
         <item>Peddler</item>
@@ -50,7 +50,7 @@
         <item>Tycoon</item>
         <item>Elite</item>
     </string-array>
-    <string-array name="ranks_explorer">
+    <string-array name="ranks_exploration">
         <item>Aimless</item>
         <item>Mostly Aimless</item>
         <item>Scout</item>

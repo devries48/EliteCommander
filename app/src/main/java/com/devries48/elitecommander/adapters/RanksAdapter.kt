@@ -54,13 +54,13 @@ object RanksAdapter {
     @BindingAdapter("android:rankAutoHide")
     @JvmStatic
     fun rankAutoHide(view: View, model: RankModel) {
-        if (view.id == R.id.progressBar && model.name.isEmpty() || view.id == R.id.progressTextView && model.name.isEmpty()) // Alliance has no ranks
+        if (view.id == R.id.progressBar && model.getName().isEmpty() || view.id == R.id.progressTextView && model.getName().isEmpty()) // Alliance has no ranks
             view.visibility = View.GONE
         else {
             val isEndRank = isEndRank(model)
             val isReputationView = isReputationView(view)
             view.visibility =
-                if (isEndRank || isReputationView && !model.isFactionRank || model.rank.name.isEmpty()) View.GONE else View.VISIBLE
+                if (isEndRank || isReputationView && !model.isFactionRank || model.getName().isEmpty()) View.GONE else View.VISIBLE
         }
     }
 
@@ -87,7 +87,7 @@ object RanksAdapter {
     }
 
     private fun getAssociatedColor(context: Context, model: RankModel, view: View): Int {
-        var color=  when (model.titleResId) {
+        var color=  when (model.getTitleResId()) {
             R.string.rank_combat -> ContextCompat.getColor(context, R.color.elite_orange)
             R.string.rank_trading -> ContextCompat.getColor(context, R.color.elite_trading)
             R.string.rank_explore -> ContextCompat.getColor(context, R.color.elite_exploration)

@@ -1,7 +1,5 @@
 package com.devries48.elitecommander.network
 
-import com.devries48.elitecommander.App
-import com.devries48.elitecommander.R
 import com.devries48.elitecommander.declarations.getResult
 import com.devries48.elitecommander.declarations.toStringOrEmpty
 import com.devries48.elitecommander.events.*
@@ -168,7 +166,6 @@ class JournalWorker(frontierApi: FrontierInterface?) {
 
     private suspend fun raiseFrontierRanksEvent(rawEvents: List<RawEvent>) {
         withContext(Dispatchers.IO) {
-            val context = App.getContext()
 
             try {
                 val rawRank = rawEvents.lastOrNull { it.event == JOURNAL_EVENT_RANK }
@@ -195,40 +192,33 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                 }
 
                 val combatRank = FrontierRanksEvent.FrontierRank(
-                    context.resources.getStringArray(R.array.ranks_combat)[rank.combat],
                     rank.combat,
                     progress.combat
                 )
                 val tradeRank = FrontierRanksEvent.FrontierRank(
-                    context.resources.getStringArray(R.array.ranks_trade)[rank.trade],
                     rank.trade,
                     progress.trade
                 )
                 val exploreRank = FrontierRanksEvent.FrontierRank(
-                    context.resources.getStringArray(R.array.ranks_explorer)[rank.explore],
                     rank.explore,
                     progress.explore
                 )
                 val cqcRank = FrontierRanksEvent.FrontierRank(
-                    context.resources.getStringArray(R.array.ranks_cqc)[rank.cqc],
                     rank.cqc,
                     progress.cqc
                 )
                 val federationRank = FrontierRanksEvent.FrontierRank(
-                    context.resources.getStringArray(R.array.ranks_federation)[rank.federation],
                     rank.federation,
                     progress.federation,
                     reputation.federation
                 )
                 val empireRank = FrontierRanksEvent.FrontierRank(
-                    context.resources.getStringArray(R.array.ranks_empire)[rank.empire],
                     rank.empire,
                     progress.empire,
                     reputation.empire
                 )
 
                 val allianceRank = FrontierRanksEvent.FrontierRank(
-                    context.resources.getString(R.string.rank_alliance),
                     rank.alliance,
                     0,
                     reputation.alliance

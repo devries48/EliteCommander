@@ -1,7 +1,6 @@
 package com.devries48.elitecommander.events
 
-data class FrontierRanksEvent @JvmOverloads
-constructor(
+data class FrontierRanksEvent(
     val success: Boolean,
     val combat: FrontierRank? = null,
     val trade: FrontierRank? = null,
@@ -10,12 +9,13 @@ constructor(
     val federation: FrontierRank? = null,
     val empire: FrontierRank? = null,
     val alliance: FrontierRank? = null
-) {
-
+)
+{
     data class FrontierRank(
-        val name: String,
         val value: Int,
         val progress: Int,
         val reputation: Int = 0
-    )
+    ) {
+        constructor():this(0,0,0)
+    }
 }

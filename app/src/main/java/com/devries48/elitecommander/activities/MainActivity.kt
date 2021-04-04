@@ -15,7 +15,6 @@ import com.devries48.elitecommander.events.AlertEvent
 import com.devries48.elitecommander.events.FrontierAuthNeededEvent
 import com.devries48.elitecommander.fragments.CommanderViewModel
 import com.devries48.elitecommander.fragments.CommanderViewModelFactory
-import com.devries48.elitecommander.fragments.MainFragment
 import com.devries48.elitecommander.network.CommanderNetwork
 import com.devries48.elitecommander.utils.OAuthUtils.storeUpdatedTokens
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -37,7 +36,6 @@ class MainActivity : AppCompatActivity() {
     private var mIsLoggedIn: Boolean? by Delegates.observable(null) { _, _, newValue ->
         if (newValue == true) {
             setupViewModel()
-            //hideRedirectFragment()
         }
     }
 
@@ -133,12 +131,6 @@ class MainActivity : AppCompatActivity() {
                 mAlertDialog!!.setMessage(message)
             }
         }
-    }
-
-    private fun hideRedirectFragment() {
-        val navHostFragment: NavHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        (navHostFragment.childFragmentManager.fragments[0] as MainFragment).removeItem()
     }
 
     companion object {

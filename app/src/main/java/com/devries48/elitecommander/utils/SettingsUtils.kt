@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.preference.PreferenceManager
 import com.devries48.elitecommander.App
 import com.devries48.elitecommander.models.StatisticSettingsModel
+import com.devries48.elitecommander.utils.DateUtils.toDateString
 import com.google.gson.Gson
 
 object SettingsUtils {
@@ -32,6 +33,7 @@ object SettingsUtils {
 
         model.timestamp = DateUtils.getCurrentDateString(DateUtils.dateFormatGMT)
         val json: String = Gson().toJson(model)
+        println(json)
 
         if (json.isNotEmpty()) {
             setString(App.getContext(), Key.STATISTIC_VALUES, json)
@@ -50,17 +52,19 @@ object SettingsUtils {
                 val modelDate = DateUtils.fromDateString(model.timestamp!!, DateUtils.dateFormatGMT)
                 val cycleDate = DateUtils.getLastCycleDateGMT()
 
-                return if (modelDate.before(cycleDate)) {
+                return if (modelDate.before(cycleDate) || model.credits== null) {
                     println("STATISTIC_VALUES cycled")
                     StatisticSettingsModel()
                 } else {
-                    println("STATISTIC_VALUES loaded")
+                    println("STATISTIC_VALUES loaded: " + modelDate.toDateString(DateUtils.dateFormatGMT))
                     model
                 }
             } catch (e: Exception) {
+                println("STATISTIC_VALUES new: " + e.message)
                 return StatisticSettingsModel()
             }
         } else {
+            println("STATISTIC_VALUES new")
             return StatisticSettingsModel()
         }
     }

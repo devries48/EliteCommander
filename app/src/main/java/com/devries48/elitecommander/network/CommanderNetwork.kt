@@ -58,18 +58,18 @@ class CommanderNetwork {
 
         val profileResponse: FrontierProfileResponse?
         val rawResponse: JsonObject?
+        val responseString: String? = res.body()?.string()
 
-            val responseString: String? = res.body()?.string()
-            rawResponse = JsonParser.parseString(responseString).asJsonObject
-            profileResponse = Gson().fromJson(
-                rawResponse,
-                FrontierProfileResponse::class.java
-            )
+        rawResponse = JsonParser.parseString(responseString).asJsonObject
+        profileResponse = Gson().fromJson(
+            rawResponse,
+            FrontierProfileResponse::class.java
+        )
 
         if (!res.isSuccessful || profileResponse == null) throw Exception("Empty profile response")
 
-            handleProfileParsing(profileResponse)
-            if (rawResponse != null) handleFleetParsing(this@CommanderNetwork, rawResponse)
+        handleProfileParsing(profileResponse)
+        if (rawResponse != null) handleFleetParsing(this@CommanderNetwork, rawResponse)
     }
 
     /**
@@ -77,7 +77,7 @@ class CommanderNetwork {
      *  - Loads discoveries from journal, capture FrontierDiscoveriesEvent for the result.
      */
     fun loadCurrentJournal() {
-            mJournalWorker?.getCurrentJournal()
+        mJournalWorker?.getCurrentJournal()
     }
 
     fun getDistanceToSol(systemName: String?) {
@@ -155,7 +155,7 @@ class CommanderNetwork {
         commanderNetwork.sendResultMessage(FrontierFleetEvent(true, shipsList))
     }
 
-        private fun sendResultMessage(data: Any?) {
+    private fun sendResultMessage(data: Any?) {
         EventBus.getDefault().post(data)
     }
 

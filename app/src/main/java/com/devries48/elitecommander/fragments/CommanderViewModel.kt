@@ -16,7 +16,6 @@ import com.devries48.elitecommander.models.StatisticsBuilder.Companion.Statistic
 import com.devries48.elitecommander.models.StatisticsBuilder.Companion.StatisticPosition.*
 import com.devries48.elitecommander.models.StatisticsBuilder.Companion.StatisticType.*
 import com.devries48.elitecommander.network.CommanderNetwork
-import com.devries48.elitecommander.utils.NamingUtils
 import com.devries48.elitecommander.utils.SettingsUtils
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -36,20 +35,13 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
     private val mName = MutableLiveData("")
     private val mIsRanksBusy = MutableLiveData<Boolean>().default(true)
 
-    private val mCombatRank =
-        MutableLiveData(RankModel(0, FrontierRanksEvent.FrontierRank("", 0, 0), "", R.string.empty_string))
-    private val mTradeRank =
-        MutableLiveData(RankModel(0, FrontierRanksEvent.FrontierRank("", 0, 0), "", R.string.empty_string))
-    private val mExploreRank =
-        MutableLiveData(RankModel(0, FrontierRanksEvent.FrontierRank("", 0, 0), "", R.string.empty_string))
-    private val mCqcRank =
-        MutableLiveData(RankModel(0, FrontierRanksEvent.FrontierRank("", 0, 0), "", R.string.empty_string))
-    private val mFederationRank =
-        MutableLiveData(RankModel(0, FrontierRanksEvent.FrontierRank("", 0, 0), "", R.string.empty_string, true))
-    private val mEmpireRank =
-        MutableLiveData(RankModel(0, FrontierRanksEvent.FrontierRank("", 0, 0), "", R.string.empty_string, true))
-    private val mAllianceRank =
-        MutableLiveData(RankModel(0, FrontierRanksEvent.FrontierRank("", 0, 0), "", R.string.empty_string, true))
+    private val mCombatRank = MutableLiveData(RankModel(RankModel.RankType.COMBAT, FrontierRanksEvent.FrontierRank()))
+    private val mTradeRank = MutableLiveData(RankModel(RankModel.RankType.TRADING, FrontierRanksEvent.FrontierRank()))
+    private val mExploreRank = MutableLiveData(RankModel(RankModel.RankType.EXPLORATION, FrontierRanksEvent.FrontierRank()))
+    private val mCqcRank = MutableLiveData(RankModel(RankModel.RankType.CQC, FrontierRanksEvent.FrontierRank()))
+    private val mFederationRank = MutableLiveData(RankModel(RankModel.RankType.FEDERATION, FrontierRanksEvent.FrontierRank(), true))
+    private val mEmpireRank = MutableLiveData(RankModel(RankModel.RankType.EMPIRE, FrontierRanksEvent.FrontierRank(), true))
+    private val mAllianceRank = MutableLiveData(RankModel(RankModel.RankType.ALLIANCE, FrontierRanksEvent.FrontierRank(), true))
 
     private var mCurrentDiscoveries = MutableLiveData<List<FrontierDiscovery>>()
     private var mCurrentDiscoverySummary = MutableLiveData(FrontierDiscoverySummary(0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
@@ -80,9 +72,9 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
     }
 
     override fun onCleared() {
-        super.onCleared()
         EventBus.getDefault().unregister(this)
         SettingsUtils.setStatisticsSettings(mCurrentSettings)
+        super.onCleared()
     }
 
     fun load() {
@@ -196,9 +188,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
         )
 
         mBuilderMain.post()
-
         mCurrentSettings.timePlayed = statistics.exploration.timePlayed
-
     }
 
     private fun launchProfile(profile: FrontierProfileEvent) {
@@ -263,66 +253,13 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
     }
 
     private fun launchRanks(ranks: FrontierRanksEvent) {
-        mCombatRank.postValue(
-            RankModel(
-                NamingUtils.getCombatRankDrawableId(ranks.combat!!.value),
-                ranks.combat,
-                ranks.combat.name,
-                R.string.rank_combat
-            )
-        )
-        mTradeRank.postValue(
-            RankModel(
-                NamingUtils.getTradeRankDrawableId(ranks.trade!!.value),
-                ranks.trade,
-                ranks.trade.name,
-                R.string.rank_trading
-            )
-        )
-
-        mExploreRank.postValue(
-            RankModel(
-                NamingUtils.getExplorationRankDrawableId(ranks.explore!!.value),
-                ranks.explore,
-                ranks.explore.name,
-                R.string.rank_explore
-            )
-        )
-        mCqcRank.postValue(
-            RankModel(
-                NamingUtils.getCqcRankDrawableId(ranks.cqc!!.value),
-                ranks.cqc,
-                ranks.cqc.name,
-                R.string.rank_cqc
-            )
-        )
-        mFederationRank.postValue(
-            RankModel(
-                NamingUtils.getFederationRankDrawableId(ranks.federation!!.value),
-                ranks.federation,
-                ranks.federation.name,
-                R.string.rank_federation,
-                true
-            )
-        )
-        mEmpireRank.postValue(
-            RankModel(
-                NamingUtils.getEmpireRankDrawableId(ranks.empire!!.value),
-                ranks.empire,
-                ranks.empire.name,
-                R.string.rank_empire,
-                true
-            )
-        )
-        mAllianceRank.postValue(
-            RankModel(
-                NamingUtils.getAllianceRankDrawableId(),
-                ranks.alliance!!,
-                "",
-                R.string.rank_alliance,
-                true
-            )
-        )
+        mCombatRank.postValue(RankModel(RankModel.RankType.COMBAT, ranks.combat!!))
+        mTradeRank.postValue(RankModel(RankModel.RankType.TRADING, ranks.trade!!))
+        mExploreRank.postValue(RankModel(RankModel.RankType.EXPLORATION, ranks.explore!!))
+        mCqcRank.postValue(RankModel(RankModel.RankType.CQC, ranks.cqc!!))
+        mFederationRank.postValue(RankModel(RankModel.RankType.FEDERATION, ranks.federation!!))
+        mEmpireRank.postValue(RankModel(RankModel.RankType.EMPIRE, ranks.empire!!))
+        mAllianceRank.postValue(RankModel(RankModel.RankType.ALLIANCE, ranks.alliance!!))
 
         mIsRanksBusy.postValue(false)
     }
