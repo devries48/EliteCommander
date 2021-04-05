@@ -226,4 +226,7 @@
     <string name="ships_destroyed">Ships destroyed</string>
     <string name="skimmers_killed">Skimmers killed</string>
     <string name="bonds">Bonds</string>
+    <string name="distanceTravelled">Distance travelled</string>
+    <string name="hyperspaceJumps">Hyperspace jumps</string>
+    <string name="hyperspaceDistance">Hyperspace distance</string>
 </resources>

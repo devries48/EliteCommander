@@ -63,4 +63,10 @@ class StatisticSettingsModel {
 
     @SerializedName("skimmersKilled")
     var skimmersKilled: Int? = null
+
+    @SerializedName("totalHyperspaceDistance")
+    var totalHyperspaceDistance: Int?=null
+
+    @SerializedName("totalHyperspaceJumps")
+    val totalHyperspaceJumps: Int?=null
 }

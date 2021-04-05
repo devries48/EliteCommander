@@ -16,6 +16,7 @@ class StatisticsFragment : Fragment() {
 
     private val mViewModel: CommanderViewModel by navGraphViewModels(R.id.nav_graph)
     private lateinit var mCombatAdapter: StatisticsRecyclerAdapter
+    private lateinit var mExplorationAdapter: StatisticsRecyclerAdapter
 
     private var _binding: FragmentStatisticsBinding? = null
     private val binding get() = _binding!!
@@ -36,12 +37,26 @@ class StatisticsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val list = mViewModel.getCombatStatistics()
+        bindCombatStats()
+        bindExplorationStats()
+    }
 
+    private fun bindCombatStats() {
+        val list = mViewModel.getCombatStatistics()
         val combatManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
+
         mCombatAdapter = StatisticsRecyclerAdapter(list.value!!)
         binding.combatRecyclerView.layoutManager = combatManager
         binding.combatRecyclerView.adapter = mCombatAdapter
+    }
+
+    private fun bindExplorationStats() {
+        val list = mViewModel.getExplorationStatistics()
+        val explorationManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
+
+        mExplorationAdapter = StatisticsRecyclerAdapter(list.value!!)
+        binding.explorationRecyclerView.layoutManager = explorationManager
+        binding.explorationRecyclerView.adapter = mExplorationAdapter
     }
 
     override fun onDestroyView() {

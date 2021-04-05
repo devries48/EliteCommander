@@ -82,6 +82,7 @@ class StatisticsBuilder {
             StatisticFormat.TIME -> formatHours(value as Int)
             StatisticFormat.INTEGER -> formatInteger(value as Int)
             StatisticFormat.TONS -> formatInteger(value as Int) + " TONS"
+            StatisticFormat.LIGHTYEAR -> formatInteger(value as Int) + " LY"
             else -> value.toString()
         }
 
@@ -112,6 +113,7 @@ class StatisticsBuilder {
             PROFIT_SEARCH_RESCUE,
             COMBAT_TOTAL_KILLS,
             COMBAT_KILLS,
+            EXPLORATION_HYPERSPACE
         }
 
         enum class StatisticPosition {
@@ -132,7 +134,8 @@ class StatisticsBuilder {
             DOUBLE,
             INTEGER,
             TIME,
-            TONS
+            TONS,
+            LIGHTYEAR
         }
 
         private fun formatHours(seconds: Int): String {

@@ -37,11 +37,15 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
 
     private val mCombatRank = MutableLiveData(RankModel(RankModel.RankType.COMBAT, FrontierRanksEvent.FrontierRank()))
     private val mTradeRank = MutableLiveData(RankModel(RankModel.RankType.TRADING, FrontierRanksEvent.FrontierRank()))
-    private val mExploreRank = MutableLiveData(RankModel(RankModel.RankType.EXPLORATION, FrontierRanksEvent.FrontierRank()))
+    private val mExploreRank =
+        MutableLiveData(RankModel(RankModel.RankType.EXPLORATION, FrontierRanksEvent.FrontierRank()))
     private val mCqcRank = MutableLiveData(RankModel(RankModel.RankType.CQC, FrontierRanksEvent.FrontierRank()))
-    private val mFederationRank = MutableLiveData(RankModel(RankModel.RankType.FEDERATION, FrontierRanksEvent.FrontierRank(), true))
-    private val mEmpireRank = MutableLiveData(RankModel(RankModel.RankType.EMPIRE, FrontierRanksEvent.FrontierRank(), true))
-    private val mAllianceRank = MutableLiveData(RankModel(RankModel.RankType.ALLIANCE, FrontierRanksEvent.FrontierRank(), true))
+    private val mFederationRank =
+        MutableLiveData(RankModel(RankModel.RankType.FEDERATION, FrontierRanksEvent.FrontierRank(), true))
+    private val mEmpireRank =
+        MutableLiveData(RankModel(RankModel.RankType.EMPIRE, FrontierRanksEvent.FrontierRank(), true))
+    private val mAllianceRank =
+        MutableLiveData(RankModel(RankModel.RankType.ALLIANCE, FrontierRanksEvent.FrontierRank(), true))
 
     private var mCurrentDiscoveries = MutableLiveData<List<FrontierDiscovery>>()
     private var mCurrentDiscoverySummary = MutableLiveData(FrontierDiscoverySummary(0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
@@ -51,6 +55,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
     private val mBuilderProfit: StatisticsBuilder = StatisticsBuilder()
     private val mBuilderMain: StatisticsBuilder = StatisticsBuilder()
     private val mBuilderCombat: StatisticsBuilder = StatisticsBuilder()
+    private val mBuilderExploration : StatisticsBuilder = StatisticsBuilder()
 
     //</editor-fold>
 
@@ -100,6 +105,10 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
 
     internal fun getCombatStatistics(): LiveData<List<StatisticModel>> {
         return mBuilderCombat.statistics
+    }
+
+    internal fun getExplorationStatistics(): LiveData<List<StatisticModel>> {
+        return mBuilderExploration.statistics
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
@@ -170,6 +179,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             launchProfitChart(statistics)
             launchProfitStats(statistics)
             launchCombatStats(statistics)
+            launchExplorationStats(statistics)
         }
     }
 
@@ -536,7 +546,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             LEFT,
             R.string.bounties,
             statistics.combat.bountiesClaimed,
-            StatisticsBuilder.getDelta(statistics.combat.combatBonds, mStatisticSettings.bondsTotal),
+            StatisticsBuilder.getDelta(statistics.combat.bountiesClaimed, mStatisticSettings.bountiesTotal),
             INTEGER
         )
         mBuilderCombat.addStatistic(
@@ -564,8 +574,35 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
 
         mBuilderCombat.post()
     }
-}
 
+    private fun launchExplorationStats(statistics: FrontierStatisticsEvent) {
+
+        mBuilderExploration.addStatistic(
+            EXPLORATION_HYPERSPACE,
+            LEFT,
+            R.string.hyperspaceDistance,
+            statistics.exploration!!.totalHyperspaceDistance,
+            StatisticsBuilder.getDelta(statistics.exploration.totalHyperspaceDistance, mStatisticSettings.totalHyperspaceDistance),
+            LIGHTYEAR
+        )
+
+        mBuilderExploration.addStatistic(
+            EXPLORATION_HYPERSPACE,
+            RIGHT,
+            R.string.hyperspaceJumps,
+            statistics.exploration.totalHyperspaceJumps,
+            StatisticsBuilder.getDelta(statistics.exploration.totalHyperspaceJumps, mStatisticSettings.totalHyperspaceJumps),
+            INTEGER
+        )
+
+
+        mCurrentSettings.totalHyperspaceDistance = statistics.exploration.totalHyperspaceDistance
+
+        mBuilderExploration.post()
+    }
+
+
+}
 class CommanderViewModelFactory(private val network: CommanderNetwork?) :
     ViewModelProvider.NewInstanceFactory() {
     @Suppress("UNCHECKED_CAST")

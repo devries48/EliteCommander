@@ -16,7 +16,6 @@ import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import java.security.SecureRandom
 
-
 // Singleton safe from serialization/reflection...
 // From https://medium.com/exploring-code/how-to-make-the-perfect-singleton-de6b951dfdb0
 open class FrontierAuthNetwork private constructor() : Serializable {
@@ -28,21 +27,12 @@ open class FrontierAuthNetwork private constructor() : Serializable {
         val sr = SecureRandom()
         val code = ByteArray(32)
         sr.nextBytes(code)
-        codeVerifier = Base64.encodeToString(
-            code,
-            Base64.URL_SAFE or Base64.NO_WRAP or Base64.NO_PADDING
-        )
+        codeVerifier = getEncodedString(code)
         codeChallenge = try {
             val bytes = codeVerifier?.toByteArray(StandardCharsets.US_ASCII)
             val md = MessageDigest.getInstance("SHA-256")
-            if (bytes != null) {
-                md.update(bytes, 0, bytes.size)
-            }
-            val digest = md.digest()
-            Base64.encodeToString(
-                digest,
-                Base64.URL_SAFE or Base64.NO_WRAP or Base64.NO_PADDING
-            )
+            if (bytes != null) md.update(bytes, 0, bytes.size)
+            getEncodedString(md.digest())
         } catch (e: Exception) {
             null
         }
@@ -52,7 +42,11 @@ open class FrontierAuthNetwork private constructor() : Serializable {
         val sr = SecureRandom()
         val code = ByteArray(8)
         sr.nextBytes(code)
-        requestState = Base64.encodeToString(
+        requestState = getEncodedString(code)
+    }
+
+    private fun getEncodedString(code: ByteArray): String? {
+        return Base64.encodeToString(
             code,
             Base64.URL_SAFE or Base64.NO_WRAP or Base64.NO_PADDING
         )
@@ -72,25 +66,9 @@ open class FrontierAuthNetwork private constructor() : Serializable {
                 "&redirect_uri=elitecommander://oauth"
     }
 
-    fun signOn(ctx: Context) {
-        val authCode = OAuthUtils.getAccessToken(ctx)
-        if (authCode !=null){
-            generateCodeVerifierAndChallenge()
-            generateState()
-            sendTokensRequest(ctx, authCode, requestState)
-        }
-    }
-
     fun sendTokensRequest(ctx: Context, authCode: String?, state: String?) {
         // Check if same state
-        if (state != requestState) {
-            EventBus.getDefault().post(
-                FrontierTokensEvent(
-                    false,
-                    "", ""
-                )
-            )
-        }
+        if (state != requestState) EventBus.getDefault().post(FrontierTokensEvent(false, "", ""))
 
         val retrofit: RetrofitClient? = RetrofitClient.getInstance()
         val frontierAuth = retrofit?.getFrontierAuthRetrofit(ctx)
@@ -114,10 +92,7 @@ open class FrontierAuthNetwork private constructor() : Serializable {
             }
             onFailure = {
                 EventBus.getDefault().post(
-                    FrontierTokensEvent(
-                        false,
-                        "", ""
-                    )
+                    FrontierTokensEvent(false, "", "")
                 )
             }
         }
@@ -127,11 +102,9 @@ open class FrontierAuthNetwork private constructor() : Serializable {
         @Volatile
         private var instance: FrontierAuthNetwork? = null
         fun getInstance(): FrontierAuthNetwork? {
-            if (instance == null) {
-                synchronized(FrontierAuthNetwork::class.java) {
-                    if (instance == null) instance =
-                        FrontierAuthNetwork()
-                }
+            if (instance == null) synchronized(FrontierAuthNetwork::class.java) {
+                if (instance == null) instance =
+                    FrontierAuthNetwork()
             }
             return instance
         }
@@ -139,7 +112,6 @@ open class FrontierAuthNetwork private constructor() : Serializable {
 
     // Private constructor.
     init {
-
         // Prevent form the reflection api.
         if (instance != null) {
             throw RuntimeException("Use getInstance() method to get an instance of this class.")
