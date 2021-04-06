@@ -188,7 +188,6 @@
     <string name="body_sudarsky_class5">Class V gas giant</string>
     <string name="body_helium_giant">Helium-rich gas giant</string>
 
-    <string name="empty_string" />
     <string name="Credits">Credits</string>
     <string name="CurrentLocation">Current location</string>
     <string name="CurrentShip">Current ship</string>
@@ -221,12 +220,12 @@
     <string name="Frontier_journal_discoveries">Frontier journal discoveries</string>
     <string name="Frontier_journal_statistics">Frontier journal statistics</string>
     <string name="combat">Combat</string>
-    <string name="other">Other</string>
     <string name="statistics">Statistics</string>
     <string name="ships_destroyed">Ships destroyed</string>
     <string name="skimmers_killed">Skimmers killed</string>
     <string name="bonds">Bonds</string>
-    <string name="distanceTravelled">Distance travelled</string>
     <string name="hyperspaceJumps">Hyperspace jumps</string>
     <string name="hyperspaceDistance">Hyperspace distance</string>
+    <string name="systemsVisited">Systems visited</string>
+    <string name="greatestDistanceFromStart">Greatest distance from start</string>
 </resources>

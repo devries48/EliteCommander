@@ -172,24 +172,11 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                 val rawProgress = rawEvents.lastOrNull { it.event == JOURNAL_EVENT_PROGRESS }
                 val rawReputation = rawEvents.lastOrNull { it.event == JOURNAL_EVENT_REPUTATION }
 
-                if (rawRank == null || rawProgress == null || rawReputation == null) {
-                    throw error("Error parsing rank events from journal")
-                }
+                if (rawRank == null || rawProgress == null || rawReputation == null) throw error("Error parsing rank events from journal")
 
-                val rank = Gson().fromJson(rawRank.json, FrontierJournalRankResponse::class.java)
+                val rank = getRank(rawRank, rawEvents)
                 val progress = Gson().fromJson(rawProgress.json, FrontierJournalRankProgressResponse::class.java)
                 val reputation = Gson().fromJson(rawReputation.json, FrontierJournalRankReputationResponse::class.java)
-
-                rawEvents.filter { it.event == JOURNAL_EVENT_PROMOTION }.forEach {
-                    val promotion = Gson().fromJson(it.json, FrontierJournalRankProgressResponse::class.java)
-
-                    if (promotion.combat > 0) rank.combat = promotion.combat
-                    if (promotion.cqc > 0) rank.cqc = promotion.cqc
-                    if (promotion.empire > 0) rank.empire = promotion.empire
-                    if (promotion.explore > 0) rank.explore = promotion.explore
-                    if (promotion.federation > 0) rank.federation = promotion.federation
-                    if (promotion.trade > 0) rank.trade = promotion.trade
-                }
 
                 val combatRank = FrontierRanksEvent.FrontierRank(
                     rank.combat,
@@ -240,6 +227,22 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                 )
             }
         }
+    }
+
+    private fun getRank(rawRank: RawEvent, rawEvents: List<RawEvent>): FrontierJournalRankResponse {
+        val rank = Gson().fromJson(rawRank.json, FrontierJournalRankResponse::class.java)
+
+        rawEvents.filter { it.event == JOURNAL_EVENT_PROMOTION }.forEach {
+            val promotion = Gson().fromJson(it.json, FrontierJournalRankProgressResponse::class.java)
+
+            if (promotion.combat > 0) rank.combat = promotion.combat
+            if (promotion.cqc > 0) rank.cqc = promotion.cqc
+            if (promotion.empire > 0) rank.empire = promotion.empire
+            if (promotion.explore > 0) rank.explore = promotion.explore
+            if (promotion.federation > 0) rank.federation = promotion.federation
+            if (promotion.trade > 0) rank.trade = promotion.trade
+        }
+        return rank
     }
 
     private suspend fun raiseFrontierStatisticsEvent(rawEvents: List<RawEvent>) {
@@ -323,17 +326,10 @@ class JournalWorker(frontierApi: FrontierInterface?) {
         withContext(Dispatchers.IO) {
 
             try {
-                var rawDiscoveries = rawEvents.filter { it.event == JOURNAL_EVENT_DISCOVERY }
+                val rawDiscoveries = getRawDiscoveries(rawEvents)
+                if (rawDiscoveries.count() == 0) return@withContext
+
                 val rawMappings = rawEvents.filter { it.event == JOURNAL_EVENT_MAP }
-
-                val rawDataSold = rawEvents.lastOrNull { it.event == JOURNAL_EVENT_DISCOVERIES_SOLD }
-                if (rawDataSold != null) rawDiscoveries = rawDiscoveries.filter { it.timeStamp > rawDataSold.timeStamp }
-
-                val rawDied = rawEvents.lastOrNull { it.event == JOURNAL_EVENT_DIED }
-                if (rawDied != null) rawDiscoveries = rawDiscoveries.filter { it.timeStamp > rawDied.timeStamp }
-
-                if (rawDiscoveries.count() == 0) sendEvent(FrontierDiscoveriesEvent(true, null, null))
-
                 val discoveries = mutableListOf<Discovery>()
                 val mappings = mutableListOf<Mapping>()
 
@@ -346,91 +342,8 @@ class JournalWorker(frontierApi: FrontierInterface?) {
 
                 val summary = FrontierDiscoverySummary(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
-                rawDiscoveries.forEach { d ->
-                    val discovery = Gson().fromJson(d.json, Discovery::class.java)
-
-                    // Skip asteroid belt's as they bring no profit or further interest
-                    if (discovery.planetClass.isNullOrEmpty() && discovery.starType.isNullOrEmpty())
-                        return@forEach
-
-                    val map = mappings.firstOrNull {
-                        it.systemAddress == discovery.systemAddress && it.bodyID == discovery.bodyID
-                    }
-
-                    var addMapCount = 0
-                    var addBonusCount = 0
-                    var addFirstDiscovered = 0
-                    var addFirstMapped = 0
-                    var addFirstDiscoveredAndMapped = 0
-                    var addProbeCount = 0
-                    var hasEfficiencyBonus = false
-
-                    if (!discovery.wasDiscovered)
-                        addFirstDiscovered += 1
-
-                    if (map != null) {
-                        addProbeCount += map.probesUsed
-                        addMapCount += 1
-
-                        if (map.efficiencyTarget >= map.probesUsed) {
-                            addBonusCount += 1
-                            hasEfficiencyBonus = true
-                        }
-
-                        if (!discovery.wasMapped) {
-                            if (!discovery.wasDiscovered) {
-                                addFirstDiscoveredAndMapped += 1
-                                addFirstDiscovered -= 1
-                            } else {
-                                addFirstMapped += 1
-                            }
-                        }
-                    }
-
-                    var currentDiscovery =
-                        discoveries.firstOrNull {
-                            !it.planetClass.isNullOrEmpty() && it.planetClass == discovery.planetClass ||
-                                    !it.starType.isNullOrEmpty() && it.starType == discovery.starType
-                        }
-                    if (currentDiscovery == null) {
-                        currentDiscovery = Discovery(
-                            discovery.systemAddress,
-                            discovery.bodyID,
-                            discovery.planetClass.toStringOrEmpty(),
-                            discovery.starType.toStringOrEmpty()
-                        )
-                        discoveries.add(currentDiscovery)
-                    }
-
-                    // Calculate estimated scan values for current body
-                    currentDiscovery.mass = discovery.mass
-                    currentDiscovery.stellarMass = discovery.stellarMass
-                    currentDiscovery.terraformState = discovery.terraformState
-                    currentDiscovery.wasDiscovered = discovery.wasDiscovered
-                    currentDiscovery.wasMapped = discovery.wasMapped
-
-                    val estimatedValue = DiscoveryValueCalculator.calculate(
-                        currentDiscovery,
-                        map != null,
-                        hasEfficiencyBonus
-                    )
-
-                    currentDiscovery.discoveryCount += 1 - addFirstDiscovered - addFirstDiscoveredAndMapped
-                    currentDiscovery.mappedCount += addMapCount - addFirstMapped - addFirstDiscoveredAndMapped
-                    currentDiscovery.bonusCount += addBonusCount
-                    currentDiscovery.firstDiscoveredCount += addFirstDiscovered
-                    currentDiscovery.firstMappedCount += addFirstMapped
-                    currentDiscovery.firstDiscoveredAndMappedCount += addFirstDiscoveredAndMapped
-                    currentDiscovery.estimatedValue += estimatedValue
-
-                    summary.discoveryTotal += 1 - addFirstDiscovered - addFirstDiscoveredAndMapped
-                    summary.mappedTotal += addMapCount - addFirstMapped - addFirstDiscoveredAndMapped
-                    summary.efficiencyBonusTotal += addBonusCount
-                    summary.firstDiscoveryTotal += addFirstDiscovered
-                    summary.firstMappedTotal += addFirstMapped
-                    summary.firstDiscoveredAndMappedTotal += addFirstDiscoveredAndMapped
-                    summary.probesUsedTotal += addProbeCount
-                    summary.estimatedValue += estimatedValue
+                rawDiscoveries.forEach { event ->
+                    processDiscovery(event,  discoveries, mappings, summary)
                 }
 
                 sendEvent(FrontierDiscoveriesEvent(
@@ -459,6 +372,112 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                 sendEvent(FrontierDiscoveriesEvent(false, null, null))
             }
         }
+    }
+
+    private fun processDiscovery(
+        event: RawEvent,
+        discoveries: MutableList<Discovery>,
+        mappings: MutableList<Mapping>,
+        summary: FrontierDiscoverySummary
+    ) {
+        val discovery = Gson().fromJson(event.json, Discovery::class.java)
+
+        // Skip asteroid belt's as they bring no profit or further interest
+        if (discovery.planetClass.isNullOrEmpty() && discovery.starType.isNullOrEmpty())
+            return
+
+        val map = mappings.firstOrNull {
+            it.systemAddress == discovery.systemAddress && it.bodyID == discovery.bodyID
+        }
+
+        var addMapCount = 0
+        var addBonusCount = 0
+        var addFirstDiscovered = 0
+        var addFirstMapped = 0
+        var addFirstDiscoveredAndMapped = 0
+        var addProbeCount = 0
+        var hasEfficiencyBonus = false
+
+        if (!discovery.wasDiscovered)
+            addFirstDiscovered += 1
+
+        if (map != null) {
+            addProbeCount += map.probesUsed
+            addMapCount += 1
+
+            if (map.efficiencyTarget >= map.probesUsed) {
+                addBonusCount += 1
+                hasEfficiencyBonus = true
+            }
+
+            if (!discovery.wasMapped) {
+                if (!discovery.wasDiscovered) {
+                    addFirstDiscoveredAndMapped += 1
+                    addFirstDiscovered -= 1
+                } else {
+                    addFirstMapped += 1
+                }
+            }
+        }
+
+        var currentDiscovery =
+            discoveries.firstOrNull {
+                !it.planetClass.isNullOrEmpty() && it.planetClass == discovery.planetClass ||
+                        !it.starType.isNullOrEmpty() && it.starType == discovery.starType
+            }
+        if (currentDiscovery == null) {
+            currentDiscovery = Discovery(
+                discovery.systemAddress,
+                discovery.bodyID,
+                discovery.planetClass.toStringOrEmpty(),
+                discovery.starType.toStringOrEmpty()
+            )
+            discoveries.add(currentDiscovery)
+        }
+
+        // Calculate estimated scan values for current body
+        currentDiscovery.mass = discovery.mass
+        currentDiscovery.stellarMass = discovery.stellarMass
+        currentDiscovery.terraformState = discovery.terraformState
+        currentDiscovery.wasDiscovered = discovery.wasDiscovered
+        currentDiscovery.wasMapped = discovery.wasMapped
+
+        val estimatedValue = DiscoveryValueCalculator.calculate(
+            currentDiscovery,
+            map != null,
+            hasEfficiencyBonus
+        )
+
+        currentDiscovery.discoveryCount += 1 - addFirstDiscovered - addFirstDiscoveredAndMapped
+        currentDiscovery.mappedCount += addMapCount - addFirstMapped - addFirstDiscoveredAndMapped
+        currentDiscovery.bonusCount += addBonusCount
+        currentDiscovery.firstDiscoveredCount += addFirstDiscovered
+        currentDiscovery.firstMappedCount += addFirstMapped
+        currentDiscovery.firstDiscoveredAndMappedCount += addFirstDiscoveredAndMapped
+        currentDiscovery.estimatedValue += estimatedValue
+
+        summary.discoveryTotal += 1 - addFirstDiscovered - addFirstDiscoveredAndMapped
+        summary.mappedTotal += addMapCount - addFirstMapped - addFirstDiscoveredAndMapped
+        summary.efficiencyBonusTotal += addBonusCount
+        summary.firstDiscoveryTotal += addFirstDiscovered
+        summary.firstMappedTotal += addFirstMapped
+        summary.firstDiscoveredAndMappedTotal += addFirstDiscoveredAndMapped
+        summary.probesUsedTotal += addProbeCount
+        summary.estimatedValue += estimatedValue
+    }
+
+    private fun getRawDiscoveries(rawEvents: List<RawEvent>): List<RawEvent> {
+        var rawDiscoveries = rawEvents.filter { it.event == JOURNAL_EVENT_DISCOVERY }
+
+        val rawDataSold = rawEvents.lastOrNull { it.event == JOURNAL_EVENT_DISCOVERIES_SOLD }
+        if (rawDataSold != null) rawDiscoveries = rawDiscoveries.filter { it.timeStamp > rawDataSold.timeStamp }
+
+        val rawDied = rawEvents.lastOrNull { it.event == JOURNAL_EVENT_DIED }
+        if (rawDied != null) rawDiscoveries = rawDiscoveries.filter { it.timeStamp > rawDied.timeStamp }
+
+        if (rawDiscoveries.count() == 0) sendEvent(FrontierDiscoveriesEvent(true, null, null))
+
+        return rawDiscoveries
     }
 
     private fun sendEvent(data: Any?) {

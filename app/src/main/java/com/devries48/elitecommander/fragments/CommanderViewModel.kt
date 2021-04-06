@@ -228,7 +228,10 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             CMDR_LOCATION,
             LEFT,
             R.string.CurrentLocation,
-            profile.systemName
+            profile.systemName,
+            null,
+            NONE,
+            DIMMED
         )
 
         mCommanderApi?.getDistanceToSol(profile.systemName)
@@ -284,7 +287,10 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
                         CMDR_SHIP,
                         LEFT,
                         R.string.CurrentShip,
-                        it.model
+                        it.model,
+                        null,
+                        NONE,
+                        DIMMED
                     )
                 }
                 assets += it.totalValue
@@ -580,27 +586,46 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
         mBuilderExploration.addStatistic(
             EXPLORATION_HYPERSPACE,
             LEFT,
-            R.string.hyperspaceDistance,
-            statistics.exploration!!.totalHyperspaceDistance,
-            StatisticsBuilder.getDelta(statistics.exploration.totalHyperspaceDistance, mStatisticSettings.totalHyperspaceDistance),
-            LIGHTYEAR
+            R.string.hyperspaceJumps,
+            statistics.exploration!!.totalHyperspaceJumps,
+            StatisticsBuilder.getDelta(statistics.exploration.totalHyperspaceJumps, mStatisticSettings.totalHyperspaceJumps),
+            INTEGER
         )
 
         mBuilderExploration.addStatistic(
             EXPLORATION_HYPERSPACE,
             RIGHT,
-            R.string.hyperspaceJumps,
-            statistics.exploration.totalHyperspaceJumps,
-            StatisticsBuilder.getDelta(statistics.exploration.totalHyperspaceJumps, mStatisticSettings.totalHyperspaceJumps),
+            R.string.hyperspaceDistance,
+            statistics.exploration.totalHyperspaceDistance,
+            StatisticsBuilder.getDelta(statistics.exploration.totalHyperspaceDistance, mStatisticSettings.totalHyperspaceDistance),
+            LIGHTYEAR
+        )
+
+        mBuilderExploration.addStatistic(
+            EXPLORATION_SYSTEMS_VISITED,
+            LEFT,
+            R.string.systemsVisited,
+            statistics.exploration.systemsVisited,
+            StatisticsBuilder.getDelta(statistics.exploration.systemsVisited, mStatisticSettings.systemsVisited),
             INTEGER
         )
 
+        mBuilderExploration.addStatistic(
+            EXPLORATION_SYSTEMS_VISITED,
+            RIGHT,
+            R.string.greatestDistanceFromStart,
+            statistics.exploration.greatestDistanceFromStart,
+            null,
+            LIGHTYEAR,
+            DIMMED
+        )
 
+        mCurrentSettings.totalHyperspaceJumps = statistics.exploration.totalHyperspaceJumps
         mCurrentSettings.totalHyperspaceDistance = statistics.exploration.totalHyperspaceDistance
+        mCurrentSettings.systemsVisited = statistics.exploration.systemsVisited
 
         mBuilderExploration.post()
     }
-
 
 }
 class CommanderViewModelFactory(private val network: CommanderNetwork?) :

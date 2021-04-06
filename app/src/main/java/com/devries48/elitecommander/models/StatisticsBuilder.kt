@@ -79,10 +79,15 @@ class StatisticsBuilder {
                     else -> value.toString()
                 }
             }
+            StatisticFormat.LIGHTYEAR ->
+                when (value) {
+                    is Int -> formatInteger(value) + " LY"
+                    is Double -> formatDouble(value) + " LY"
+                    else -> value.toString()
+                }
             StatisticFormat.TIME -> formatHours(value as Int)
             StatisticFormat.INTEGER -> formatInteger(value as Int)
             StatisticFormat.TONS -> formatInteger(value as Int) + " TONS"
-            StatisticFormat.LIGHTYEAR -> formatInteger(value as Int) + " LY"
             else -> value.toString()
         }
 
@@ -113,7 +118,8 @@ class StatisticsBuilder {
             PROFIT_SEARCH_RESCUE,
             COMBAT_TOTAL_KILLS,
             COMBAT_KILLS,
-            EXPLORATION_HYPERSPACE
+            EXPLORATION_HYPERSPACE,
+            EXPLORATION_SYSTEMS_VISITED
         }
 
         enum class StatisticPosition {

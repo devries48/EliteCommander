@@ -46,8 +46,4 @@ class MainFragment : Fragment() {
         _binding = null
     }
 
-    fun removeItem() {
-        mAdapter?.removeRedirectPage(0)
-
-    }
 }

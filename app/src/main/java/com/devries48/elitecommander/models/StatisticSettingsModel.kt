@@ -68,5 +68,9 @@ class StatisticSettingsModel {
     var totalHyperspaceDistance: Int?=null
 
     @SerializedName("totalHyperspaceJumps")
-    val totalHyperspaceJumps: Int?=null
+    var totalHyperspaceJumps: Int?=null
+
+    @SerializedName("systemsVisited")
+    var systemsVisited: Int?=null
+
 }

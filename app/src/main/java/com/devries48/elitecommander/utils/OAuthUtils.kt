@@ -30,7 +30,7 @@ object OAuthUtils {
         )
     }
 
-    fun getAccessToken(context: Context): String? {
+    private fun getAccessToken(context: Context): String? {
         return SettingsUtils.getString(context, SettingsUtils.Key.ACCESS_TOKEN)
     }
 

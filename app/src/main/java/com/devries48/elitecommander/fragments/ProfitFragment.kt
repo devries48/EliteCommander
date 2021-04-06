@@ -39,23 +39,30 @@ class ProfitFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val list = mViewModel.getProfitStatistics()
-        val chartList = mViewModel.getProfitChart()
+        bindProfitList()
+        bindProfitChart()
+    }
 
+    private fun bindProfitList() {
+        val list = mViewModel.getProfitStatistics()
         val statisticLayoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
+
         mStatisticAdapter = StatisticsRecyclerAdapter(list.value!!)
         binding.statsRecyclerView.layoutManager = statisticLayoutManager
         binding.statsRecyclerView.adapter = mStatisticAdapter
 
-        val sortedSections = chartList.value?.filter { it.percentage > 0.0 }?.sortedByDescending { it.amount }
+        list.observe(viewLifecycleOwner,
+            { stats -> run { mStatisticAdapter.updateList(stats) } })
+    }
 
+    private fun bindProfitChart() {
+        val chartList = mViewModel.getProfitChart()
+        val sortedSections = chartList.value?.filter { it.percentage > 0.0 }?.sortedByDescending { it.amount }
         val profitLayoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
+
         mProfitAdapter = ProfitsRecyclerAdapter(sortedSections)
         binding.profitsRecyclerView.layoutManager = profitLayoutManager
         binding.profitsRecyclerView.adapter = mProfitAdapter
-
-        list.observe(viewLifecycleOwner,
-            { stats -> run { mStatisticAdapter.updateList(stats) } })
 
         chartList.observe(viewLifecycleOwner,
             {
@@ -78,6 +85,7 @@ class ProfitFragment : Fragment() {
                 }
             })
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
