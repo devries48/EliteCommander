@@ -73,4 +73,10 @@ class StatisticSettingsModel {
     @SerializedName("systemsVisited")
     var systemsVisited: Int?=null
 
+    @SerializedName("planetsScanned")
+    var planetsScanned: Int?=null
+
+    @SerializedName("planetsEfficientMapped")
+    var planetsEfficientMapped: Int?=null
+
 }

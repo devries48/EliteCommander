@@ -420,11 +420,7 @@ class JournalWorker(frontierApi: FrontierInterface?) {
             }
         }
 
-        var currentDiscovery =
-            discoveries.firstOrNull {
-                !it.planetClass.isNullOrEmpty() && it.planetClass == discovery.planetClass ||
-                        !it.starType.isNullOrEmpty() && it.starType == discovery.starType
-            }
+        var currentDiscovery = getCurrentDiscovery(discoveries, discovery)
         if (currentDiscovery == null) {
             currentDiscovery = Discovery(
                 discovery.systemAddress,
@@ -464,6 +460,14 @@ class JournalWorker(frontierApi: FrontierInterface?) {
         summary.firstDiscoveredAndMappedTotal += addFirstDiscoveredAndMapped
         summary.probesUsedTotal += addProbeCount
         summary.estimatedValue += estimatedValue
+    }
+
+    private fun getCurrentDiscovery(discoveries: MutableList<Discovery>, discovery: Discovery): Discovery? {
+        return discoveries.firstOrNull {
+            !it.planetClass.isNullOrEmpty() && it.planetClass == discovery.planetClass ||
+                    !it.starType.isNullOrEmpty() && it.starType == discovery.starType
+        }
+
     }
 
     private fun getRawDiscoveries(rawEvents: List<RawEvent>): List<RawEvent> {

@@ -17,7 +17,7 @@ class StatisticsBuilder {
         pos: StatisticPosition,
         @StringRes titleResId: Int,
         value: Any,
-        delta: Any? = null,
+        oldValue: Any? = null,
         format: StatisticFormat = StatisticFormat.NONE,
         color: StatisticColor = StatisticColor.DEFAULT,
     ) {
@@ -29,9 +29,12 @@ class StatisticsBuilder {
                 stat.type = type
                 mStatisticsList.add(stat)
             }
-
             val formattedValue = formatValue(value, format)
-            val formattedDelta = delta?.let { formatValue(it, format, formatZero = false, showPlus = true) }
+            val formattedDelta: String? =
+                if (oldValue != null) {
+                    val delta = getDelta(value, oldValue)
+                    delta?.let { formatValue(it, format, formatZero = false, showPlus = true) }
+                } else null
 
             when (pos) {
                 StatisticPosition.LEFT -> {
@@ -119,7 +122,8 @@ class StatisticsBuilder {
             COMBAT_TOTAL_KILLS,
             COMBAT_KILLS,
             EXPLORATION_HYPERSPACE,
-            EXPLORATION_SYSTEMS_VISITED
+            EXPLORATION_SYSTEMS_VISITED,
+            EXPLORATION_SCANS
         }
 
         enum class StatisticPosition {
@@ -173,7 +177,7 @@ class StatisticsBuilder {
         }
 
         @Suppress("UNCHECKED_CAST")
-        fun <T : Any> getDelta(value: T, oldValue: T?): T? {
+        private fun <T : Any> getDelta(value: T, oldValue: T?): T? {
             if (oldValue == null)
                 return null
 

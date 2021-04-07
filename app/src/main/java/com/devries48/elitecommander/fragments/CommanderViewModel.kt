@@ -55,7 +55,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
     private val mBuilderProfit: StatisticsBuilder = StatisticsBuilder()
     private val mBuilderMain: StatisticsBuilder = StatisticsBuilder()
     private val mBuilderCombat: StatisticsBuilder = StatisticsBuilder()
-    private val mBuilderExploration : StatisticsBuilder = StatisticsBuilder()
+    private val mBuilderExploration: StatisticsBuilder = StatisticsBuilder()
 
     //</editor-fold>
 
@@ -193,7 +193,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             LEFT,
             R.string.time_played,
             statistics.exploration!!.timePlayed,
-            StatisticsBuilder.getDelta(statistics.exploration.timePlayed, mStatisticSettings.timePlayed),
+            mStatisticSettings.timePlayed,
             TIME
         )
 
@@ -204,7 +204,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
     private fun launchProfile(profile: FrontierProfileEvent) {
         mName.postValue(profile.name)
 
-        val amount = StatisticsBuilder.formatCurrency(profile.balance)
+        val amount = profile.balance
         var credits = if (profile.loan != 0L) {
             val loan = StatisticsBuilder.formatCurrency(profile.loan)
             "$amount CR and loan $loan"
@@ -220,7 +220,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             LEFT,
             R.string.Credits,
             credits,
-            StatisticsBuilder.getDelta(profile.balance, mStatisticSettings.credits),
+            mStatisticSettings.credits,
             CURRENCY
         )
 
@@ -301,7 +301,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
                 RIGHT,
                 R.string.AssetsValue,
                 assets,
-                StatisticsBuilder.getDelta(assets, mStatisticSettings.assets),
+                mStatisticSettings.assets,
                 CURRENCY
             )
             mBuilderMain.post()
@@ -391,7 +391,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             LEFT,
             R.string.assassinations,
             statistics.combat!!.assassinationProfits,
-            StatisticsBuilder.getDelta(statistics.combat.assassinationProfits, mStatisticSettings.assassinationsProfit),
+            mStatisticSettings.assassinationsProfit,
             CURRENCY
         )
         mBuilderProfit.addStatistic(
@@ -399,7 +399,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             LEFT,
             R.string.combat_bonds,
             statistics.combat.combatBondProfits,
-            StatisticsBuilder.getDelta(statistics.combat.combatBondProfits, mStatisticSettings.bondsProfit),
+            mStatisticSettings.bondsProfit,
             CURRENCY
         )
         mBuilderProfit.addStatistic(
@@ -407,7 +407,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             LEFT,
             R.string.bounties,
             statistics.combat.bountyHuntingProfit,
-            StatisticsBuilder.getDelta(statistics.combat.bountyHuntingProfit, mStatisticSettings.bountiesProfit),
+            mStatisticSettings.bountiesProfit,
             CURRENCY
         )
         mBuilderProfit.addStatistic(
@@ -425,7 +425,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             LEFT,
             R.string.exploration,
             statistics.exploration!!.explorationProfits,
-            StatisticsBuilder.getDelta(statistics.exploration.explorationProfits, mStatisticSettings.explorationProfit),
+            mStatisticSettings.explorationProfit,
             CURRENCY
         )
         mBuilderProfit.addStatistic(
@@ -443,7 +443,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             LEFT,
             R.string.trading,
             statistics.trading!!.marketProfits,
-            StatisticsBuilder.getDelta(statistics.trading.marketProfits, mStatisticSettings.tradingProfit),
+            mStatisticSettings.tradingProfit,
             CURRENCY
         )
 
@@ -462,7 +462,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             LEFT,
             R.string.smuggling,
             statistics.smuggling!!.blackMarketsProfits,
-            StatisticsBuilder.getDelta(statistics.smuggling.blackMarketsProfits, mStatisticSettings.blackMarketProfit),
+            mStatisticSettings.blackMarketProfit,
             CURRENCY
         )
         mBuilderProfit.addStatistic(
@@ -480,7 +480,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             LEFT,
             R.string.mining,
             statistics.mining!!.miningProfits,
-            StatisticsBuilder.getDelta(statistics.mining.miningProfits, mStatisticSettings.miningProfit),
+            mStatisticSettings.miningProfit,
             CURRENCY
         )
         mBuilderProfit.addStatistic(
@@ -488,7 +488,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             RIGHT,
             R.string.quantity,
             statistics.mining.quantityMined,
-            StatisticsBuilder.getDelta(statistics.mining.quantityMined, mStatisticSettings.miningTotal),
+            mStatisticSettings.miningTotal,
             TONS,
             DIMMED
         )
@@ -498,7 +498,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             LEFT,
             R.string.search_rescue,
             statistics.searchAndRescue!!.searchRescueProfit,
-            StatisticsBuilder.getDelta(statistics.searchAndRescue.searchRescueProfit, mStatisticSettings.rescueProfit),
+            mStatisticSettings.rescueProfit,
             CURRENCY
         )
         mBuilderProfit.addStatistic(
@@ -536,7 +536,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             LEFT,
             R.string.ships_destroyed,
             totalKills,
-            StatisticsBuilder.getDelta(totalKills, mStatisticSettings.totalKills),
+            mStatisticSettings.totalKills,
             INTEGER
         )
         mBuilderCombat.addStatistic(
@@ -544,7 +544,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             RIGHT,
             R.string.skimmers_killed,
             statistics.combat.skimmersKilled,
-            StatisticsBuilder.getDelta(statistics.combat.skimmersKilled, mStatisticSettings.skimmersKilled),
+            mStatisticSettings.skimmersKilled,
             INTEGER
         )
         mBuilderCombat.addStatistic(
@@ -552,7 +552,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             LEFT,
             R.string.bounties,
             statistics.combat.bountiesClaimed,
-            StatisticsBuilder.getDelta(statistics.combat.bountiesClaimed, mStatisticSettings.bountiesTotal),
+            mStatisticSettings.bountiesTotal,
             INTEGER
         )
         mBuilderCombat.addStatistic(
@@ -560,7 +560,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             CENTER,
             R.string.bonds,
             statistics.combat.combatBonds,
-            StatisticsBuilder.getDelta(statistics.combat.combatBonds, mStatisticSettings.bondsTotal),
+            mStatisticSettings.bondsTotal,
             INTEGER
         )
         mBuilderCombat.addStatistic(
@@ -568,7 +568,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             RIGHT,
             R.string.assassinations,
             statistics.combat.assassinations,
-            StatisticsBuilder.getDelta(statistics.combat.assassinations, mStatisticSettings.assassinationsTotal),
+            mStatisticSettings.assassinationsTotal,
             INTEGER
         )
 
@@ -588,7 +588,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             LEFT,
             R.string.hyperspaceJumps,
             statistics.exploration!!.totalHyperspaceJumps,
-            StatisticsBuilder.getDelta(statistics.exploration.totalHyperspaceJumps, mStatisticSettings.totalHyperspaceJumps),
+            mStatisticSettings.totalHyperspaceJumps,
             INTEGER
         )
 
@@ -597,7 +597,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             RIGHT,
             R.string.hyperspaceDistance,
             statistics.exploration.totalHyperspaceDistance,
-            StatisticsBuilder.getDelta(statistics.exploration.totalHyperspaceDistance, mStatisticSettings.totalHyperspaceDistance),
+            mStatisticSettings.totalHyperspaceDistance,
             LIGHTYEAR
         )
 
@@ -606,7 +606,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             LEFT,
             R.string.systemsVisited,
             statistics.exploration.systemsVisited,
-            StatisticsBuilder.getDelta(statistics.exploration.systemsVisited, mStatisticSettings.systemsVisited),
+            mStatisticSettings.systemsVisited,
             INTEGER
         )
 
@@ -620,16 +620,36 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             DIMMED
         )
 
+        mBuilderExploration.addStatistic(
+            EXPLORATION_SCANS,
+            LEFT,
+            R.string.planetsScanned,
+            statistics.exploration.planetsScannedToLevel2,
+            mStatisticSettings.planetsScanned,
+            INTEGER
+        )
+
+        mBuilderExploration.addStatistic(
+            EXPLORATION_SCANS,
+            RIGHT,
+            R.string.planetsEfficientMapped,
+            statistics.exploration.efficientScans,
+            mStatisticSettings.planetsEfficientMapped,
+            INTEGER
+        )
+
         mCurrentSettings.totalHyperspaceJumps = statistics.exploration.totalHyperspaceJumps
         mCurrentSettings.totalHyperspaceDistance = statistics.exploration.totalHyperspaceDistance
         mCurrentSettings.systemsVisited = statistics.exploration.systemsVisited
+        mCurrentSettings.planetsScanned = statistics.exploration.planetsScannedToLevel2
+        mCurrentSettings.planetsEfficientMapped = statistics.exploration.efficientScans
 
         mBuilderExploration.post()
     }
 
-}
-class CommanderViewModelFactory(private val network: CommanderNetwork?) :
-    ViewModelProvider.NewInstanceFactory() {
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T = CommanderViewModel(network) as T
+    class Factory(private val network: CommanderNetwork?) :
+        ViewModelProvider.NewInstanceFactory() {
+        @Suppress("UNCHECKED_CAST")
+        override fun <T : ViewModel?> create(modelClass: Class<T>): T = CommanderViewModel(network) as T
+    }
 }

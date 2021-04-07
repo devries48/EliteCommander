@@ -30,12 +30,11 @@
                 android:id="@+id/leftDeltaTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_medium"
+                android:layout_marginStart="@dimen/margin_large"
                 android:text=""
                 android:textAppearance="@style/eliteStyle.SmallText"
                 app:layout_constraintStart_toEndOf="@+id/leftNameTextView"
-                app:layout_constraintBottom_toBottomOf="@id/leftNameTextView"
-                app:layout_constraintTop_toTopOf="@id/leftNameTextView" />
+                app:layout_constraintBottom_toBottomOf="@id/leftNameTextView" />
             <TextView
                 android:id="@+id/leftValueTextView"
                 android:layout_width="wrap_content"
@@ -61,13 +60,11 @@
                 android:id="@+id/rightDeltaTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/margin_medium"
+                android:layout_marginEnd="@dimen/margin_large"
                 android:text=""
                 android:textAppearance="@style/eliteStyle.SmallText"
                 app:layout_constraintEnd_toStartOf="@+id/rightNameTextView"
-                app:layout_constraintBottom_toBottomOf="@id/rightNameTextView"
-                app:layout_constraintTop_toTopOf="@id/rightNameTextView" />
-
+                app:layout_constraintBottom_toBottomOf="@id/rightNameTextView" />
             <TextView
                 android:id="@+id/rightValueTextView"
                 android:layout_width="wrap_content"
@@ -91,7 +88,7 @@
                 android:id="@+id/middleDeltaTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_medium"
+                android:layout_marginStart="@dimen/margin_large"
                 android:text=""
                 android:textAppearance="@style/eliteStyle.SmallText"
                 app:layout_constraintStart_toEndOf="@+id/middleNameTextView"

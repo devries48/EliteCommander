@@ -14,7 +14,6 @@ import com.devries48.elitecommander.databinding.ActivityMainBinding
 import com.devries48.elitecommander.events.AlertEvent
 import com.devries48.elitecommander.events.FrontierAuthNeededEvent
 import com.devries48.elitecommander.fragments.CommanderViewModel
-import com.devries48.elitecommander.fragments.CommanderViewModelFactory
 import com.devries48.elitecommander.network.CommanderNetwork
 import com.devries48.elitecommander.utils.OAuthUtils.storeUpdatedTokens
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -69,7 +68,7 @@ class MainActivity : AppCompatActivity() {
 
             val viewModelProvider = ViewModelProvider(
                 mNavController.getViewModelStoreOwner(R.id.nav_graph),
-                CommanderViewModelFactory(mCommanderNetwork)
+                CommanderViewModel.Factory(mCommanderNetwork)
             )
             mCommanderViewModel = viewModelProvider.get(CommanderViewModel::class.java)
             mCommanderViewModel!!.load()

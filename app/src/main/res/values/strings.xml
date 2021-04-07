@@ -228,4 +228,6 @@
     <string name="hyperspaceDistance">Hyperspace distance</string>
     <string name="systemsVisited">Systems visited</string>
     <string name="greatestDistanceFromStart">Greatest distance from start</string>
+    <string name="planetsScanned">Planet scanned</string>
+    <string name="planetsEfficientMapped">Efficient mapped</string>
 </resources>
