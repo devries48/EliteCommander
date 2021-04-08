@@ -1,6 +1,6 @@
 package com.devries48.elitecommander.events
 
-data class FrontierStatisticsEvent (
+data class FrontierStatisticsEvent(
     val success: Boolean,
     val bankAccount: FrontierBankAccount?,
     val combat: FrontierCombat?,
@@ -8,7 +8,8 @@ data class FrontierStatisticsEvent (
     val mining: FrontierMining?,
     val trading: FrontierTrading?,
     val smuggling: FrontierSmuggling?,
-    val searchAndRescue: FrontierSearchAndRescue?
+    val searchAndRescue: FrontierSearchAndRescue?,
+    val passengers: FrontierPassengers?
 )
 
 data class FrontierBankAccount(
@@ -73,4 +74,13 @@ data class FrontierSmuggling(
     val blackMarketsTradedWith: Int,
     val highestSingleTransaction: Long,
     val resourcesSmuggled: Int
+)
+
+data class FrontierPassengers(
+    val passengersMissionsAccepted: Int,
+    val passengersMissionsBulk: Int,
+    val passengersMissionsDelivered: Int,
+    val passengersMissionsDisgruntled: Int,
+    val passengersMissionsEjected: Int,
+    val passengersMissionsVIP: Int
 )

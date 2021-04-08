@@ -3,8 +3,8 @@ package com.devries48.elitecommander.models.response
 import com.google.gson.annotations.SerializedName
 
 data class FrontierJournalStatisticsResponse(
-    val event: String, // Statistics
-    val timestamp: String, // 2021-01-14T08:09:04Z
+    val event: String,
+    val timestamp: String,
 
     @SerializedName("Bank_Account")
     val bankAccount: BankAccount,
@@ -34,7 +34,7 @@ data class FrontierJournalStatisticsResponse(
     val tGENCOUNTERS: TGENCOUNTERS,
     @SerializedName("Trading")
     val trading: Trading
-): FrontierJournalResponseBase() {
+) : FrontierJournalResponseBase() {
 
     data class BankAccount(
         @SerializedName("Current_Wealth")
@@ -119,25 +119,25 @@ data class FrontierJournalStatisticsResponse(
 
     data class Exploration(
         @SerializedName("Efficient_Scans")
-        val efficientScans: Int, // 731
+        val efficientScans: Int,
         @SerializedName("Exploration_Profits")
-        val explorationProfits: Long, // 897847545
+        val explorationProfits: Long,
         @SerializedName("Greatest_Distance_From_Start")
-        val greatestDistanceFromStart: Double, // 25115.590148702
+        val greatestDistanceFromStart: Double,
         @SerializedName("Highest_Payout")
-        val highestPayout: Int, // 25271392
+        val highestPayout: Int,
         @SerializedName("Planets_Scanned_To_Level_2")
-        val planetsScannedToLevel2: Int, // 51953
+        val planetsScannedToLevel2: Int,
         @SerializedName("Planets_Scanned_To_Level_3")
-        val planetsScannedToLevel3: Int, // 51953
+        val planetsScannedToLevel3: Int,
         @SerializedName("Systems_Visited")
-        val systemsVisited: Int, // 5274
+        val systemsVisited: Int,
         @SerializedName("Time_Played")
-        val timePlayed: Int, // 3736440
+        val timePlayed: Int,
         @SerializedName("Total_Hyperspace_Distance")
-        val totalHyperspaceDistance: Int, // 157946
+        val totalHyperspaceDistance: Int,
         @SerializedName("Total_Hyperspace_Jumps")
-        val totalHyperspaceJumps: Int // 9525
+        val totalHyperspaceJumps: Int
     )
 
     data class MaterialTraderStats(
@@ -170,15 +170,15 @@ data class FrontierJournalStatisticsResponse(
 
     data class Multicrew(
         @SerializedName("Multicrew_Credits_Total")
-        val multicrewCreditsTotal: Long, // 0
+        val multicrewCreditsTotal: Long,
         @SerializedName("Multicrew_Fighter_Time_Total")
-        val multicrewFighterTimeTotal: Int, // 0
+        val multicrewFighterTimeTotal: Int,
         @SerializedName("Multicrew_Fines_Total")
-        val multicrewFinesTotal: Int, // 0
+        val multicrewFinesTotal: Int,
         @SerializedName("Multicrew_Gunner_Time_Total")
-        val multicrewGunnerTimeTotal: Int, // 0
+        val multicrewGunnerTimeTotal: Int,
         @SerializedName("Multicrew_Time_Total")
-        val multicrewTimeTotal: Int // 0
+        val multicrewTimeTotal: Int
     )
 
     data class Passengers(
@@ -198,11 +198,11 @@ data class FrontierJournalStatisticsResponse(
 
     data class SearchAndRescue(
         @SerializedName("SearchRescue_Count")
-        val searchRescueCount: Int, // 9
+        val searchRescueCount: Int,
         @SerializedName("SearchRescue_Profit")
-        val searchRescueProfit: Long, // 230502
+        val searchRescueProfit: Long,
         @SerializedName("SearchRescue_Traded")
-        val searchRescueTraded: Int // 10
+        val searchRescueTraded: Int
     )
 
     data class Smuggling(

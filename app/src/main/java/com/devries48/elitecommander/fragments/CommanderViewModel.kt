@@ -56,6 +56,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
     private val mBuilderMain: StatisticsBuilder = StatisticsBuilder()
     private val mBuilderCombat: StatisticsBuilder = StatisticsBuilder()
     private val mBuilderExploration: StatisticsBuilder = StatisticsBuilder()
+    private val mBuilderPassenger: StatisticsBuilder = StatisticsBuilder()
 
     //</editor-fold>
 
@@ -109,6 +110,10 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
 
     internal fun getExplorationStatistics(): LiveData<List<StatisticModel>> {
         return mBuilderExploration.statistics
+    }
+
+    internal fun getPassengerStatistics(): LiveData<List<StatisticModel>> {
+        return mBuilderPassenger.statistics
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
@@ -180,6 +185,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             launchProfitStats(statistics)
             launchCombatStats(statistics)
             launchExplorationStats(statistics)
+            launchPassengerStats(statistics)
         }
     }
 
@@ -646,6 +652,22 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
 
         mBuilderExploration.post()
     }
+
+    private fun launchPassengerStats(statistics: FrontierStatisticsEvent) {
+        mBuilderPassenger.addStatistic(
+            PASSENGERS,
+            LEFT,
+            R.string.passengersDelivered,
+            statistics.passengers!!.passengersMissionsDelivered,
+            mStatisticSettings.passengersDelivered,
+            INTEGER
+        )
+
+        mCurrentSettings.passengersDelivered = statistics.passengers.passengersMissionsDelivered
+
+        mBuilderPassenger.post()
+    }
+
 
     class Factory(private val network: CommanderNetwork?) :
         ViewModelProvider.NewInstanceFactory() {

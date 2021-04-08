@@ -22,7 +22,6 @@ android {
 
         // Get or create code here: https://user.frontierstore.net/
         buildConfigField "String", "FRONTIER_AUTH_CLIENT_ID", "\"${localProperties.getProperty("frontierclientid")}\""
-
     }
 
     buildTypes {
@@ -74,7 +73,20 @@ dependencies {
     implementation("app.futured.donut:library:$futuredVersion")
     implementation("app.futured.donut:library-compose:$futuredVersion")
 
-    testImplementation 'junit:junit:4.13.2'
+    // Unit & instrumented tests
+    testImplementation('org.junit.jupiter:junit-jupiter-api:5.7.1')
+    testRuntimeOnly('org.junit.jupiter:junit-jupiter-engine:5.7.1')
+    testRuntimeOnly('org.junit.vintage:junit-vintage-engine:5.7.1')
+
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+}
+
+tasks.withType(Test) {
+    useJUnitPlatform()
+    testLogging {
+        exceptionFormat "full"
+        events "started", "skipped", "passed", "failed"
+        showStandardStreams true
+    }
 }

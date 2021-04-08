@@ -308,6 +308,14 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                             statistics.searchAndRescue.searchRescueCount,
                             statistics.searchAndRescue.searchRescueProfit,
                             statistics.searchAndRescue.searchRescueTraded
+                        ),
+                        FrontierPassengers(
+                            statistics.passengers.passengersMissionsAccepted,
+                            statistics.passengers.passengersMissionsBulk,
+                            statistics.passengers.passengersMissionsDelivered,
+                            statistics.passengers.passengersMissionsDisgruntled,
+                            statistics.passengers.passengersMissionsEjected,
+                            statistics.passengers.passengersMissionsVIP
                         )
                     )
                 )
@@ -315,7 +323,7 @@ class JournalWorker(frontierApi: FrontierInterface?) {
             } catch (e: Exception) {
                 println("LOG: Error parsing statistics event from journal." + e.message)
                 sendEvent(
-                    FrontierStatisticsEvent(false, null, null, null, null, null, null, null)
+                    FrontierStatisticsEvent(false, null, null, null, null, null, null, null, null)
                 )
             }
 
@@ -343,7 +351,7 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                 val summary = FrontierDiscoverySummary(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
                 rawDiscoveries.forEach { event ->
-                    processDiscovery(event,  discoveries, mappings, summary)
+                    processDiscovery(event, discoveries, mappings, summary)
                 }
 
                 sendEvent(FrontierDiscoveriesEvent(
