@@ -15,6 +15,25 @@ object DiscoveryValueCalculator {
  * Main star value = Normal Main Star Calculation + SUM(MAX(Planetary Body FSS Value / 3.0, 500)) + SUM(Stellar Body FSS Value / 3.0)
  * There is a bonus of 1k per body for fully FSSing the system (so 8k), and a bonus of 10k per mappable body for fully mapping the system (so 70k).
 */
+
+    private val mWhiteDwarfs = arrayOf(
+        51,
+        501,
+        502,
+        503,
+        504,
+        505,
+        506,
+        507,
+        508,
+        509,
+        510,
+        511,
+        512,
+        513,
+        514
+    )
+
     fun calculate(
         discovery: JournalWorker.Discovery,
         isMapped: Boolean,
@@ -34,28 +53,9 @@ object DiscoveryValueCalculator {
         val mass = if (discovery.stellarMass == null) 1.0 else discovery.stellarMass!!
         var value = 1200.0
 
-        if (starId in arrayOf(
-                51,
-                501,
-                502,
-                503,
-                504,
-                505,
-                506,
-                507,
-                508,
-                509,
-                510,
-                511,
-                512,
-                513,
-                514
-            )
-        ) value = 14057.0 // White dwarf
-
+        if (starId in mWhiteDwarfs) value = 14057.0 // White dwarf
         if (starId in arrayOf(91, 92)) value = 22628.0 // Neutron Star, Black Hole
-        if (starId == 93)
-            value = 33.5678 // Supermassive Black Hole
+        if (starId == 93) value = 33.5678 // Supermassive Black Hole
 
         // (k + (m * k / 66.25))
         return round(value + mass * value / 66.25).toLong()

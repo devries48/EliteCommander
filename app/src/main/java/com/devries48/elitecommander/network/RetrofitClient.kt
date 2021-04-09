@@ -30,9 +30,8 @@ open class RetrofitClient private constructor() : Serializable {
     private var retrofitBuilder: Retrofit.Builder? = null
 
     fun getEdsmRetrofit(ctx: Context): EdsmInterface? {
-        if (edsmInterface != null) {
-            return edsmInterface
-        }
+        if (edsmInterface != null) return edsmInterface
+
         edsmInterface = retrofitInstance
             ?.baseUrl(ctx.getString(R.string.edsm_base))
             ?.build()
@@ -41,9 +40,8 @@ open class RetrofitClient private constructor() : Serializable {
     }
 
     fun getFrontierAuthRetrofit(ctx: Context): FrontierAuthInterface? {
-        if (frontierAuthInterface != null) {
-            return frontierAuthInterface
-        }
+        if (frontierAuthInterface != null) return frontierAuthInterface
+
         frontierAuthInterface = retrofitInstance
             ?.baseUrl(ctx.getString(R.string.frontier_auth_base))
             ?.build()
@@ -53,6 +51,7 @@ open class RetrofitClient private constructor() : Serializable {
 
     fun getFrontierRetrofit(ctx: Context): FrontierInterface? {
         if (frontierInterface != null) return frontierInterface
+
         val httpClient = commonOkHttpClientBuilder
 
         // Add interceptor for tokens in response
@@ -62,7 +61,7 @@ open class RetrofitClient private constructor() : Serializable {
 
             // Check if access token expired and renew it if needed
             if (isExpired(response.code())) {
-                try{
+                try {
                     val responseBody: FrontierAccessTokenResponse? = OAuthUtils.makeRefreshRequest(ctx)
                     if (responseBody == null) {
                         EventBus.getDefault().post(FrontierAuthNeededEvent(true)) // Send event to renew login
@@ -86,6 +85,7 @@ open class RetrofitClient private constructor() : Serializable {
 
             // If still not ok, need login
             if (isFailed(response)) EventBus.getDefault().post(FrontierAuthNeededEvent(true))
+
             response
         }
 
@@ -109,9 +109,8 @@ open class RetrofitClient private constructor() : Serializable {
 
     private val retrofitInstance: Retrofit.Builder?
         get() {
-            if (retrofitBuilder != null) {
-                return retrofitBuilder
-            }
+            if (retrofitBuilder != null) return retrofitBuilder
+
             retrofitBuilder = Retrofit.Builder()
                 .client(commonOkHttpClientBuilder.build())
                 .addConverterFactory(commonGsonConverterFactory)
@@ -128,7 +127,7 @@ open class RetrofitClient private constructor() : Serializable {
         }
 
     private val commonOkHttpClientBuilder: OkHttpClient.Builder
-         get() = OkHttpClient().newBuilder()
+        get() = OkHttpClient().newBuilder()
             .connectTimeout(15, TimeUnit.SECONDS)
             .readTimeout(15, TimeUnit.SECONDS)
             .writeTimeout(15, TimeUnit.SECONDS)
@@ -140,8 +139,7 @@ open class RetrofitClient private constructor() : Serializable {
         fun getInstance(): RetrofitClient? {
             if (instance == null) {
                 synchronized(RetrofitClient::class.java) {
-                    if (instance == null) instance =
-                        RetrofitClient()
+                    if (instance == null) instance = RetrofitClient()
                 }
             }
             return instance

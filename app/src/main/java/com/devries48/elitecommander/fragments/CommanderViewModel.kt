@@ -15,7 +15,7 @@ import com.devries48.elitecommander.models.StatisticsBuilder.Companion.Statistic
 import com.devries48.elitecommander.models.StatisticsBuilder.Companion.StatisticFormat.*
 import com.devries48.elitecommander.models.StatisticsBuilder.Companion.StatisticPosition.*
 import com.devries48.elitecommander.models.StatisticsBuilder.Companion.StatisticType.*
-import com.devries48.elitecommander.network.CommanderNetwork
+import com.devries48.elitecommander.network.CommanderClient
 import com.devries48.elitecommander.utils.SettingsUtils
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -24,11 +24,11 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import kotlin.math.round
 
-class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
+class CommanderViewModel(client: CommanderClient?) : ViewModel() {
 
     //<editor-fold desc="Private definitions">
 
-    private val mCommanderApi = network
+    private val mCommanderApi = client
     private val mStatisticSettings: StatisticSettingsModel
     private var mCurrentSettings = StatisticSettingsModel()
 
@@ -471,6 +471,7 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
             mStatisticSettings.blackMarketProfit,
             CURRENCY
         )
+
         mBuilderProfit.addStatistic(
             PROFIT_SMUGGLING,
             RIGHT,
@@ -669,9 +670,9 @@ class CommanderViewModel(network: CommanderNetwork?) : ViewModel() {
     }
 
 
-    class Factory(private val network: CommanderNetwork?) :
+    class Factory(private val client: CommanderClient?) :
         ViewModelProvider.NewInstanceFactory() {
         @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T = CommanderViewModel(network) as T
+        override fun <T : ViewModel?> create(modelClass: Class<T>): T = CommanderViewModel(client) as T
     }
 }

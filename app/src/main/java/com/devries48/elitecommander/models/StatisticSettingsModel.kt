@@ -65,18 +65,21 @@ class StatisticSettingsModel {
     var skimmersKilled: Int? = null
 
     @SerializedName("totalHyperspaceDistance")
-    var totalHyperspaceDistance: Int?=null
+    var totalHyperspaceDistance: Int? = null
 
     @SerializedName("totalHyperspaceJumps")
-    var totalHyperspaceJumps: Int?=null
+    var totalHyperspaceJumps: Int? = null
 
     @SerializedName("systemsVisited")
-    var systemsVisited: Int?=null
+    var systemsVisited: Int? = null
 
     @SerializedName("planetsScanned")
-    var planetsScanned: Int?=null
+    var planetsScanned: Int? = null
 
     @SerializedName("planetsEfficientMapped")
-    var planetsEfficientMapped: Int?=null
+    var planetsEfficientMapped: Int? = null
+
+    @SerializedName("passengersDelivered")
+    var passengersDelivered: Int? = null
 
 }

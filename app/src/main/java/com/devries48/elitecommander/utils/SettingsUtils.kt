@@ -52,7 +52,7 @@ object SettingsUtils {
                 val modelDate = DateUtils.fromDateString(model.timestamp!!, DateUtils.dateFormatGMT)
                 val cycleDate = DateUtils.getLastCycleDateGMT()
 
-                return if (modelDate.before(cycleDate) || model.credits== null) {
+                return if (modelDate.before(cycleDate) || model.credits == null) {
                     println("STATISTIC_VALUES cycled")
                     StatisticSettingsModel()
                 } else {

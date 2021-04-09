@@ -20,7 +20,7 @@ import retrofit2.Response
 import java.util.*
 import kotlin.collections.ArrayList
 
-class CommanderNetwork {
+class CommanderClient {
 
     private var mFrontierApi: FrontierInterface? = null
     private var mJournalWorker: JournalWorker? = null
@@ -69,7 +69,7 @@ class CommanderNetwork {
         if (!res.isSuccessful || profileResponse == null) throw Exception("Empty profile response")
 
         handleProfileParsing(profileResponse)
-        if (rawResponse != null) handleFleetParsing(this@CommanderNetwork, rawResponse)
+        if (rawResponse != null) handleFleetParsing(this@CommanderClient, rawResponse)
     }
 
     /**
@@ -109,7 +109,7 @@ class CommanderNetwork {
         sendResultMessage(frontierProfileEvent)
     }
 
-    private fun handleFleetParsing(commanderNetwork: CommanderNetwork, rawProfileResponse: JsonObject) {
+    private fun handleFleetParsing(commanderClient: CommanderClient, rawProfileResponse: JsonObject) {
         val currentShipId = rawProfileResponse["commander"]
             .asJsonObject["currentShipId"]
             .asInt
@@ -152,7 +152,7 @@ class CommanderNetwork {
                 shipsList.add(newShip)
             }
         }
-        commanderNetwork.sendResultMessage(FrontierFleetEvent(true, shipsList))
+        commanderClient.sendResultMessage(FrontierFleetEvent(true, shipsList))
     }
 
     private fun sendResultMessage(data: Any?) {

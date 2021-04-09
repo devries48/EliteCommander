@@ -14,7 +14,7 @@ import com.devries48.elitecommander.databinding.ActivityMainBinding
 import com.devries48.elitecommander.events.AlertEvent
 import com.devries48.elitecommander.events.FrontierAuthNeededEvent
 import com.devries48.elitecommander.fragments.CommanderViewModel
-import com.devries48.elitecommander.network.CommanderNetwork
+import com.devries48.elitecommander.network.CommanderClient
 import com.devries48.elitecommander.utils.OAuthUtils.storeUpdatedTokens
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.greenrobot.eventbus.EventBus
@@ -25,7 +25,7 @@ import kotlin.properties.Delegates
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var mCommanderNetwork: CommanderNetwork
+    private lateinit var mCommanderClient: CommanderClient
 
     private var mCommanderViewModel: CommanderViewModel? = null
     private val mNavController by lazy { findNavController() }
@@ -64,11 +64,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupViewModel() {
         try {
-            mCommanderNetwork = CommanderNetwork()
+            mCommanderClient = CommanderClient()
 
             val viewModelProvider = ViewModelProvider(
                 mNavController.getViewModelStoreOwner(R.id.nav_graph),
-                CommanderViewModel.Factory(mCommanderNetwork)
+                CommanderViewModel.Factory(mCommanderClient)
             )
             mCommanderViewModel = viewModelProvider.get(CommanderViewModel::class.java)
             mCommanderViewModel!!.load()
@@ -105,22 +105,9 @@ class MainActivity : AppCompatActivity() {
     fun onAlertEvent(alertEvent: AlertEvent) {
         synchronized(mAlertList) {
             mAlertList.add(alertEvent.message)
-            if (mAlertDialog == null) {
-                val builder = MaterialAlertDialogBuilder(this, R.style.AlertDialogTheme)
-                builder.setIcon(android.R.drawable.ic_dialog_alert)
-                builder.setTitle(alertEvent.title)
-                builder.setMessage(alertEvent.message)
-                builder.background = ColorDrawable(ContextCompat.getColor(this, R.color.black))
-                builder.setPositiveButton("OK") { _, _ ->
-                    mAlertDialog?.dismiss()
-                    mAlertDialog = null
-                }
-
-                builder.setCancelable(false)
-
-                mAlertDialog = builder.create()
-                mAlertDialog!!.show()
-            } else {
+            if (mAlertDialog == null)
+                showAlertDialog(alertEvent)
+            else {
                 var message = ""
                 for ((index, it) in mAlertList.withIndex()) {
                     message += "\u2022 " + this.getString(it)
@@ -130,6 +117,23 @@ class MainActivity : AppCompatActivity() {
                 mAlertDialog!!.setMessage(message)
             }
         }
+    }
+
+    private fun showAlertDialog(alertEvent: AlertEvent) {
+        val builder = MaterialAlertDialogBuilder(this, R.style.AlertDialogTheme)
+        builder.setIcon(android.R.drawable.ic_dialog_alert)
+        builder.setTitle(alertEvent.title)
+        builder.setMessage(alertEvent.message)
+        builder.background = ColorDrawable(ContextCompat.getColor(this, R.color.black))
+        builder.setPositiveButton("OK") { _, _ ->
+            mAlertDialog?.dismiss()
+            mAlertDialog = null
+        }
+
+        builder.setCancelable(false)
+
+        mAlertDialog = builder.create()
+        mAlertDialog!!.show()
     }
 
     companion object {

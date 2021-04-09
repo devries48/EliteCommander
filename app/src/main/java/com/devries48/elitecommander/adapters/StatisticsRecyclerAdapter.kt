@@ -60,6 +60,7 @@ class StatisticsRecyclerAdapter(var data: List<StatisticModel>?) :
             item.leftColor,
             item.leftDelta
         )
+
         setValues(
             viewHolder.middleNameTextView,
             viewHolder.middleValueTextView,

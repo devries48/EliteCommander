@@ -17,6 +17,7 @@ class StatisticsFragment : Fragment() {
     private val mViewModel: CommanderViewModel by navGraphViewModels(R.id.nav_graph)
     private lateinit var mCombatAdapter: StatisticsRecyclerAdapter
     private lateinit var mExplorationAdapter: StatisticsRecyclerAdapter
+    private lateinit var mPassengerAdapter: StatisticsRecyclerAdapter
 
     private var _binding: FragmentStatisticsBinding? = null
     private val binding get() = _binding!!
@@ -39,24 +40,34 @@ class StatisticsFragment : Fragment() {
 
         bindCombatStats()
         bindExplorationStats()
+        bindPassengerStats()
     }
 
     private fun bindCombatStats() {
         val list = mViewModel.getCombatStatistics()
-        val combatManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
+        val manager: RecyclerView.LayoutManager = LinearLayoutManager(context)
 
         mCombatAdapter = StatisticsRecyclerAdapter(list.value!!)
-        binding.combatRecyclerView.layoutManager = combatManager
+        binding.combatRecyclerView.layoutManager = manager
         binding.combatRecyclerView.adapter = mCombatAdapter
     }
 
     private fun bindExplorationStats() {
         val list = mViewModel.getExplorationStatistics()
-        val explorationManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
+        val manager: RecyclerView.LayoutManager = LinearLayoutManager(context)
 
         mExplorationAdapter = StatisticsRecyclerAdapter(list.value!!)
-        binding.explorationRecyclerView.layoutManager = explorationManager
+        binding.explorationRecyclerView.layoutManager = manager
         binding.explorationRecyclerView.adapter = mExplorationAdapter
+    }
+
+    private fun bindPassengerStats() {
+        val list = mViewModel.getPassengerStatistics()
+        val manager: RecyclerView.LayoutManager = LinearLayoutManager(context)
+
+        mPassengerAdapter = StatisticsRecyclerAdapter(list.value!!)
+        binding.passengersRecyclerView.layoutManager = manager
+        binding.passengersRecyclerView.adapter = mPassengerAdapter
     }
 
     override fun onDestroyView() {

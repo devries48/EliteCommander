@@ -23,8 +23,7 @@ class DiscoveriesRecyclerAdapter(var data: List<FrontierDiscovery>?) :
         val bodyNameTextView: TextView = view.findViewById(R.id.bodyNameTextView)
         val discoveredTextView: TextView = view.findViewById(R.id.discoveredTextView)
         val firstDiscoveredTextView: TextView = view.findViewById(R.id.firstDiscoveredTextView)
-        val firstDiscoveredLabelTextView: TextView =
-            view.findViewById(R.id.firstDiscoveredLabelTextView)
+        val firstDiscoveredLabelTextView: TextView = view.findViewById(R.id.firstDiscoveredLabelTextView)
         val mappedTitleTextView: TextView = view.findViewById(R.id.mappedTitleTextView)
         val mappedTextView: TextView = view.findViewById(R.id.mappedTextView)
         val firstMappedTextView: TextView = view.findViewById(R.id.firstMappedTextView)
@@ -72,29 +71,27 @@ class DiscoveriesRecyclerAdapter(var data: List<FrontierDiscovery>?) :
             view.bodyImageView.setImageResource(bodyResources.first)
 
         } catch (e: Exception) {
-            println("ff")
+            println("Error in DiscoveriesAdapter displayBody")
         }
     }
 
     private fun displayDiscovered(item: FrontierDiscovery, ctx: Context, view: ViewHolder) {
-        val totalFirstDiscovered: Int =
-            item.firstDiscoveredCount + item.firstDiscoveredAndMappedCount
+        val totalFirstDiscovered: Int = item.firstDiscoveredCount + item.firstDiscoveredAndMappedCount
 
-        view.discoveredTextView.text =
-            String.format(ctx.getString(R.string.format_number), item.discoveryCount)
+        view.discoveredTextView.text = String.format(ctx.getString(R.string.format_number), item.discoveryCount)
 
         // No first discoveries and mappings, hide the 'first' label
-        if (item.firstDiscoveredCount + item.firstMappedCount + item.firstDiscoveredAndMappedCount == 0)
-            view.firstDiscoveredLabelTextView.visibility = View.GONE
-        else
-            view.firstDiscoveredLabelTextView.visibility = View.VISIBLE
+        view.firstDiscoveredLabelTextView.visibility =
+            if (item.firstDiscoveredCount + item.firstMappedCount + item.firstDiscoveredAndMappedCount == 0)
+                View.GONE
+            else
+                View.VISIBLE
 
         // No first discoveries, display empty string
-        if (totalFirstDiscovered == 0)
-            view.firstDiscoveredTextView.text = ""
-        else
-            view.firstDiscoveredTextView.text =
-                String.format(ctx.getString(R.string.format_number), totalFirstDiscovered)
+        view.firstDiscoveredTextView.text = if (totalFirstDiscovered == 0) "" else String.format(
+            ctx.getString(R.string.format_number),
+            totalFirstDiscovered
+        )
     }
 
 
@@ -107,21 +104,17 @@ class DiscoveriesRecyclerAdapter(var data: List<FrontierDiscovery>?) :
             view.firstMappedTextView.text = ""
         } else {
             view.mappedTitleTextView.visibility = View.VISIBLE
-
-            if (item.mappedCount == 0)
-                view.mappedTextView.text = ""
-            else
-                view.mappedTextView.text =
-                    String.format(ctx.getString(R.string.format_number), item.mappedCount)
-
-            if (totalFirstMapped == 0)
-                view.firstMappedTextView.text = ""
-            else
-                view.firstMappedTextView.text =
-                    String.format(ctx.getString(R.string.format_number), totalFirstMapped)
+            view.mappedTextView.text = emptyWhenZero(item.mappedCount, ctx)
+            view.firstMappedTextView.text = emptyWhenZero(totalFirstMapped, ctx)
         }
     }
 
+    private fun emptyWhenZero(value: Int, ctx: Context): String {
+        return if (value != 0)
+            String.format(ctx.getString(R.string.format_number), value)
+        else
+            ""
+    }
 
     fun updateList(discoveries: List<FrontierDiscovery>) {
         data = discoveries

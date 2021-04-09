@@ -123,7 +123,8 @@ class StatisticsBuilder {
             COMBAT_KILLS,
             EXPLORATION_HYPERSPACE,
             EXPLORATION_SYSTEMS_VISITED,
-            EXPLORATION_SCANS
+            EXPLORATION_SCANS,
+            PASSENGERS
         }
 
         enum class StatisticPosition {

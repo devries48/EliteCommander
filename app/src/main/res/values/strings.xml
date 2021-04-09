@@ -230,4 +230,8 @@
     <string name="greatestDistanceFromStart">Greatest distance from start</string>
     <string name="planetsScanned">Planet scanned</string>
     <string name="planetsEfficientMapped">Efficient mapped</string>
+    <string name="passengersDelivered">Passengers delivered</string>
+    <string name="combatStatistics">Combat statistics</string>
+    <string name="exploration_statistics">Exploration statistics</string>
+    <string name="passengers">Passengers</string>
 </resources>
