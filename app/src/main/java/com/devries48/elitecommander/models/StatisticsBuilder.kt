@@ -124,7 +124,8 @@ class StatisticsBuilder {
             EXPLORATION_HYPERSPACE,
             EXPLORATION_SYSTEMS_VISITED,
             EXPLORATION_SCANS,
-            PASSENGERS
+            PASSENGERS_DELIVERED,
+            PASSEMGERS_TYPE
         }
 
         enum class StatisticPosition {

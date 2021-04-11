@@ -78,9 +78,10 @@ class CommanderViewModel(client: CommanderClient?) : ViewModel() {
     }
 
     override fun onCleared() {
+        super.onCleared()
+
         EventBus.getDefault().unregister(this)
         SettingsUtils.setStatisticsSettings(mCurrentSettings)
-        super.onCleared()
     }
 
     fun load() {
@@ -656,12 +657,42 @@ class CommanderViewModel(client: CommanderClient?) : ViewModel() {
 
     private fun launchPassengerStats(statistics: FrontierStatisticsEvent) {
         mBuilderPassenger.addStatistic(
-            PASSENGERS,
+            PASSENGERS_DELIVERED,
             LEFT,
             R.string.passengersDelivered,
             statistics.passengers!!.passengersMissionsDelivered,
             mStatisticSettings.passengersDelivered,
             INTEGER
+        )
+
+        mBuilderPassenger.addStatistic(
+            PASSENGERS_DELIVERED,
+            RIGHT,
+            R.string.passengersEjected,
+            statistics.passengers.passengersMissionsEjected,
+            null,
+            INTEGER,
+            DIMMED
+        )
+
+        mBuilderPassenger.addStatistic(
+            PASSEMGERS_TYPE,
+            LEFT,
+            R.string.passengersBulk,
+            statistics.passengers.passengersMissionsBulk,
+            null,
+            INTEGER,
+            DIMMED
+        )
+
+        mBuilderPassenger.addStatistic(
+            PASSEMGERS_TYPE,
+            RIGHT,
+            R.string.passengersVIP,
+            statistics.passengers.passengersMissionsVIP,
+            null,
+            INTEGER,
+            DIMMED
         )
 
         mCurrentSettings.passengersDelivered = statistics.passengers.passengersMissionsDelivered

@@ -91,10 +91,7 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                 .trim().drop(1).dropLast(1).split("}{").map {
                     try {
                         val raw = RawEvent(it.trim())
-                        if (raw.event !in mIgnoreEvents) {
-                            rawEvents.add(raw)
-                            println(raw.event)
-                        }
+                        if (raw.event !in mIgnoreEvents) rawEvents.add(raw)
                     } catch (e: Exception) {
                         println("LOG: Error parsing journal event, " + e.message)
                         println("LOG: Event: " + it.trim())
@@ -393,6 +390,12 @@ class JournalWorker(frontierApi: FrontierInterface?) {
         // Skip asteroid belt's as they bring no profit or further interest
         if (discovery.planetClass.isNullOrEmpty() && discovery.starType.isNullOrEmpty())
             return
+
+        // I regularly experienced a swap in the result, so fix it here
+        if (!discovery.wasDiscovered && discovery.wasMapped) {
+            discovery.wasDiscovered = true
+            println(event.json)
+        }
 
         val map = mappings.firstOrNull {
             it.systemAddress == discovery.systemAddress && it.bodyID == discovery.bodyID

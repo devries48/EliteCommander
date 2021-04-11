@@ -81,5 +81,4 @@ class StatisticSettingsModel {
 
     @SerializedName("passengersDelivered")
     var passengersDelivered: Int? = null
-
 }

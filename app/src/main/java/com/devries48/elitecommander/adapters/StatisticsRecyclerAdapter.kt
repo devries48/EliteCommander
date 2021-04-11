@@ -1,6 +1,5 @@
 package com.devries48.elitecommander.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,7 +41,6 @@ class StatisticsRecyclerAdapter(var data: List<StatisticModel>?) :
     }
 
     override fun getItemCount(): Int {
-        Log.d("Main Statistics items:  ", data?.size.toString())
         return data?.size ?: 0
     }
 
