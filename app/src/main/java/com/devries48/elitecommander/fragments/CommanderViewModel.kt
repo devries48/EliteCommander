@@ -204,6 +204,16 @@ class CommanderViewModel(client: CommanderClient?) : ViewModel() {
             TIME
         )
 
+        mBuilderMain.addStatistic(
+            CMDR_TIME_PLAYED,
+            RIGHT,
+            R.string.last_journal,
+            statistics.lastJournalDate!!,
+            null,
+            DATETIME,
+            DIMMED
+        )
+
         mBuilderMain.post()
         mCurrentSettings.timePlayed = statistics.exploration.timePlayed
     }
@@ -225,7 +235,7 @@ class CommanderViewModel(client: CommanderClient?) : ViewModel() {
         mBuilderMain.addStatistic(
             CMDR_CREDITS,
             LEFT,
-            R.string.Credits,
+            R.string.credits,
             credits,
             mStatisticSettings.credits,
             CURRENCY
@@ -234,7 +244,7 @@ class CommanderViewModel(client: CommanderClient?) : ViewModel() {
         mBuilderMain.addStatistic(
             CMDR_LOCATION,
             LEFT,
-            R.string.CurrentLocation,
+            R.string.current_location,
             profile.systemName,
             null,
             NONE,
@@ -293,7 +303,7 @@ class CommanderViewModel(client: CommanderClient?) : ViewModel() {
                     mBuilderMain.addStatistic(
                         CMDR_SHIP,
                         LEFT,
-                        R.string.CurrentShip,
+                        R.string.current_ship,
                         it.model,
                         null,
                         NONE,
@@ -306,7 +316,7 @@ class CommanderViewModel(client: CommanderClient?) : ViewModel() {
             mBuilderMain.addStatistic(
                 CMDR_CREDITS,
                 RIGHT,
-                R.string.AssetsValue,
+                R.string.assets_value,
                 assets,
                 mStatisticSettings.assets,
                 CURRENCY
@@ -321,7 +331,7 @@ class CommanderViewModel(client: CommanderClient?) : ViewModel() {
         mBuilderMain.addStatistic(
             CMDR_LOCATION,
             RIGHT,
-            if (distanceSearch.distance == 0.0) R.string.CurrentLocation else R.string.distance_sol,
+            if (distanceSearch.distance == 0.0) R.string.current_location else R.string.distance_sol,
             if (distanceSearch.distance == 0.0) "Discovered" else "${StatisticsBuilder.formatDouble(distanceSearch.distance)} LY",
             null,
             NONE,
@@ -594,7 +604,7 @@ class CommanderViewModel(client: CommanderClient?) : ViewModel() {
         mBuilderExploration.addStatistic(
             EXPLORATION_HYPERSPACE,
             LEFT,
-            R.string.hyperspaceJumps,
+            R.string.hyperspace_jumps,
             statistics.exploration!!.totalHyperspaceJumps,
             mStatisticSettings.totalHyperspaceJumps,
             INTEGER
@@ -603,7 +613,7 @@ class CommanderViewModel(client: CommanderClient?) : ViewModel() {
         mBuilderExploration.addStatistic(
             EXPLORATION_HYPERSPACE,
             RIGHT,
-            R.string.hyperspaceDistance,
+            R.string.hyperspace_distance,
             statistics.exploration.totalHyperspaceDistance,
             mStatisticSettings.totalHyperspaceDistance,
             LIGHTYEAR
@@ -612,7 +622,7 @@ class CommanderViewModel(client: CommanderClient?) : ViewModel() {
         mBuilderExploration.addStatistic(
             EXPLORATION_SYSTEMS_VISITED,
             LEFT,
-            R.string.systemsVisited,
+            R.string.systems_visited,
             statistics.exploration.systemsVisited,
             mStatisticSettings.systemsVisited,
             INTEGER
@@ -621,7 +631,7 @@ class CommanderViewModel(client: CommanderClient?) : ViewModel() {
         mBuilderExploration.addStatistic(
             EXPLORATION_SYSTEMS_VISITED,
             RIGHT,
-            R.string.greatestDistanceFromStart,
+            R.string.greatest_distance_from_start,
             statistics.exploration.greatestDistanceFromStart,
             null,
             LIGHTYEAR,
@@ -631,7 +641,7 @@ class CommanderViewModel(client: CommanderClient?) : ViewModel() {
         mBuilderExploration.addStatistic(
             EXPLORATION_SCANS,
             LEFT,
-            R.string.planetsScanned,
+            R.string.planets_scanned,
             statistics.exploration.planetsScannedToLevel2,
             mStatisticSettings.planetsScanned,
             INTEGER
@@ -640,7 +650,7 @@ class CommanderViewModel(client: CommanderClient?) : ViewModel() {
         mBuilderExploration.addStatistic(
             EXPLORATION_SCANS,
             RIGHT,
-            R.string.planetsEfficientMapped,
+            R.string.planets_efficient_mapped,
             statistics.exploration.efficientScans,
             mStatisticSettings.planetsEfficientMapped,
             INTEGER
@@ -659,7 +669,7 @@ class CommanderViewModel(client: CommanderClient?) : ViewModel() {
         mBuilderPassenger.addStatistic(
             PASSENGERS_DELIVERED,
             LEFT,
-            R.string.passengersDelivered,
+            R.string.passengers_delivered,
             statistics.passengers!!.passengersMissionsDelivered,
             mStatisticSettings.passengersDelivered,
             INTEGER
@@ -668,7 +678,7 @@ class CommanderViewModel(client: CommanderClient?) : ViewModel() {
         mBuilderPassenger.addStatistic(
             PASSENGERS_DELIVERED,
             RIGHT,
-            R.string.passengersEjected,
+            R.string.passengers_ejected,
             statistics.passengers.passengersMissionsEjected,
             null,
             INTEGER,
@@ -676,9 +686,9 @@ class CommanderViewModel(client: CommanderClient?) : ViewModel() {
         )
 
         mBuilderPassenger.addStatistic(
-            PASSEMGERS_TYPE,
+            PASSENGERS_TYPE,
             LEFT,
-            R.string.passengersBulk,
+            R.string.passengers_bulk,
             statistics.passengers.passengersMissionsBulk,
             null,
             INTEGER,
@@ -686,9 +696,9 @@ class CommanderViewModel(client: CommanderClient?) : ViewModel() {
         )
 
         mBuilderPassenger.addStatistic(
-            PASSEMGERS_TYPE,
+            PASSENGERS_TYPE,
             RIGHT,
-            R.string.passengersVIP,
+            R.string.passengers_vip,
             statistics.passengers.passengersMissionsVIP,
             null,
             INTEGER,

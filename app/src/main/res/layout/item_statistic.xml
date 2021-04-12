@@ -26,22 +26,24 @@
                 android:textAppearance="@style/eliteStyle.SmallText"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
             <TextView
                 android:id="@+id/leftDeltaTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_large"
+                android:layout_marginStart="@dimen/margin_medium"
                 android:text=""
                 android:textAppearance="@style/eliteStyle.SmallText"
-                app:layout_constraintStart_toEndOf="@+id/leftNameTextView"
-                app:layout_constraintBottom_toBottomOf="@id/leftNameTextView" />
+                app:layout_constraintBottom_toBottomOf="@id/leftNameTextView"
+                app:layout_constraintStart_toEndOf="@+id/leftNameTextView" />
+
             <TextView
                 android:id="@+id/leftValueTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="2dp"
-                android:text=""
                 android:includeFontPadding="false"
+                android:text=""
                 android:textAppearance="@style/eliteStyle.YellowText"
                 app:layout_constraintStart_toStartOf="@+id/leftNameTextView"
                 app:layout_constraintTop_toBottomOf="@+id/leftNameTextView" />
@@ -50,9 +52,9 @@
                 android:id="@+id/rightNameTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/margin_small"
                 android:text=""
                 android:textAppearance="@style/eliteStyle.SmallText"
-                android:layout_marginEnd="@dimen/margin_small"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -60,11 +62,12 @@
                 android:id="@+id/rightDeltaTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/margin_large"
+                android:layout_marginEnd="@dimen/margin_medium"
                 android:text=""
                 android:textAppearance="@style/eliteStyle.SmallText"
-                app:layout_constraintEnd_toStartOf="@+id/rightNameTextView"
-                app:layout_constraintBottom_toBottomOf="@id/rightNameTextView" />
+                app:layout_constraintBottom_toBottomOf="@id/rightNameTextView"
+                app:layout_constraintEnd_toStartOf="@+id/rightNameTextView" />
+
             <TextView
                 android:id="@+id/rightValueTextView"
                 android:layout_width="wrap_content"
@@ -77,9 +80,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_large"
+                android:layout_marginEnd="32dp"
                 android:text=""
                 android:textAppearance="@style/eliteStyle.SmallText"
-                android:layout_marginEnd="32dp"
                 app:layout_constraintEnd_toStartOf="@+id/rightNameTextView"
                 app:layout_constraintStart_toEndOf="@+id/leftNameTextView"
                 app:layout_constraintTop_toTopOf="@+id/rightNameTextView" />
@@ -88,11 +91,11 @@
                 android:id="@+id/middleDeltaTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_large"
+                android:layout_marginStart="@dimen/margin_medium"
                 android:text=""
                 android:textAppearance="@style/eliteStyle.SmallText"
-                app:layout_constraintStart_toEndOf="@+id/middleNameTextView"
-                app:layout_constraintBottom_toBottomOf="@id/middleNameTextView" />
+                app:layout_constraintBottom_toBottomOf="@id/middleNameTextView"
+                app:layout_constraintStart_toEndOf="@+id/middleNameTextView" />
 
             <TextView
                 android:id="@+id/middleValueTextView"

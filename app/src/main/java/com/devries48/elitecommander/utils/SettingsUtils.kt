@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.preference.PreferenceManager
 import com.devries48.elitecommander.App
 import com.devries48.elitecommander.models.StatisticSettingsModel
+import com.devries48.elitecommander.utils.DateUtils.DateFormatType.GMT
 import com.devries48.elitecommander.utils.DateUtils.toDateString
 import com.google.gson.Gson
 
@@ -31,7 +32,7 @@ object SettingsUtils {
         if (model.timestamp != null)
             return
 
-        model.timestamp = DateUtils.getCurrentDateString(DateUtils.dateFormatGMT)
+        model.timestamp = DateUtils.getCurrentDateString(GMT)
         val json: String = Gson().toJson(model)
         println(json)
 
@@ -49,14 +50,14 @@ object SettingsUtils {
                 val model = Gson().fromJson(jsonString, StatisticSettingsModel::class.java)
 
                 // If a power cycle has occurred since last session, clear the values
-                val modelDate = DateUtils.fromDateString(model.timestamp!!, DateUtils.dateFormatGMT)
+                val modelDate = DateUtils.fromDateString(model.timestamp!!, GMT)
                 val cycleDate = DateUtils.getLastCycleDateGMT()
 
                 return if (modelDate.before(cycleDate) || model.credits == null) {
                     println("STATISTIC_VALUES cycled")
                     StatisticSettingsModel()
                 } else {
-                    println("STATISTIC_VALUES loaded: " + modelDate.toDateString(DateUtils.dateFormatGMT))
+                    println("STATISTIC_VALUES loaded: " + modelDate.toDateString(GMT))
                     model
                 }
             } catch (e: Exception) {

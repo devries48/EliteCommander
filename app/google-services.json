@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "598130037398",
+    "project_id": "elite-commander",
+    "storage_bucket": "elite-commander.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:598130037398:android:105c6f734842842b8928b7",
+        "android_client_info": {
+          "package_name": "com.devries48.elitecommander"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "598130037398-5n8t8dbk0eldg2rtpana3hkqhhg48e99.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5JSG4NVvvTbvZwA3m8ghNXre79Inaxa8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "598130037398-5n8t8dbk0eldg2rtpana3hkqhhg48e99.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

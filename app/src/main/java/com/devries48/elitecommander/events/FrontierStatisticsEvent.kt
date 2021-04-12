@@ -1,7 +1,10 @@
 package com.devries48.elitecommander.events
 
+import java.util.*
+
 data class FrontierStatisticsEvent(
     val success: Boolean,
+    val lastJournalDate: Date?,
     val bankAccount: FrontierBankAccount?,
     val combat: FrontierCombat?,
     val exploration: FrontierExploration?,

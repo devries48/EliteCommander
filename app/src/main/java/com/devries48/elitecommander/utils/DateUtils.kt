@@ -1,30 +1,53 @@
 package com.devries48.elitecommander.utils
 
+import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
 object DateUtils {
+    enum class DateFormatType {
+        DEFAULT,
+        SHORT,
+        GMT,
+        CYCLE,
+        DATETIME
+    }
+
     private const val defaultFormat = "yyyy/MM/dd HH:mm:ss"
-    const val dateFormatShort = "yyyy/MM/dd"
-    const val dateFormatGMT = "yyyy-MM-dd'T'HH:mm:ss'Z'"
-    private const val dateFormatCycleGMT = "yyyy-MM-dd'T'07:00:00'Z'"
 
     val eliteStartDate: Date
         get() {
-            return fromDateString("2018/01/01", dateFormatShort)
+            return fromDateString("2018/01/01", DateFormatType.SHORT)
         }
 
-    fun Date.toDateString(format: String = defaultFormat): String {
-        return toDateString(format, this)
+    fun Date.toDateString(format: DateFormatType = DateFormatType.DEFAULT): String {
+        return toDateString( format, this)
     }
 
-    fun toDateString(format: String = defaultFormat, date: Date): String {
-        val formatter = SimpleDateFormat(format, Locale.getDefault())
-        return formatter.format(date)
+    fun toDateString(type: DateFormatType, date: Date): String {
+        val format = getFormat(type)
+
+        return if (format.isNotEmpty()) {
+            val f = SimpleDateFormat(format, Locale.getDefault())
+            f.format(date)
+        } else {
+            val df: DateFormat = DateFormat.getDateTimeInstance()
+            df.format(date)
+        }
     }
 
-    fun fromDateString(value: String, format: String = this@DateUtils.defaultFormat): Date {
-        val sdf = SimpleDateFormat(format, Locale.getDefault())
+    private fun getFormat(type: DateFormatType): String {
+        return when (type) {
+            DateFormatType.DEFAULT -> defaultFormat
+            DateFormatType.SHORT -> "yyyy/MM/dd"
+            DateFormatType.GMT -> "yyyy-MM-dd'T'HH:mm:ss'Z'"
+            DateFormatType.CYCLE -> "yyyy-MM-dd'T'07:00:00'Z'"
+            else -> ""
+        }
+    }
+
+    fun fromDateString(value: String, type: DateFormatType = DateFormatType.DEFAULT): Date {
+        val sdf = SimpleDateFormat(getFormat(type), Locale.getDefault())
         sdf.timeZone = TimeZone.getTimeZone("GMT")
 
         return sdf.parse(value)!!
@@ -39,8 +62,8 @@ object DateUtils {
         return Calendar.getInstance().time
     }
 
-    fun getCurrentDateString(format: String = defaultFormat): String {
-        return toDateString(format, getCurrentDate())
+    fun getCurrentDateString(type: DateFormatType = DateFormatType.DEFAULT): String {
+        return toDateString(type, getCurrentDate())
     }
 
     private fun addDays(value: Date, n: Int = 1): Date {
@@ -64,13 +87,13 @@ object DateUtils {
 
         cal.add(Calendar.WEEK_OF_YEAR, -1)
         while (cal[Calendar.DAY_OF_WEEK] != Calendar.THURSDAY) {
-            cal.add(Calendar.DAY_OF_WEEK,1)
+            cal.add(Calendar.DAY_OF_WEEK, 1)
         }
-        var cycleDate = cal.time.toDateString(dateFormatCycleGMT)
+        var cycleDate = cal.time.toDateString(DateFormatType.CYCLE)
 
-        if (currentDate != null && currentDate > fromDateString(cycleDate, dateFormatGMT))
-            cycleDate = currentDate.toDateString(dateFormatCycleGMT)
+        if (currentDate != null && currentDate > fromDateString(cycleDate, DateFormatType.GMT))
+            cycleDate = currentDate.toDateString(DateFormatType.CYCLE)
 
-        return fromDateString(cycleDate, dateFormatGMT)
+        return fromDateString(cycleDate, DateFormatType.GMT)
     }
 }

@@ -9,6 +9,7 @@ import com.devries48.elitecommander.models.response.FrontierJournalRankReputatio
 import com.devries48.elitecommander.models.response.FrontierJournalRankResponse
 import com.devries48.elitecommander.models.response.FrontierJournalStatisticsResponse
 import com.devries48.elitecommander.utils.DateUtils
+import com.devries48.elitecommander.utils.DateUtils.DateFormatType.*
 import com.devries48.elitecommander.utils.DateUtils.removeDays
 import com.devries48.elitecommander.utils.DateUtils.toDateString
 import com.devries48.elitecommander.utils.DiscoveryValueCalculator
@@ -28,6 +29,7 @@ class JournalWorker(frontierApi: FrontierInterface?) {
     private lateinit var mCrawlerType: CrawlerType
     private var mLatestJournalDate: Date? = DateUtils.getCurrentDate()
     private var mCurrentDiscoveriesDate: Date? = null
+    var mLastJournalDate: Date? = null
 
     init {
         if (frontierApi != null) {
@@ -92,6 +94,9 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                     try {
                         val raw = RawEvent(it.trim())
                         if (raw.event !in mIgnoreEvents) rawEvents.add(raw)
+                        if (mLastJournalDate == null || raw.timeStamp > mLastJournalDate)
+                            mLastJournalDate = raw.timeStamp
+
                     } catch (e: Exception) {
                         println("LOG: Error parsing journal event, " + e.message)
                         println("LOG: Event: " + it.trim())
@@ -99,6 +104,7 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                 }
 
             println("Journal events present: " + rawEvents.size)
+
         }
         return rawEvents
     }
@@ -127,9 +133,7 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                     if (journalDate?.coerceAtLeast(DateUtils.eliteStartDate) == DateUtils.eliteStartDate) {
                         println(
                             "LOG: Cannot get journals earlier than the date cap ${
-                                journalDate.toDateString(
-                                    DateUtils.dateFormatShort
-                                )
+                                journalDate.toDateString(SHORT)
                             }"
                         )
                         return@withContext
@@ -252,7 +256,7 @@ class JournalWorker(frontierApi: FrontierInterface?) {
 
                 sendEvent(
                     FrontierStatisticsEvent(
-                        true, FrontierBankAccount(
+                        true, mLastJournalDate, FrontierBankAccount(
                             statistics.bankAccount.currentWealth,
                             statistics.bankAccount.insuranceClaims,
                             statistics.bankAccount.ownedShipCount,
@@ -320,7 +324,7 @@ class JournalWorker(frontierApi: FrontierInterface?) {
             } catch (e: Exception) {
                 println("LOG: Error parsing statistics event from journal." + e.message)
                 sendEvent(
-                    FrontierStatisticsEvent(false, null, null, null, null, null, null, null, null)
+                    FrontierStatisticsEvent(false, null, null, null, null, null, null, null, null, null)
                 )
             }
 
@@ -633,7 +637,7 @@ class JournalWorker(frontierApi: FrontierInterface?) {
         init {
             event = json.get("event").asString
             val timestampString = json.get("timestamp").asString
-            timeStamp = DateUtils.fromDateString(timestampString, DateUtils.dateFormatGMT)
+            timeStamp = DateUtils.fromDateString(timestampString, GMT)
         }
     }
 

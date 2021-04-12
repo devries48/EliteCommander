@@ -188,10 +188,10 @@
     <string name="body_sudarsky_class5">Class V gas giant</string>
     <string name="body_helium_giant">Helium-rich gas giant</string>
 
-    <string name="Credits">Credits</string>
-    <string name="CurrentLocation">Current location</string>
-    <string name="CurrentShip">Current ship</string>
-    <string name="AssetsValue">Assets</string>
+    <string name="credits">Credits</string>
+    <string name="current_location">Current location</string>
+    <string name="current_ship">Current ship</string>
+    <string name="assets_value">Assets</string>
     <string name="distance_sol">Distance to Sol</string>
     <string name="hull">hull</string>
     <string name="estimated_value">Estimated value</string>
@@ -224,17 +224,18 @@
     <string name="ships_destroyed">Ships destroyed</string>
     <string name="skimmers_killed">Skimmers killed</string>
     <string name="bonds">Bonds</string>
-    <string name="hyperspaceJumps">Hyperspace jumps</string>
-    <string name="hyperspaceDistance">Hyperspace distance</string>
-    <string name="systemsVisited">Systems visited</string>
-    <string name="greatestDistanceFromStart">Greatest distance from start</string>
-    <string name="planetsScanned">Planet scanned</string>
-    <string name="planetsEfficientMapped">Efficient mapped</string>
-    <string name="passengersDelivered">Delivered</string>
-    <string name="passengersEjected">Ejected</string>
-    <string name="combatStatistics">Combat statistics</string>
+    <string name="hyperspace_jumps">Hyperspace jumps</string>
+    <string name="hyperspace_distance">Hyperspace distance</string>
+    <string name="systems_visited">Systems visited</string>
+    <string name="greatest_distance_from_start">Greatest distance</string>
+    <string name="planets_scanned">Planet scanned</string>
+    <string name="planets_efficient_mapped">Efficient mapped</string>
+    <string name="passengers_delivered">Delivered</string>
+    <string name="passengers_ejected">Ejected</string>
+    <string name="combat_statistics">Combat statistics</string>
     <string name="exploration_statistics">Exploration statistics</string>
     <string name="passengers">Passengers</string>
-    <string name="passengersBulk">Bulk</string>
-    <string name="passengersVIP">VIP</string>
+    <string name="passengers_bulk">Bulk</string>
+    <string name="passengers_vip">VIP</string>
+    <string name="last_journal">Last journal</string>
 </resources>

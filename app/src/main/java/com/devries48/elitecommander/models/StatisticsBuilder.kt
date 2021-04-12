@@ -2,7 +2,11 @@ package com.devries48.elitecommander.models
 
 import androidx.annotation.StringRes
 import androidx.lifecycle.MutableLiveData
+import com.devries48.elitecommander.utils.DateUtils.DateFormatType.DATETIME
+import com.devries48.elitecommander.utils.DateUtils.toDateString
 import java.text.DecimalFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class StatisticsBuilder {
     private var mStatisticsList = ArrayList<StatisticModel>()
@@ -88,6 +92,7 @@ class StatisticsBuilder {
                     is Double -> formatDouble(value) + " LY"
                     else -> value.toString()
                 }
+            StatisticFormat.DATETIME -> formatDate(value as Date)
             StatisticFormat.TIME -> formatHours(value as Int)
             StatisticFormat.INTEGER -> formatInteger(value as Int)
             StatisticFormat.TONS -> formatInteger(value as Int) + " TONS"
@@ -125,7 +130,7 @@ class StatisticsBuilder {
             EXPLORATION_SYSTEMS_VISITED,
             EXPLORATION_SCANS,
             PASSENGERS_DELIVERED,
-            PASSEMGERS_TYPE
+            PASSENGERS_TYPE
         }
 
         enum class StatisticPosition {
@@ -145,9 +150,14 @@ class StatisticsBuilder {
             CURRENCY,
             DOUBLE,
             INTEGER,
+            DATETIME,
             TIME,
             TONS,
             LIGHTYEAR
+        }
+
+        private fun formatDate(date: Date): String {
+            return date.toDateString(DATETIME)
         }
 
         private fun formatHours(seconds: Int): String {

@@ -39,37 +39,45 @@ class CommanderClient {
                 handleProfileResponse(it)
             }
             onFailure = {
-                println(it?.message)
-                val pos = FrontierProfileEvent(false, "", 0, 0, "", 0, 0)
-                val ranks = FrontierRanksEvent(
-                    false, null, null,
-                    null, null, null, null
-                )
-                val fleet = FrontierFleetEvent(false, ArrayList())
-                sendResultMessage(pos)
-                sendResultMessage(ranks)
-                sendResultMessage(fleet)
+                handleProfileFailure(it)
             }
         }
     }
 
     private fun handleProfileResponse(res: Response<ResponseBody?>) {
-        if (res.code() != 200) throw Exception(res.code().toString())
+        try {
+            if (res.code() != 200) throw Exception(res.code().toString())
 
-        val profileResponse: FrontierProfileResponse?
-        val rawResponse: JsonObject?
-        val responseString: String? = res.body()?.string()
+            val profileResponse: FrontierProfileResponse?
+            val rawResponse: JsonObject?
+            val responseString: String? = res.body()?.string()
 
-        rawResponse = JsonParser.parseString(responseString).asJsonObject
-        profileResponse = Gson().fromJson(
-            rawResponse,
-            FrontierProfileResponse::class.java
+            rawResponse = JsonParser.parseString(responseString).asJsonObject
+            profileResponse = Gson().fromJson(
+                rawResponse,
+                FrontierProfileResponse::class.java
+            )
+
+            if (!res.isSuccessful || profileResponse == null) throw Exception("Empty profile response")
+
+            handleProfileParsing(profileResponse)
+            if (rawResponse != null) handleFleetParsing(this@CommanderClient, rawResponse)
+        } catch (t: Throwable) {
+            handleProfileFailure(t)
+        }
+    }
+
+    private fun handleProfileFailure(t: Throwable?) {
+        println(t?.message)
+        val pos = FrontierProfileEvent(false, "", 0, 0, "", 0, 0)
+        val ranks = FrontierRanksEvent(
+            false, null, null,
+            null, null, null, null
         )
-
-        if (!res.isSuccessful || profileResponse == null) throw Exception("Empty profile response")
-
-        handleProfileParsing(profileResponse)
-        if (rawResponse != null) handleFleetParsing(this@CommanderClient, rawResponse)
+        val fleet = FrontierFleetEvent(false, ArrayList())
+        sendResultMessage(pos)
+        sendResultMessage(ranks)
+        sendResultMessage(fleet)
     }
 
     /**
