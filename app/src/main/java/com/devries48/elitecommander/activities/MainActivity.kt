@@ -103,6 +103,9 @@ class MainActivity : AppCompatActivity() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onAlertEvent(alertEvent: AlertEvent) {
+        if (mIsLoggedIn == true)
+            return
+
         synchronized(mAlertList) {
             mAlertList.add(alertEvent.message)
             if (mAlertDialog == null)

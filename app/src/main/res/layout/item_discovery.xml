@@ -51,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/discovered"
                 android:textAlignment="textStart"
-                android:textAppearance="@style/eliteStyle.BodyDiscovery"
+                android:textAppearance="@style/eliteStyle.SmallText"
                 app:layout_constraintStart_toStartOf="@+id/bodyNameTextView"
                 app:layout_constraintTop_toBottomOf="@+id/bodyNameTextView" />
 
@@ -89,7 +89,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_large"
                 android:text="@string/mapped"
-                android:textAppearance="@style/eliteStyle.BodyDiscovery"
+                android:textAppearance="@style/eliteStyle.SmallText"
                 app:layout_constraintStart_toEndOf="@+id/discoveredTitleTextView"
                 app:layout_constraintTop_toTopOf="@+id/discoveredTitleTextView" />
 
@@ -118,7 +118,7 @@
                 android:layout_marginEnd="@dimen/margin_small"
                 android:text="@string/estimated_value"
                 android:textAlignment="textEnd"
-                android:textAppearance="@style/eliteStyle.BodyDiscovery"
+                android:textAppearance="@style/eliteStyle.SmallText"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/discoveredTitleTextView" />
 

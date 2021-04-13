@@ -81,7 +81,6 @@ class CommanderViewModel(client: CommanderClient?) : ViewModel() {
         super.onCleared()
 
         EventBus.getDefault().unregister(this)
-        SettingsUtils.setStatisticsSettings(mCurrentSettings)
     }
 
     fun load() {
@@ -125,6 +124,7 @@ class CommanderViewModel(client: CommanderClient?) : ViewModel() {
                 return@launch
             }
             launchProfile(profile)
+            SettingsUtils.setStatisticsSettings(mCurrentSettings)
         }
     }
 
@@ -187,6 +187,8 @@ class CommanderViewModel(client: CommanderClient?) : ViewModel() {
             launchCombatStats(statistics)
             launchExplorationStats(statistics)
             launchPassengerStats(statistics)
+
+            SettingsUtils.setStatisticsSettings(mCurrentSettings)
         }
     }
 
