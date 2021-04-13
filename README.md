@@ -20,6 +20,8 @@ Displays:
 - Earnings
 - Ranks
 - Current trip discoveries with estimated values
+- Profits
+- Statistics: combat, exploration & passengers
  
  
 ## API's USED:
@@ -35,6 +37,9 @@ Planet & stars images:
  - https://www.edsm.net/en/statistics/bodies
  - https://www.edsm.net/en/statistics/bodies/planets
   
+Player rank images:
+ - https://inara.cz
+
 Exploration value calculator: 
  - https://forums.frontier.co.uk/threads/exploration-value-formulae.232000
 
