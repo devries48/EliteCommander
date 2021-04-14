@@ -2,7 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="80dp"
+    android:layout_height="wrap_content"
     android:layout_marginLeft="@dimen/margin_medium"
     android:layout_marginBottom="@dimen/margin_medium"
     android:layout_marginRight="@dimen/margin_medium">
@@ -11,25 +11,19 @@
         style="@style/EliteCardViewItem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardElevation="0dp">
+        app:cardElevation="1dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <androidx.constraintlayout.widget.Guideline
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.5" />
-
             <ImageView
                 android:id="@+id/bodyImageView"
                 android:layout_width="72dp"
                 android:layout_height="72dp"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="4dp"
+                android:layout_marginStart="@dimen/margin_small"
+                android:layout_marginTop="@dimen/margin_small"
+                android:layout_marginBottom="@dimen/margin_small"
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/image_planet_star_discoveries"
                 app:layout_constraintStart_toStartOf="parent"
@@ -130,7 +124,6 @@
                 android:textAppearance="@style/eliteStyle.BodyDiscovery.Value"
                 app:layout_constraintEnd_toEndOf="@+id/valueTitleTextView"
                 app:layout_constraintTop_toBottomOf="@+id/valueTitleTextView" />
-
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

@@ -3,6 +3,7 @@ package com.devries48.elitecommander.activities
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -40,6 +41,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupNavigation()
@@ -60,6 +62,13 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == FRONTIER_LOGIN_REQUEST_CODE) mIsLoggedIn = true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return if (item.itemId == android.R.id.home) {
+            onBackPressed()
+            true
+        } else super.onOptionsItemSelected(item)
     }
 
     private fun setupViewModel() {
@@ -103,10 +112,12 @@ class MainActivity : AppCompatActivity() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onAlertEvent(alertEvent: AlertEvent) {
-        if (mIsLoggedIn == true)
-            return
-
         synchronized(mAlertList) {
+            if (mIsLoggedIn == true){
+                mAlertList.clear()
+                return@synchronized
+            }
+
             mAlertList.add(alertEvent.message)
             if (mAlertDialog == null)
                 showAlertDialog(alertEvent)

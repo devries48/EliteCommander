@@ -41,11 +41,11 @@ class CommanderViewModel(client: CommanderClient?) : ViewModel() {
         MutableLiveData(RankModel(RankModel.RankType.EXPLORATION, FrontierRanksEvent.FrontierRank()))
     private val mCqcRank = MutableLiveData(RankModel(RankModel.RankType.CQC, FrontierRanksEvent.FrontierRank()))
     private val mFederationRank =
-        MutableLiveData(RankModel(RankModel.RankType.FEDERATION, FrontierRanksEvent.FrontierRank(), true))
+        MutableLiveData(RankModel(RankModel.RankType.FEDERATION, FrontierRanksEvent.FrontierRank()))
     private val mEmpireRank =
-        MutableLiveData(RankModel(RankModel.RankType.EMPIRE, FrontierRanksEvent.FrontierRank(), true))
+        MutableLiveData(RankModel(RankModel.RankType.EMPIRE, FrontierRanksEvent.FrontierRank()))
     private val mAllianceRank =
-        MutableLiveData(RankModel(RankModel.RankType.ALLIANCE, FrontierRanksEvent.FrontierRank(), true))
+        MutableLiveData(RankModel(RankModel.RankType.ALLIANCE, FrontierRanksEvent.FrontierRank()))
 
     private var mCurrentDiscoveries = MutableLiveData<List<FrontierDiscovery>>()
     private var mCurrentDiscoverySummary = MutableLiveData(FrontierDiscoverySummary(0, 0, 0, 0, 0, 0, 0, 0, 0, 0))

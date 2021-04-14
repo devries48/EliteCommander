@@ -8,7 +8,7 @@ import com.devries48.elitecommander.R
 import com.devries48.elitecommander.events.FrontierRanksEvent
 import com.devries48.elitecommander.utils.NamingUtils
 
-class RankModel(type: RankType, frontierRank: FrontierRanksEvent.FrontierRank, isFaction: Boolean = false) {
+class RankModel(type: RankType, frontierRank: FrontierRanksEvent.FrontierRank) {
 
     enum class RankType {
         COMBAT,
@@ -28,12 +28,13 @@ class RankModel(type: RankType, frontierRank: FrontierRanksEvent.FrontierRank, i
 
     init {
         rank = frontierRank
-        isFactionRank = isFaction
+        if (type == RankType.ALLIANCE || type == RankType.EMPIRE || type == RankType.FEDERATION)
+            isFactionRank = true
     }
 
     fun getName(): String {
         @ArrayRes
-        val array= when (mType) {
+        val array = when (mType) {
             RankType.COMBAT -> R.array.ranks_combat
             RankType.TRADING -> R.array.ranks_trading
             RankType.EXPLORATION -> R.array.ranks_exploration
@@ -49,7 +50,7 @@ class RankModel(type: RankType, frontierRank: FrontierRanksEvent.FrontierRank, i
     @DrawableRes
     fun getLogoResId(): Int {
         return when (mType) {
-            RankType.COMBAT ->  NamingUtils.getCombatRankDrawableId(rank.value)
+            RankType.COMBAT -> NamingUtils.getCombatRankDrawableId(rank.value)
             RankType.TRADING -> NamingUtils.getTradeRankDrawableId(rank.value)
             RankType.EXPLORATION -> NamingUtils.getExplorationRankDrawableId(rank.value)
             RankType.CQC -> NamingUtils.getCqcRankDrawableId(rank.value)

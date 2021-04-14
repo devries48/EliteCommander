@@ -37,7 +37,9 @@ class StatisticsBuilder {
             val formattedDelta: String? =
                 if (oldValue != null) {
                     val delta = getDelta(value, oldValue)
-                    delta?.let { formatValue(it, format, formatZero = false, showPlus = true) }
+                    var fmt = format
+                    if (fmt != StatisticFormat.TIME) fmt = StatisticFormat.LONG
+                    delta?.let { formatValue(it, fmt, formatZero = false, showPlus = true) }
                 } else null
 
             when (pos) {
@@ -79,7 +81,7 @@ class StatisticsBuilder {
 
                 else -> value.toString()
             }
-            StatisticFormat.DOUBLE -> {
+            StatisticFormat.LONG -> {
                 when (value) {
                     is Int -> formatDouble(value)
                     is Long -> formatDouble(value)
@@ -148,7 +150,7 @@ class StatisticsBuilder {
         enum class StatisticFormat {
             NONE,
             CURRENCY,
-            DOUBLE,
+            LONG,
             INTEGER,
             DATETIME,
             TIME,

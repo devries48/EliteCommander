@@ -54,17 +54,16 @@ object RanksAdapter {
     @BindingAdapter("android:rankAutoHide")
     @JvmStatic
     fun rankAutoHide(view: View, model: RankModel) {
-        if (view.id == R.id.progressBar && model.getName()
-                .isEmpty() || view.id == R.id.progressTextView && model.getName().isEmpty()
-        ) // Alliance has no ranks
+        if (model.getName().isEmpty() && (view.id == R.id.progressTextView || view.id == R.id.progressBar))
             view.visibility = View.GONE
         else {
             val isEndRank = isEndRank(model)
             val isReputationView = isReputationView(view)
-            view.visibility =
-                if (isEndRank || isReputationView && !model.isFactionRank || model.getName()
-                        .isEmpty()
-                ) View.GONE else View.VISIBLE
+
+            if (isEndRank && !isReputationView)
+                view.visibility = View.INVISIBLE
+            else if (!model.isFactionRank && isReputationView)
+                view.visibility = View.GONE
         }
     }
 

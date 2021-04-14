@@ -396,10 +396,7 @@ class JournalWorker(frontierApi: FrontierInterface?) {
             return
 
         // I regularly experienced a swap in the result, so fix it here
-        if (!discovery.wasDiscovered && discovery.wasMapped) {
-            discovery.wasDiscovered = true
-            println(event.json)
-        }
+        if (!discovery.wasDiscovered && discovery.wasMapped) discovery.wasDiscovered = true
 
         val map = mappings.firstOrNull {
             it.systemAddress == discovery.systemAddress && it.bodyID == discovery.bodyID
