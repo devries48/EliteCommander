@@ -91,7 +91,6 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="@dimen/margin_medium"
                     android:layout_marginStart="@dimen/margin_large"
-                    android:layout_marginEnd="@dimen/margin_small"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent" />
 

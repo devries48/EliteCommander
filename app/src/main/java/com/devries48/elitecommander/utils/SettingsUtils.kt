@@ -32,6 +32,9 @@ object SettingsUtils {
         if (model.timestamp != null)
             return
 
+        if (model.credits == null && model.timePlayed == null)
+            return
+
         model.timestamp = DateUtils.getCurrentDateString(GMT)
         val json: String = Gson().toJson(model)
         println(json)
@@ -53,12 +56,16 @@ object SettingsUtils {
                 val modelDate = DateUtils.fromDateString(model.timestamp!!, GMT)
                 val cycleDate = DateUtils.getLastCycleDateGMT()
 
-                return if (modelDate.before(cycleDate) || model.credits == null) {
-                    println("STATISTIC_VALUES cycled")
-                    StatisticSettingsModel()
-                } else {
-                    println("STATISTIC_VALUES loaded: " + modelDate.toDateString(GMT))
-                    model
+                return when {
+                    modelDate.before(cycleDate) || model.credits == null -> {
+                        println("STATISTIC_VALUES cycled")
+                        StatisticSettingsModel()
+                    }
+                    model.credits != null && model.timePlayed != null -> {
+                        println("STATISTIC_VALUES loaded: " + modelDate.toDateString(GMT))
+                        model
+                    }
+                    else -> StatisticSettingsModel()
                 }
             } catch (e: Exception) {
                 println("STATISTIC_VALUES new: " + e.message)

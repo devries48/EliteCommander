@@ -22,11 +22,11 @@
                 android:layout_width="72dp"
                 android:layout_height="72dp"
                 android:layout_marginStart="@dimen/margin_small"
-                android:layout_marginTop="@dimen/margin_small"
-                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_marginVertical="@dimen/margin_small"
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/image_planet_star_discoveries"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView

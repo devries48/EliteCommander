@@ -56,6 +56,7 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                     code = c
                     response = r?.string()
                 }
+                if (code == 401) return@launch
                 if (code == 200)
                     rawEvents = response?.let { parseResponse(it) }
 

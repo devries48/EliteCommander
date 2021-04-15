@@ -25,6 +25,7 @@ import kotlin.properties.Delegates
 
 class MainActivity : AppCompatActivity() {
 
+    private var mCurrentDestinationId: Int = 0
     private lateinit var binding: ActivityMainBinding
     private lateinit var mCommanderClient: CommanderClient
 
@@ -90,7 +91,12 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController()
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            if (destination.id == R.id.mainFragment) navController.navigate(destination.id)
+            if (destination.id == R.id.mainFragment) {
+                if (mCurrentDestinationId != destination.id) {
+                    mCurrentDestinationId = destination.id
+                    navController.navigate(destination.id)
+                }
+            }
         }
     }
 
@@ -113,7 +119,7 @@ class MainActivity : AppCompatActivity() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onAlertEvent(alertEvent: AlertEvent) {
         synchronized(mAlertList) {
-            if (mIsLoggedIn == true){
+            if (mIsLoggedIn == true) {
                 mAlertList.clear()
                 return@synchronized
             }

@@ -44,8 +44,10 @@ class CommanderClient {
         }
     }
 
+    // 401 error will be redirected to the login fragment
     private fun handleProfileResponse(res: Response<ResponseBody?>) {
         try {
+            if (res.code() == 401) return
             if (res.code() != 200) throw Exception(res.code().toString())
 
             val profileResponse: FrontierProfileResponse?
