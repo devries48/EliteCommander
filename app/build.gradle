@@ -17,7 +17,7 @@ android {
         applicationId "com.devries48.elitecommander"
         minSdkVersion 24
         targetSdkVersion 30
-        versionCode 3
+        versionCode 4
         versionName "0.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

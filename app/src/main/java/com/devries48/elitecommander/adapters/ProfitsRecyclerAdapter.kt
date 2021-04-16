@@ -14,6 +14,7 @@ class ProfitsRecyclerAdapter(var data: List<ProfitModel>?) :
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val percentageTextView: TextView = view.findViewById(R.id.percentage)
         val titleTextView: TextView = view.findViewById(R.id.title)
+        val dotTextView: TextView = view.findViewById(R.id.dot)
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
@@ -36,10 +37,9 @@ class ProfitsRecyclerAdapter(var data: List<ProfitModel>?) :
 
         if (item != null) {
             val percentage = "${"%.1f".format(item.percentage)}%"
-            viewHolder.percentageTextView.setCompoundDrawablesWithIntrinsicBounds(item.getColorDot(), 0, 0, 0)
+            viewHolder.dotTextView.setCompoundDrawablesWithIntrinsicBounds(item.getColorDot(), 0, 0, 0)
             viewHolder.percentageTextView.text = percentage
             viewHolder.percentageTextView.setTextColor(item.getColor())
-
             viewHolder.titleTextView.text = ctx.getText(item.getTitle())
             viewHolder.titleTextView.setTextColor(item.getColor())
         }

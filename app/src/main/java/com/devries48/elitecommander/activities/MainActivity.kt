@@ -72,6 +72,13 @@ class MainActivity : AppCompatActivity() {
         } else super.onOptionsItemSelected(item)
     }
 
+    override fun onBackPressed() {
+        val exitIntent = Intent(Intent.ACTION_MAIN)
+        exitIntent.addCategory(Intent.CATEGORY_HOME)
+        exitIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        startActivity(exitIntent)
+    }
+
     private fun setupViewModel() {
         try {
             mCommanderClient = CommanderClient()
@@ -91,11 +98,9 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController()
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            if (destination.id == R.id.mainFragment) {
-                if (mCurrentDestinationId != destination.id) {
-                    mCurrentDestinationId = destination.id
-                    navController.navigate(destination.id)
-                }
+            if (destination.id == R.id.mainFragment && mCurrentDestinationId != destination.id) {
+                mCurrentDestinationId = destination.id
+                navController.navigate(destination.id)
             }
         }
     }

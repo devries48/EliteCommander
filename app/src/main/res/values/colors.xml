@@ -15,14 +15,13 @@
     <color name="elite_azure">#FF08FADC</color>
 
     <!-- elite rank colors -->
+    <color name="elite_combat">#FFFD7022</color>
     <color name="elite_exploration">#FF08FADC</color>
     <color name="elite_trading">#FFFFFFFF</color>
     <color name="elite_cqc">#FFFF0507</color>
     <color name="elite_federation">#ff2196F3</color>
     <color name="elite_empire">#FFFF0507</color>
     <color name="elite_alliance">#FF029e4c</color>
-
-    <color name="elite_combat">#FFFF0507</color>
     <color name="elite_mining">#ff2196F3</color>
 
     <!-- elite background colors -->

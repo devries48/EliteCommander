@@ -32,16 +32,16 @@ object SettingsUtils {
         if (model.timestamp != null)
             return
 
-        if (model.credits == null && model.timePlayed == null)
+        if (model.credits == null || model.timePlayed == null)
             return
 
         model.timestamp = DateUtils.getCurrentDateString(GMT)
         val json: String = Gson().toJson(model)
-        println(json)
 
         if (json.isNotEmpty()) {
             setString(App.getContext(), Key.STATISTIC_VALUES, json)
             println("STATISTIC_VALUES saved")
+            println(json)
         }
     }
 
@@ -65,7 +65,10 @@ object SettingsUtils {
                         println("STATISTIC_VALUES loaded: " + modelDate.toDateString(GMT))
                         model
                     }
-                    else -> StatisticSettingsModel()
+                    else -> {
+                        println("STATISTIC_VALUES incomplete")
+                        StatisticSettingsModel()
+                    }
                 }
             } catch (e: Exception) {
                 println("STATISTIC_VALUES new: " + e.message)
