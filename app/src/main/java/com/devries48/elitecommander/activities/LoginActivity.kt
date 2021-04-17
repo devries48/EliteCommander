@@ -34,13 +34,7 @@ class LoginActivity : AppCompatActivity() {
             val state = uri?.getQueryParameter("state")
 
             if (code != null && state != null) {
-                binding.loginImageView.scaleX = 0.5f
-                binding.loginImageView.scaleY = 0.5f
-
-                binding.frontierLoginButton.isVisible = false
-                binding.loginTextView.isVisible = false
-                binding.redirectTextView.isVisible = true
-
+                switchUi(true)
                 launchTokensStep(code, state)
                 return
             }
@@ -52,19 +46,33 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    private fun switchUi(isRedirect: Boolean) {
+        binding.loginImageView.scaleX = if (isRedirect) 0.5f else 1f
+        binding.loginImageView.scaleY = 0.5f
+
+        binding.frontierLoginButton.isVisible = !isRedirect
+        binding.loginTextView.isVisible = !isRedirect
+        binding.redirectTextView.isVisible = !isRedirect
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onFrontierTokensEvent(tokens: FrontierTokensEvent) {
         if (tokens.success) {
             setResult(Activity.RESULT_OK)
             finish()
         } else {
-            val dialog = MaterialAlertDialogBuilder(this)
+            val dialog = MaterialAlertDialogBuilder(this, R.style.AlertDialogTheme)
+                .setIcon(android.R.drawable.ic_dialog_alert)
                 .setTitle(R.string.login_dialog_error_title)
                 .setMessage(R.string.login_dialog_error_text)
-                .setOnCancelListener { finish() }
-                .setOnDismissListener { finish() }
-                .setPositiveButton(android.R.string.ok) { d, _ -> d.dismiss() }
-                .setNegativeButton(android.R.string.cancel) { d, _ -> d.dismiss() }
+                .setPositiveButton(android.R.string.ok) { d, _ ->
+                    switchUi(false)
+                    d.dismiss()
+                }
+                .setNegativeButton(android.R.string.cancel) { _, _ ->
+                    finishAffinity()
+                    finish()
+                }
                 .create()
 
             dialog.show()

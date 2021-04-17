@@ -33,7 +33,9 @@ class CommanderViewModel(client: CommanderClient?) : ViewModel() {
     private var mCurrentSettings = StatisticSettingsModel()
 
     private val mName = MutableLiveData("")
+    private val mNotoriety = MutableLiveData(0)
     private val mIsRanksBusy = MutableLiveData<Boolean>().default(true)
+    private val mIsCmdrBusy = MutableLiveData<Boolean>().default(true)
 
     private val mCombatRank = MutableLiveData(RankModel(RankModel.RankType.COMBAT, FrontierRanksEvent.FrontierRank()))
     private val mTradeRank = MutableLiveData(RankModel(RankModel.RankType.TRADING, FrontierRanksEvent.FrontierRank()))
@@ -61,6 +63,7 @@ class CommanderViewModel(client: CommanderClient?) : ViewModel() {
     //</editor-fold>
 
     val name: LiveData<String> = mName
+    val notoriety: LiveData<Int> = mNotoriety
     val combatRank: LiveData<RankModel> = mCombatRank
     val tradeRank: LiveData<RankModel> = mTradeRank
     val exploreRank: LiveData<RankModel> = mExploreRank
@@ -70,6 +73,7 @@ class CommanderViewModel(client: CommanderClient?) : ViewModel() {
     val allianceRank: LiveData<RankModel> = mAllianceRank
     val currentDiscoverySummary: LiveData<FrontierDiscoverySummary> = mCurrentDiscoverySummary
     var isRanksBusy: MutableLiveData<Boolean> = mIsRanksBusy
+    var isCmdrBusy: MutableLiveData<Boolean> = mIsCmdrBusy
 
     init {
         EventBus.getDefault().register(this)
@@ -124,7 +128,7 @@ class CommanderViewModel(client: CommanderClient?) : ViewModel() {
                 return@launch
             }
             launchProfile(profile)
-            SettingsUtils.setStatisticsSettings(mCurrentSettings)
+            saveStatisticsSettings()
         }
     }
 
@@ -188,7 +192,14 @@ class CommanderViewModel(client: CommanderClient?) : ViewModel() {
             launchExplorationStats(statistics)
             launchPassengerStats(statistics)
 
+            saveStatisticsSettings()
+        }
+    }
+
+    private fun saveStatisticsSettings() {
+        if (SettingsUtils.canSaveSettings(mCurrentSettings)) {
             SettingsUtils.setStatisticsSettings(mCurrentSettings)
+            mIsCmdrBusy.postValue(false)
         }
     }
 

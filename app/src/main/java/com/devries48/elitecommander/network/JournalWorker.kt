@@ -29,12 +29,10 @@ class JournalWorker(frontierApi: FrontierInterface?) {
     private lateinit var mCrawlerType: CrawlerType
     private var mLatestJournalDate: Date? = DateUtils.getCurrentDate()
     private var mCurrentDiscoveriesDate: Date? = null
-    var mLastJournalDate: Date? = null
+    private var mLastJournalDate: Date? = null
 
     init {
-        if (frontierApi != null) {
-            mFrontierApi = frontierApi
-        }
+        if (frontierApi != null) mFrontierApi = frontierApi
     }
 
     // Raises FrontierRanksEvent
@@ -318,6 +316,14 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                             statistics.passengers.passengersMissionsDisgruntled,
                             statistics.passengers.passengersMissionsEjected,
                             statistics.passengers.passengersMissionsVIP
+                        ),
+                        FrontierCrime(
+                            statistics.crime.bountiesReceived,
+                            statistics.crime.fines,
+                            statistics.crime.highestBounty,
+                            statistics.crime.notoriety,
+                            statistics.crime.totalBounties,
+                            statistics.crime.totalFines
                         )
                     )
                 )
@@ -325,7 +331,9 @@ class JournalWorker(frontierApi: FrontierInterface?) {
             } catch (e: Exception) {
                 println("LOG: Error parsing statistics event from journal." + e.message)
                 sendEvent(
-                    FrontierStatisticsEvent(false, null, null, null, null, null, null, null, null, null)
+                    FrontierStatisticsEvent(
+                        false, null, null, null, null, null, null, null, null, null, null
+                    )
                 )
             }
 

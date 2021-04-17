@@ -45,6 +45,19 @@
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
+                <TextView
+                    android:id="@+id/notoriety"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:includeFontPadding="false"
+                    android:text="@{@string/format_notoriety(viewModel.notoriety)}"
+                    android:textAppearance="@style/eliteStyle.SmallText"
+                    android:textColor="@color/elite_red"
+                    android:visibility="@{viewModel.notoriety > 0 ? View.VISIBLE : View.GONE}"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/cmdr" />
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/stats_recyclerView"
                     android:layout_width="match_parent"
@@ -53,7 +66,18 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/cmdr"/>
+                    app:layout_constraintTop_toBottomOf="@id/notoriety"/>
+
+                <ProgressBar
+                    android:id="@+id/cmdrBusyBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:theme="@style/BusyRankStyle"
+                    android:visibility="@{viewModel.isCmdrBusy ? View.VISIBLE : View.GONE}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>

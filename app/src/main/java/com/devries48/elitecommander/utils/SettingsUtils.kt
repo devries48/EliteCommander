@@ -28,11 +28,13 @@ object SettingsUtils {
         editor.apply()
     }
 
-    fun setStatisticsSettings(model: StatisticSettingsModel) {
-        if (model.timestamp != null)
-            return
+    fun canSaveSettings(model: StatisticSettingsModel): Boolean {
+        return (model.credits != null && model.timePlayed != null)
+    }
 
-        if (model.credits == null || model.timePlayed == null)
+
+    fun setStatisticsSettings(model: StatisticSettingsModel) {
+        if (model.timestamp != null || canSaveSettings(model))
             return
 
         model.timestamp = DateUtils.getCurrentDateString(GMT)
@@ -79,6 +81,4 @@ object SettingsUtils {
             return StatisticSettingsModel()
         }
     }
-
-
 }

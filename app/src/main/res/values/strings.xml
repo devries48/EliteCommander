@@ -5,6 +5,7 @@
     <string name="format_percentage">%s%%</string>
     <string name="format_number">"%,d"</string>
     <string name="format_currency">"%,d" CR</string>
+    <string name="format_notoriety">Notoriety level: %s</string>
 
     <!--URLs-->
     <string name="edsm_base">https://www.edsm.net/</string>

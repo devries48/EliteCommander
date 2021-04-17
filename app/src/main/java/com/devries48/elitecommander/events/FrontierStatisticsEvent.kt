@@ -12,7 +12,8 @@ data class FrontierStatisticsEvent(
     val trading: FrontierTrading?,
     val smuggling: FrontierSmuggling?,
     val searchAndRescue: FrontierSearchAndRescue?,
-    val passengers: FrontierPassengers?
+    val passengers: FrontierPassengers?,
+    val crime: FrontierCrime?
 )
 
 data class FrontierBankAccount(
@@ -86,4 +87,13 @@ data class FrontierPassengers(
     val passengersMissionsDisgruntled: Int,
     val passengersMissionsEjected: Int,
     val passengersMissionsVIP: Int
+)
+
+data class FrontierCrime(
+    val bountiesReceived: Int,
+    val fines: Int,
+    val highestBounty: Int,
+    val notoriety: Int,
+    val totalBounties: Long,
+    val totalFines: Long
 )

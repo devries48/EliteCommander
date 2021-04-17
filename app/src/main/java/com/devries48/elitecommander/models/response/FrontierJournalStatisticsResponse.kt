@@ -104,17 +104,17 @@ data class FrontierJournalStatisticsResponse(
 
     data class Crime(
         @SerializedName("Bounties_Received")
-        val bountiesReceived: Int, // 62
+        val bountiesReceived: Int,
         @SerializedName("Fines")
-        val fines: Int, // 35
+        val fines: Int,
         @SerializedName("Highest_Bounty")
-        val highestBounty: Int, // 10000
+        val highestBounty: Int,
         @SerializedName("Notoriety")
-        val notoriety: Int, // 0
+        val notoriety: Int,
         @SerializedName("Total_Bounties")
-        val totalBounties: Long, // 49500
+        val totalBounties: Long,
         @SerializedName("Total_Fines")
-        val totalFines: Long // 665079
+        val totalFines: Long
     )
 
     data class Exploration(
