@@ -13,12 +13,35 @@ android {
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
 
+    def versionPropsFile = rootProject.file('gradle/version.properties')
+    def versionBuild
+
+    if (versionPropsFile.canRead()) {
+        def versionProps = new Properties()
+        versionProps.load(new FileInputStream(versionPropsFile))
+        versionBuild = versionProps['VERSION_BUILD'].toInteger()
+    } else {
+        throw new FileNotFoundException("Could not read version.properties!")
+    }
+
+    ext.autoIncrementBuildNumber = {
+        if (versionPropsFile.canRead()) {
+            def versionProps = new Properties()
+            versionProps.load(new FileInputStream(versionPropsFile))
+            versionBuild = versionProps['VERSION_BUILD'].toInteger() + 1
+            versionProps['VERSION_BUILD'] = versionBuild.toString()
+            versionProps.store(versionPropsFile.newWriter(), null)
+        } else {
+            throw new FileNotFoundException("Could not read version.properties!")
+        }
+    }
+
     defaultConfig {
         applicationId "com.devries48.elitecommander"
         minSdkVersion 24
         targetSdkVersion 30
-        versionCode 5
-        versionName "0.1"
+        versionCode 1
+        versionName "0.1.0" + versionBuild
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 

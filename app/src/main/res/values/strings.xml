@@ -226,7 +226,7 @@
     <string name="skimmers_killed">Skimmers killed</string>
     <string name="bonds">Bonds</string>
     <string name="hyperspace_jumps">Hyperspace jumps</string>
-    <string name="hyperspace_distance">Hyperspace distance</string>
+    <string name="hyperspace_distance">Distance</string>
     <string name="systems_visited">Systems visited</string>
     <string name="greatest_distance_from_start">Greatest distance</string>
     <string name="planets_scanned">Planet scanned</string>

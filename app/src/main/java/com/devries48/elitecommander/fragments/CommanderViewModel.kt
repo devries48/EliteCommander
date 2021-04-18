@@ -83,7 +83,6 @@ class CommanderViewModel(client: CommanderClient?) : ViewModel() {
 
     override fun onCleared() {
         super.onCleared()
-
         EventBus.getDefault().unregister(this)
     }
 

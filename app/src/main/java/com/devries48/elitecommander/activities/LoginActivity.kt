@@ -2,9 +2,11 @@ package com.devries48.elitecommander.activities
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.devries48.elitecommander.R
 import com.devries48.elitecommander.databinding.ActivityLoginBinding
@@ -47,12 +49,9 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun switchUi(isRedirect: Boolean) {
-        binding.loginImageView.scaleX = if (isRedirect) 0.5f else 1f
-        binding.loginImageView.scaleY = 0.5f
-
         binding.frontierLoginButton.isVisible = !isRedirect
         binding.loginTextView.isVisible = !isRedirect
-        binding.redirectTextView.isVisible = !isRedirect
+        binding.redirectTextView.isVisible = isRedirect
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -65,7 +64,9 @@ class LoginActivity : AppCompatActivity() {
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setTitle(R.string.login_dialog_error_title)
                 .setMessage(R.string.login_dialog_error_text)
+                .setBackground(ColorDrawable(ContextCompat.getColor(this, R.color.black)))
                 .setPositiveButton(android.R.string.ok) { d, _ ->
+                    binding.frontierLoginButton.isEnabled = true
                     switchUi(false)
                     d.dismiss()
                 }

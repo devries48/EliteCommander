@@ -36,8 +36,10 @@ class MainActivity : AppCompatActivity() {
 
     private var mIsLoggedIn: Boolean? by Delegates.observable(null) { _, _, newValue ->
         if (newValue == true) {
+            EventBus.getDefault().register(this)
             setupViewModel()
-        }
+        } else
+            EventBus.getDefault().unregister(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

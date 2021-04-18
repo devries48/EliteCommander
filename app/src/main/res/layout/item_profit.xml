@@ -29,7 +29,6 @@
         android:id="@+id/title"
         android:layout_width="80dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/margin_small"
         android:textStyle="bold"
         android:textAppearance="@style/eliteStyle.SmallText"
         app:layout_constraintEnd_toEndOf="parent"

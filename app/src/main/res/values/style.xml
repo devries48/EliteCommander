@@ -4,7 +4,6 @@
         <item name="materialAlertDialogTitleTextStyle">@style/TitleTextStyle</item>
         <item name="materialAlertDialogBodyTextStyle">@style/BodyTextStyle</item>
         <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
-        <item name="background">@color/black</item>
     </style>
 
     <style name="TitleTextStyle" parent="MaterialAlertDialog.MaterialComponents.Title.Text">
