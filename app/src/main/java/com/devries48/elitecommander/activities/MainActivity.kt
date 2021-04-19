@@ -113,7 +113,7 @@ class MainActivity : AppCompatActivity() {
         return navHostFragment.navController
     }
 
-    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     fun onFrontierAuthNeededEvent(frontierAuthNeededEvent: FrontierAuthNeededEvent) {
         if (mIsLoggedIn != false) {
             mIsLoggedIn = false

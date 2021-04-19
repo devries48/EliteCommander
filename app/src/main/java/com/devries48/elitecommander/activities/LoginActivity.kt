@@ -93,7 +93,7 @@ class LoginActivity : AppCompatActivity() {
     private fun launchAuthCodeStep() {
         val url = FrontierAuthNetwork.getInstance()?.getAuthorizationUrl(this)
         if (url != null) launchBrowserIntent(url)
-        finish()
+        //finish()
     }
 
     private fun launchTokensStep(authCode: String, state: String) {
