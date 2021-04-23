@@ -18,7 +18,7 @@ android {
     def _patch = 0
     def _versionCode = 0
 
-    def versionPropsFile = rootProject.file('version.properties')
+    def versionPropsFile = rootProject.file('version.settings')
 
     if (versionPropsFile.canRead()) {
         def versionProps = new Properties()
@@ -50,7 +50,7 @@ android {
         versionProps['VERSION_CODE'] = _versionCode.toString()
         versionProps.store(versionPropsFile.newWriter(), null)
     } else {
-        throw new GradleException("Could not read version.properties!")
+        throw new GradleException("Could not read version.settings!")
     }
     def _versionName = "${_major}.${_minor}.${_patch}.${_versionCode}"
 
