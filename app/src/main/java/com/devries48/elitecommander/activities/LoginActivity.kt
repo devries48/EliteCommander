@@ -1,10 +1,13 @@
 package com.devries48.elitecommander.activities
 
+import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.view.View.GONE
+import android.view.View.VISIBLE
+import android.webkit.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -21,43 +24,64 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
 
+    @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        println("LOGIN")
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Check step (back from browser or just opened)
-        if (intent != null && intent!!.action != null &&
-            intent!!.action == Intent.ACTION_VIEW
-        ) {
-            val uri = intent!!.data
-            val code = uri?.getQueryParameter("code")
-            val state = uri?.getQueryParameter("state")
+        binding.frontierLoginButton.setOnClickListener { launchAuthCodeStep() }
 
-            if (code != null && state != null) {
-                switchUi(true)
-                launchTokensStep(code, state)
-                return
+        binding.webView.webViewClient = object : WebViewClient() {
+            var authComplete = false
+            override fun onReceivedClientCertRequest(view: WebView?, request: ClientCertRequest?) {
+                super.onReceivedClientCertRequest(view, request)
+                println("WEB --- onReceivedClientCertRequest")
+            }
+
+            override fun onReceivedHttpAuthRequest(
+                view: WebView?,
+                handler: HttpAuthHandler?,
+                host: String?,
+                realm: String?
+            ) {
+                super.onReceivedHttpAuthRequest(view, handler, host, realm)
+                println("WEB --- onReceivedHttpAuthRequest")
+            }
+
+            override fun onPageFinished(view: WebView, url: String) {
+                super.onPageFinished(view, url)
+                println("WEB --- onPageFinished")
+                if (url.contains("?code=") && !authComplete) {
+                    val uri = Uri.parse(url)
+                    val code = uri?.getQueryParameter("code")
+                    val state = uri?.getQueryParameter("state")
+
+                    println("WEB --- launchTokenStep")
+                    authComplete = true
+                    if (code != null && state != null) launchTokensStep(code, state)
+                }
             }
         }
-
-        binding.frontierLoginButton.setOnClickListener {
-            binding.frontierLoginButton.isEnabled = false
-            launchAuthCodeStep()
-        }
+        // use cookies to remember a logged in status
+        CookieManager.getInstance().flush()
+        binding.webView.settings.javaScriptEnabled = true
     }
 
     private fun switchUi(isRedirect: Boolean) {
         binding.frontierLoginButton.isVisible = !isRedirect
         binding.loginTextView.isVisible = !isRedirect
         binding.redirectTextView.isVisible = isRedirect
+        binding.webView.visibility = if (isRedirect) VISIBLE else GONE
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
     fun onFrontierTokensEvent(tokens: FrontierTokensEvent) {
         if (tokens.success) {
-            setResult(Activity.RESULT_OK)
+            EventBus.getDefault().unregister(this)
+            val returnIntent = intent
+            setResult(Activity.RESULT_OK, returnIntent)
             finish()
         } else {
             val dialog = MaterialAlertDialogBuilder(this, R.style.AlertDialogTheme)
@@ -92,34 +116,13 @@ class LoginActivity : AppCompatActivity() {
 
     private fun launchAuthCodeStep() {
         val url = FrontierAuthNetwork.getInstance()?.getAuthorizationUrl(this)
-        if (url != null) launchBrowserIntent(url)
-        //finish()
+        if (url != null) {
+            switchUi(true)
+            binding.webView.loadUrl(url)
+        }
     }
 
     private fun launchTokensStep(authCode: String, state: String) {
         FrontierAuthNetwork.getInstance()?.sendTokensRequest(this, authCode, state)
     }
-
-    private fun launchBrowserIntent(url: String) {
-        val browserIntent = Intent(Intent.ACTION_VIEW)
-        browserIntent.flags = browserIntent.flags or Intent.FLAG_ACTIVITY_NO_HISTORY
-        browserIntent.data = Uri.parse(url)
-        startActivity(browserIntent)
-    }
-
-    override fun getIntent(): Intent? {
-        val intent = super.getIntent()
-        return if (intent != null && intent.action == "org.chromium.arc.intent.action.VIEW") {
-            Intent(intent).setAction(Intent.ACTION_VIEW)
-        } else intent
-    }
-
-    override fun onNewIntent(intent: Intent?) {
-        if (intent != null && intent.action == "org.chromium.arc.intent.action.VIEW") super.onNewIntent(
-            Intent(intent).setAction(
-                Intent.ACTION_VIEW
-            )
-        ) else super.onNewIntent(intent)
-    }
-
 }

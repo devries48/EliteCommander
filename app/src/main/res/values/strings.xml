@@ -233,8 +233,6 @@
     <string name="planets_efficient_mapped">Efficient mapped</string>
     <string name="passengers_delivered">Delivered</string>
     <string name="passengers_ejected">Ejected</string>
-    <string name="combat_statistics">Combat statistics</string>
-    <string name="exploration_statistics">Exploration statistics</string>
     <string name="passengers">Passengers</string>
     <string name="passengers_bulk">Bulk</string>
     <string name="passengers_vip">VIP</string>

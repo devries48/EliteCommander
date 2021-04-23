@@ -13,36 +13,53 @@ android {
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
 
-    def versionPropsFile = rootProject.file('gradle/version.properties')
-    def versionBuild
+    def _major = 0
+    def _minor = 0
+    def _patch = 0
+    def _versionCode = 0
+
+    def versionPropsFile = rootProject.file('version.properties')
 
     if (versionPropsFile.canRead()) {
         def versionProps = new Properties()
-        versionProps.load(new FileInputStream(versionPropsFile))
-        versionBuild = versionProps['VERSION_BUILD'].toInteger()
-    } else {
-        throw new FileNotFoundException("Could not read version.properties!")
-    }
 
-    ext.autoIncrementBuildNumber = {
-        if (versionPropsFile.canRead()) {
-            def versionProps = new Properties()
-            versionProps.load(new FileInputStream(versionPropsFile))
-            versionBuild = versionProps['VERSION_BUILD'].toInteger() + 1
-            versionProps['VERSION_BUILD'] = versionBuild.toString()
-            versionProps.store(versionPropsFile.newWriter(), null)
-        } else {
-            throw new FileNotFoundException("Could not read version.properties!")
+        versionProps.load(new FileInputStream(versionPropsFile))
+
+        _major = versionProps['MAJOR'].toInteger()
+        _minor = versionProps['MINOR'].toInteger()
+        _patch = versionProps['PATCH'].toInteger()
+        _versionCode = versionProps['VERSION_CODE'].toInteger() + 1
+
+        if (_versionCode == 999) {
+            _versionCode = 0
+            _patch = _patch + 1
         }
+
+        if (_patch == 99) {
+            _patch = 0
+            _minor = _minor + 1
+        }
+
+        if (_minor == 99) {
+            _minor = 0
+            _major = _major + 1
+        }
+        versionProps['MAJOR'] = _major.toString()
+        versionProps['MINOR'] = _minor.toString()
+        versionProps['PATCH'] = _patch.toString()
+        versionProps['VERSION_CODE'] = _versionCode.toString()
+        versionProps.store(versionPropsFile.newWriter(), null)
+    } else {
+        throw new GradleException("Could not read version.properties!")
     }
+    def _versionName = "${_major}.${_minor}.${_patch}.${_versionCode}"
 
     defaultConfig {
         applicationId "com.devries48.elitecommander"
         minSdkVersion 24
         targetSdkVersion 30
-        versionCode 1
-        versionName "0.1.0" + versionBuild
-
+        versionCode _versionCode
+        versionName _versionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         // Get or create code here: https://user.frontierstore.net

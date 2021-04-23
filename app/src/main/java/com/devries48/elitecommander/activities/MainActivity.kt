@@ -36,10 +36,10 @@ class MainActivity : AppCompatActivity() {
 
     private var mIsLoggedIn: Boolean? by Delegates.observable(null) { _, _, newValue ->
         if (newValue == true) {
-            EventBus.getDefault().register(this)
+            startEventBus()
             setupViewModel()
         } else
-            EventBus.getDefault().unregister(this)
+            stopEventBus()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,18 +53,18 @@ class MainActivity : AppCompatActivity() {
 
     public override fun onStart() {
         super.onStart()
-        EventBus.getDefault().register(this)
+        startEventBus()
     }
 
     public override fun onStop() {
         super.onStop()
-        EventBus.getDefault().unregister(this)
+        stopEventBus()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == FRONTIER_LOGIN_REQUEST_CODE) mIsLoggedIn = true
+        println("WEB --- onActivityResult")
+        mIsLoggedIn = true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -79,6 +79,16 @@ class MainActivity : AppCompatActivity() {
         exitIntent.addCategory(Intent.CATEGORY_HOME)
         exitIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
         startActivity(exitIntent)
+    }
+
+    private fun startEventBus() {
+        if (!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this)
+    }
+
+    private fun stopEventBus() {
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this)
     }
 
     private fun setupViewModel() {
@@ -113,13 +123,14 @@ class MainActivity : AppCompatActivity() {
         return navHostFragment.navController
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
     fun onFrontierAuthNeededEvent(frontierAuthNeededEvent: FrontierAuthNeededEvent) {
         if (mIsLoggedIn != false) {
             mIsLoggedIn = false
             storeUpdatedTokens(this, "", "")
+
             val intent = Intent(this@MainActivity, LoginActivity::class.java)
-            startActivityForResult(intent, FRONTIER_LOGIN_REQUEST_CODE)
+            startActivityForResult(intent, 0)
         }
     }
 
@@ -161,9 +172,5 @@ class MainActivity : AppCompatActivity() {
 
         mAlertDialog = builder.create()
         mAlertDialog!!.show()
-    }
-
-    companion object {
-        private const val FRONTIER_LOGIN_REQUEST_CODE = 999
     }
 }

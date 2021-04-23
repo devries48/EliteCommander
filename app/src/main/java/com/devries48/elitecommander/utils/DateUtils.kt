@@ -21,7 +21,7 @@ object DateUtils {
         }
 
     fun Date.toDateString(format: DateFormatType = DateFormatType.DEFAULT): String {
-        return toDateString( format, this)
+        return toDateString(format, this)
     }
 
     fun toDateString(type: DateFormatType, date: Date): String {

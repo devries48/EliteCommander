@@ -34,13 +34,13 @@ object SettingsUtils {
 
 
     fun setStatisticsSettings(model: StatisticSettingsModel) {
-        if (model.timestamp != null || canSaveSettings(model))
+        if (!canSaveSettings(model))
             return
 
         model.timestamp = DateUtils.getCurrentDateString(GMT)
         val json: String = Gson().toJson(model)
 
-        if (json.isNotEmpty()) {
+        if (json.isNotBlank()) {
             setString(App.getContext(), Key.STATISTIC_VALUES, json)
             println("STATISTIC_VALUES saved")
             println(json)
@@ -50,7 +50,7 @@ object SettingsUtils {
     fun getStatisticSettings(): StatisticSettingsModel {
         val jsonString = getString(App.getContext(), Key.STATISTIC_VALUES)
 
-        if (jsonString != null) {
+        if (!jsonString.isNullOrBlank()) {
             try {
                 val model = Gson().fromJson(jsonString, StatisticSettingsModel::class.java)
 

@@ -42,7 +42,7 @@ suspend fun <T> Call<T>.getResult(): Pair<Int, T> = suspendCoroutine { cont ->
                     else -> cont.resume(Pair(response.code(), response.body()!! as T))
                 }
             } else {
-                cont.resume(Pair(response.code(),response.message() as T ))
+                cont.resume(Pair(response.code(), response.message() as T))
             }
         }
 

@@ -1,6 +1,6 @@
 package com.devries48.elitecommander.utils
 
-import com.devries48.elitecommander.network.JournalWorker
+import com.devries48.elitecommander.network.journal.JournalDiscoveries
 import kotlin.math.max
 import kotlin.math.pow
 import kotlin.math.round
@@ -35,7 +35,7 @@ object DiscoveryValueCalculator {
     )
 
     fun calculate(
-        discovery: JournalWorker.Discovery,
+        discovery: JournalDiscoveries.Discovery,
         isMapped: Boolean,
         hasEfficiencyBonus: Boolean
     ): Long {
@@ -48,7 +48,7 @@ object DiscoveryValueCalculator {
         return 0
     }
 
-    private fun getStarValue(discovery: JournalWorker.Discovery): Long {
+    private fun getStarValue(discovery: JournalDiscoveries.Discovery): Long {
         val starId = NamingUtils.getStarTypeAlias(discovery.starType!!)
         val mass = if (discovery.stellarMass == null) 1.0 else discovery.stellarMass!!
         var value = 1200.0
@@ -62,7 +62,7 @@ object DiscoveryValueCalculator {
     }
 
     private fun getPlanetValue(
-        discovery: JournalWorker.Discovery,
+        discovery: JournalDiscoveries.Discovery,
         isMapped: Boolean,
         hasEfficiencyBonus: Boolean
     ): Long {

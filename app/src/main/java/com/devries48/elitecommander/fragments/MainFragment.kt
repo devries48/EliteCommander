@@ -31,7 +31,7 @@ class MainFragment : Fragment() {
 
         mAdapter = ViewPagerAdapter(
             fragmentList,
-            requireActivity().supportFragmentManager,
+            childFragmentManager,
             lifecycle
         )
 

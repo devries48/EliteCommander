@@ -8,6 +8,7 @@ import com.devries48.elitecommander.events.FrontierRanksEvent
 import com.devries48.elitecommander.events.FrontierShip
 import com.devries48.elitecommander.interfaces.FrontierInterface
 import com.devries48.elitecommander.models.response.FrontierProfileResponse
+import com.devries48.elitecommander.network.journal.JournalWorker
 import com.devries48.elitecommander.utils.NamingUtils
 import com.google.gson.Gson
 import com.google.gson.JsonElement

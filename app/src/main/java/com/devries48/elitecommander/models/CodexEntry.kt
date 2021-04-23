@@ -1,6 +1,7 @@
 @file:Suppress("unused")
 
 package com.devries48.elitecommander.models
+
 import com.google.gson.annotations.SerializedName
 
 data class CodexEntry(

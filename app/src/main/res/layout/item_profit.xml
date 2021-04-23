@@ -8,30 +8,26 @@
         android:id="@+id/dot"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/margin_medium"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/percentage"
         android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
+        android:layout_width="50dp"
         android:layout_marginStart="@dimen/margin_medium"
-        android:layout_marginEnd="@dimen/margin_large"
-        android:textStyle="bold"
         android:textAlignment="textEnd"
         android:textAppearance="@style/eliteStyle.SmallText"
-        app:layout_constraintEnd_toStartOf="@id/title"
         app:layout_constraintStart_toEndOf="@id/dot"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/title"
-        android:layout_width="90dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
+        android:layout_marginStart="@dimen/margin_medium"
         android:textAppearance="@style/eliteStyle.SmallText"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/percentage"
         app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

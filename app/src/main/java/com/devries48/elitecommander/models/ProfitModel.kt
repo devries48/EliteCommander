@@ -6,7 +6,7 @@ import androidx.core.content.ContextCompat
 import com.devries48.elitecommander.App
 import com.devries48.elitecommander.R
 
-class ProfitModel(profitType: ProfitType,  profitAmount: Long) {
+class ProfitModel(profitType: ProfitType, profitAmount: Long) {
 
     constructor(_profitType: ProfitType, _profitAmount: Long, percentage: Float) : this(_profitType, _profitAmount) {
         this.percentage = percentage
@@ -106,9 +106,11 @@ class ProfitModel(profitType: ProfitType,  profitAmount: Long) {
         }
 
         var type: ProfitType? = null
+
         @StringRes
         var title: Int? = null
         var color: Int? = null
+
         @DrawableRes
         var dot: Int? = null
     }
