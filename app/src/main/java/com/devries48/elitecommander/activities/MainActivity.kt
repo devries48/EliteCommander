@@ -82,13 +82,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startEventBus() {
-        if (!EventBus.getDefault().isRegistered(this))
-            EventBus.getDefault().register(this)
+        synchronized(this){
+            if (!EventBus.getDefault().isRegistered(this))
+                EventBus.getDefault().register(this)
+        }
     }
 
     private fun stopEventBus() {
-        if (EventBus.getDefault().isRegistered(this))
-            EventBus.getDefault().unregister(this)
+        synchronized(this) {
+            if (EventBus.getDefault().isRegistered(this))
+                EventBus.getDefault().unregister(this)
+        }
     }
 
     private fun setupViewModel() {
@@ -125,6 +129,7 @@ class MainActivity : AppCompatActivity() {
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     fun onFrontierAuthNeededEvent(frontierAuthNeededEvent: FrontierAuthNeededEvent) {
+        println("onFrontierAuthNeeded")
         if (mIsLoggedIn != false) {
             mIsLoggedIn = false
             storeUpdatedTokens(this, "", "")

@@ -31,10 +31,10 @@ data class FrontierBankAccount(
 data class FrontierCombat(
     val assassinationProfits: Long,
     val assassinations: Int,
-    val bountiesClaimed: Int,
-    val bountyHuntingProfit: Long,
+    var bountiesClaimed: Int,
+    var bountyHuntingProfit: Long,
     val combatBondProfits: Long,
-    val combatBonds: Int,
+    var combatBonds: Int,
     val highestSingleReward: Int,
     val skimmersKilled: Int
 )

@@ -1,15 +1,19 @@
 package com.devries48.elitecommander.network.journal
 
 import com.devries48.elitecommander.events.*
+import com.devries48.elitecommander.models.response.FrontierBountyResponse
 import com.devries48.elitecommander.models.response.FrontierJournalStatisticsResponse
+import com.devries48.elitecommander.models.response.FrontierRedeemVoucher
 import com.devries48.elitecommander.network.journal.JournalWorker.Companion.sendWorkerEvent
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.util.*
 
 class JournalStatistics(worker: JournalWorker) {
 
     private val mWorker = worker
+    private lateinit var mVoucherProfit: VoucherProfit
 
     internal suspend fun raiseFrontierStatisticsEvent(rawEvents: List<JournalWorker.RawEvent>) {
         withContext(Dispatchers.IO) {
@@ -18,6 +22,7 @@ class JournalStatistics(worker: JournalWorker) {
                     ?: throw error("Error parsing statistics event from journal")
 
                 val statistics = Gson().fromJson(rawStatistics.json, FrontierJournalStatisticsResponse::class.java)
+                mVoucherProfit = getVoucherProfits(rawEvents)
 
                 sendWorkerEvent(
                     FrontierStatisticsEvent(
@@ -98,6 +103,28 @@ class JournalStatistics(worker: JournalWorker) {
         }
     }
 
+    private fun getVoucherProfits(rawEvents: List<JournalWorker.RawEvent>): VoucherProfit {
+        val profit = VoucherProfit()
+
+        val vouchers = rawEvents.filter { it.event == JOURNAL_EVENT_REDEEM_VOUCHER }
+        vouchers.forEach {
+            val voucher = Gson().fromJson(it.json, FrontierRedeemVoucher::class.java)
+            val amount = voucher.factions.map { a -> a.amount }.sum()
+
+            println("Voucher type: " + voucher.type)
+
+            when (voucher.type.toLowerCase(Locale.ROOT)) {
+                "bounty" -> mVoucherProfit.bounty += amount
+                "combatbond" -> mVoucherProfit.combatBond += amount
+                "trade" -> mVoucherProfit.trade += amount
+                "settlement" -> mVoucherProfit.settlement += amount
+                "scannable" -> mVoucherProfit.scannable += amount
+                else -> println("Voucher type not found: " + voucher.type)
+            }
+        }
+        return profit
+    }
+
     private fun getFrontierCombat(
         statistics: FrontierJournalStatisticsResponse,
         rawEvents: List<JournalWorker.RawEvent>
@@ -113,13 +140,16 @@ class JournalStatistics(worker: JournalWorker) {
             statistics.combat.skimmersKilled
         )
 
-/*
         val bounties = rawEvents.filter { it.event == JOURNAL_EVENT_COMBAT_BOUNTY }
         bounties.forEach {
-            val bounty = Gson().fromJson(it.json, FrontierJournalStatisticsResponse.Combat::class.java)
-            statistics.combat.
+            val bounty = Gson().fromJson(it.json, FrontierBountyResponse::class.java)
+            if (bounty.reward == null)
+                stats.bountiesClaimed += bounty.rewards?.size ?: 1
+            else
+                stats.bountiesClaimed += 1
         }
-*/
+
+        stats.bountyHuntingProfit += mVoucherProfit.bounty
 
         return stats
     }
@@ -127,7 +157,14 @@ class JournalStatistics(worker: JournalWorker) {
     companion object {
         internal const val JOURNAL_EVENT_STATISTICS = "Statistics"
         internal const val JOURNAL_EVENT_COMBAT_BOUNTY = "Bounty"
-        internal const val JOURNAL_EVENT_COMBAT_VOUCHER = "RedeemVoucher"
-    }
+        internal const val JOURNAL_EVENT_REDEEM_VOUCHER = "RedeemVoucher"
 
+        private data class VoucherProfit(
+            var combatBond: Long = 0,
+            var bounty: Long = 0,
+            var trade: Long = 0,
+            var settlement: Long = 0,
+            var scannable: Long = 0
+        )
+    }
 }

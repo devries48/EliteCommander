@@ -32,9 +32,8 @@ object SettingsUtils {
         return (model.credits != null && model.timePlayed != null)
     }
 
-
     fun setStatisticsSettings(model: StatisticSettingsModel) {
-        if (!canSaveSettings(model))
+        if (model.timestamp != null && canSaveSettings(model))
             return
 
         model.timestamp = DateUtils.getCurrentDateString(GMT)

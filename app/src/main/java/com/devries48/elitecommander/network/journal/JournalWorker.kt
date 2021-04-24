@@ -50,7 +50,7 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                 getJournal(date) { c, r ->
                     code = c
                     response = r?.string()
-                    // println(response)
+                    // capture response here: println(response)
                 }
                 if (code == 401) return@launch
                 if (code == 200)
@@ -278,8 +278,6 @@ class JournalWorker(frontierApi: FrontierInterface?) {
         internal fun sendWorkerEvent(data: Any?) {
             EventBus.getDefault().post(data)
         }
-
-
     }
 
     internal class RawEvent(value: String) {
@@ -293,6 +291,4 @@ class JournalWorker(frontierApi: FrontierInterface?) {
             timeStamp = DateUtils.fromDateString(timestampString, GMT)
         }
     }
-
 }
-

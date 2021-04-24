@@ -4,6 +4,8 @@ import com.google.gson.annotations.SerializedName
 
 data class FrontierBountyResponse(
     val event: String,
+    @SerializedName("Reward")
+    val reward: Int?,
     @SerializedName("Rewards")
     val rewards: List<Reward>?,
     @SerializedName("Target")
