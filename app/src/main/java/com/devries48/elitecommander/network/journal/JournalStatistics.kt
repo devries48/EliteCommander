@@ -13,7 +13,7 @@ import java.util.*
 class JournalStatistics(worker: JournalWorker) {
 
     private val mWorker = worker
-    private lateinit var mVoucherProfit: VoucherProfit
+    private var mVoucherProfit = VoucherProfit()
 
     internal suspend fun raiseFrontierStatisticsEvent(rawEvents: List<JournalWorker.RawEvent>) {
         withContext(Dispatchers.IO) {
@@ -22,7 +22,7 @@ class JournalStatistics(worker: JournalWorker) {
                     ?: throw error("Error parsing statistics event from journal")
 
                 val statistics = Gson().fromJson(rawStatistics.json, FrontierJournalStatisticsResponse::class.java)
-                mVoucherProfit = getVoucherProfits(rawEvents)
+                setVoucherProfits(rawEvents)
 
                 sendWorkerEvent(
                     FrontierStatisticsEvent(
@@ -103,8 +103,7 @@ class JournalStatistics(worker: JournalWorker) {
         }
     }
 
-    private fun getVoucherProfits(rawEvents: List<JournalWorker.RawEvent>): VoucherProfit {
-        val profit = VoucherProfit()
+    private fun setVoucherProfits(rawEvents: List<JournalWorker.RawEvent>) {
 
         val vouchers = rawEvents.filter { it.event == JOURNAL_EVENT_REDEEM_VOUCHER }
         vouchers.forEach {
@@ -122,7 +121,6 @@ class JournalStatistics(worker: JournalWorker) {
                 else -> println("Voucher type not found: " + voucher.type)
             }
         }
-        return profit
     }
 
     private fun getFrontierCombat(
