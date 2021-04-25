@@ -2,7 +2,7 @@ package com.devries48.elitecommander.models.response
 
 import com.google.gson.annotations.SerializedName
 
-data class FrontierBountyResponse(
+data class FrontierJournalBountyResponse(
     val event: String,
     @SerializedName("Reward")
     val reward: Int?,

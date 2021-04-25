@@ -2,7 +2,7 @@ package com.devries48.elitecommander.models.response
 
 import com.google.gson.annotations.SerializedName
 
-data class FrontierRedeemVoucher(
+data class FrontierJournalRedeemVoucherResponse(
     val event: String,
     @SerializedName("Factions")
     val factions: List<Faction>,

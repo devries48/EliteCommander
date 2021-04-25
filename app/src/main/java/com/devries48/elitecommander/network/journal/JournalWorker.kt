@@ -199,7 +199,6 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                 "EngineerCraft",
                 "EngineerProgress",
                 "EscapeInterdiction",
-                "FactionKillBond",
                 "FSSAllBodiesFound",
                 "FSSDiscoveryScan",
                 "FSDJump",

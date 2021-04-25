@@ -33,7 +33,7 @@ data class FrontierCombat(
     val assassinations: Int,
     var bountiesClaimed: Int,
     var bountyHuntingProfit: Long,
-    val combatBondProfits: Long,
+    var combatBondProfits: Long,
     var combatBonds: Int,
     val highestSingleReward: Int,
     val skimmersKilled: Int

@@ -1,9 +1,9 @@
 package com.devries48.elitecommander.network.journal
 
 import com.devries48.elitecommander.events.*
-import com.devries48.elitecommander.models.response.FrontierBountyResponse
+import com.devries48.elitecommander.models.response.FrontierJournalBountyResponse
+import com.devries48.elitecommander.models.response.FrontierJournalRedeemVoucherResponse
 import com.devries48.elitecommander.models.response.FrontierJournalStatisticsResponse
-import com.devries48.elitecommander.models.response.FrontierRedeemVoucher
 import com.devries48.elitecommander.network.journal.JournalWorker.Companion.sendWorkerEvent
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
@@ -36,19 +36,9 @@ class JournalStatistics(worker: JournalWorker) {
                             statistics.bankAccount.spentOnOutfitting,
                             statistics.bankAccount.spentOnRepairs,
                             statistics.bankAccount.spentOnShips
-                        ), getFrontierCombat(statistics, rawEvents),
-                        FrontierExploration(
-                            statistics.exploration.efficientScans,
-                            statistics.exploration.explorationProfits,
-                            statistics.exploration.greatestDistanceFromStart,
-                            statistics.exploration.highestPayout,
-                            statistics.exploration.planetsScannedToLevel2,
-                            statistics.exploration.planetsScannedToLevel3,
-                            statistics.exploration.systemsVisited,
-                            statistics.exploration.timePlayed,
-                            statistics.exploration.totalHyperspaceDistance,
-                            statistics.exploration.totalHyperspaceJumps
-                        ), FrontierMining(
+                        ),
+                        getFrontierCombat(statistics, rawEvents),
+                        getFrontierExploration(statistics, rawEvents), FrontierMining(
                             statistics.mining.materialsCollected,
                             statistics.mining.miningProfits,
                             statistics.mining.quantityMined
@@ -107,7 +97,7 @@ class JournalStatistics(worker: JournalWorker) {
 
         val vouchers = rawEvents.filter { it.event == JOURNAL_EVENT_REDEEM_VOUCHER }
         vouchers.forEach {
-            val voucher = Gson().fromJson(it.json, FrontierRedeemVoucher::class.java)
+            val voucher = Gson().fromJson(it.json, FrontierJournalRedeemVoucherResponse::class.java)
             val amount = voucher.factions.map { a -> a.amount }.sum()
 
             println("Voucher type: " + voucher.type)
@@ -140,14 +130,37 @@ class JournalStatistics(worker: JournalWorker) {
 
         val bounties = rawEvents.filter { it.event == JOURNAL_EVENT_COMBAT_BOUNTY }
         bounties.forEach {
-            val bounty = Gson().fromJson(it.json, FrontierBountyResponse::class.java)
+            val bounty = Gson().fromJson(it.json, FrontierJournalBountyResponse::class.java)
             if (bounty.reward == null)
                 stats.bountiesClaimed += bounty.rewards?.size ?: 1
             else
                 stats.bountiesClaimed += 1
         }
 
+        stats.combatBonds += rawEvents.count { it.event == JOURNAL_EVENT_COMBAT_BOND }
+
         stats.bountyHuntingProfit += mVoucherProfit.bounty
+        stats.combatBondProfits += mVoucherProfit.combatBond
+
+        return stats
+    }
+
+    private fun getFrontierExploration(
+        statistics: FrontierJournalStatisticsResponse,
+        rawEvents: List<JournalWorker.RawEvent>
+    ): FrontierExploration {
+        val stats = FrontierExploration(
+            statistics.exploration.efficientScans,
+            statistics.exploration.explorationProfits,
+            statistics.exploration.greatestDistanceFromStart,
+            statistics.exploration.highestPayout,
+            statistics.exploration.planetsScannedToLevel2,
+            statistics.exploration.planetsScannedToLevel3,
+            statistics.exploration.systemsVisited,
+            statistics.exploration.timePlayed,
+            statistics.exploration.totalHyperspaceDistance,
+            statistics.exploration.totalHyperspaceJumps
+        )
 
         return stats
     }
@@ -155,6 +168,7 @@ class JournalStatistics(worker: JournalWorker) {
     companion object {
         internal const val JOURNAL_EVENT_STATISTICS = "Statistics"
         internal const val JOURNAL_EVENT_COMBAT_BOUNTY = "Bounty"
+        internal const val JOURNAL_EVENT_COMBAT_BOND = "FactionKillBond"
         internal const val JOURNAL_EVENT_REDEEM_VOUCHER = "RedeemVoucher"
 
         private data class VoucherProfit(

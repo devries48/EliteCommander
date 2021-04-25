@@ -44,21 +44,6 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
-    <TextView
-        android:id="@+id/redirectTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingHorizontal="@dimen/margin_large"
-        android:text="@string/login_redirect"
-        android:visibility="invisible"
-        android:textAlignment="center"
-        android:textAppearance="@style/eliteStyle.DialogText"
-        app:autoSizeTextType="uniform"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/loginImageView" />
-
     <WebView
         android:id="@+id/webView"
         android:layout_width="match_parent"

@@ -7,7 +7,9 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import android.webkit.*
+import android.webkit.CookieManager
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -22,61 +24,52 @@ import org.greenrobot.eventbus.ThreadMode
 
 class LoginActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityLoginBinding
+    private lateinit var mBinding: ActivityLoginBinding
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        println("LOGIN")
-        binding = ActivityLoginBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
-        binding.frontierLoginButton.setOnClickListener { launchAuthCodeStep() }
+        mBinding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(mBinding.root)
 
-        binding.webView.webViewClient = object : WebViewClient() {
+        mBinding.frontierLoginButton.setOnClickListener { launchAuthCodeStep() }
+
+        mBinding.webView.webViewClient = object : WebViewClient() {
             var authComplete = false
-            override fun onReceivedClientCertRequest(view: WebView?, request: ClientCertRequest?) {
-                super.onReceivedClientCertRequest(view, request)
-                println("WEB --- onReceivedClientCertRequest")
-            }
 
-            override fun onReceivedHttpAuthRequest(
-                view: WebView?,
-                handler: HttpAuthHandler?,
-                host: String?,
-                realm: String?
-            ) {
-                super.onReceivedHttpAuthRequest(view, handler, host, realm)
-                println("WEB --- onReceivedHttpAuthRequest")
+            override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
+                if (!url.contains("elitecommander"))
+                    view.loadUrl(url)
+
+                return true
             }
 
             override fun onPageFinished(view: WebView, url: String) {
                 super.onPageFinished(view, url)
-                println("WEB --- onPageFinished")
+
                 if (url.contains("?code=") && !authComplete) {
                     val uri = Uri.parse(url)
                     val code = uri?.getQueryParameter("code")
                     val state = uri?.getQueryParameter("state")
 
-                    println("WEB --- launchTokenStep")
                     authComplete = true
-                    if (code != null && state != null) launchTokensStep(code, state)
+                    launchTokensStep(code!!, state!!)
                 }
             }
         }
         // use cookies to remember a logged in status
         CookieManager.getInstance().flush()
-        binding.webView.settings.javaScriptEnabled = true
+        mBinding.webView.settings.javaScriptEnabled = true
     }
 
-    private fun switchUi(isRedirect: Boolean) {
-        binding.frontierLoginButton.isVisible = !isRedirect
-        binding.loginTextView.isVisible = !isRedirect
-        binding.redirectTextView.isVisible = isRedirect
-        binding.webView.visibility = if (isRedirect) VISIBLE else GONE
+    private fun switchUi(showWebView: Boolean, isRedirect: Boolean = false) {
+        mBinding.frontierLoginButton.isVisible = !showWebView && !isRedirect
+        mBinding.loginTextView.isVisible = !showWebView && !isRedirect
+        mBinding.webView.visibility = if (showWebView) VISIBLE else GONE
     }
 
-    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     fun onFrontierTokensEvent(tokens: FrontierTokensEvent) {
         if (tokens.success) {
             EventBus.getDefault().unregister(this)
@@ -90,7 +83,7 @@ class LoginActivity : AppCompatActivity() {
                 .setMessage(R.string.login_dialog_error_text)
                 .setBackground(ColorDrawable(ContextCompat.getColor(this, R.color.black)))
                 .setPositiveButton(android.R.string.ok) { d, _ ->
-                    binding.frontierLoginButton.isEnabled = true
+                    mBinding.frontierLoginButton.isEnabled = true
                     switchUi(false)
                     d.dismiss()
                 }
@@ -118,11 +111,12 @@ class LoginActivity : AppCompatActivity() {
         val url = FrontierAuthNetwork.getInstance()?.getAuthorizationUrl(this)
         if (url != null) {
             switchUi(true)
-            binding.webView.loadUrl(url)
+            mBinding.webView.loadUrl(url)
         }
     }
 
     private fun launchTokensStep(authCode: String, state: String) {
+        switchUi(showWebView = false, isRedirect = true)
         FrontierAuthNetwork.getInstance()?.sendTokensRequest(this, authCode, state)
     }
 }
