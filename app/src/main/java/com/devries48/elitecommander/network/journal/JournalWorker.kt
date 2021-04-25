@@ -101,7 +101,6 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                 }
 
             println("Journal events present: " + rawEvents.size)
-
         }
         return rawEvents
     }

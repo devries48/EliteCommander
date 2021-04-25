@@ -203,6 +203,8 @@ class CommanderViewModel(client: CommanderClient?) : ViewModel() {
     }
 
     private fun sendAlert(@StringRes message: Int) {
+        mIsCmdrBusy.postValue(false)
+        mIsRanksBusy.postValue(false)
         EventBus.getDefault().post(AlertEvent(R.string.download_error, message))
     }
 

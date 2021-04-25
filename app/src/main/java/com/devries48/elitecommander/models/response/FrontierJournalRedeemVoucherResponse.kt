@@ -5,10 +5,14 @@ import com.google.gson.annotations.SerializedName
 data class FrontierJournalRedeemVoucherResponse(
     val event: String,
     @SerializedName("Factions")
-    val factions: List<Faction>,
+    val factions: List<Faction>?,
     val timestamp: String,
     @SerializedName("Type")
-    val type: String
+    val type: String,
+    @SerializedName("Amount")
+    val amount: Int?,
+    @SerializedName("Faction")
+    val faction: String?
 ) {
     data class Faction(
         @SerializedName("Amount")

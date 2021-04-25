@@ -18,8 +18,8 @@ class JournalStatistics(worker: JournalWorker) {
     internal suspend fun raiseFrontierStatisticsEvent(rawEvents: List<JournalWorker.RawEvent>) {
         withContext(Dispatchers.IO) {
             try {
-                val rawStatistics = rawEvents.lastOrNull { it.event == JOURNAL_EVENT_STATISTICS }
-                    ?: throw error("Error parsing statistics event from journal")
+                val rawStatistics = rawEvents.firstOrNull { it.event == JOURNAL_EVENT_STATISTICS }
+                    ?: throw error("No statistics event found!")
 
                 val statistics = Gson().fromJson(rawStatistics.json, FrontierJournalStatisticsResponse::class.java)
                 setVoucherProfits(rawEvents)
@@ -98,9 +98,7 @@ class JournalStatistics(worker: JournalWorker) {
         val vouchers = rawEvents.filter { it.event == JOURNAL_EVENT_REDEEM_VOUCHER }
         vouchers.forEach {
             val voucher = Gson().fromJson(it.json, FrontierJournalRedeemVoucherResponse::class.java)
-            val amount = voucher.factions.map { a -> a.amount }.sum()
-
-            println("Voucher type: " + voucher.type)
+            val amount = voucher.amount ?: voucher.factions?.map { a -> a.amount }?.sum()!!
 
             when (voucher.type.toLowerCase(Locale.ROOT)) {
                 "bounty" -> mVoucherProfit.bounty += amount
