@@ -237,4 +237,9 @@
     <string name="passengers_bulk">Bulk</string>
     <string name="passengers_vip">VIP</string>
     <string name="last_journal">Last journal</string>
+    <string name="marketsTradedWith">Markets traded with</string>
+    <string name="blackMarkets">Black markets</string>
+    <string name="recourcesTraded">Resources traded</string>
+    <string name="smuggled">Smuggled</string>
+    <string name="tradingAndSmuggling"><![CDATA[Trading & Smuggling]]></string>
 </resources>

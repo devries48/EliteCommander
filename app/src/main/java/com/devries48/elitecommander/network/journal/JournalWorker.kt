@@ -225,7 +225,6 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                 "ModuleInfo",
                 "MissionAbandoned",
                 "MissionAccepted",
-                "MissionCompleted",
                 "MissionFailed",
                 "MissionRedirected",
                 "Missions",

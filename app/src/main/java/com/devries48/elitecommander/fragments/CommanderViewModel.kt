@@ -59,6 +59,7 @@ class CommanderViewModel(client: CommanderClient?) : ViewModel() {
     private val mBuilderCombat: StatisticsBuilder = StatisticsBuilder()
     private val mBuilderExploration: StatisticsBuilder = StatisticsBuilder()
     private val mBuilderPassenger: StatisticsBuilder = StatisticsBuilder()
+    private val mBuilderTrading: StatisticsBuilder = StatisticsBuilder()
 
     //</editor-fold>
 
@@ -113,6 +114,10 @@ class CommanderViewModel(client: CommanderClient?) : ViewModel() {
 
     internal fun getExplorationStatistics(): LiveData<List<StatisticModel>> {
         return mBuilderExploration.statistics
+    }
+
+    internal fun getTradingStatistics(): LiveData<List<StatisticModel>> {
+        return mBuilderTrading.statistics
     }
 
     internal fun getPassengerStatistics(): LiveData<List<StatisticModel>> {
@@ -189,6 +194,7 @@ class CommanderViewModel(client: CommanderClient?) : ViewModel() {
             launchProfitStats(statistics)
             launchCombatStats(statistics)
             launchExplorationStats(statistics)
+            launchTradingStats(statistics)
             launchPassengerStats(statistics)
 
             saveStatisticsSettings()
@@ -561,7 +567,7 @@ class CommanderViewModel(client: CommanderClient?) : ViewModel() {
     private fun launchCombatStats(statistics: FrontierStatisticsEvent) {
 
         val totalKills =
-            statistics.combat!!.bountiesClaimed + statistics.combat.combatBonds + statistics.combat.assassinations
+            statistics.combat!!.bountiesClaimed + statistics.combat.combatBonds - (statistics.combat.assassinations + statistics.combat.skimmersKilled)
 
         mBuilderCombat.addStatistic(
             COMBAT_TOTAL_KILLS,
@@ -677,6 +683,49 @@ class CommanderViewModel(client: CommanderClient?) : ViewModel() {
         mCurrentSettings.planetsEfficientMapped = statistics.exploration.efficientScans
 
         mBuilderExploration.post()
+    }
+
+    private fun launchTradingStats(statistics: FrontierStatisticsEvent) {
+
+        mBuilderTrading.addStatistic(
+            TRADING_MARKETS,
+            LEFT,
+            R.string.marketsTradedWith,
+            statistics.trading!!.marketsTradedWith,
+            mStatisticSettings.marketsTradedWith,
+            INTEGER
+        )
+        mBuilderTrading.addStatistic(
+            TRADING_MARKETS,
+            RIGHT,
+            R.string.blackMarkets,
+            statistics.smuggling!!.blackMarketsTradedWith,
+            mStatisticSettings.blackMarketsTradedWith,
+            INTEGER
+        )
+        mBuilderTrading.addStatistic(
+            TRADING_RESOURCES,
+            LEFT,
+            R.string.recourcesTraded,
+            statistics.trading.resourcesTraded,
+            null,
+            INTEGER,
+            DIMMED
+        )
+        mBuilderTrading.addStatistic(
+            TRADING_RESOURCES,
+            RIGHT,
+            R.string.smuggled,
+            statistics.smuggling.resourcesSmuggled,
+            null,
+            INTEGER,
+            DIMMED
+        )
+
+        mCurrentSettings.marketsTradedWith = statistics.trading.marketsTradedWith
+        mCurrentSettings.blackMarketsTradedWith = statistics.smuggling.blackMarketsTradedWith
+
+        mBuilderTrading.post()
     }
 
     private fun launchPassengerStats(statistics: FrontierStatisticsEvent) {

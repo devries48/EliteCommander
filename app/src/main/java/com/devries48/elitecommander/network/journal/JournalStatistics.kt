@@ -4,6 +4,7 @@ import com.devries48.elitecommander.events.*
 import com.devries48.elitecommander.models.response.FrontierJournalBountyResponse
 import com.devries48.elitecommander.models.response.FrontierJournalRedeemVoucherResponse
 import com.devries48.elitecommander.models.response.FrontierJournalStatisticsResponse
+import com.devries48.elitecommander.models.response.FrontierMissionCompletedResponse
 import com.devries48.elitecommander.network.journal.JournalWorker.Companion.sendWorkerEvent
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
@@ -132,10 +133,21 @@ class JournalStatistics(worker: JournalWorker) {
             if (bounty.reward == null)
                 stats.bountiesClaimed += bounty.rewards?.size ?: 1
             else
-                stats.bountiesClaimed += 1
+                stats.skimmersKilled += 1
         }
 
         stats.combatBonds += rawEvents.count { it.event == JOURNAL_EVENT_COMBAT_BOND }
+
+        val assassinations = rawEvents.filter { it.event == JOURNAL_EVENT_MISSION_COMPLETED }
+        println("missions: " + assassinations.count())
+        assassinations.forEach {
+            val mission = Gson().fromJson(it.json, FrontierMissionCompletedResponse::class.java)
+            println("mission: " + mission.name)
+            if (mission.name.startsWith("MISSION_assassinate")) {
+                stats.assassinations += 1
+                stats.assassinationProfits += mission.reward
+            }
+        }
 
         stats.bountyHuntingProfit += mVoucherProfit.bounty
         stats.combatBondProfits += mVoucherProfit.combatBond
@@ -167,6 +179,7 @@ class JournalStatistics(worker: JournalWorker) {
         internal const val JOURNAL_EVENT_STATISTICS = "Statistics"
         internal const val JOURNAL_EVENT_COMBAT_BOUNTY = "Bounty"
         internal const val JOURNAL_EVENT_COMBAT_BOND = "FactionKillBond"
+        internal const val JOURNAL_EVENT_MISSION_COMPLETED = "MissionCompleted"
         internal const val JOURNAL_EVENT_REDEEM_VOUCHER = "RedeemVoucher"
 
         private data class VoucherProfit(

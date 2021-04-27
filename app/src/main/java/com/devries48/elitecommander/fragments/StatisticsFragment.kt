@@ -17,6 +17,7 @@ class StatisticsFragment : Fragment() {
     private val mViewModel: CommanderViewModel by navGraphViewModels(R.id.nav_graph)
     private lateinit var mCombatAdapter: StatisticsRecyclerAdapter
     private lateinit var mExplorationAdapter: StatisticsRecyclerAdapter
+    private lateinit var mTradingAdapter: StatisticsRecyclerAdapter
     private lateinit var mPassengerAdapter: StatisticsRecyclerAdapter
 
     private var _binding: FragmentStatisticsBinding? = null
@@ -40,6 +41,7 @@ class StatisticsFragment : Fragment() {
 
         bindCombatStats()
         bindExplorationStats()
+        bindTradingStats()
         bindPassengerStats()
     }
 
@@ -59,6 +61,15 @@ class StatisticsFragment : Fragment() {
         mExplorationAdapter = StatisticsRecyclerAdapter(list.value!!)
         binding.explorationRecyclerView.layoutManager = manager
         binding.explorationRecyclerView.adapter = mExplorationAdapter
+    }
+
+    private fun bindTradingStats() {
+        val list = mViewModel.getTradingStatistics()
+        val manager: RecyclerView.LayoutManager = LinearLayoutManager(context)
+
+        mTradingAdapter = StatisticsRecyclerAdapter(list.value!!)
+        binding.tradingRecyclerView.layoutManager = manager
+        binding.tradingRecyclerView.adapter = mTradingAdapter
     }
 
     private fun bindPassengerStats() {

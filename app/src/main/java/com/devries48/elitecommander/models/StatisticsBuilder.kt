@@ -132,7 +132,9 @@ class StatisticsBuilder {
             EXPLORATION_SYSTEMS_VISITED,
             EXPLORATION_SCANS,
             PASSENGERS_DELIVERED,
-            PASSENGERS_TYPE
+            PASSENGERS_TYPE,
+            TRADING_MARKETS,
+            TRADING_RESOURCES
         }
 
         enum class StatisticPosition {

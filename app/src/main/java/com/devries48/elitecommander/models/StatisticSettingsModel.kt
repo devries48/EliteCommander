@@ -81,4 +81,12 @@ class StatisticSettingsModel {
 
     @SerializedName("passengersDelivered")
     var passengersDelivered: Int? = null
+
+    @SerializedName("marketsTradedWith")
+    var marketsTradedWith: Int? = null
+
+    @SerializedName("blackMarketsTradedWith")
+    var blackMarketsTradedWith: Int? = null
+
+
 }
