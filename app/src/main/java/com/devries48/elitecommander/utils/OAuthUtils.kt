@@ -6,7 +6,7 @@ import android.util.Log
 import com.devries48.elitecommander.BuildConfig
 import com.devries48.elitecommander.interfaces.FrontierAuthInterface
 import com.devries48.elitecommander.models.httpRequest.FrontierAccessTokenRequestBody
-import com.devries48.elitecommander.models.response.FrontierAccessTokenResponse
+import com.devries48.elitecommander.models.response.frontier.AccessTokenResponse
 import com.devries48.elitecommander.network.RetrofitClient
 import okhttp3.Interceptor
 import okhttp3.Request
@@ -60,11 +60,11 @@ object OAuthUtils {
     }
 
     @Throws(IOException::class)
-    fun makeRefreshRequest(ctx: Context): FrontierAccessTokenResponse? {
+    fun makeRefreshRequest(ctx: Context): AccessTokenResponse? {
         val requestBody = getRefreshTokenRequestBody(ctx)
         val auth = getAuthRetrofit(ctx)
         if (auth != null) {
-            val authResponse: Call<FrontierAccessTokenResponse> =
+            val authResponse: Call<AccessTokenResponse> =
                 auth.getAccessToken(requestBody)
             return authResponse.execute().body()
         }

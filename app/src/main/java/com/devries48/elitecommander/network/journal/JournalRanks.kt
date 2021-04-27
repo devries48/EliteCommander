@@ -1,9 +1,9 @@
 package com.devries48.elitecommander.network.journal
 
 import com.devries48.elitecommander.events.FrontierRanksEvent
-import com.devries48.elitecommander.models.response.FrontierJournalRankProgressResponse
-import com.devries48.elitecommander.models.response.FrontierJournalRankReputationResponse
-import com.devries48.elitecommander.models.response.FrontierJournalRankResponse
+import com.devries48.elitecommander.models.response.frontier.JournalRankProgressResponse
+import com.devries48.elitecommander.models.response.frontier.JournalRankReputationResponse
+import com.devries48.elitecommander.models.response.frontier.JournalRankResponse
 import com.devries48.elitecommander.network.journal.JournalWorker.Companion.sendWorkerEvent
 import com.devries48.elitecommander.network.journal.JournalWorker.RawEvent
 import com.google.gson.Gson
@@ -25,7 +25,7 @@ internal class JournalRanks {
                 val rankAndProgress = getRankAndProgress(rawRank, rawProgress, rawEvents)
                 val rank = rankAndProgress.first
                 val progress = rankAndProgress.second
-                val reputation = Gson().fromJson(rawReputation.json, FrontierJournalRankReputationResponse::class.java)
+                val reputation = Gson().fromJson(rawReputation.json, JournalRankReputationResponse::class.java)
 
                 val combatRank = FrontierRanksEvent.FrontierRank(
                     rank.combat,
@@ -82,9 +82,9 @@ internal class JournalRanks {
         rawRank: RawEvent,
         rawProgress: RawEvent,
         rawEvents: List<RawEvent>
-    ): Pair<FrontierJournalRankResponse, FrontierJournalRankProgressResponse> {
-        val rank = Gson().fromJson(rawRank.json, FrontierJournalRankResponse::class.java)
-        val progress = Gson().fromJson(rawProgress.json, FrontierJournalRankProgressResponse::class.java)
+    ): Pair<JournalRankResponse, JournalRankProgressResponse> {
+        val rank = Gson().fromJson(rawRank.json, JournalRankResponse::class.java)
+        val progress = Gson().fromJson(rawProgress.json, JournalRankProgressResponse::class.java)
         val promotions = rawEvents.filter { it.event == JOURNAL_EVENT_PROMOTION }
 
         if (promotions.none())
@@ -92,7 +92,7 @@ internal class JournalRanks {
 
 
         promotions.forEach {
-            val promotion = Gson().fromJson(it.json, FrontierJournalRankProgressResponse::class.java)
+            val promotion = Gson().fromJson(it.json, JournalRankProgressResponse::class.java)
 
             if (promotion.combat > 0) {
                 rank.combat = promotion.combat

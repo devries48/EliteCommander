@@ -1,11 +1,11 @@
-package com.devries48.elitecommander.models.response
+package com.devries48.elitecommander.models.response.frontier
 
 import com.google.gson.annotations.SerializedName
 
 /**
  * Response class for journal event: 'Progress'
  */
-class FrontierJournalRankProgressResponse : FrontierJournalResponseBase() {
+class JournalRankProgressResponse : JournalResponseBase() {
     @SerializedName("Combat")
     var combat: Int = 0
 

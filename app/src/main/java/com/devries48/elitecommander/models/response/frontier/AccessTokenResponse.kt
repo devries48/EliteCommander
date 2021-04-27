@@ -1,8 +1,8 @@
-package com.devries48.elitecommander.models.response
+package com.devries48.elitecommander.models.response.frontier
 
 import com.google.gson.annotations.SerializedName
 
-class FrontierAccessTokenResponse {
+class AccessTokenResponse {
     @SerializedName("access_token")
     var accessToken: String? = null
 

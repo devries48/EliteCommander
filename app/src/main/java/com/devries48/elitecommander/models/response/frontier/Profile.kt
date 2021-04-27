@@ -1,8 +1,8 @@
-package com.devries48.elitecommander.models.response
+package com.devries48.elitecommander.models.response.frontier
 
 import com.google.gson.annotations.SerializedName
 
-class FrontierProfileResponse {
+class Profile {
     @SerializedName("commander")
     var commander: FrontierProfileCommanderResponse? = null
 

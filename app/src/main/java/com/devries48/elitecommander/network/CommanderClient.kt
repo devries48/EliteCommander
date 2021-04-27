@@ -7,7 +7,7 @@ import com.devries48.elitecommander.events.FrontierProfileEvent
 import com.devries48.elitecommander.events.FrontierRanksEvent
 import com.devries48.elitecommander.events.FrontierShip
 import com.devries48.elitecommander.interfaces.FrontierInterface
-import com.devries48.elitecommander.models.response.FrontierProfileResponse
+import com.devries48.elitecommander.models.response.frontier.Profile
 import com.devries48.elitecommander.network.journal.JournalWorker
 import com.devries48.elitecommander.utils.NamingUtils
 import com.google.gson.Gson
@@ -51,19 +51,19 @@ class CommanderClient {
             if (res.code() == 401) return
             if (res.code() != 200) throw Exception(res.code().toString())
 
-            val profileResponse: FrontierProfileResponse?
+            val profile: Profile?
             val rawResponse: JsonObject?
             val responseString: String? = res.body()?.string()
 
             rawResponse = JsonParser.parseString(responseString).asJsonObject
-            profileResponse = Gson().fromJson(
+            profile = Gson().fromJson(
                 rawResponse,
-                FrontierProfileResponse::class.java
+                Profile::class.java
             )
 
-            if (!res.isSuccessful || profileResponse == null) throw Exception("Empty profile response")
+            if (!res.isSuccessful || profile == null) throw Exception("Empty profile response")
 
-            handleProfileParsing(profileResponse)
+            handleProfileParsing(profile)
             if (rawResponse != null) handleFleetParsing(this@CommanderClient, rawResponse)
         } catch (t: Throwable) {
             handleProfileFailure(t)
@@ -97,16 +97,16 @@ class CommanderClient {
         }
     }
 
-    private fun handleProfileParsing(profileResponse: FrontierProfileResponse) {
+    private fun handleProfileParsing(profile: Profile) {
         val frontierProfileEvent: FrontierProfileEvent
-        val commanderName: String = profileResponse.commander?.name!!
-        val credits: Long = profileResponse.commander?.credits!!
-        val debt: Long = profileResponse.commander?.debt!!
-        val systemName = profileResponse.lastSystem?.name!!
-        val hull = profileResponse.ship?.health?.hull!!
-        val integrity = 1000000 - profileResponse.ship?.health?.integrity!!
+        val commanderName: String = profile.commander?.name!!
+        val credits: Long = profile.commander?.credits!!
+        val debt: Long = profile.commander?.debt!!
+        val systemName = profile.lastSystem?.name!!
+        val hull = profile.ship?.health?.hull!!
+        val integrity = 1000000 - profile.ship?.health?.integrity!!
 
-        frontierProfileEvent = profileResponse.commander?.let {
+        frontierProfileEvent = profile.commander?.let {
             FrontierProfileEvent(
                 true,
                 commanderName,

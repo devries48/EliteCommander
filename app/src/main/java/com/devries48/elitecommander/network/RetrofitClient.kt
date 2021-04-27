@@ -6,7 +6,7 @@ import com.devries48.elitecommander.events.FrontierAuthNeededEvent
 import com.devries48.elitecommander.interfaces.EdsmInterface
 import com.devries48.elitecommander.interfaces.FrontierAuthInterface
 import com.devries48.elitecommander.interfaces.FrontierInterface
-import com.devries48.elitecommander.models.response.FrontierAccessTokenResponse
+import com.devries48.elitecommander.models.response.frontier.AccessTokenResponse
 import com.devries48.elitecommander.utils.OAuthUtils
 import com.google.gson.GsonBuilder
 import okhttp3.Interceptor
@@ -62,15 +62,15 @@ open class RetrofitClient private constructor() : Serializable {
             // Check if access token expired and renew it if needed
             if (isExpired(response.code())) {
                 try {
-                    val responseBody: FrontierAccessTokenResponse? = OAuthUtils.makeRefreshRequest(ctx)
-                    if (responseBody == null) {
+                    val body: AccessTokenResponse? = OAuthUtils.makeRefreshRequest(ctx)
+                    if (body == null) {
                         EventBus.getDefault().post(FrontierAuthNeededEvent(true)) // Send event to renew login
                         return@addInterceptor response
                     }
 
                     // Retry request
-                    responseBody.accessToken?.let {
-                        responseBody.refreshToken?.let { it1 ->
+                    body.accessToken?.let {
+                        body.refreshToken?.let { it1 ->
                             OAuthUtils.storeUpdatedTokens(ctx, it, it1)
                         }
                     }

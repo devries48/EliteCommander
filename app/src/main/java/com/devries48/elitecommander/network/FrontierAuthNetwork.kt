@@ -7,7 +7,7 @@ import com.devries48.elitecommander.R
 import com.devries48.elitecommander.declarations.enqueueWrap
 import com.devries48.elitecommander.events.FrontierTokensEvent
 import com.devries48.elitecommander.models.httpRequest.FrontierAccessTokenRequestBody
-import com.devries48.elitecommander.models.response.FrontierAccessTokenResponse
+import com.devries48.elitecommander.models.response.frontier.AccessTokenResponse
 import com.devries48.elitecommander.utils.OAuthUtils
 import com.devries48.elitecommander.utils.OAuthUtils.getAuthorizationCodeRequestBody
 import org.greenrobot.eventbus.EventBus
@@ -72,7 +72,7 @@ open class FrontierAuthNetwork private constructor() : Serializable {
 
         frontierAuth?.getAccessToken(requestBody)?.enqueueWrap {
             onResponse = {
-                val body: FrontierAccessTokenResponse? = it.body()
+                val body: AccessTokenResponse? = it.body()
                 if (!it.isSuccessful || body == null)
                     onFailure?.let { it1 -> it1(Exception("Invalid response")) }
                 else {

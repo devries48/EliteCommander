@@ -1,11 +1,8 @@
-package com.devries48.elitecommander.models.response
+package com.devries48.elitecommander.models.response.frontier
 
 import com.google.gson.annotations.SerializedName
 
-data class FrontierJournalStatisticsResponse(
-    val event: String,
-    val timestamp: String,
-
+data class JournalStatisticsResponse(
     @SerializedName("Bank_Account")
     val bankAccount: BankAccount,
     @SerializedName("Combat")
@@ -34,7 +31,7 @@ data class FrontierJournalStatisticsResponse(
     val tGENCOUNTERS: TGENCOUNTERS,
     @SerializedName("Trading")
     val trading: Trading
-) : FrontierJournalResponseBase() {
+) : JournalResponseBase() {
 
     data class BankAccount(
         @SerializedName("Current_Wealth")

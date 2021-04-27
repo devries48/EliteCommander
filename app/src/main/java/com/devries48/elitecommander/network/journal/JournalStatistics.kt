@@ -1,10 +1,10 @@
 package com.devries48.elitecommander.network.journal
 
 import com.devries48.elitecommander.events.*
-import com.devries48.elitecommander.models.response.FrontierJournalBountyResponse
-import com.devries48.elitecommander.models.response.FrontierJournalRedeemVoucherResponse
-import com.devries48.elitecommander.models.response.FrontierJournalStatisticsResponse
-import com.devries48.elitecommander.models.response.FrontierMissionCompletedResponse
+import com.devries48.elitecommander.models.response.frontier.JournalBountyResponse
+import com.devries48.elitecommander.models.response.frontier.JournalRedeemVoucherResponse
+import com.devries48.elitecommander.models.response.frontier.JournalStatisticsResponse
+import com.devries48.elitecommander.models.response.frontier.MissionCompletedResponse
 import com.devries48.elitecommander.network.journal.JournalWorker.Companion.sendWorkerEvent
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +22,7 @@ class JournalStatistics(worker: JournalWorker) {
                 val rawStatistics = rawEvents.firstOrNull { it.event == JOURNAL_EVENT_STATISTICS }
                     ?: throw error("No statistics event found!")
 
-                val statistics = Gson().fromJson(rawStatistics.json, FrontierJournalStatisticsResponse::class.java)
+                val statistics = Gson().fromJson(rawStatistics.json, JournalStatisticsResponse::class.java)
                 setVoucherProfits(rawEvents)
 
                 sendWorkerEvent(
@@ -98,7 +98,7 @@ class JournalStatistics(worker: JournalWorker) {
 
         val vouchers = rawEvents.filter { it.event == JOURNAL_EVENT_REDEEM_VOUCHER }
         vouchers.forEach {
-            val voucher = Gson().fromJson(it.json, FrontierJournalRedeemVoucherResponse::class.java)
+            val voucher = Gson().fromJson(it.json, JournalRedeemVoucherResponse::class.java)
             val amount = voucher.amount ?: voucher.factions?.map { a -> a.amount }?.sum()!!
 
             when (voucher.type.toLowerCase(Locale.ROOT)) {
@@ -113,7 +113,7 @@ class JournalStatistics(worker: JournalWorker) {
     }
 
     private fun getFrontierCombat(
-        statistics: FrontierJournalStatisticsResponse,
+        statistics: JournalStatisticsResponse,
         rawEvents: List<JournalWorker.RawEvent>
     ): FrontierCombat {
         val stats = FrontierCombat(
@@ -129,7 +129,7 @@ class JournalStatistics(worker: JournalWorker) {
 
         val bounties = rawEvents.filter { it.event == JOURNAL_EVENT_COMBAT_BOUNTY }
         bounties.forEach {
-            val bounty = Gson().fromJson(it.json, FrontierJournalBountyResponse::class.java)
+            val bounty = Gson().fromJson(it.json, JournalBountyResponse::class.java)
             if (bounty.reward == null)
                 stats.bountiesClaimed += bounty.rewards?.size ?: 1
             else
@@ -141,7 +141,7 @@ class JournalStatistics(worker: JournalWorker) {
         val assassinations = rawEvents.filter { it.event == JOURNAL_EVENT_MISSION_COMPLETED }
         println("missions: " + assassinations.count())
         assassinations.forEach {
-            val mission = Gson().fromJson(it.json, FrontierMissionCompletedResponse::class.java)
+            val mission = Gson().fromJson(it.json, MissionCompletedResponse::class.java)
             println("mission: " + mission.name)
             if (mission.name.startsWith("MISSION_assassinate")) {
                 stats.assassinations += 1
@@ -156,7 +156,7 @@ class JournalStatistics(worker: JournalWorker) {
     }
 
     private fun getFrontierExploration(
-        statistics: FrontierJournalStatisticsResponse,
+        statistics: JournalStatisticsResponse,
         rawEvents: List<JournalWorker.RawEvent>
     ): FrontierExploration {
         val stats = FrontierExploration(
@@ -179,7 +179,7 @@ class JournalStatistics(worker: JournalWorker) {
         internal const val JOURNAL_EVENT_STATISTICS = "Statistics"
         internal const val JOURNAL_EVENT_COMBAT_BOUNTY = "Bounty"
         internal const val JOURNAL_EVENT_COMBAT_BOND = "FactionKillBond"
-        internal const val JOURNAL_EVENT_MISSION_COMPLETED = "MissionCompleted"
+        internal const val JOURNAL_EVENT_MISSION_COMPLETED = "MissionCompletedResponse"
         internal const val JOURNAL_EVENT_REDEEM_VOUCHER = "RedeemVoucher"
 
         private data class VoucherProfit(

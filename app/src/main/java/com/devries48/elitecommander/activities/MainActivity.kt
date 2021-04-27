@@ -63,7 +63,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        println("WEB --- onActivityResult")
         mIsLoggedIn = true
     }
 
@@ -82,7 +81,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startEventBus() {
-        synchronized(this){
+        synchronized(this) {
             if (!EventBus.getDefault().isRegistered(this))
                 EventBus.getDefault().register(this)
         }
@@ -128,9 +127,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
-    fun onFrontierAuthNeededEvent(frontierAuthNeededEvent: FrontierAuthNeededEvent) {
-        println("onFrontierAuthNeeded")
-        if (mIsLoggedIn != false) {
+    fun onFrontierAuthNeededEvent(auth: FrontierAuthNeededEvent) {
+        if (auth.needed && mIsLoggedIn != false) {
             mIsLoggedIn = false
             storeUpdatedTokens(this, "", "")
 

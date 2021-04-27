@@ -706,7 +706,7 @@ class CommanderViewModel(client: CommanderClient?) : ViewModel() {
         mBuilderTrading.addStatistic(
             TRADING_RESOURCES,
             LEFT,
-            R.string.recourcesTraded,
+            R.string.resourcesTraded,
             statistics.trading.resourcesTraded,
             null,
             INTEGER,

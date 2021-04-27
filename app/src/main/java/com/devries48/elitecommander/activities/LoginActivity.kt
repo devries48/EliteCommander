@@ -22,6 +22,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
+
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var mBinding: ActivityLoginBinding
@@ -32,6 +33,7 @@ class LoginActivity : AppCompatActivity() {
 
         mBinding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
+        overridePendingTransition(R.anim.slide_up, R.anim.slide_down)
 
         mBinding.frontierLoginButton.setOnClickListener { launchAuthCodeStep() }
 
@@ -61,6 +63,11 @@ class LoginActivity : AppCompatActivity() {
         // use cookies to remember a logged in status
         CookieManager.getInstance().flush()
         mBinding.webView.settings.javaScriptEnabled = true
+    }
+
+    override fun finish() {
+        super.finish()
+        overridePendingTransition(R.anim.slide_down_reverse, R.anim.slide_up_reverse)
     }
 
     private fun switchUi(showWebView: Boolean, isRedirect: Boolean = false) {
