@@ -50,7 +50,6 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                 getJournal(date) { c, r ->
                     code = c
                     response = r?.string()
-                    // capture response here: println(response)
                 }
                 if (code == 401) return@launch
                 if (code == 200)

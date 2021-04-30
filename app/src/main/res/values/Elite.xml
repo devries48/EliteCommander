@@ -61,7 +61,7 @@
         <item name="cardBackgroundColor">@color/item_background</item>
     </style>
 
-    <style name="BusyRankStyle">
+    <style name="BusyStyle">
         <item name="colorAccent">@color/elite_orange</item>
     </style>
 </resources>

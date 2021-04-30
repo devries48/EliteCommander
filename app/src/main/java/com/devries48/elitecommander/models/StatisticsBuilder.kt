@@ -26,13 +26,15 @@ class StatisticsBuilder {
         color: StatisticColor = StatisticColor.DEFAULT,
     ) {
         synchronized(mStatisticsList) {
-            var stat: StatisticModel? = mStatisticsList.find { it.type == type }
+            println("Begin $type => $pos")
+            var stat: StatisticModel? = mStatisticsList.firstOrNull { it.type == type }
 
             if (stat == null) {
                 stat = StatisticModel()
                 stat.type = type
                 mStatisticsList.add(stat)
             }
+
             val formattedValue = formatValue(value, format)
             val formattedDelta: String? =
                 if (oldValue != null) {
@@ -62,6 +64,14 @@ class StatisticsBuilder {
                     stat.rightDelta = formattedDelta
                 }
             }
+
+            println("End $type => $pos")
+        }
+    }
+
+    fun clear() {
+        synchronized(mStatisticsList) {
+            mStatisticsList.clear()
         }
     }
 

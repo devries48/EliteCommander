@@ -89,18 +89,26 @@ class StatisticsRecyclerAdapter(var data: List<StatisticModel>?) :
         delta: String?
     ) {
         val ctx = nameTextView.context
+        var tTitle = ""
+        var tValue = ""
+        var tDelta = ""
 
         if (titleResId != 0) {
-            nameTextView.text = titleResId.let { ctx.getString(it) }
+            tTitle = titleResId.let { ctx.getString(it) }
+
             if (value?.isNotEmpty() == true) {
-                valueTextView.text = value
+                tValue = value
                 valueTextView.setTextAppearance(getItemStyle(color))
             }
             if (delta?.isNotEmpty() == true) {
-                deltaTextView.text = delta
+                tDelta = delta
                 deltaTextView.setTextAppearance(getDeltaStyle(delta))
             }
         }
+
+        nameTextView.text = tTitle
+        valueTextView.text = tValue
+        deltaTextView.text = tDelta
     }
 
     private fun getDeltaStyle(leftDelta: String): Int {

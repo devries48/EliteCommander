@@ -11,10 +11,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.devries48.elitecommander.R
 import com.devries48.elitecommander.adapters.StatisticsRecyclerAdapter
 import com.devries48.elitecommander.databinding.FragmentCommanderBinding
+import com.devries48.elitecommander.viewModels.MainViewModel
 
 class CommanderFragment : Fragment() {
 
-    private val mViewModel: CommanderViewModel by navGraphViewModels(R.id.nav_graph)
+    private val mViewModel: MainViewModel by navGraphViewModels(R.id.nav_graph)
     private lateinit var mAdapter: StatisticsRecyclerAdapter
 
     private var _binding: FragmentCommanderBinding? = null

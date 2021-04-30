@@ -14,7 +14,7 @@ import java.util.*
 class JournalStatistics(worker: JournalWorker) {
 
     private val mWorker = worker
-    private var mVoucherProfit = VoucherProfit()
+    private lateinit var mVoucherProfit: VoucherProfit
 
     internal suspend fun raiseFrontierStatisticsEvent(rawEvents: List<JournalWorker.RawEvent>) {
         withContext(Dispatchers.IO) {
@@ -23,6 +23,7 @@ class JournalStatistics(worker: JournalWorker) {
                     ?: throw error("No statistics event found!")
 
                 val statistics = Gson().fromJson(rawStatistics.json, JournalStatisticsResponse::class.java)
+                mVoucherProfit = VoucherProfit()
                 setVoucherProfits(rawEvents)
 
                 sendWorkerEvent(
@@ -39,11 +40,8 @@ class JournalStatistics(worker: JournalWorker) {
                             statistics.bankAccount.spentOnShips
                         ),
                         getFrontierCombat(statistics, rawEvents),
-                        getFrontierExploration(statistics, rawEvents), FrontierMining(
-                            statistics.mining.materialsCollected,
-                            statistics.mining.miningProfits,
-                            statistics.mining.quantityMined
-                        ),
+                        getFrontierExploration(statistics, rawEvents),
+                        getFrontierMining(statistics, rawEvents),
                         FrontierTrading(
                             statistics.trading.averageProfit,
                             statistics.trading.highestSingleTransaction,
@@ -175,12 +173,29 @@ class JournalStatistics(worker: JournalWorker) {
         return stats
     }
 
+    private fun getFrontierMining(
+        statistics: JournalStatisticsResponse,
+        rawEvents: List<JournalWorker.RawEvent>
+    ): FrontierMining {
+        val stats = FrontierMining(
+            statistics.mining.materialsCollected,
+            statistics.mining.miningProfits,
+            statistics.mining.quantityMined
+        )
+
+        stats.quantityMined += rawEvents.count { it.event == JOURNAL_EVENT_MINING_REFINED }
+
+        return stats
+    }
+
     companion object {
         internal const val JOURNAL_EVENT_STATISTICS = "Statistics"
         internal const val JOURNAL_EVENT_COMBAT_BOUNTY = "Bounty"
         internal const val JOURNAL_EVENT_COMBAT_BOND = "FactionKillBond"
         internal const val JOURNAL_EVENT_MISSION_COMPLETED = "MissionCompletedResponse"
         internal const val JOURNAL_EVENT_REDEEM_VOUCHER = "RedeemVoucher"
+        internal const val JOURNAL_EVENT_MINING_REFINED = "MiningRefined"
+
 
         private data class VoucherProfit(
             var combatBond: Long = 0,

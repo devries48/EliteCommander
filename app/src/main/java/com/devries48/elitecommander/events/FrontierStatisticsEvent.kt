@@ -55,7 +55,7 @@ data class FrontierExploration(
 data class FrontierMining(
     val materialsCollected: Int,
     val miningProfits: Long,
-    val quantityMined: Int
+    var quantityMined: Int
 )
 
 data class FrontierTrading(

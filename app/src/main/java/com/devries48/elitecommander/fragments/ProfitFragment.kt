@@ -13,10 +13,11 @@ import com.devries48.elitecommander.R
 import com.devries48.elitecommander.adapters.ProfitsRecyclerAdapter
 import com.devries48.elitecommander.adapters.StatisticsRecyclerAdapter
 import com.devries48.elitecommander.databinding.FragmentProfitBinding
+import com.devries48.elitecommander.viewModels.MainViewModel
 
 class ProfitFragment : Fragment() {
 
-    private val mViewModel: CommanderViewModel by navGraphViewModels(R.id.nav_graph)
+    private val mViewModel: MainViewModel by navGraphViewModels(R.id.nav_graph)
     private lateinit var mStatisticAdapter: StatisticsRecyclerAdapter
     private lateinit var mProfitAdapter: ProfitsRecyclerAdapter
 
@@ -45,6 +46,10 @@ class ProfitFragment : Fragment() {
 
     private fun bindProfitList() {
         val list = mViewModel.getProfitStatistics()
+        if (list.value == null){
+            println("LOG: ProfitFragment.bindProfitList is null!")
+            return
+        }
         val statisticLayoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
 
         mStatisticAdapter = StatisticsRecyclerAdapter(list.value!!)

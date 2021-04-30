@@ -13,12 +13,12 @@ import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
+import okhttp3.logging.HttpLoggingInterceptor
 import org.greenrobot.eventbus.EventBus
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.Serializable
 import java.util.concurrent.TimeUnit
-
 
 // Singleton safe from serialization/reflection...
 // From https://medium.com/exploring-code/how-to-make-the-perfect-singleton-de6b951dfdb0
@@ -54,13 +54,17 @@ open class RetrofitClient private constructor() : Serializable {
 
         val httpClient = commonOkHttpClientBuilder
 
+        val logging = HttpLoggingInterceptor()
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY)
+        httpClient.addInterceptor(logging)
+
         // Add interceptor for tokens in response
         httpClient.addInterceptor { chain: Interceptor.Chain ->
             var request: Request = OAuthUtils.getRequestWithFrontierAuthorization(ctx, chain)
             var response = chain.proceed(request)
 
             // Check if access token expired and renew it if needed
-            if (isExpired(response.code())) {
+            if (isExpired(response.code)) {
                 try {
                     val body: AccessTokenResponse? = OAuthUtils.makeRefreshRequest(ctx)
                     if (body == null) {
@@ -104,7 +108,7 @@ open class RetrofitClient private constructor() : Serializable {
     }
 
     private fun isFailed(response: Response): Boolean {
-        return !response.isSuccessful || response.code() == 403 || response.code() == 422 || response.code() == 401
+        return !response.isSuccessful || response.code == 403 || response.code == 422 || response.code == 401
     }
 
     private val retrofitInstance: Retrofit.Builder?

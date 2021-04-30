@@ -8,7 +8,7 @@
         <import type="android.view.View"/>
         <variable
             name="viewModel"
-            type="com.devries48.elitecommander.fragments.CommanderViewModel" />
+            type="com.devries48.elitecommander.viewModels.MainViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -72,8 +72,8 @@
                     android:id="@+id/cmdrBusyBar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:theme="@style/BusyRankStyle"
-                    android:visibility="@{viewModel.isCmdrBusy ? View.VISIBLE : View.GONE}"
+                    android:theme="@style/BusyStyle"
+                    android:visibility="@{viewModel.isProfileBusy ? View.VISIBLE : View.GONE}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
@@ -166,7 +166,7 @@
                     android:id="@+id/playerRankBusyBar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:theme="@style/BusyRankStyle"
+                    android:theme="@style/BusyStyle"
                     android:visibility="@{viewModel.isRanksBusy ? View.VISIBLE : View.GONE}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
@@ -233,7 +233,7 @@
                     android:id="@+id/factionRankBusyBar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:theme="@style/BusyRankStyle"
+                    android:theme="@style/BusyStyle"
                     android:visibility="@{viewModel.isRanksBusy ? View.VISIBLE : View.GONE}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"

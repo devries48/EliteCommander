@@ -14,9 +14,9 @@ import com.devries48.elitecommander.R
 import com.devries48.elitecommander.databinding.ActivityMainBinding
 import com.devries48.elitecommander.events.AlertEvent
 import com.devries48.elitecommander.events.FrontierAuthNeededEvent
-import com.devries48.elitecommander.fragments.CommanderViewModel
 import com.devries48.elitecommander.network.CommanderClient
 import com.devries48.elitecommander.utils.OAuthUtils.storeUpdatedTokens
+import com.devries48.elitecommander.viewModels.MainViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -26,11 +26,11 @@ import kotlin.properties.Delegates
 class MainActivity : AppCompatActivity() {
 
     private var mCurrentDestinationId: Int = 0
-    private lateinit var binding: ActivityMainBinding
+    private lateinit var mBinding: ActivityMainBinding
     private lateinit var mCommanderClient: CommanderClient
 
-    private var mCommanderViewModel: CommanderViewModel? = null
     private val mNavController by lazy { findNavController() }
+    private var mMainViewModel: MainViewModel? = null
     private var mAlertList = ArrayList<@StringRes Int>()
     private var mAlertDialog: androidx.appcompat.app.AlertDialog? = null
 
@@ -45,10 +45,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        mBinding = ActivityMainBinding.inflate(layoutInflater)
+
+        setContentView(mBinding.root)
         setupNavigation()
         setupViewModel()
+        setupRefresh()
     }
 
     public override fun onStart() {
@@ -100,10 +102,10 @@ class MainActivity : AppCompatActivity() {
 
             val viewModelProvider = ViewModelProvider(
                 mNavController.getViewModelStoreOwner(R.id.nav_graph),
-                CommanderViewModel.Factory(mCommanderClient)
+                MainViewModel.Factory(mCommanderClient)
             )
-            mCommanderViewModel = viewModelProvider.get(CommanderViewModel::class.java)
-            mCommanderViewModel!!.load()
+            mMainViewModel = viewModelProvider.get(MainViewModel::class.java)
+            mMainViewModel!!.load()
         } catch (e: IllegalArgumentException) {
             e.printStackTrace()
         }
@@ -116,6 +118,18 @@ class MainActivity : AppCompatActivity() {
             if (destination.id == R.id.mainFragment && mCurrentDestinationId != destination.id) {
                 mCurrentDestinationId = destination.id
                 navController.navigate(destination.id)
+            }
+        }
+    }
+
+    private fun setupRefresh() {
+        val swipeRefresh = mBinding.swipe
+        swipeRefresh.setOnRefreshListener {
+            if (mMainViewModel != null) {
+                mMainViewModel!!.load()
+                swipeRefresh.post {
+                    swipeRefresh.isRefreshing = false
+                }
             }
         }
     }
