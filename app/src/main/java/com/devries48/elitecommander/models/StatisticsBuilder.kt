@@ -26,7 +26,6 @@ class StatisticsBuilder {
         color: StatisticColor = StatisticColor.DEFAULT,
     ) {
         synchronized(mStatisticsList) {
-            println("Begin $type => $pos")
             var stat: StatisticModel? = mStatisticsList.firstOrNull { it.type == type }
 
             if (stat == null) {
@@ -64,14 +63,6 @@ class StatisticsBuilder {
                     stat.rightDelta = formattedDelta
                 }
             }
-
-            println("End $type => $pos")
-        }
-    }
-
-    fun clear() {
-        synchronized(mStatisticsList) {
-            mStatisticsList.clear()
         }
     }
 

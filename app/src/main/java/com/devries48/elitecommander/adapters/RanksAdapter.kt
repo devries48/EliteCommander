@@ -5,7 +5,6 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.text.TextUtils
 import android.view.View
-import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.ColorInt
@@ -64,20 +63,6 @@ object RanksAdapter {
                 view.visibility = View.INVISIBLE
             else if (!model.isFactionRank && isReputationView)
                 view.visibility = View.GONE
-        }
-    }
-
-    /**
-     * Binding Adapter to enlarge the image for faction ranks.
-     */
-    @BindingAdapter("android:rankIsFaction")
-    @JvmStatic
-    fun rankIsFaction(view: ImageView, isFaction: Boolean) {
-        if (isFaction) {
-            val layoutParams = view.layoutParams
-            layoutParams.height = 110
-            layoutParams.width = 110
-            view.layoutParams = layoutParams
         }
     }
 

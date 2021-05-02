@@ -3,6 +3,7 @@
     <dimen name="margin_medium">8dp</dimen>
     <dimen name="margin_large">16dp</dimen>
     <dimen name="margin_small">4dp</dimen>
+    <dimen name="margin_tiny">2dp</dimen>
 
     <dimen name="img_rank_player_size">70dp</dimen>
 

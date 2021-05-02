@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:rankTextColor="@{rankModel}"
             android:text="@{rankModel.titleResId}"
-            android:textAppearance="@style/eliteStyle.Rank"
+            android:textAppearance="@style/eliteStyle.SmallText"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -69,7 +69,6 @@
             android:layout_height="@dimen/img_rank_player_size"
             android:adjustViewBounds="true"
             android:contentDescription="@string/rank"
-            android:rankIsFaction="@{rankModel.isFactionRank}"
             app:imageResource="@{rankModel.logoResId}"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"

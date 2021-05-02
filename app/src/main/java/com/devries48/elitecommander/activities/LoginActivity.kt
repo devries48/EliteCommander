@@ -36,7 +36,6 @@ class LoginActivity : AppCompatActivity() {
         overridePendingTransition(R.anim.slide_up, R.anim.slide_down)
 
         mBinding.frontierLoginButton.setOnClickListener { launchAuthCodeStep() }
-
         mBinding.webView.webViewClient = object : WebViewClient() {
             var authComplete = false
 

@@ -38,8 +38,9 @@ class MainActivity : AppCompatActivity() {
         if (newValue == true) {
             startEventBus()
             setupViewModel()
-        } else
+        } else {
             stopEventBus()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -124,6 +125,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupRefresh() {
         val swipeRefresh = mBinding.swipe
+        swipeRefresh.setDistanceToTriggerSync(100)
         swipeRefresh.setOnRefreshListener {
             if (mMainViewModel != null) {
                 mMainViewModel!!.load()
@@ -140,7 +142,7 @@ class MainActivity : AppCompatActivity() {
         return navHostFragment.navController
     }
 
-    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    @Subscribe(threadMode = ThreadMode.ASYNC)
     fun onFrontierAuthNeededEvent(auth: FrontierAuthNeededEvent) {
         if (auth.needed && mIsLoggedIn != false) {
             mIsLoggedIn = false

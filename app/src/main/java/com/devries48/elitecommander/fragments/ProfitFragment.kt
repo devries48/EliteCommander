@@ -46,7 +46,7 @@ class ProfitFragment : Fragment() {
 
     private fun bindProfitList() {
         val list = mViewModel.getProfitStatistics()
-        if (list.value == null){
+        if (list.value == null) {
             println("LOG: ProfitFragment.bindProfitList is null!")
             return
         }

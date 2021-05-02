@@ -30,9 +30,9 @@ class MainViewModel(client: CommanderClient?) : ViewModel() {
     private val mName = MutableLiveData("")
     private val mNotoriety = MutableLiveData(0)
 
-    private val mIsProfileBusy = MutableLiveData<Boolean>().default(true)
-    private val mIsRanksBusy = MutableLiveData<Boolean>().default(true)
-    private val mIsStatsBusy = MutableLiveData<Boolean>().default(true)
+    private val mIsProfileBusy = MutableLiveData<Boolean>().default(false)
+    private val mIsRanksBusy = MutableLiveData<Boolean>().default(false)
+    private val mIsStatsBusy = MutableLiveData<Boolean>().default(false)
 
     private val mCombatRank = MutableLiveData(RankModel(RankModel.RankType.COMBAT, FrontierRanksEvent.FrontierRank()))
     private val mTradeRank = MutableLiveData(RankModel(RankModel.RankType.TRADING, FrontierRanksEvent.FrontierRank()))
@@ -85,12 +85,8 @@ class MainViewModel(client: CommanderClient?) : ViewModel() {
     }
 
     fun load() {
-        if (mIsProfileBusy.value == true || mIsStatsBusy.value == true || mIsRanksBusy.value == true)
-            return
-
-        mIsProfileBusy.postValue(true)
-        mIsRanksBusy.postValue(true)
-        mIsStatsBusy.postValue(true)
+        println("VIEWMODEL.LOAD")
+        setAllBusyIndicators(true)
 
         mCommanderApi?.loadProfile()
         mCommanderApi?.loadCurrentJournal()
@@ -217,11 +213,14 @@ class MainViewModel(client: CommanderClient?) : ViewModel() {
     }
 
     private fun sendAlert(@StringRes message: Int) {
-        mIsProfileBusy.postValue(false)
-        mIsRanksBusy.postValue(false)
-        mIsStatsBusy.postValue(false)
-
+        setAllBusyIndicators(false)
         EventBus.getDefault().post(AlertEvent(R.string.download_error, message))
+    }
+
+    private fun setAllBusyIndicators(switchOn: Boolean) {
+        mIsProfileBusy.postValue(switchOn)
+        mIsRanksBusy.postValue(switchOn)
+        mIsStatsBusy.postValue(switchOn)
     }
 
     private fun launchPlayerStats(statistics: FrontierStatisticsEvent) {
