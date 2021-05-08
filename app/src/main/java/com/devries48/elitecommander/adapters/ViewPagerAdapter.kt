@@ -9,7 +9,7 @@ class ViewPagerAdapter(list: ArrayList<Fragment>, fm: FragmentManager, lifecycle
     FragmentStateAdapter(fm, lifecycle) {
 
     private var mFragmentManager: FragmentManager? = null
-    private val mFragmentList = list
+    private val mFragmentList = list.prepareForTwoWayPaging()
 
     init {
         mFragmentManager = fm
@@ -27,10 +27,12 @@ class ViewPagerAdapter(list: ArrayList<Fragment>, fm: FragmentManager, lifecycle
         return mFragmentList[position].hashCode().toLong()
     }
 
-    fun removeRedirectPage(position: Int) {
-        mFragmentManager?.beginTransaction()?.remove(mFragmentList[position])?.commit()
-        mFragmentList.removeAt(position)
-        notifyItemRangeRemoved(position, itemCount)
-        notifyDataSetChanged()
+    private fun <T> List<T>.prepareForTwoWayPaging(): List<T> {
+        val first = first()
+        val last = last()
+        return toMutableList().apply {
+            add(0, last)
+            add(first)
+        }
     }
 }
