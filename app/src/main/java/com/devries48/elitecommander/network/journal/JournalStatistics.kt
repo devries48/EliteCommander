@@ -99,7 +99,7 @@ class JournalStatistics(worker: JournalWorker) {
             val voucher = Gson().fromJson(it.json, JournalRedeemVoucherResponse::class.java)
             val amount = voucher.amount ?: voucher.factions?.map { a -> a.amount }?.sum()!!
 
-            when (voucher.type.toLowerCase(Locale.ROOT)) {
+            when (voucher.type.lowercase(Locale.ROOT)) {
                 "bounty" -> mVoucherProfit.bounty += amount
                 "combatbond" -> mVoucherProfit.combatBond += amount
                 "trade" -> mVoucherProfit.trade += amount

@@ -37,10 +37,6 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="eliteStyle.Rank">
-        <item name="android:textSize">14sp</item>
-    </style>
-
     <style name="eliteStyle.BodyDiscovery">
         <item name="android:textSize">14sp</item>
     </style>

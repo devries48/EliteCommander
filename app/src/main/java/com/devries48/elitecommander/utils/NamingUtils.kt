@@ -141,7 +141,7 @@ object NamingUtils {
     /* List of number aliases for star types received from Frontier.
     * Returns the corresponding value of the requested star type. */
     fun getStarTypeAlias(starType: String): Int {
-        return when (starType.toLowerCase(Locale.ROOT)) {
+        return when (starType.lowercase(Locale.ROOT)) {
             "o" -> 1
             "b" -> 2
             "b_bluewhitesupergiant" -> 201
@@ -217,7 +217,7 @@ object NamingUtils {
     /* List of number aliases for planet types received from Frontier.
     * Returns the corresponding value of the requested star type. */
     fun getPlanetBodyAlias(planetBodyType: String): Int {
-        return when (planetBodyType.toLowerCase(Locale.ROOT)) {
+        return when (planetBodyType.lowercase(Locale.ROOT)) {
             "metal-rich body", "metal rich body" -> 1
             "high metal content body", "high metal content world" -> 2
             "rocky body" -> 11

@@ -94,32 +94,32 @@ internal class JournalRanks {
         promotions.forEach {
             val promotion = Gson().fromJson(it.json, JournalRankProgressResponse::class.java)
 
-            if (promotion.combat > 0) {
+            if (promotion.combat > 0 && rank.combat != promotion.combat) {
                 rank.combat = promotion.combat
                 progress.combat = 0
             }
 
-            if (promotion.cqc > 0) {
+            if (promotion.cqc > 0 && rank.cqc != promotion.cqc) {
                 rank.cqc = promotion.cqc
                 progress.cqc = 0
             }
 
-            if (promotion.empire > 0) {
+            if (promotion.empire > 0 && rank.empire != promotion.empire) {
                 rank.empire = promotion.empire
                 progress.empire = 0
             }
 
-            if (promotion.explore > 0) {
+            if (promotion.explore > 0 && rank.explore != promotion.explore) {
                 rank.explore = promotion.explore
                 progress.explore = 0
             }
 
-            if (promotion.federation > 0) {
+            if (promotion.federation > 0 && rank.federation != promotion.federation) {
                 rank.federation = promotion.federation
                 progress.federation = 0
             }
 
-            if (promotion.trade > 0) {
+            if (promotion.trade > 0 && rank.trade != promotion.trade) {
                 rank.trade = promotion.trade
                 progress.trade = 0
             }

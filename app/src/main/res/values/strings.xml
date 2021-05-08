@@ -16,7 +16,6 @@
     <string name="login_dialog_error_title">Frontier login error</string>
     <string name="login_dialog_error_text">Error logging in to Frontier, please try again.</string>
     <string name="login_dialog_text">connect to your Frontier account in the browser that will be shown.</string>
-    <string name="login_redirect">Redirecting from Frontier website…</string>
     <string name="frontier_login">FRONTIER LOGIN</string>
 
     <!--FrontierRanksEvent-->

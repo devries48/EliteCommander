@@ -124,8 +124,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupRefresh() {
-        val swipeRefresh = mBinding.swipe
-        swipeRefresh.setDistanceToTriggerSync(100)
+        val swipeRefresh = mBinding.swipeLayout
+        swipeRefresh.setDistanceToTriggerSync(200)
         swipeRefresh.setOnRefreshListener {
             if (mMainViewModel != null) {
                 mMainViewModel!!.load()

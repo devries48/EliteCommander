@@ -1,6 +1,5 @@
-package com.devries48.elitecommander.models.response
+package com.devries48.elitecommander.models.response.frontier
 
-import com.devries48.elitecommander.models.response.frontier.JournalResponseBase
 import com.google.gson.annotations.SerializedName
 
 data class JournalMultiSellData(

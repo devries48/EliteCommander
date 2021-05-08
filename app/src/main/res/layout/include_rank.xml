@@ -23,6 +23,7 @@
             android:rankTextColor="@{rankModel}"
             android:text="@{rankModel.titleResId}"
             android:textAppearance="@style/eliteStyle.SmallText"
+            android:includeFontPadding="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -35,6 +36,7 @@
             android:rankTextColor="@{rankModel}"
             android:text="@string/rep"
             android:textAppearance="@style/eliteStyle.SmallText"
+            android:includeFontPadding="false"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/titleTextView" />
 
@@ -58,8 +60,8 @@
             android:rankAutoHide="@{rankModel}"
             android:rankTextColor="@{rankModel}"
             android:text="@{@string/format_percentage(rankModel.rank.reputation)}"
-            android:textStyle="bold"
             android:textAppearance="@style/eliteStyle.SmallText"
+            android:includeFontPadding="false"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@+id/repText" />
 
@@ -95,7 +97,7 @@
             android:rankTextColor="@{rankModel}"
             android:text="@{@string/format_percentage(rankModel.rank.progress)}"
             android:textAppearance="@style/eliteStyle.SmallText"
-            android:textStyle="bold"
+            android:includeFontPadding="false"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/itemImageView" />
 
@@ -105,11 +107,12 @@
             android:layout_height="wrap_content"
             android:rankTextColor="@{rankModel}"
             android:text="@{rankModel.name}"
-            android:textAppearance="@style/eliteStyle.Rank"
+            android:includeFontPadding="false"
             android:ellipsize="marquee"
             android:marqueeRepeatLimit="marquee_forever"
             android:scrollHorizontally="true"
             android:singleLine="true"
+            android:textAppearance="@style/eliteStyle.SmallText"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/progressTextView" />
