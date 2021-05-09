@@ -21,4 +21,9 @@
         android:name="com.devries48.elitecommander.activities.LoginActivity"
         android:label="activity_login"
         tools:layout="@layout/activity_login" />
+    <activity
+        android:id="@+id/toolsActivity"
+        android:name="com.devries48.elitecommander.activities.SearchActivity"
+        android:label="activity_tools"
+        tools:layout="@layout/activity_search" />
 </navigation>

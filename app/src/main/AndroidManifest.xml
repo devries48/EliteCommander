@@ -13,7 +13,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.EliteCommander">
-
+        <activity android:name=".activities.SearchActivity"></activity>
         <activity
             android:name=".activities.LoginActivity"
             android:label="@string/app_name"

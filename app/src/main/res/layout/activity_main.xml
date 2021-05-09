@@ -6,10 +6,29 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/fragmentAppBar"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@null"
-        app:elevation="0dp" />
+        app:elevation="2dp"
+        app:theme="@style/ThemeOverlay.AppCompat.ActionBar" >
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme"
+            app:menu="@menu/main_menu">
+            <TextView
+                android:id="@+id/profitTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/app_name"
+                android:textAppearance="@style/eliteStyle.Title" />
+
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <com.devries48.elitecommander.declarations.CustomSwipeToRefresh
         android:id="@+id/swipeLayout"

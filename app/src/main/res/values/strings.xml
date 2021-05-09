@@ -241,4 +241,6 @@
     <string name="resourcesTraded">Resources traded</string>
     <string name="smuggled">Smuggled</string>
     <string name="tradingAndSmuggling"><![CDATA[Trading & Smuggling]]></string>
+    <string name="search">Search</string>
+    <string name="content_description_search">Switch to search-mode</string>
 </resources>
