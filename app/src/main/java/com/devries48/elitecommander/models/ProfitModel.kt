@@ -50,7 +50,7 @@ class ProfitModel(profitType: ProfitType, profitAmount: Long) {
             ProfitTypeModel(
                 ProfitType.COMBAT,
                 R.string.combat,
-                ContextCompat.getColor(ctx, R.color.elite_combat),
+                ContextCompat.getColor(ctx, R.color.rank_combat),
                 R.drawable.ic_dot_combat
             )
         )
@@ -58,7 +58,7 @@ class ProfitModel(profitType: ProfitType, profitAmount: Long) {
             ProfitTypeModel(
                 ProfitType.EXPLORATION,
                 R.string.exploration,
-                ContextCompat.getColor(ctx, R.color.elite_exploration),
+                ContextCompat.getColor(ctx, R.color.rank_exploration),
                 R.drawable.ic_dot_exploration
             )
         )
@@ -66,7 +66,7 @@ class ProfitModel(profitType: ProfitType, profitAmount: Long) {
             ProfitTypeModel(
                 ProfitType.TRADING,
                 R.string.trading,
-                ContextCompat.getColor(ctx, R.color.elite_trading),
+                ContextCompat.getColor(ctx, R.color.rank_trading),
                 R.drawable.ic_dot_trading
             )
         )
@@ -74,7 +74,7 @@ class ProfitModel(profitType: ProfitType, profitAmount: Long) {
             ProfitTypeModel(
                 ProfitType.MINING,
                 R.string.mining,
-                ContextCompat.getColor(ctx, R.color.elite_mining),
+                ContextCompat.getColor(ctx, R.color.rank_mining),
                 R.drawable.ic_dot_mining
             )
         )
@@ -82,7 +82,7 @@ class ProfitModel(profitType: ProfitType, profitAmount: Long) {
             ProfitTypeModel(
                 ProfitType.SMUGGLING,
                 R.string.smuggling,
-                ContextCompat.getColor(ctx, R.color.elite_yellow),
+                ContextCompat.getColor(ctx, R.color.yellow),
                 R.drawable.ic_dot_smuggling
             )
         )
@@ -90,7 +90,7 @@ class ProfitModel(profitType: ProfitType, profitAmount: Long) {
             ProfitTypeModel(
                 ProfitType.SEARCH_RESCUE,
                 R.string.search_rescue,
-                ContextCompat.getColor(ctx, R.color.elite_orange),
+                ContextCompat.getColor(ctx, R.color.orange),
                 R.drawable.ic_dot_search_rescue
             )
         )

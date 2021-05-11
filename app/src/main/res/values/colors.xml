@@ -1,31 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
+    <!-- elite colors -->
+    <color name="orange">#FFFD7022</color>
+    <color name="light_orange">#ffb000</color>
+    <color name="yellow">#FFEB3B</color>
+    <color name="red">#FFFF0507</color>
+    <color name="azure">#FF08FADC</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <!-- elite colors -->
-    <color name="elite_orange">#FFFD7022</color>
-    <color name="elite_light_orange">#ffb000</color>
-    <color name="elite_yellow">#FFEB3B</color>
-    <color name="elite_red">#FFFF0507</color>
-    <color name="elite_azure">#FF08FADC</color>
-
     <!-- elite rank colors -->
-    <color name="elite_combat">#FFFD7022</color>
-    <color name="elite_exploration">#FF08FADC</color>
-    <color name="elite_trading">#FFFFFFFF</color>
-    <color name="elite_cqc">#FFFF0507</color>
-    <color name="elite_federation">#ff2196F3</color>
-    <color name="elite_empire">#FFFF0507</color>
-    <color name="elite_alliance">#FF029e4c</color>
-    <color name="elite_mining">#ff2196F3</color>
+    <color name="rank_combat">#FFFD7022</color>
+    <color name="rank_exploration">#FF08FADC</color>
+    <color name="rank_trading">#FFFFFFFF</color>
+    <color name="rank_cqc">#FFFF0507</color>
+    <color name="rank_federation">#ff2196F3</color>
+    <color name="rank_empire">#FFFF0507</color>
+    <color name="rank_alliance">#FF029e4c</color>
+    <color name="rank_mining">#ff2196F3</color>
 
     <!-- elite background colors -->
-    <color name= "background">#ff424343</color>
-    <color name="dark_background">#ff2B2B2C</color>
-    <color name= "item_background">#88424343</color>
+    <color name="background">#ff424343</color>
+    <color name="background_dark">#ff2B2B2C</color>
+    <color name="background_item">#88424343</color>
 </resources>

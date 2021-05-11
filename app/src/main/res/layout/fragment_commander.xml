@@ -52,7 +52,7 @@
                     android:includeFontPadding="false"
                     android:text="@{@string/format_notoriety(viewModel.notoriety)}"
                     android:textAppearance="@style/eliteStyle.SmallText"
-                    android:textColor="@color/elite_red"
+                    android:textColor="@color/red"
                     android:visibility="@{viewModel.notoriety > 0 ? View.VISIBLE : View.GONE}"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"

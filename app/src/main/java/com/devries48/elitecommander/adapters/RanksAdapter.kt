@@ -76,13 +76,13 @@ object RanksAdapter {
 
     private fun getAssociatedColor(context: Context, model: RankModel, view: View): Int {
         var color = when (model.getTitleResId()) {
-            R.string.rank_combat -> ContextCompat.getColor(context, R.color.elite_orange)
-            R.string.rank_trading -> ContextCompat.getColor(context, R.color.elite_trading)
-            R.string.rank_explore -> ContextCompat.getColor(context, R.color.elite_exploration)
-            R.string.rank_cqc -> ContextCompat.getColor(context, R.color.elite_cqc)
-            R.string.rank_federation -> ContextCompat.getColor(context, R.color.elite_federation)
-            R.string.rank_alliance -> ContextCompat.getColor(context, R.color.elite_alliance)
-            else -> ContextCompat.getColor(context, R.color.elite_empire)
+            R.string.rank_combat -> ContextCompat.getColor(context, R.color.orange)
+            R.string.rank_trading -> ContextCompat.getColor(context, R.color.rank_trading)
+            R.string.rank_explore -> ContextCompat.getColor(context, R.color.rank_exploration)
+            R.string.rank_cqc -> ContextCompat.getColor(context, R.color.rank_cqc)
+            R.string.rank_federation -> ContextCompat.getColor(context, R.color.rank_federation)
+            R.string.rank_alliance -> ContextCompat.getColor(context, R.color.rank_alliance)
+            else -> ContextCompat.getColor(context, R.color.rank_empire)
         }
 
         if (view.id == R.id.titleTextView || view.id == R.id.reputationText || view.id == R.id.repText)

@@ -73,7 +73,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/first"
                 android:textAppearance="@style/eliteStyle.SmallText"
-                android:textColor="@color/elite_yellow"
+                android:textColor="@color/yellow"
                 app:layout_constraintStart_toStartOf="@+id/discoveredTitleTextView"
                 app:layout_constraintTop_toTopOf="@+id/firstDiscoveredTextView" />
 
