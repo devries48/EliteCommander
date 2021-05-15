@@ -117,9 +117,9 @@ class StatisticsRecyclerAdapter(var data: List<StatisticModel>?) :
 
     private fun getItemStyle(color: StatisticsBuilder.Companion.StatisticColor): Int {
         return when (color) {
-            DIMMED -> R.style.eliteStyle_LightOrangeText
+            DIMMED -> R.style.eliteStyle_Value
             WARNING -> R.style.eliteStyle_RedText
-            else -> R.style.eliteStyle_YellowText
+            else -> R.style.eliteStyle_Bright
         }
     }
 

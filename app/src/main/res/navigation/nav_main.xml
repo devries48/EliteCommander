@@ -9,21 +9,20 @@
         android:id="@+id/mainActivity"
         android:name="com.devries48.elitecommander.activities.MainActivity"
         android:label="activity_main"
-        tools:layout="@layout/activity_main" />
+        tools:layout="@layout/activity_main" >
+    </activity>
 
     <fragment
         android:id="@+id/mainFragment"
         android:name="com.devries48.elitecommander.fragments.MainFragment"
         android:label="fragment_main"
-        tools:layout="@layout/fragment_main" />
+        tools:layout="@layout/fragment_main" >
+    </fragment>
+
     <activity
         android:id="@+id/loginActivity"
         android:name="com.devries48.elitecommander.activities.LoginActivity"
         android:label="activity_login"
         tools:layout="@layout/activity_login" />
-    <activity
-        android:id="@+id/toolsActivity"
-        android:name="com.devries48.elitecommander.activities.SearchActivity"
-        android:label="activity_tools"
-        tools:layout="@layout/activity_search" />
+
 </navigation>

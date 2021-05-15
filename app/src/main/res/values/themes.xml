@@ -2,7 +2,19 @@
     <style name="Theme.EliteCommander" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/background_dark</item>
         <item name="colorOnPrimary">@color/white</item>
-        <item name="android:windowBackground"> @color/background</item>
+        <item name="android:windowBackground">@color/background</item>
         <item name="android:windowTranslucentStatus">true</item>
+    </style>
+
+    <style name="Theme.EliteCommander.Main" parent="Theme.EliteCommander">
+        <item name="eliteLabelColor">@color/orange</item>
+        <item name="eliteValueColor">@color/light_orange</item>
+        <item name="eliteBrightColor">@color/yellow</item>
+    </style>
+
+    <style name="Theme.EliteCommander.Search" parent="Theme.EliteCommander">
+        <item name="eliteLabelColor">@color/blue</item>
+        <item name="eliteValueColor">@color/cyan_darker</item>
+        <item name="eliteBrightColor">@color/cyan</item>
     </style>
 </resources>

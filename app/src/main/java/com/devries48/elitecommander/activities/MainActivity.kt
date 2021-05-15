@@ -3,6 +3,7 @@ package com.devries48.elitecommander.activities
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.view.Menu
 import android.view.MenuItem
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
@@ -22,6 +23,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import kotlin.properties.Delegates
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -49,9 +51,11 @@ class MainActivity : AppCompatActivity() {
         mBinding = ActivityMainBinding.inflate(layoutInflater)
 
         setContentView(mBinding.root)
+        setSupportActionBar(mBinding.toolbar)
         setupNavigation()
         setupViewModel()
         setupRefresh()
+
     }
 
     public override fun onStart() {
@@ -70,10 +74,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return if (item.itemId == android.R.id.home) {
-            onBackPressed()
-            true
-        } else super.onOptionsItemSelected(item)
+        return when (item.itemId) {
+            R.id.home -> {
+                onBackPressed()
+                true
+            }
+            R.id.action_search -> {
+                val intent = Intent(this, SearchActivity::class.java)
+                startActivity(intent)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     override fun onBackPressed() {
@@ -81,6 +93,12 @@ class MainActivity : AppCompatActivity() {
         exitIntent.addCategory(Intent.CATEGORY_HOME)
         exitIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
         startActivity(exitIntent)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.main_menu, menu)
+        return true
     }
 
     private fun startEventBus() {

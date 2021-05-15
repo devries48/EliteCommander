@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="eliteStyle" parent="TextAppearance.AppCompat">
-        <item name="android:textColor">@color/orange</item>
+        <item name="android:textColor">?attr/eliteLabelColor</item>
         <item name="android:fontFamily">@font/eurocaps</item>
         <item name="android:textSize">15sp</item>
     </style>
@@ -10,7 +10,15 @@
         <item name="android:textSize">20sp</item>
     </style>
 
-    <style name="eliteStyle.DialogText">
+    <style name="eliteStyle.Bright">
+        <item name="android:textColor">?attr/eliteBrightColor</item>
+    </style>
+
+    <style name="eliteStyle.Value">
+        <item name="android:textColor">?attr/eliteValueColor</item>
+    </style>
+
+    <style name="eliteStyle.LoginDialogText">
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">16sp</item>
     </style>
@@ -19,16 +27,8 @@
         <item name="android:textSize">12sp</item>
     </style>
 
-    <style name="eliteStyle.YellowText">
-        <item name="android:textColor">@color/yellow</item>
-    </style>
-
     <style name="eliteStyle.WhiteText">
         <item name="android:textColor">@color/white</item>
-    </style>
-
-    <style name="eliteStyle.LightOrangeText">
-        <item name="android:textColor">@color/light_orange</item>
     </style>
 
     <style name="eliteStyle_RedText">
@@ -37,7 +37,7 @@
     </style>
 
     <style name="eliteStyle_AzureText">
-        <item name="android:textColor">@color/azure</item>
+        <item name="android:textColor">@color/cyan</item>
         <item name="android:textStyle">bold</item>
     </style>
 

@@ -75,7 +75,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/margin_large"
                             android:text="@={`` + viewModel.currentDiscoverySummary.discoveryTotal}"
-                            android:textAppearance="@style/eliteStyle.LightOrangeText"
+                            android:textAppearance="@style/eliteStyle.Value"
                             app:layout_constraintEnd_toEndOf="@+id/discoveredTitleTextView"
                             app:layout_constraintTop_toTopOf="@+id/discoveredTitleTextView" />
 
@@ -94,7 +94,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/margin_large"
                             android:text="@={`` + viewModel.currentDiscoverySummary.mappedTotal}"
-                            android:textAppearance="@style/eliteStyle.LightOrangeText"
+                            android:textAppearance="@style/eliteStyle.Value"
                             app:layout_constraintEnd_toEndOf="@+id/mappedTitleTextView"
                             app:layout_constraintTop_toTopOf="@+id/mappedTitleTextView" />
 
@@ -114,7 +114,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/margin_large"
                             android:text="@={`` + viewModel.currentDiscoverySummary.efficiencyBonusTotal}"
-                            android:textAppearance="@style/eliteStyle.LightOrangeText"
+                            android:textAppearance="@style/eliteStyle.Value"
                             app:layout_constraintEnd_toEndOf="@+id/bonusTitleTextView"
                             app:layout_constraintTop_toTopOf="@+id/bonusTitleTextView" />
 
@@ -146,7 +146,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/margin_large"
                             android:text="@={`` + viewModel.currentDiscoverySummary.FirstDiscoveryTotal}"
-                            android:textAppearance="@style/eliteStyle.YellowText"
+                            android:textAppearance="@style/eliteStyle.Bright"
                             app:layout_constraintEnd_toEndOf="@+id/firstDiscoveriesTitleTextView"
                             app:layout_constraintTop_toTopOf="@+id/firstDiscoveriesTitleTextView" />
 
@@ -176,7 +176,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/margin_large"
                             android:text="@={`` + viewModel.currentDiscoverySummary.firstMappedTotal}"
-                            android:textAppearance="@style/eliteStyle.YellowText"
+                            android:textAppearance="@style/eliteStyle.Bright"
                             app:layout_constraintEnd_toEndOf="@+id/firstMappedTitleTextView"
                             app:layout_constraintStart_toEndOf="@+id/firstMappedTitleTextView"
                             app:layout_constraintTop_toTopOf="@+id/firstMappedTitleTextView" />
@@ -207,7 +207,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/margin_large"
                             android:text="@={`` + viewModel.currentDiscoverySummary.FirstDiscoveredAndMappedTotal}"
-                            android:textAppearance="@style/eliteStyle.YellowText"
+                            android:textAppearance="@style/eliteStyle.Bright"
                             app:layout_constraintEnd_toEndOf="@+id/firstBothTitleTextView"
                             app:layout_constraintTop_toTopOf="@+id/firstBothTitleTextView" />
 
@@ -249,7 +249,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/margin_large"
                             android:text="@{@string/format_currency(viewModel.currentDiscoverySummary.estimatedValue)}"
-                            android:textAppearance="@style/eliteStyle.YellowText"
+                            android:textAppearance="@style/eliteStyle.Bright"
                             app:layout_constraintEnd_toEndOf="@+id/valueTitleTextView"
                             app:layout_constraintTop_toTopOf="@+id/valueTitleTextView" />
 

@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- elite colors -->
-    <color name="orange">#FFFD7022</color>
+    <color name="orange">#fffd7022</color>
     <color name="light_orange">#ffb000</color>
-    <color name="yellow">#FFEB3B</color>
-    <color name="red">#FFFF0507</color>
-    <color name="azure">#FF08FADC</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="yellow">#ffeb3b</color>
+    <color name="red">#ffff0507</color>
+    <color name="cyan">#ff08fadc</color>
+    <color name="cyan_darker">#00B7EB</color>
+    <color name="blue">#ff2196F3</color>
+    <color name="cyan_darkest">#008B8B</color>
+
+    <color name="black">#ff000000</color>
+    <color name="white">#ffffffff</color>
 
     <!-- elite rank colors -->
     <color name="rank_combat">#FFFD7022</color>

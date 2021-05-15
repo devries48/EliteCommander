@@ -44,7 +44,7 @@
                 android:layout_marginBottom="2dp"
                 android:includeFontPadding="false"
                 android:text=""
-                android:textAppearance="@style/eliteStyle.YellowText"
+                android:textAppearance="@style/eliteStyle.Bright"
                 app:layout_constraintStart_toStartOf="@+id/leftNameTextView"
                 app:layout_constraintTop_toBottomOf="@+id/leftNameTextView" />
 

@@ -27,7 +27,7 @@
         android:paddingHorizontal="@dimen/margin_large"
         android:text="@string/login_dialog_text"
         android:textAlignment="center"
-        android:textAppearance="@style/eliteStyle.DialogText"
+        android:textAppearance="@style/eliteStyle.LoginDialogText"
         app:autoSizeTextType="uniform"
         app:layout_constraintTop_toBottomOf="@+id/loginImageView"
         app:layout_constraintEnd_toEndOf="parent"

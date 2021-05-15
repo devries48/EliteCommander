@@ -3,4 +3,8 @@
         <attr name="fullscreenBackgroundColor" format="color" />
         <attr name="fullscreenTextColor" format="color" />
     </declare-styleable>
+
+    <attr name="eliteLabelColor" format="color" />
+    <attr name="eliteValueColor" format="color" />
+    <attr name="eliteBrightColor" format="color" />
 </resources>

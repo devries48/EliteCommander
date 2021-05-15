@@ -243,4 +243,6 @@
     <string name="tradingAndSmuggling"><![CDATA[Trading & Smuggling]]></string>
     <string name="search">Search</string>
     <string name="content_description_search">Switch to search-mode</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
