@@ -42,7 +42,7 @@ class MainFragment : Fragment() {
     }
 
     private fun setupViewPager() {
-        val pager = binding.viewPager
+        val pager = binding.mainViewPager
         pager.setPageTransformer(ViewPagerTransform())
         pager.adapter = mAdapter
         pager.setCurrentItem(2, false)

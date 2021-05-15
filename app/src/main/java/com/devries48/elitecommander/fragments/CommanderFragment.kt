@@ -15,7 +15,7 @@ import com.devries48.elitecommander.viewModels.MainViewModel
 
 class CommanderFragment : Fragment() {
 
-    private val mViewModel: MainViewModel by navGraphViewModels(R.id.nav_graph)
+    private val mViewModel: MainViewModel by navGraphViewModels(R.id.nav_main)
     private lateinit var mAdapter: StatisticsRecyclerAdapter
 
     private var _binding: FragmentCommanderBinding? = null

@@ -39,10 +39,9 @@ class SearchFragment : Fragment() {
     }
 
     private fun setupViewPager() {
-        val pager = binding.viewPager
+        val pager = binding.searchViewPager
         pager.setPageTransformer(ViewPagerTransform())
         pager.adapter = mAdapter
-        pager.setCurrentItem(2, false)
 
         pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageScrolled(

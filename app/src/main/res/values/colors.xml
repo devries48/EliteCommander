@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- elite colors -->
     <color name="orange">#fffd7022</color>
     <color name="light_orange">#ffb000</color>
     <color name="yellow">#ffeb3b</color>
     <color name="red">#ffff0507</color>
     <color name="cyan">#ff08fadc</color>
-    <color name="cyan_darker">#00B7EB</color>
-    <color name="blue">#ff2196F3</color>
-    <color name="cyan_darkest">#008B8B</color>
+    <color name="cyan_darker" tools:ignore="UnusedResources">#00B7EB</color>
+    <color name="blue" tools:ignore="UnusedResources">#ff2196F3</color>
 
     <color name="black">#ff000000</color>
     <color name="white">#ffffffff</color>

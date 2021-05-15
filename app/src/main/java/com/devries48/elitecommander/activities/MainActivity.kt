@@ -47,15 +47,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         mBinding = ActivityMainBinding.inflate(layoutInflater)
 
         setContentView(mBinding.root)
-        setSupportActionBar(mBinding.toolbar)
+        setSupportActionBar(mBinding.mainToolbar)
         setupNavigation()
         setupViewModel()
         setupRefresh()
-
     }
 
     public override fun onStart() {
@@ -120,7 +118,7 @@ class MainActivity : AppCompatActivity() {
             mCommanderClient = CommanderClient()
 
             val viewModelProvider = ViewModelProvider(
-                mNavController.getViewModelStoreOwner(R.id.nav_graph),
+                mNavController.getViewModelStoreOwner(R.id.nav_main),
                 MainViewModel.Factory(mCommanderClient)
             )
             mMainViewModel = viewModelProvider.get(MainViewModel::class.java)
@@ -156,7 +154,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun findNavController(): NavController {
         val navHostFragment: NavHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+            supportFragmentManager.findFragmentById(R.id.mainNavHost) as NavHostFragment
         return navHostFragment.navController
     }
 

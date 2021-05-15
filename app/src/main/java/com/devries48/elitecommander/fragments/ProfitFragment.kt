@@ -17,7 +17,7 @@ import com.devries48.elitecommander.viewModels.MainViewModel
 
 class ProfitFragment : Fragment() {
 
-    private val mViewModel: MainViewModel by navGraphViewModels(R.id.nav_graph)
+    private val mViewModel: MainViewModel by navGraphViewModels(R.id.nav_main)
     private lateinit var mStatisticAdapter: StatisticsRecyclerAdapter
     private lateinit var mProfitAdapter: ProfitsRecyclerAdapter
 
