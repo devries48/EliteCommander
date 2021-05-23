@@ -2,6 +2,7 @@ package com.devries48.elitecommander.events
 
 data class FrontierRanksEvent(
     val success: Boolean,
+    val error: String?,
     val combat: FrontierRank? = null,
     val trade: FrontierRank? = null,
     val explore: FrontierRank? = null,

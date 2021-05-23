@@ -66,6 +66,18 @@ object RanksAdapter {
         }
     }
 
+    /**
+     * Hide image when faction rank = 0
+     */
+    @BindingAdapter("android:rankImageHide")
+    @JvmStatic
+    fun rankImageHide(view: View, model: RankModel) {
+        if (model.isFactionRank && model.rank.value == 0 || model.isFactionRank && model.rank.value > 14)
+            view.visibility = View.INVISIBLE
+        else
+            view.visibility = View.VISIBLE
+    }
+
     @ColorInt
     private fun darkenColor(@ColorInt color: Int): Int {
         return Color.HSVToColor(FloatArray(3).apply {

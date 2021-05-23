@@ -20,13 +20,8 @@ object DistanceCalculatorNetwork {
             onResponse = response@{
                 val body = it.body()
 
-                if (!it.isSuccessful || body == null) {
-                    var msg = "Invalid response"
-
-                    if (it.code() == 400)
-                        msg = "400"
-
-                    onFailure?.let { it1 -> it1(Exception(msg)) }
+                if (!it.isSuccessful || body == null || body.none()) {
+                    onFailure?.let { it1 -> it1(Exception("Invalid EDSM response")) }
                     return@response
                 }
 
@@ -48,19 +43,18 @@ object DistanceCalculatorNetwork {
         val distance = sqrt(coords.x.pow(2) + coords.y.pow(2) + coords.z.pow(2))
 
         val distanceSearch: DistanceSearchEvent = try {
-            DistanceSearchEvent(true, round(distance), "Sol", system)
+            DistanceSearchEvent(true, null, round(distance), "Sol", system)
         } catch (ex: Exception) {
-            DistanceSearchEvent(false, 0.0, "", "")
+            DistanceSearchEvent(false, ex.message, 0.0, "", "")
         }
+
         EventBus.getDefault().post(distanceSearch)
     }
 
     private fun handleDistanceFailure(it: Throwable?) {
         // newly discovered system, not added to eddb (yet!)
         val success = it?.message == "400"
-        val distanceSearch = DistanceSearchEvent(success, 0.0, "", "")
-        if (!success)
-            println("Distance calculation failed: " + it?.message)
+        val distanceSearch = DistanceSearchEvent(success, it?.message, 0.0, "", "")
 
         EventBus.getDefault().post(distanceSearch)
     }

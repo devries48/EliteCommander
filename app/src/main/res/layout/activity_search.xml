@@ -4,6 +4,7 @@
     android:id="@+id/searchLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".activities.SearchActivity">
 
     <LinearLayout
@@ -37,7 +38,7 @@
             android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:defaultNavHost="true"
+            app:defaultNavHost="false"
             app:navGraph="@navigation/nav_search" />
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

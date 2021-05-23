@@ -15,6 +15,7 @@ import org.greenrobot.eventbus.EventBus
 import java.text.SimpleDateFormat
 import java.util.*
 
+@DelicateCoroutinesApi
 class JournalWorker(frontierApi: FrontierInterface?) {
 
     private lateinit var mFrontierApi: FrontierInterface
@@ -22,9 +23,9 @@ class JournalWorker(frontierApi: FrontierInterface?) {
     private var mLatestJournalDate: Date? = DateUtils.getCurrentDate()
     private var mCurrentDiscoveriesDate: Date? = null
 
-    private val mJournalRanks: JournalRanks = JournalRanks()
-    private val mJournalStats: JournalStatistics = JournalStatistics(this)
-    private val mJournalDiscoveries: JournalDiscoveries = JournalDiscoveries()
+    private lateinit var mJournalRanks: JournalRanks
+    private lateinit var mJournalStats: JournalStatistics
+    private lateinit var mJournalDiscoveries: JournalDiscoveries
 
     internal var lastJournalDate: Date? = null
 
@@ -36,6 +37,10 @@ class JournalWorker(frontierApi: FrontierInterface?) {
     // Raises FrontierStatisticsEvent
     // Raises FrontierDiscoveriesEvent
     fun getCurrentJournal() {
+        mJournalRanks = JournalRanks()
+        mJournalStats = JournalStatistics(this)
+        mJournalDiscoveries = JournalDiscoveries()
+
         mCrawlerType = CrawlerType.CURRENT_JOURNAL
         processJournal(mLatestJournalDate)
     }
@@ -118,7 +123,7 @@ class JournalWorker(frontierApi: FrontierInterface?) {
                     handleCrawlResult(journalDate, rawEvents)
                     return@withContext
                 }
-                204 -> handleCrawlNoResult(journalDate)
+                204 -> getPreviousResult(journalDate)
                 206, 429 -> {
                     // Partial content, wait and try again / // Too many request, wait and try again
                     delay(1000)
@@ -144,13 +149,16 @@ class JournalWorker(frontierApi: FrontierInterface?) {
             mJournalStats.raiseFrontierStatisticsEvent(rawEvents)
             mLatestJournalDate = journalDate
         } else if (mCrawlerType == CrawlerType.CURRENT_DISCOVERIES) {
-            mJournalDiscoveries.raiseFrontierDiscoveriesEvents(rawEvents!!)
+            mJournalDiscoveries.processDiscoveries(rawEvents!!)
             mCurrentDiscoveriesDate = journalDate
+            if (mJournalDiscoveries.isCompleted)
+                mJournalDiscoveries.raiseFrontierDiscoveriesEvents()
+            else
+                getPreviousResult(mCurrentDiscoveriesDate)
         }
     }
 
-    private fun handleCrawlNoResult(journalDate: Date?) {
-        // No content, go one day back
+    private fun getPreviousResult(journalDate: Date?) {
         val date = journalDate?.removeDays()
         processJournal(date)
 

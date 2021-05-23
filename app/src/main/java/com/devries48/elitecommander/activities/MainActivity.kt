@@ -19,12 +19,14 @@ import com.devries48.elitecommander.network.CommanderClient
 import com.devries48.elitecommander.utils.OAuthUtils.storeUpdatedTokens
 import com.devries48.elitecommander.viewModels.MainViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.DelicateCoroutinesApi
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import kotlin.properties.Delegates
 
 
+@DelicateCoroutinesApi
 class MainActivity : AppCompatActivity() {
 
     private var mCurrentDestinationId: Int = 0
@@ -144,6 +146,8 @@ class MainActivity : AppCompatActivity() {
         swipeRefresh.setDistanceToTriggerSync(200)
         swipeRefresh.setOnRefreshListener {
             if (mMainViewModel != null) {
+                mAlertDialog = null
+                mAlertList.clear()
                 mMainViewModel!!.load()
                 swipeRefresh.post {
                     swipeRefresh.isRefreshing = false
@@ -178,10 +182,12 @@ class MainActivity : AppCompatActivity() {
             }
 
             mAlertList.add(alertEvent.message)
+
             if (mAlertDialog == null)
                 showAlertDialog(alertEvent)
             else {
                 var message = ""
+
                 for ((index, it) in mAlertList.withIndex()) {
                     message += "\u2022 " + this.getString(it)
                     if (index < mAlertList.count() - 1)
@@ -195,17 +201,27 @@ class MainActivity : AppCompatActivity() {
     private fun showAlertDialog(alertEvent: AlertEvent) {
         val builder = MaterialAlertDialogBuilder(this, R.style.AlertDialogTheme)
         builder.setIcon(android.R.drawable.ic_dialog_alert)
-        builder.setTitle(alertEvent.title)
+        builder.setTitle(transformTitle(alertEvent.title))
         builder.setMessage(alertEvent.message)
         builder.background = ColorDrawable(ContextCompat.getColor(this, R.color.black))
         builder.setPositiveButton("OK") { _, _ ->
             mAlertDialog?.dismiss()
             mAlertDialog = null
+            mAlertList.clear()
         }
 
         builder.setCancelable(false)
 
         mAlertDialog = builder.create()
         mAlertDialog!!.show()
+        mAlertDialog = null
+    }
+
+    private fun transformTitle(title: String?): String {
+        return if (title != null && title.startsWith("Unable to resolve"))
+            "Frontier server down"
+        else
+            title ?: this.getString(R.string.download_error)
+
     }
 }

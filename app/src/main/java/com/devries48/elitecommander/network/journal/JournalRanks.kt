@@ -62,7 +62,7 @@ internal class JournalRanks {
 
                 sendWorkerEvent(
                     FrontierRanksEvent(
-                        true, combatRank, tradeRank, exploreRank,
+                        true, null, combatRank, tradeRank, exploreRank,
                         cqcRank, federationRank, empireRank, allianceRank
                     )
                 )

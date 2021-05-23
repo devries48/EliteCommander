@@ -71,13 +71,12 @@ class CommanderClient {
     }
 
     private fun handleProfileFailure(t: Throwable?) {
-        println(t?.message)
-        val pos = FrontierProfileEvent(false, "", 0, 0, "", 0, 0)
+        val pos = FrontierProfileEvent(false, t?.message, "", 0, 0, "", 0, 0)
         val ranks = FrontierRanksEvent(
             false, null, null,
             null, null, null, null
         )
-        val fleet = FrontierFleetEvent(false, ArrayList())
+        val fleet = FrontierFleetEvent(false, t?.message, ArrayList())
         sendResultMessage(pos)
         sendResultMessage(ranks)
         sendResultMessage(fleet)
@@ -109,6 +108,7 @@ class CommanderClient {
         frontierProfileEvent = profile.commander?.let {
             FrontierProfileEvent(
                 true,
+                null,
                 commanderName,
                 credits,
                 debt,
@@ -163,7 +163,7 @@ class CommanderClient {
                 shipsList.add(newShip)
             }
         }
-        commanderClient.sendResultMessage(FrontierFleetEvent(true, shipsList))
+        commanderClient.sendResultMessage(FrontierFleetEvent(true, null, shipsList))
     }
 
     private fun sendResultMessage(data: Any?) {

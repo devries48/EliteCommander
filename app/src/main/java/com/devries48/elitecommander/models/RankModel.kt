@@ -44,7 +44,12 @@ class RankModel(type: RankType, frontierRank: FrontierRanksEvent.FrontierRank) {
             else -> null
         } ?: return ""
 
-        return ctx.resources.getStringArray(array)[rank.value]
+        val ranks = ctx.resources.getStringArray(array)
+
+        return if (rank.value > ranks.size)
+            ranks[0]
+        else
+            ranks[rank.value]
     }
 
     @DrawableRes

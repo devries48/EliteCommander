@@ -56,6 +56,12 @@ class Profile {
 
         @SerializedName("cqc")
         var cqc = 0
+
+        @SerializedName("soldier")
+        var soldier = 0
+
+        @SerializedName("exobiologist")
+        var exobiologist = 0
     }
 
     inner class FrontierProfileSystemResponse {

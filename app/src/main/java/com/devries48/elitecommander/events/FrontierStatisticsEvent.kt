@@ -4,6 +4,7 @@ import java.util.*
 
 data class FrontierStatisticsEvent(
     val success: Boolean,
+    val error: String?,
     val lastJournalDate: Date?,
     val bankAccount: FrontierBankAccount?,
     val combat: FrontierCombat?,

@@ -24,7 +24,6 @@ class SearchActivity : AppCompatActivity() {
         return true
     }
 
-
     private fun setupNavigation() {
         val navController = findNavController()
 

@@ -9,12 +9,18 @@ import com.devries48.elitecommander.network.journal.JournalWorker.Companion.send
 import com.devries48.elitecommander.utils.DiscoveryValueCalculator
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
+@DelicateCoroutinesApi
 class JournalDiscoveries {
 
-    internal suspend fun raiseFrontierDiscoveriesEvents(rawEvents: List<RawEvent>) {
+    private var mSummary = FrontierDiscoverySummary(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+    private val mDiscoveries = mutableListOf<Discovery>()
+    internal var isCompleted = false
+
+    internal suspend fun processDiscoveries(rawEvents: List<RawEvent>) {
         withContext(Dispatchers.IO) {
 
             try {
@@ -22,7 +28,6 @@ class JournalDiscoveries {
                 if (rawDiscoveries.count() == 0) return@withContext
 
                 val rawMappings = rawEvents.filter { it.event == JOURNAL_EVENT_MAP }
-                val discoveries = mutableListOf<Discovery>()
                 val mappings = mutableListOf<Mapping>()
 
                 // Format mappings, so it can be merged into the FrontierDiscovery class
@@ -32,17 +37,35 @@ class JournalDiscoveries {
                     }
                 }
 
-                val summary = FrontierDiscoverySummary(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-
                 rawDiscoveries.forEach { event ->
-                    processDiscovery(event, discoveries, mappings, summary)
+                    processDiscovery(event, mappings)
                 }
 
+            } catch (e: Exception) {
+                sendWorkerEvent(
+                    FrontierDiscoveriesEvent(
+                        false,
+                        "Error parsing discovery events from journal: " + e.message,
+                        null,
+                        null
+                    )
+                )
+            }
+        }
+    }
+
+    internal suspend fun raiseFrontierDiscoveriesEvents() {
+        withContext(Dispatchers.IO) {
+
+            if (mDiscoveries.count() == 0)
+                sendWorkerEvent(FrontierDiscoveriesEvent(true, null, null, null))
+            else
                 sendWorkerEvent(
                     FrontierDiscoveriesEvent(
                         true,
-                        summary,
-                        discoveries.map { (_, _, planetClass, starType, _, _, _, _, _, discoveryCount, mapCount, bonusCount, firstDiscoveredCount, firstMappedCount, firstMappedAndDiscovered, estimatedValue) ->
+                        null,
+                        mSummary,
+                        mDiscoveries.map { (_, _, planetClass, starType, _, _, _, _, _, discoveryCount, mapCount, bonusCount, firstDiscoveredCount, firstMappedCount, firstMappedAndDiscovered, estimatedValue) ->
                             FrontierDiscovery(
                                 planetClass.toStringOrEmpty(),
                                 starType.toStringOrEmpty(),
@@ -60,18 +83,12 @@ class JournalDiscoveries {
                     )
                 )
 
-            } catch (e: Exception) {
-                println("LOG: Error parsing discovery events from journal." + e.message)
-                sendWorkerEvent(FrontierDiscoveriesEvent(false, null, null))
-            }
         }
     }
 
     private fun processDiscovery(
         event: RawEvent,
-        discoveries: MutableList<Discovery>,
         mappings: MutableList<Mapping>,
-        summary: FrontierDiscoverySummary
     ) {
         val discovery = Gson().fromJson(event.json, Discovery::class.java)
 
@@ -116,7 +133,7 @@ class JournalDiscoveries {
             }
         }
 
-        var currentDiscovery = getCurrentDiscovery(discoveries, discovery)
+        var currentDiscovery = getCurrentDiscovery(discovery)
         if (currentDiscovery == null) {
             currentDiscovery = Discovery(
                 discovery.systemAddress,
@@ -124,7 +141,7 @@ class JournalDiscoveries {
                 discovery.planetClass.toStringOrEmpty(),
                 discovery.starType.toStringOrEmpty()
             )
-            discoveries.add(currentDiscovery)
+            mDiscoveries.add(currentDiscovery)
         }
 
         // Calculate estimated scan values for current body
@@ -148,18 +165,18 @@ class JournalDiscoveries {
         currentDiscovery.firstDiscoveredAndMappedCount += addFirstDiscoveredAndMapped
         currentDiscovery.estimatedValue += estimatedValue
 
-        summary.discoveryTotal += 1 - addFirstDiscovered - addFirstDiscoveredAndMapped
-        summary.mappedTotal += addMapCount - addFirstMapped - addFirstDiscoveredAndMapped
-        summary.efficiencyBonusTotal += addBonusCount
-        summary.firstDiscoveryTotal += addFirstDiscovered
-        summary.firstMappedTotal += addFirstMapped
-        summary.firstDiscoveredAndMappedTotal += addFirstDiscoveredAndMapped
-        summary.probesUsedTotal += addProbeCount
-        summary.estimatedValue += estimatedValue
+        mSummary.discoveryTotal += 1 - addFirstDiscovered - addFirstDiscoveredAndMapped
+        mSummary.mappedTotal += addMapCount - addFirstMapped - addFirstDiscoveredAndMapped
+        mSummary.efficiencyBonusTotal += addBonusCount
+        mSummary.firstDiscoveryTotal += addFirstDiscovered
+        mSummary.firstMappedTotal += addFirstMapped
+        mSummary.firstDiscoveredAndMappedTotal += addFirstDiscoveredAndMapped
+        mSummary.probesUsedTotal += addProbeCount
+        mSummary.estimatedValue += estimatedValue
     }
 
-    private fun getCurrentDiscovery(discoveries: MutableList<Discovery>, discovery: Discovery): Discovery? {
-        return discoveries.firstOrNull {
+    private fun getCurrentDiscovery(discovery: Discovery): Discovery? {
+        return mDiscoveries.firstOrNull {
             !it.planetClass.isNullOrEmpty() && it.planetClass == discovery.planetClass ||
                     !it.starType.isNullOrEmpty() && it.starType == discovery.starType
         }
@@ -175,11 +192,10 @@ class JournalDiscoveries {
         val rawDied = rawEvents.lastOrNull { it.event == JOURNAL_EVENT_DIED }
         if (rawDied != null) rawDiscoveries = rawDiscoveries.filter { it.timeStamp > rawDied.timeStamp }
 
-        if (rawDiscoveries.count() == 0) sendWorkerEvent(FrontierDiscoveriesEvent(true, null, null))
+        isCompleted = rawDataSold != null || rawDied != null
 
         return rawDiscoveries
     }
-
 
     data class Discovery(
         @SerializedName("SystemAddress")

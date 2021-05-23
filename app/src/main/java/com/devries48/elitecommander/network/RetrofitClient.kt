@@ -55,7 +55,7 @@ open class RetrofitClient private constructor() : Serializable {
         val httpClient = commonOkHttpClientBuilder
 
         val logging = HttpLoggingInterceptor()
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY)
+        logging.setLevel(HttpLoggingInterceptor.Level.BASIC)
         httpClient.addInterceptor(logging)
 
         // Add interceptor for tokens in response
@@ -85,10 +85,10 @@ open class RetrofitClient private constructor() : Serializable {
                 } catch (e: IllegalArgumentException) {
                     e.printStackTrace()
                 }
-            }
 
-            // If still not ok, need login
-            if (isFailed(response)) EventBus.getDefault().post(FrontierAuthNeededEvent(true))
+                // If still not ok, need login
+                if (isFailed(response)) EventBus.getDefault().post(FrontierAuthNeededEvent(true))
+            }
 
             response
         }

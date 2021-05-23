@@ -7,10 +7,12 @@ import com.devries48.elitecommander.models.response.frontier.JournalStatisticsRe
 import com.devries48.elitecommander.models.response.frontier.MissionCompletedResponse
 import com.devries48.elitecommander.network.journal.JournalWorker.Companion.sendWorkerEvent
 import com.google.gson.Gson
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
 
+@DelicateCoroutinesApi
 class JournalStatistics(worker: JournalWorker) {
 
     private val mWorker = worker
@@ -28,7 +30,7 @@ class JournalStatistics(worker: JournalWorker) {
 
                 sendWorkerEvent(
                     FrontierStatisticsEvent(
-                        true, mWorker.lastJournalDate, FrontierBankAccount(
+                        true, null, mWorker.lastJournalDate, FrontierBankAccount(
                             statistics.bankAccount.currentWealth,
                             statistics.bankAccount.insuranceClaims,
                             statistics.bankAccount.ownedShipCount,
@@ -81,10 +83,21 @@ class JournalStatistics(worker: JournalWorker) {
                 )
 
             } catch (e: Exception) {
-                println("LOG: Error parsing statistics event from journal." + e.message)
+                println()
                 sendWorkerEvent(
                     FrontierStatisticsEvent(
-                        false, null, null, null, null, null, null, null, null, null, null
+                        false,
+                        "Error parsing statistics event from journal." + e.message,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
                     )
                 )
             }

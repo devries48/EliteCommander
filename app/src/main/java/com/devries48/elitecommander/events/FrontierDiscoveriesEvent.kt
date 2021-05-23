@@ -2,6 +2,7 @@ package com.devries48.elitecommander.events
 
 data class FrontierDiscoveriesEvent(
     val success: Boolean = false,
+    val error: String?,
     val summary: FrontierDiscoverySummary?,
     val discoveries: List<FrontierDiscovery>?
 )

@@ -12,6 +12,7 @@ import com.devries48.elitecommander.events.*
 import com.devries48.elitecommander.models.*
 import com.devries48.elitecommander.network.CommanderClient
 import com.devries48.elitecommander.utils.SettingsUtils
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
@@ -19,6 +20,7 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import kotlin.math.round
 
+@DelicateCoroutinesApi
 class MainViewModel(client: CommanderClient?) : ViewModel() {
 
     //<editor-fold desc="Private definitions">
@@ -133,7 +135,7 @@ class MainViewModel(client: CommanderClient?) : ViewModel() {
     fun onFrontierProfileEvent(profile: FrontierProfileEvent) {
         GlobalScope.launch {
             if (!profile.success)
-                sendAlert(R.string.frontier_profile)
+                sendAlert(R.string.frontier_profile, profile.error)
             else {
                 launchProfile(profile)
                 saveStatisticsSettings()
@@ -145,9 +147,7 @@ class MainViewModel(client: CommanderClient?) : ViewModel() {
     @Subscribe(threadMode = ThreadMode.ASYNC)
     fun onFrontierRanksEvent(ranks: FrontierRanksEvent) {
         GlobalScope.launch {
-            if (!ranks.success)
-                sendAlert(R.string.frontier_journal_ranks)
-            else
+            if (ranks.success)
                 launchRanks(ranks)
 
             mIsRanksBusy.postValue(false)
@@ -158,7 +158,7 @@ class MainViewModel(client: CommanderClient?) : ViewModel() {
     fun onFrontierFleetEvent(fleet: FrontierFleetEvent) {
         GlobalScope.launch {
             if (!fleet.success)
-                sendAlert(R.string.frontier_fleet)
+                sendAlert(R.string.frontier_fleet, fleet.error)
             else
                 launchFleet(fleet)
         }
@@ -167,8 +167,8 @@ class MainViewModel(client: CommanderClient?) : ViewModel() {
     @Subscribe(threadMode = ThreadMode.ASYNC)
     fun onDistanceSearch(distanceSearch: DistanceSearchEvent) {
         GlobalScope.launch {
-            if (!distanceSearch.success)
-                sendAlert(R.string.edsm_distance)
+            if (distanceSearch.success)
+                sendAlert(R.string.edsm_distance, distanceSearch.error)
             else
                 launchDistanceSearch(distanceSearch)
         }
@@ -178,7 +178,7 @@ class MainViewModel(client: CommanderClient?) : ViewModel() {
     fun onCurrentDiscoveries(discoveries: FrontierDiscoveriesEvent) {
         GlobalScope.launch {
             if (!discoveries.success)
-                sendAlert(R.string.Frontier_journal_discoveries)
+                sendAlert(R.string.Frontier_journal_discoveries, discoveries.error)
             else
                 launchCurrentDiscoveries(discoveries)
         }
@@ -188,7 +188,7 @@ class MainViewModel(client: CommanderClient?) : ViewModel() {
     fun onStatistics(statistics: FrontierStatisticsEvent) {
         GlobalScope.launch {
             if (!statistics.success) {
-                sendAlert(R.string.Frontier_journal_statistics)
+                sendAlert(R.string.Frontier_journal_statistics, statistics.error)
                 mIsStatsBusy.postValue(false)
                 return@launch
             }
@@ -212,9 +212,9 @@ class MainViewModel(client: CommanderClient?) : ViewModel() {
             SettingsUtils.setStatisticsSettings(mCurrentSettings)
     }
 
-    private fun sendAlert(@StringRes message: Int) {
+    private fun sendAlert(@StringRes message: Int, title: String?) {
         setAllBusyIndicators(false)
-        EventBus.getDefault().post(AlertEvent(R.string.download_error, message))
+        EventBus.getDefault().post(AlertEvent(title, message))
     }
 
     private fun setAllBusyIndicators(switchOn: Boolean) {

@@ -1,6 +1,6 @@
 package com.devries48.elitecommander.events
 
-data class FrontierFleetEvent(val success: Boolean, val frontierShips: List<FrontierShip>)
+data class FrontierFleetEvent(val success: Boolean, val error: String?, val frontierShips: List<FrontierShip>)
 
 data class FrontierShip(
     val id: Int, val model: String, val name: String?, val systemName: String,
