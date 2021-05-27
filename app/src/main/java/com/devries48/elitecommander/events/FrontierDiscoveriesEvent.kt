@@ -17,7 +17,9 @@ data class FrontierDiscoverySummary(
     var firstMappedTotal: Int,
     var firstDiscoveredAndMappedTotal: Int,
     var probesUsedTotal: Int,
-    var estimatedValue: Long
+    var estimatedValue: Long,
+    var tripDistance: Double,
+    var tripJumps: Int
 )
 
 data class FrontierDiscovery(

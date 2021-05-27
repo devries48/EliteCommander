@@ -4,6 +4,7 @@ import com.devries48.elitecommander.declarations.toStringOrEmpty
 import com.devries48.elitecommander.events.FrontierDiscoveriesEvent
 import com.devries48.elitecommander.events.FrontierDiscovery
 import com.devries48.elitecommander.events.FrontierDiscoverySummary
+import com.devries48.elitecommander.models.response.frontier.JournalFsdJumpResponse
 import com.devries48.elitecommander.network.journal.JournalWorker.*
 import com.devries48.elitecommander.network.journal.JournalWorker.Companion.sendWorkerEvent
 import com.devries48.elitecommander.utils.DiscoveryValueCalculator
@@ -16,8 +17,9 @@ import kotlinx.coroutines.withContext
 @DelicateCoroutinesApi
 class JournalDiscoveries {
 
-    private var mSummary = FrontierDiscoverySummary(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+    private var mSummary = FrontierDiscoverySummary(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0, 0)
     private val mDiscoveries = mutableListOf<Discovery>()
+    private var isDocked = false
     internal var isCompleted = false
 
     internal suspend fun processDiscoveries(rawEvents: List<RawEvent>) {
@@ -27,7 +29,7 @@ class JournalDiscoveries {
                 val rawDiscoveries = getRawDiscoveries(rawEvents)
                 if (rawDiscoveries.count() == 0) return@withContext
 
-                val rawMappings = rawEvents.filter { it.event == JOURNAL_EVENT_MAP }
+                val rawMappings = rawEvents.filter { it.event == JournalConstants.EVENT_MAP }
                 val mappings = mutableListOf<Mapping>()
 
                 // Format mappings, so it can be merged into the FrontierDiscovery class
@@ -65,7 +67,7 @@ class JournalDiscoveries {
                         true,
                         null,
                         mSummary,
-                        mDiscoveries.map { (_, _, planetClass, starType, _, _, _, _, _, discoveryCount, mapCount, bonusCount, firstDiscoveredCount, firstMappedCount, firstMappedAndDiscovered, estimatedValue) ->
+                        mDiscoveries.map { (_, _, _, planetClass, starType, _, _, _, _, _, discoveryCount, mapCount, bonusCount, firstDiscoveredCount, firstMappedCount, firstMappedAndDiscovered, estimatedValue) ->
                             FrontierDiscovery(
                                 planetClass.toStringOrEmpty(),
                                 starType.toStringOrEmpty(),
@@ -138,6 +140,7 @@ class JournalDiscoveries {
             currentDiscovery = Discovery(
                 discovery.systemAddress,
                 discovery.bodyID,
+                discovery.BodyName,
                 discovery.planetClass.toStringOrEmpty(),
                 discovery.starType.toStringOrEmpty()
             )
@@ -184,13 +187,33 @@ class JournalDiscoveries {
     }
 
     private fun getRawDiscoveries(rawEvents: List<RawEvent>): List<RawEvent> {
-        var rawDiscoveries = rawEvents.filter { it.event == JOURNAL_EVENT_DISCOVERY }
+        var rawDiscoveries = rawEvents.filter { it.event == JournalConstants.EVENT_DISCOVERY }
 
-        val rawDataSold = rawEvents.lastOrNull { it.event == JOURNAL_EVENT_DISCOVERIES_SOLD }
+        val rawDataSold = rawEvents.lastOrNull { it.event == JournalConstants.EVENT_DISCOVERIES_SOLD }
         if (rawDataSold != null) rawDiscoveries = rawDiscoveries.filter { it.timeStamp > rawDataSold.timeStamp }
 
-        val rawDied = rawEvents.lastOrNull { it.event == JOURNAL_EVENT_DIED }
+        val rawDied = rawEvents.lastOrNull { it.event == JournalConstants.EVENT_DIED }
         if (rawDied != null) rawDiscoveries = rawDiscoveries.filter { it.timeStamp > rawDied.timeStamp }
+
+        if (!isDocked) {
+            var rawJumps = rawEvents.filter { it.event == JournalConstants.EVENT_FSD_JUMP }
+            val rawDocked = rawEvents.lastOrNull { it.event == JournalConstants.EVENT_DOCKED }
+
+            if (rawDocked != null) {
+                isDocked = true
+                rawJumps = rawJumps.filter { it.timeStamp > rawDocked.timeStamp }
+            }
+            if (rawDied != null) rawJumps = rawJumps.filter { it.timeStamp > rawDied.timeStamp }
+
+            var dist = 0.0
+            rawJumps.forEach {
+                val jump = Gson().fromJson(it.json, JournalFsdJumpResponse::class.java)
+                dist += jump.jumpDist
+            }
+
+            mSummary.tripJumps += rawJumps.count()
+            mSummary.tripDistance += dist
+        }
 
         isCompleted = rawDataSold != null || rawDied != null
 
@@ -202,6 +225,8 @@ class JournalDiscoveries {
         val systemAddress: Long,
         @SerializedName("BodyID")
         val bodyID: Int,
+        @SerializedName("BodyName")
+        val BodyName: String?,
         @SerializedName("PlanetClass")
         val planetClass: String?,
         @SerializedName("StarType")
@@ -236,12 +261,5 @@ class JournalDiscoveries {
         @SerializedName("ProbesUsed")
         val probesUsed: Int
     )
-
-    companion object {
-        private const val JOURNAL_EVENT_DISCOVERY = "Scan"
-        private const val JOURNAL_EVENT_MAP = "SAAScanComplete"
-        private const val JOURNAL_EVENT_DISCOVERIES_SOLD = "MultiSellExplorationData"
-        private const val JOURNAL_EVENT_DIED = "Died"
-    }
 
 }

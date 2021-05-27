@@ -7,18 +7,20 @@ import com.devries48.elitecommander.models.response.frontier.JournalRankResponse
 import com.devries48.elitecommander.network.journal.JournalWorker.Companion.sendWorkerEvent
 import com.devries48.elitecommander.network.journal.JournalWorker.RawEvent
 import com.google.gson.Gson
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
+@DelicateCoroutinesApi
 internal class JournalRanks {
 
     internal suspend fun raiseFrontierRanksEvent(rawEvents: List<RawEvent>) {
 
         withContext(Dispatchers.IO) {
             try {
-                val rawRank = rawEvents.firstOrNull { it.event == JOURNAL_EVENT_RANK }
-                val rawProgress = rawEvents.firstOrNull { it.event == JOURNAL_EVENT_PROGRESS }
-                val rawReputation = rawEvents.firstOrNull { it.event == JOURNAL_EVENT_REPUTATION }
+                val rawRank = rawEvents.firstOrNull { it.event == JournalConstants.EVENT_RANK }
+                val rawProgress = rawEvents.firstOrNull { it.event == JournalConstants.EVENT_PROGRESS }
+                val rawReputation = rawEvents.firstOrNull { it.event == JournalConstants.EVENT_REPUTATION }
 
                 if (rawRank == null || rawProgress == null || rawReputation == null) throw error("Error parsing rank events from journal")
 
@@ -85,7 +87,7 @@ internal class JournalRanks {
     ): Pair<JournalRankResponse, JournalRankProgressResponse> {
         val rank = Gson().fromJson(rawRank.json, JournalRankResponse::class.java)
         val progress = Gson().fromJson(rawProgress.json, JournalRankProgressResponse::class.java)
-        val promotions = rawEvents.filter { it.event == JOURNAL_EVENT_PROMOTION }
+        val promotions = rawEvents.filter { it.event == JournalConstants.EVENT_PROMOTION }
 
         if (promotions.none())
             return rank to progress
@@ -126,12 +128,5 @@ internal class JournalRanks {
         }
 
         return rank to progress
-    }
-
-    companion object {
-        private const val JOURNAL_EVENT_RANK = "Rank"
-        private const val JOURNAL_EVENT_PROGRESS = "Progress"
-        private const val JOURNAL_EVENT_REPUTATION = "Reputation"
-        private const val JOURNAL_EVENT_PROMOTION = "Promotion"
     }
 }

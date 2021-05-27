@@ -5,6 +5,7 @@
     <string name="format_percentage">%s%%</string>
     <string name="format_number">"%,d"</string>
     <string name="format_currency">"%,d" CR</string>
+    <string name="format_distance">%,.0f LY</string>
     <string name="format_notoriety">Notoriety level: %s</string>
 
     <!--URLs-->
@@ -244,4 +245,6 @@
     <string name="search">Search</string>
     <string name="content_description_search">Switch to search-mode</string>
     <string name="nearest_facilities">Nearest Facilities</string>
+    <string name="distance">Distance</string>
+    <string name="jumps">Jumps</string>
 </resources>

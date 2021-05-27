@@ -49,7 +49,8 @@ class MainViewModel(client: CommanderClient?) : ViewModel() {
         MutableLiveData(RankModel(RankModel.RankType.ALLIANCE, FrontierRanksEvent.FrontierRank()))
 
     private var mCurrentDiscoveries = MutableLiveData<List<FrontierDiscovery>>()
-    private var mCurrentDiscoverySummary = MutableLiveData(FrontierDiscoverySummary(0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+    private var mCurrentDiscoverySummary =
+        MutableLiveData(FrontierDiscoverySummary(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0, 0))
 
     private var mProfitChart = MutableLiveData<List<ProfitModel>>()
 

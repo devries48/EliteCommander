@@ -27,6 +27,10 @@
         <item name="android:textSize">12sp</item>
     </style>
 
+    <style name="eliteStyle.TinyText">
+        <item name="android:textSize">10sp</item>
+    </style>
+
     <style name="eliteStyle.WhiteText">
         <item name="android:textColor">@color/white</item>
     </style>
@@ -47,6 +51,7 @@
 
     <style name="eliteStyle.BodyDiscovery.Value" parent="eliteStyle.BodyDiscovery">
         <item name="android:textColor">@color/light_orange</item>
+        <item name="android:textSize">12sp</item>
     </style>
 
     <style name="eliteStyle.BodyDiscovery.First" parent="eliteStyle.BodyDiscovery">

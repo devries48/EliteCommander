@@ -72,8 +72,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/first"
-                android:textAppearance="@style/eliteStyle.SmallText"
-                android:textColor="@color/yellow"
+                android:textAppearance="@style/eliteStyle.TinyText"
                 app:layout_constraintStart_toStartOf="@+id/discoveredTitleTextView"
                 app:layout_constraintTop_toTopOf="@+id/firstDiscoveredTextView" />
 
@@ -81,10 +80,10 @@
                 android:id="@+id/mappedTitleTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_large"
                 android:text="@string/mapped"
                 android:textAppearance="@style/eliteStyle.SmallText"
                 app:layout_constraintStart_toEndOf="@+id/discoveredTitleTextView"
+                app:layout_constraintEnd_toStartOf="@+id/valueTitleTextView"
                 app:layout_constraintTop_toTopOf="@+id/discoveredTitleTextView" />
 
             <TextView

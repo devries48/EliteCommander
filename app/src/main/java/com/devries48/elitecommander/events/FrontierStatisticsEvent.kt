@@ -47,10 +47,10 @@ data class FrontierExploration(
     val highestPayout: Int,
     val planetsScannedToLevel2: Int,
     val planetsScannedToLevel3: Int,
-    val systemsVisited: Int,
+    var systemsVisited: Int,
     val timePlayed: Int,
-    val totalHyperspaceDistance: Int,
-    val totalHyperspaceJumps: Int
+    var totalHyperspaceDistance: Int,
+    var totalHyperspaceJumps: Int
 )
 
 data class FrontierMining(

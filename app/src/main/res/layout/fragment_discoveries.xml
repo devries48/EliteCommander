@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.devries48.elitecommander.viewModels.MainViewModel" />
@@ -29,13 +30,13 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/margin_small"
                 android:layout_marginBottom="@dimen/margin_medium">
 
                 <TextView
                     android:id="@+id/summary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
                     android:text="@string/discovery_summary"
                     android:textAppearance="@style/eliteStyle.Title"
                     app:layout_constraintLeft_toLeftOf="parent"
@@ -57,13 +58,12 @@
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/margin_small">
                         <TextView
                             android:id="@+id/discoveredTitleTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/margin_small"
                             android:text="@string/total_discovered"
                             android:textAppearance="@style/eliteStyle.SmallText"
                             app:layout_constraintStart_toStartOf="parent"
@@ -73,11 +73,11 @@
                             android:id="@+id/discoveredTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/margin_large"
                             android:text="@={`` + viewModel.currentDiscoverySummary.discoveryTotal}"
                             android:textAppearance="@style/eliteStyle.Value"
+                            app:layout_constraintStart_toStartOf="@+id/discoveredTitleTextView"
                             app:layout_constraintEnd_toEndOf="@+id/discoveredTitleTextView"
-                            app:layout_constraintTop_toTopOf="@+id/discoveredTitleTextView" />
+                            app:layout_constraintTop_toBottomOf="@+id/discoveredTitleTextView" />
 
                         <TextView
                             android:id="@+id/mappedTitleTextView"
@@ -85,24 +85,24 @@
                             android:layout_height="wrap_content"
                             android:text="@string/total_mapped"
                             android:textAppearance="@style/eliteStyle.SmallText"
-                            app:layout_constraintStart_toStartOf="@+id/firstMappedTitleTextView"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="@id/discoveredTitleTextView" />
 
                         <TextView
                             android:id="@+id/mappedTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/margin_large"
                             android:text="@={`` + viewModel.currentDiscoverySummary.mappedTotal}"
                             android:textAppearance="@style/eliteStyle.Value"
+                            app:layout_constraintStart_toStartOf="@+id/mappedTitleTextView"
                             app:layout_constraintEnd_toEndOf="@+id/mappedTitleTextView"
-                            app:layout_constraintTop_toTopOf="@+id/mappedTitleTextView" />
+                            app:layout_constraintTop_toBottomOf="@+id/mappedTitleTextView" />
 
                         <TextView
                             android:id="@+id/bonusTitleTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="@dimen/margin_small"
                             android:text="@string/total_bonus"
                             android:textAppearance="@style/eliteStyle.SmallText"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -112,12 +112,11 @@
                             android:id="@+id/bonusTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/margin_large"
                             android:text="@={`` + viewModel.currentDiscoverySummary.efficiencyBonusTotal}"
                             android:textAppearance="@style/eliteStyle.Value"
+                            app:layout_constraintStart_toStartOf="@+id/bonusTitleTextView"
                             app:layout_constraintEnd_toEndOf="@+id/bonusTitleTextView"
-                            app:layout_constraintTop_toTopOf="@+id/bonusTitleTextView" />
-
+                            app:layout_constraintTop_toBottomOf="@+id/bonusTitleTextView" />
 
                         <TextView
                             android:id="@+id/firstDiscoveriesTopTextView"
@@ -134,7 +133,6 @@
                             android:id="@+id/firstDiscoveriesTitleTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/margin_small"
                             android:text="@string/total_discovered"
                             android:textAppearance="@style/eliteStyle.SmallText"
                             app:layout_constraintStart_toStartOf="parent"
@@ -144,11 +142,11 @@
                             android:id="@+id/firstDiscoveredTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/margin_large"
                             android:text="@={`` + viewModel.currentDiscoverySummary.FirstDiscoveryTotal}"
                             android:textAppearance="@style/eliteStyle.Bright"
+                            app:layout_constraintStart_toStartOf="@+id/firstDiscoveriesTitleTextView"
                             app:layout_constraintEnd_toEndOf="@+id/firstDiscoveriesTitleTextView"
-                            app:layout_constraintTop_toTopOf="@+id/firstDiscoveriesTitleTextView" />
+                            app:layout_constraintTop_toBottomOf="@+id/firstDiscoveriesTitleTextView" />
 
                         <TextView
                             android:id="@+id/firstMappedTopTextView"
@@ -166,20 +164,19 @@
                             android:layout_height="wrap_content"
                             android:text="@string/total_mapped"
                             android:textAppearance="@style/eliteStyle.SmallText"
-                            app:layout_constraintEnd_toStartOf="@id/firstBothTitleTextView"
-                            app:layout_constraintStart_toEndOf="@id/firstDiscoveriesTitleTextView"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="@id/firstDiscoveriesTitleTextView" />
 
                         <TextView
                             android:id="@+id/firstMappedTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/margin_large"
                             android:text="@={`` + viewModel.currentDiscoverySummary.firstMappedTotal}"
                             android:textAppearance="@style/eliteStyle.Bright"
                             app:layout_constraintEnd_toEndOf="@+id/firstMappedTitleTextView"
-                            app:layout_constraintStart_toEndOf="@+id/firstMappedTitleTextView"
-                            app:layout_constraintTop_toTopOf="@+id/firstMappedTitleTextView" />
+                            app:layout_constraintStart_toStartOf="@+id/firstMappedTitleTextView"
+                            app:layout_constraintTop_toBottomOf="@+id/firstMappedTitleTextView" />
 
                         <TextView
                             android:id="@+id/firstBothTopTextView"
@@ -195,7 +192,6 @@
                             android:id="@+id/firstBothTitleTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="@dimen/margin_small"
                             android:text="@string/total_discovered_and_mapped"
                             android:textAppearance="@style/eliteStyle.SmallText"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -205,11 +201,11 @@
                             android:id="@+id/firstBothTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/margin_large"
                             android:text="@={`` + viewModel.currentDiscoverySummary.FirstDiscoveredAndMappedTotal}"
                             android:textAppearance="@style/eliteStyle.Bright"
-                            app:layout_constraintEnd_toEndOf="@+id/firstBothTitleTextView"
-                            app:layout_constraintTop_toTopOf="@+id/firstBothTitleTextView" />
+                            app:layout_constraintEnd_toEndOf="@+id/bonusTitleTextView"
+                            app:layout_constraintStart_toStartOf="@+id/bonusTitleTextView"
+                            app:layout_constraintTop_toBottomOf="@+id/firstBothTitleTextView" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.cardview.widget.CardView>
@@ -221,8 +217,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/margin_medium"
-                    android:layout_marginTop="@dimen/margin_small"
                     android:layout_marginRight="@dimen/margin_medium"
+                    android:layout_marginTop="@dimen/margin_medium"
+                    android:layout_marginBottom="@dimen/margin_medium"
+
                     app:cardElevation="0dp"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
@@ -230,28 +228,63 @@
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:layout_margin ="@dimen/margin_small">
+
+                        <TextView
+                            android:id="@+id/distanceTitleTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/distance"
+                            android:textAppearance="@style/eliteStyle.SmallText"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/distanceValueTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{@string/format_distance(viewModel.currentDiscoverySummary.tripDistance)}"
+                            android:textAppearance="@style/eliteStyle.Value"
+                            app:layout_constraintStart_toStartOf="@+id/distanceTitleTextView"
+                            app:layout_constraintTop_toBottomOf="@+id/distanceTitleTextView" />
+
+                        <TextView
+                            android:id="@+id/jumpsTitleTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/jumps"
+                            android:textAppearance="@style/eliteStyle.SmallText"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/jumpsValueTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@={`` + viewModel.currentDiscoverySummary.tripJumps}"
+                            android:textAppearance="@style/eliteStyle.Value"
+                            app:layout_constraintEnd_toEndOf="@+id/jumpsTitleTextView"
+                            app:layout_constraintStart_toStartOf="@+id/jumpsTitleTextView"
+                            app:layout_constraintTop_toBottomOf="@+id/jumpsTitleTextView" />
 
                         <TextView
                             android:id="@+id/valueTitleTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:layout_marginEnd="@dimen/margin_small"
                             android:text="@string/estimated_value"
                             android:textAppearance="@style/eliteStyle.SmallText"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"/>
-
+                            app:layout_constraintTop_toTopOf="parent" />
                         <TextView
                             android:id="@+id/valueTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/margin_large"
                             android:text="@{@string/format_currency(viewModel.currentDiscoverySummary.estimatedValue)}"
-                            android:textAppearance="@style/eliteStyle.Bright"
+                            android:textAppearance="@style/eliteStyle.Value"
                             app:layout_constraintEnd_toEndOf="@+id/valueTitleTextView"
-                            app:layout_constraintTop_toTopOf="@+id/valueTitleTextView" />
+                            app:layout_constraintTop_toBottomOf="@+id/valueTitleTextView" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.cardview.widget.CardView>
