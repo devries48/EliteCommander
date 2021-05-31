@@ -56,6 +56,7 @@
 
     <style name="eliteStyle.BodyDiscovery.First" parent="eliteStyle.BodyDiscovery">
         <item name="android:textColor">@color/yellow</item>
+        <item name="android:textSize">12sp</item>
     </style>
 
     <style name="EliteCardView" parent="@style/Widget.MaterialComponents.CardView">

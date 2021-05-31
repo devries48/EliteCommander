@@ -12,14 +12,17 @@ import com.devries48.elitecommander.R
 import com.devries48.elitecommander.adapters.DiscoveriesRecyclerAdapter
 import com.devries48.elitecommander.databinding.FragmentDiscoveriesBinding
 import com.devries48.elitecommander.viewModels.MainViewModel
+import kotlinx.coroutines.DelicateCoroutinesApi
 
+@DelicateCoroutinesApi
 class DiscoveriesFragment : Fragment() {
 
     private val mViewModel: MainViewModel by navGraphViewModels(R.id.nav_main)
     private lateinit var mAdapter: DiscoveriesRecyclerAdapter
 
     private var _binding: FragmentDiscoveriesBinding? = null
-    private val binding get() = _binding!!
+    private val binding
+        get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,6 +30,9 @@ class DiscoveriesFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentDiscoveriesBinding.inflate(inflater, container, false)
+
+        binding.bothTitle.isSelected = true // activate marquee
+        binding.lastDockedText.isSelected = true // activate marquee
 
         binding.viewModel = mViewModel
         binding.lifecycleOwner = this
@@ -44,12 +50,7 @@ class DiscoveriesFragment : Fragment() {
         binding.discoveriesRecyclerView.layoutManager = layoutManager
         binding.discoveriesRecyclerView.adapter = mAdapter
 
-        list.observe(viewLifecycleOwner,
-            { discoveries ->
-                run {
-                    mAdapter.updateList(discoveries)
-                }
-            })
+        list.observe(viewLifecycleOwner, { discoveries -> run { mAdapter.updateList(discoveries) } })
     }
 
     override fun onDestroyView() {

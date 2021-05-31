@@ -215,7 +215,6 @@
 
     <string name="download_error">Error downloading content</string>
     <string name="frontier_profile">Frontier profile</string>
-    <string name="frontier_journal_ranks">Frontier journal ranks</string>
     <string name="frontier_fleet">Frontier fleet</string>
     <string name="edsm_distance">EDSM distance search</string>
     <string name="Frontier_journal_discoveries">Frontier journal discoveries</string>
@@ -243,8 +242,8 @@
     <string name="smuggled">Smuggled</string>
     <string name="tradingAndSmuggling"><![CDATA[Trading & Smuggling]]></string>
     <string name="search">Search</string>
-    <string name="content_description_search">Switch to search-mode</string>
     <string name="nearest_facilities">Nearest Facilities</string>
     <string name="distance">Distance</string>
     <string name="jumps">Jumps</string>
+    <string name="last_docked">Last docked</string>
 </resources>

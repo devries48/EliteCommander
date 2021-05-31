@@ -35,6 +35,7 @@ class MainViewModel(client: CommanderClient?) : ViewModel() {
     private val mIsProfileBusy = MutableLiveData<Boolean>().default(false)
     private val mIsRanksBusy = MutableLiveData<Boolean>().default(false)
     private val mIsStatsBusy = MutableLiveData<Boolean>().default(false)
+    private val mIsDiscoveryBusy = MutableLiveData<Boolean>().default(false)
 
     private val mCombatRank = MutableLiveData(RankModel(RankModel.RankType.COMBAT, FrontierRanksEvent.FrontierRank()))
     private val mTradeRank = MutableLiveData(RankModel(RankModel.RankType.TRADING, FrontierRanksEvent.FrontierRank()))
@@ -50,7 +51,7 @@ class MainViewModel(client: CommanderClient?) : ViewModel() {
 
     private var mCurrentDiscoveries = MutableLiveData<List<FrontierDiscovery>>()
     private var mCurrentDiscoverySummary =
-        MutableLiveData(FrontierDiscoverySummary(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0, 0))
+        MutableLiveData(FrontierDiscoverySummary(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0, 0, null))
 
     private var mProfitChart = MutableLiveData<List<ProfitModel>>()
 
@@ -75,6 +76,7 @@ class MainViewModel(client: CommanderClient?) : ViewModel() {
     val currentDiscoverySummary: LiveData<FrontierDiscoverySummary> = mCurrentDiscoverySummary
     var isRanksBusy: MutableLiveData<Boolean> = mIsRanksBusy
     var isStatsBusy: MutableLiveData<Boolean> = mIsStatsBusy
+    var isDiscoveryBusy: MutableLiveData<Boolean> = mIsDiscoveryBusy
     var isProfileBusy: MutableLiveData<Boolean> = mIsProfileBusy
 
     init {
@@ -182,6 +184,8 @@ class MainViewModel(client: CommanderClient?) : ViewModel() {
                 sendAlert(R.string.Frontier_journal_discoveries, discoveries.error)
             else
                 launchCurrentDiscoveries(discoveries)
+
+            mIsDiscoveryBusy.postValue(false)
         }
     }
 
@@ -222,6 +226,7 @@ class MainViewModel(client: CommanderClient?) : ViewModel() {
         mIsProfileBusy.postValue(switchOn)
         mIsRanksBusy.postValue(switchOn)
         mIsStatsBusy.postValue(switchOn)
+        mIsDiscoveryBusy.postValue(switchOn)
     }
 
     private fun launchPlayerStats(statistics: FrontierStatisticsEvent) {
@@ -359,8 +364,8 @@ class MainViewModel(client: CommanderClient?) : ViewModel() {
         mBuilderMain.addStatistic(
             StatisticsBuilder.Companion.StatisticType.CMDR_LOCATION,
             StatisticsBuilder.Companion.StatisticPosition.RIGHT,
-            if (distanceSearch.distance == 0.0) R.string.current_location else R.string.distance_sol,
-            if (distanceSearch.distance == 0.0) "Discovered" else "${StatisticsBuilder.formatDouble(distanceSearch.distance)} LY",
+            R.string.distance_sol,
+            if (distanceSearch.distance == 0.0) "First discovered" else "${StatisticsBuilder.formatDouble(distanceSearch.distance)} LY",
             null,
             StatisticsBuilder.Companion.StatisticFormat.NONE,
             StatisticsBuilder.Companion.StatisticColor.DIMMED

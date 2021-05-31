@@ -31,16 +31,24 @@
 
             <TextView
                 android:id="@+id/bodyNameTextView"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_medium"
                 android:text=""
+                android:ellipsize="marquee"
+                android:fadingEdge="horizontal"
+                android:includeFontPadding="false"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:scrollHorizontally="true"
+                android:singleLine="true"
                 android:textAppearance="@style/eliteStyle.Value"
                 app:layout_constraintStart_toEndOf="@+id/bodyImageView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintTop_toTopOf="@+id/bodyImageView" />
 
             <TextView
-                android:id="@+id/discoveredTitleTextView"
+                android:id="@+id/discoveredTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/discovered"
@@ -50,22 +58,22 @@
                 app:layout_constraintTop_toBottomOf="@+id/bodyNameTextView" />
 
             <TextView
-                android:id="@+id/discoveredTextView"
+                android:id="@+id/discoveredText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""
                 android:textAppearance="@style/eliteStyle.BodyDiscovery.Value"
-                app:layout_constraintEnd_toEndOf="@+id/discoveredTitleTextView"
-                app:layout_constraintTop_toBottomOf="@+id/discoveredTitleTextView" />
+                app:layout_constraintEnd_toEndOf="@+id/discoveredTitle"
+                app:layout_constraintTop_toBottomOf="@+id/discoveredTitle" />
 
             <TextView
-                android:id="@+id/firstDiscoveredTextView"
+                android:id="@+id/firstDiscoveredText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""
                 android:textAppearance="@style/eliteStyle.BodyDiscovery.First"
-                app:layout_constraintEnd_toEndOf="@+id/discoveredTitleTextView"
-                app:layout_constraintTop_toBottomOf="@+id/discoveredTextView" />
+                app:layout_constraintEnd_toEndOf="@+id/discoveredTitle"
+                app:layout_constraintTop_toBottomOf="@+id/discoveredText" />
 
             <TextView
                 android:id="@+id/firstDiscoveredLabelTextView"
@@ -73,39 +81,39 @@
                 android:layout_height="wrap_content"
                 android:text="@string/first"
                 android:textAppearance="@style/eliteStyle.TinyText"
-                app:layout_constraintStart_toStartOf="@+id/discoveredTitleTextView"
-                app:layout_constraintTop_toTopOf="@+id/firstDiscoveredTextView" />
+                app:layout_constraintStart_toStartOf="@+id/discoveredTitle"
+                app:layout_constraintTop_toTopOf="@+id/firstDiscoveredText" />
 
             <TextView
-                android:id="@+id/mappedTitleTextView"
+                android:id="@+id/mappedTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/mapped"
                 android:textAppearance="@style/eliteStyle.SmallText"
-                app:layout_constraintStart_toEndOf="@+id/discoveredTitleTextView"
-                app:layout_constraintEnd_toStartOf="@+id/valueTitleTextView"
-                app:layout_constraintTop_toTopOf="@+id/discoveredTitleTextView" />
+                app:layout_constraintEnd_toStartOf="@+id/valueTitle"
+                app:layout_constraintStart_toEndOf="@+id/discoveredTitle"
+                app:layout_constraintTop_toTopOf="@+id/discoveredTitle" />
 
             <TextView
-                android:id="@+id/mappedTextView"
+                android:id="@+id/mappedText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""
                 android:textAppearance="@style/eliteStyle.BodyDiscovery.Value"
-                app:layout_constraintEnd_toEndOf="@+id/mappedTitleTextView"
-                app:layout_constraintTop_toBottomOf="@+id/mappedTitleTextView" />
+                app:layout_constraintEnd_toEndOf="@+id/mappedTitle"
+                app:layout_constraintTop_toBottomOf="@+id/mappedTitle" />
 
             <TextView
-                android:id="@+id/firstMappedTextView"
+                android:id="@+id/firstMappedText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""
                 android:textAppearance="@style/eliteStyle.BodyDiscovery.First"
-                app:layout_constraintEnd_toEndOf="@+id/mappedTitleTextView"
-                app:layout_constraintTop_toBottomOf="@+id/mappedTextView" />
+                app:layout_constraintEnd_toEndOf="@+id/mappedTitle"
+                app:layout_constraintTop_toBottomOf="@+id/mappedText" />
 
             <TextView
-                android:id="@+id/valueTitleTextView"
+                android:id="@+id/valueTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/margin_small"
@@ -113,16 +121,16 @@
                 android:textAlignment="textEnd"
                 android:textAppearance="@style/eliteStyle.SmallText"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/discoveredTitleTextView" />
+                app:layout_constraintTop_toTopOf="@+id/discoveredTitle" />
 
             <TextView
-                android:id="@+id/valueTextView"
+                android:id="@+id/valueText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""
                 android:textAppearance="@style/eliteStyle.BodyDiscovery.Value"
-                app:layout_constraintEnd_toEndOf="@+id/valueTitleTextView"
-                app:layout_constraintTop_toBottomOf="@+id/valueTitleTextView" />
+                app:layout_constraintEnd_toEndOf="@+id/valueTitle"
+                app:layout_constraintTop_toBottomOf="@+id/valueTitle" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

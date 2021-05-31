@@ -10,6 +10,7 @@ data class FrontierDiscoveriesEvent(
 data class FrontierDiscoverySummary(
     var discoveryTotal: Int,
     var mappedTotal: Int,
+    var discoveredAndMappedTotal: Int,
     val wasDiscovered: Int,
     val wasMapped: Int,
     var efficiencyBonusTotal: Int,
@@ -19,17 +20,19 @@ data class FrontierDiscoverySummary(
     var probesUsedTotal: Int,
     var estimatedValue: Long,
     var tripDistance: Double,
-    var tripJumps: Int
+    var tripJumps: Int,
+    var lastDocked: String?
 )
 
 data class FrontierDiscovery(
     val body: String,
     val star: String,
-    val discoveryCount: Int,
-    val mappedCount: Int,
-    val efficiencyBonusCount: Int,
-    val firstDiscoveredCount: Int,
-    val firstMappedCount: Int,
-    val firstDiscoveredAndMappedCount: Int,
+    val discovered: Int,
+    val mapped: Int,
+    val discoveredAndMapped: Int,
+    val efficiencyBonus: Int,
+    val firstDiscovered: Int,
+    val firstMapped: Int,
+    val firstDiscoveredAndMapped: Int,
     val estimatedValue: Long
 )
