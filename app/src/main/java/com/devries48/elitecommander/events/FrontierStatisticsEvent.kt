@@ -41,12 +41,12 @@ data class FrontierCombat(
 )
 
 data class FrontierExploration(
-    val efficientScans: Int,
+    var efficientScans: Int,
     val explorationProfits: Long,
     val greatestDistanceFromStart: Double,
     val highestPayout: Int,
-    val planetsScannedToLevel2: Int,
-    val planetsScannedToLevel3: Int,
+    var planetsScannedToLevel2: Int,
+    var planetsScannedToLevel3: Int,
     var systemsVisited: Int,
     val timePlayed: Int,
     var totalHyperspaceDistance: Int,

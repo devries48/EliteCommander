@@ -182,8 +182,11 @@ class JournalStatistics(worker: JournalWorker) {
 
         var dist = 0.0
         var visitCount = 0
+        var bonusCount = 0
+
         val scans = rawEvents.filter { it.event == JournalConstants.EVENT_DISCOVERY }
         val jumps = rawEvents.filter { it.event == JournalConstants.EVENT_FSD_JUMP }
+        val maps = rawEvents.filter { it.event == JournalConstants.EVENT_MAP }
         val visits = arrayListOf<String>()
 
         scans.forEach {
@@ -202,9 +205,17 @@ class JournalStatistics(worker: JournalWorker) {
             dist += jump.jumpDist
         }
 
+        maps.forEach {
+            val map = Gson().fromJson(it.json, JournalDiscoveries.Mapping::class.java)
+            if (map.efficiencyTarget >= map.probesUsed) bonusCount += 1
+        }
+
         stats.totalHyperspaceJumps += jumps.count()
         stats.systemsVisited += visitCount
         stats.totalHyperspaceDistance += dist.toInt()
+        stats.planetsScannedToLevel2 += scans.count()
+        stats.planetsScannedToLevel3 = stats.planetsScannedToLevel2
+        stats.efficientScans += bonusCount
 
         return stats
     }

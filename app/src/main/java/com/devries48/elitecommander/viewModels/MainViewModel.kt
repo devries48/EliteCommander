@@ -365,7 +365,7 @@ class MainViewModel(client: CommanderClient?) : ViewModel() {
             StatisticsBuilder.Companion.StatisticType.CMDR_LOCATION,
             StatisticsBuilder.Companion.StatisticPosition.RIGHT,
             R.string.distance_sol,
-            if (distanceSearch.distance == 0.0) "First discovered" else "${StatisticsBuilder.formatDouble(distanceSearch.distance)} LY",
+            if (distanceSearch.distance == 0.0) "Discovered" else "${StatisticsBuilder.formatDouble(distanceSearch.distance)} LY",
             null,
             StatisticsBuilder.Companion.StatisticFormat.NONE,
             StatisticsBuilder.Companion.StatisticColor.DIMMED

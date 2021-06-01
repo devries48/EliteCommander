@@ -254,7 +254,7 @@ class JournalDiscoveries {
         var estimatedValue: Long = 0
     )
 
-    private data class Mapping(
+    internal data class Mapping(
         @SerializedName("SystemAddress") val systemAddress: Long,
         @SerializedName("BodyID") val bodyID: Int,
         @SerializedName("EfficiencyTarget") val efficiencyTarget: Int,

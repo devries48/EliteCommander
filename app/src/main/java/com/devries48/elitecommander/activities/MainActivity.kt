@@ -5,6 +5,8 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -32,6 +34,7 @@ class MainActivity : AppCompatActivity() {
     private var mCurrentDestinationId: Int = 0
     private lateinit var mBinding: ActivityMainBinding
     private lateinit var mCommanderClient: CommanderClient
+    private lateinit var mResultLauncher: ActivityResultLauncher<Intent>
 
     private val mNavController by lazy { findNavController() }
     private var mMainViewModel: MainViewModel? = null
@@ -53,9 +56,17 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(mBinding.root)
         setSupportActionBar(mBinding.mainToolbar)
+
+        setupLauncher()
         setupNavigation()
         setupViewModel()
         setupRefresh()
+    }
+
+    private fun setupLauncher() {
+        mResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            mIsLoggedIn = true
+        }
     }
 
     public override fun onStart() {
@@ -66,11 +77,6 @@ class MainActivity : AppCompatActivity() {
     public override fun onStop() {
         super.onStop()
         stopEventBus()
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        mIsLoggedIn = true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -169,7 +175,7 @@ class MainActivity : AppCompatActivity() {
             storeUpdatedTokens(this, "", "")
 
             val intent = Intent(this@MainActivity, LoginActivity::class.java)
-            startActivityForResult(intent, 0)
+            mResultLauncher.launch(intent)
         }
     }
 

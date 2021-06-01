@@ -113,7 +113,6 @@
     <string name="discovery_summary">Discovery summary</string>
     <string name="total_discovered">Discovered</string>
     <string name="total_mapped">Mapped</string>
-    <string name="total_bonus">Efficiency Bonus</string>
     <string name="image_planet_star_discoveries">Image for the planet or star discoveries.</string>
     <string name="total_discovered_and_mapped"><![CDATA[Discovered & Mapped]]></string>
     <string name="discovered">Discovered</string>
