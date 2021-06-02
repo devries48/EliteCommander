@@ -4,6 +4,7 @@ plugins {
     id 'kotlin-kapt'
     id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
+    id 'com.google.firebase.firebase-perf'
 }
 
 def localProperties = new Properties()
@@ -111,6 +112,11 @@ dependencies {
     // Firebase
     implementation 'com.google.firebase:firebase-crashlytics-ktx:18.0.0'
     implementation 'com.google.firebase:firebase-analytics:19.0.0'
+    // Import the BoM for the Firebase platform
+    implementation platform('com.google.firebase:firebase-bom:28.0.1')
+    // Declare the dependency for the Performance Monitoring library
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation 'com.google.firebase:firebase-perf-ktx'
 
     // Retrofit
     ext.retrofitVersion = '2.9.0'

@@ -1,10 +1,12 @@
 package com.devries48.elitecommander.utils
 
 import com.devries48.elitecommander.network.journal.JournalDiscoveries
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlin.math.max
 import kotlin.math.pow
 import kotlin.math.round
 
+@DelicateCoroutinesApi
 object DiscoveryValueCalculator {
 
     /*

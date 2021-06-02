@@ -40,6 +40,12 @@ object DistanceCalculatorNetwork {
     }
 
     private fun handleDistanceCalculation(system: String, coords: EdsmSystemCoordinatesResponse) {
+        println("EDSM")
+        println(coords.x)
+        println(coords.y)
+        println(coords.z)
+        println("EDSM")
+
         val distance = sqrt(coords.x.pow(2) + coords.y.pow(2) + coords.z.pow(2))
 
         val distanceSearch: DistanceSearchEvent = try {

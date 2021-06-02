@@ -11,6 +11,7 @@ object JournalConstants {
     const val EVENT_DISCOVERY = "Scan"
     const val EVENT_MAP = "SAAScanComplete"
     const val EVENT_DISCOVERIES_SOLD = "MultiSellExplorationData"
+    const val EVENT_DISCOVERY_SOLD = "SellExplorationData"
     const val EVENT_DIED = "Died"
     const val EVENT_RANK = "Rank"
     const val EVENT_PROGRESS = "Progress"

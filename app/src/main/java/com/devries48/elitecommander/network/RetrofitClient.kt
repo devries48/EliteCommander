@@ -55,7 +55,7 @@ open class RetrofitClient private constructor() : Serializable {
         val httpClient = commonOkHttpClientBuilder
 
         val logging = HttpLoggingInterceptor()
-        logging.setLevel(HttpLoggingInterceptor.Level.BASIC)
+        logging.setLevel(HttpLoggingInterceptor.Level.NONE)
         httpClient.addInterceptor(logging)
 
         // Add interceptor for tokens in response

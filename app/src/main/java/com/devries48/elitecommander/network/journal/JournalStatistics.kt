@@ -4,6 +4,7 @@ import com.devries48.elitecommander.events.*
 import com.devries48.elitecommander.models.response.frontier.*
 import com.devries48.elitecommander.network.journal.JournalWorker.Companion.sendWorkerEvent
 import com.google.gson.Gson
+import com.google.gson.annotations.SerializedName
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -18,16 +19,19 @@ class JournalStatistics(worker: JournalWorker) {
     internal suspend fun raiseFrontierStatisticsEvent(rawEvents: List<JournalWorker.RawEvent>) {
         withContext(Dispatchers.IO) {
             try {
-                val rawStatistics = rawEvents.firstOrNull { it.event == JournalConstants.EVENT_STATISTICS }
-                    ?: throw error("No statistics event found!")
+                val rawStatistics =
+                    rawEvents.firstOrNull { it.event == JournalConstants.EVENT_STATISTICS }
+                        ?: throw error("No statistics event found!")
 
                 val statistics = Gson().fromJson(rawStatistics.json, JournalStatisticsResponse::class.java)
-                mVoucherProfit = VoucherProfit()
-                setVoucherProfits(rawEvents)
+                mVoucherProfit = setVoucherProfits(rawEvents)
 
                 sendWorkerEvent(
                     FrontierStatisticsEvent(
-                        true, null, mWorker.lastJournalDate, FrontierBankAccount(
+                        true,
+                        null,
+                        mWorker.lastJournalDate,
+                        FrontierBankAccount(
                             statistics.bankAccount.currentWealth,
                             statistics.bankAccount.insuranceClaims,
                             statistics.bankAccount.ownedShipCount,
@@ -78,7 +82,6 @@ class JournalStatistics(worker: JournalWorker) {
                         )
                     )
                 )
-
             } catch (e: Exception) {
                 println()
                 sendWorkerEvent(
@@ -98,11 +101,11 @@ class JournalStatistics(worker: JournalWorker) {
                     )
                 )
             }
-
         }
     }
 
-    private fun setVoucherProfits(rawEvents: List<JournalWorker.RawEvent>) {
+    private fun setVoucherProfits(rawEvents: List<JournalWorker.RawEvent>): VoucherProfit {
+        val profit = VoucherProfit()
 
         val vouchers = rawEvents.filter { it.event == JournalConstants.EVENT_REDEEM_VOUCHER }
         vouchers.forEach {
@@ -110,38 +113,40 @@ class JournalStatistics(worker: JournalWorker) {
             val amount = voucher.amount ?: voucher.factions?.map { a -> a.amount }?.sum()!!
 
             when (voucher.type.lowercase(Locale.ROOT)) {
-                "bounty" -> mVoucherProfit.bounty += amount
-                "combatbond" -> mVoucherProfit.combatBond += amount
-                "trade" -> mVoucherProfit.trade += amount
-                "settlement" -> mVoucherProfit.settlement += amount
-                "scannable" -> mVoucherProfit.scannable += amount
+                "bounty" -> profit.bounty += amount
+                "combatbond" -> profit.combatBond += amount
+                "trade" -> profit.trade += amount
+                "settlement" -> profit.settlement += amount
+                "scannable" -> profit.scannable += amount
+                "codex" -> profit.codex += amount
                 else -> println("Voucher type not found: " + voucher.type)
             }
         }
+
+        return profit
     }
 
     private fun getFrontierCombat(
         statistics: JournalStatisticsResponse,
         rawEvents: List<JournalWorker.RawEvent>
     ): FrontierCombat {
-        val stats = FrontierCombat(
-            statistics.combat.assassinationProfits,
-            statistics.combat.assassinations,
-            statistics.combat.bountiesClaimed,
-            statistics.combat.bountyHuntingProfit,
-            statistics.combat.combatBondProfits,
-            statistics.combat.combatBonds,
-            statistics.combat.highestSingleReward,
-            statistics.combat.skimmersKilled
-        )
+        val stats =
+            FrontierCombat(
+                statistics.combat.assassinationProfits,
+                statistics.combat.assassinations,
+                statistics.combat.bountiesClaimed,
+                statistics.combat.bountyHuntingProfit,
+                statistics.combat.combatBondProfits,
+                statistics.combat.combatBonds,
+                statistics.combat.highestSingleReward,
+                statistics.combat.skimmersKilled
+            )
 
         val bounties = rawEvents.filter { it.event == JournalConstants.EVENT_COMBAT_BOUNTY }
         bounties.forEach {
             val bounty = Gson().fromJson(it.json, JournalBountyResponse::class.java)
-            if (bounty.reward == null)
-                stats.bountiesClaimed += bounty.rewards?.size ?: 1
-            else
-                stats.skimmersKilled += 1
+            if (bounty.reward == null) stats.bountiesClaimed += bounty.rewards?.size ?: 1
+            else stats.skimmersKilled += 1
         }
 
         stats.combatBonds += rawEvents.count { it.event == JournalConstants.EVENT_COMBAT_BOND }
@@ -167,18 +172,19 @@ class JournalStatistics(worker: JournalWorker) {
         statistics: JournalStatisticsResponse,
         rawEvents: List<JournalWorker.RawEvent>
     ): FrontierExploration {
-        val stats = FrontierExploration(
-            statistics.exploration.efficientScans,
-            statistics.exploration.explorationProfits,
-            statistics.exploration.greatestDistanceFromStart,
-            statistics.exploration.highestPayout,
-            statistics.exploration.planetsScannedToLevel2,
-            statistics.exploration.planetsScannedToLevel3,
-            statistics.exploration.systemsVisited,
-            statistics.exploration.timePlayed,
-            statistics.exploration.totalHyperspaceDistance,
-            statistics.exploration.totalHyperspaceJumps
-        )
+        val stats =
+            FrontierExploration(
+                statistics.exploration.efficientScans,
+                statistics.exploration.explorationProfits,
+                statistics.exploration.greatestDistanceFromStart,
+                statistics.exploration.highestPayout,
+                statistics.exploration.planetsScannedToLevel2,
+                statistics.exploration.planetsScannedToLevel3,
+                statistics.exploration.systemsVisited,
+                statistics.exploration.timePlayed,
+                statistics.exploration.totalHyperspaceDistance,
+                statistics.exploration.totalHyperspaceJumps
+            )
 
         var dist = 0.0
         var visitCount = 0
@@ -187,19 +193,26 @@ class JournalStatistics(worker: JournalWorker) {
         val scans = rawEvents.filter { it.event == JournalConstants.EVENT_DISCOVERY }
         val jumps = rawEvents.filter { it.event == JournalConstants.EVENT_FSD_JUMP }
         val maps = rawEvents.filter { it.event == JournalConstants.EVENT_MAP }
+        val dataSold =
+            rawEvents.filter {
+                it.event == JournalConstants.EVENT_DISCOVERIES_SOLD || it.event == JournalConstants.EVENT_DISCOVERY_SOLD
+            }
         val visits = arrayListOf<String>()
 
         scans.forEach {
             val scan = Gson().fromJson(it.json, JournalDiscoveries.Discovery::class.java)
-            if (scan.starType?.isNotBlank() == true && scan.BodyName?.isNotBlank() == true)
-                if (!visits.contains(scan.BodyName))
-                    visits.add(scan.BodyName)
+            if (scan.starType?.isNotBlank() == true &&
+                scan.bodyName?.isNotBlank() == true &&
+                !visits.contains(scan.bodyName)
+            )
+                visits.add(scan.bodyName)
         }
 
         jumps.forEach {
             val jump = Gson().fromJson(it.json, JournalFsdJumpResponse::class.java)
-            if (visits.contains(jump.starSystem) || visits.filter { name -> name.startsWith(jump.starSystem + " ") }
-                    .count() > 1)
+            if (visits.contains(jump.starSystem) ||
+                visits.filter { name -> name.startsWith(jump.starSystem + " ") }.count() > 1
+            )
                 visitCount += 1
 
             dist += jump.jumpDist
@@ -209,6 +222,12 @@ class JournalStatistics(worker: JournalWorker) {
             val map = Gson().fromJson(it.json, JournalDiscoveries.Mapping::class.java)
             if (map.efficiencyTarget >= map.probesUsed) bonusCount += 1
         }
+
+        dataSold.forEach {
+            val data = Gson().fromJson(it.json, SellData::class.java)
+            stats.explorationProfits += data.totalEarnings
+        }
+        stats.explorationProfits += mVoucherProfit.codex
 
         stats.totalHyperspaceJumps += jumps.count()
         stats.systemsVisited += visitCount
@@ -224,11 +243,12 @@ class JournalStatistics(worker: JournalWorker) {
         statistics: JournalStatisticsResponse,
         rawEvents: List<JournalWorker.RawEvent>
     ): FrontierMining {
-        val stats = FrontierMining(
-            statistics.mining.materialsCollected,
-            statistics.mining.miningProfits,
-            statistics.mining.quantityMined
-        )
+        val stats =
+            FrontierMining(
+                statistics.mining.materialsCollected,
+                statistics.mining.miningProfits,
+                statistics.mining.quantityMined
+            )
 
         stats.quantityMined += rawEvents.count { it.event == JournalConstants.EVENT_MINING_REFINED }
 
@@ -240,6 +260,11 @@ class JournalStatistics(worker: JournalWorker) {
         var bounty: Long = 0,
         var trade: Long = 0,
         var settlement: Long = 0,
-        var scannable: Long = 0
+        var scannable: Long = 0,
+        var codex: Long = 0
+    )
+
+    data class SellData(
+        @SerializedName("TotalEarnings") val totalEarnings: Int
     )
 }

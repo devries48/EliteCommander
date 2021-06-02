@@ -151,7 +151,7 @@ class JournalDiscoveries {
                 Discovery(
                     discovery.systemAddress,
                     discovery.bodyID,
-                    discovery.BodyName,
+                    discovery.bodyName,
                     discovery.planetClass.toStringOrEmpty(),
                     discovery.starType.toStringOrEmpty()
                 )
@@ -236,7 +236,7 @@ class JournalDiscoveries {
     data class Discovery(
         @SerializedName("SystemAddress") val systemAddress: Long,
         @SerializedName("BodyID") val bodyID: Int,
-        @SerializedName("BodyName") val BodyName: String?,
+        @SerializedName("BodyName") val bodyName: String?,
         @SerializedName("PlanetClass") val planetClass: String?,
         @SerializedName("StarType") val starType: String?,
         @SerializedName("WasDiscovered") var wasDiscovered: Boolean = true,
@@ -254,7 +254,7 @@ class JournalDiscoveries {
         var estimatedValue: Long = 0
     )
 
-    internal data class Mapping(
+    data class Mapping(
         @SerializedName("SystemAddress") val systemAddress: Long,
         @SerializedName("BodyID") val bodyID: Int,
         @SerializedName("EfficiencyTarget") val efficiencyTarget: Int,

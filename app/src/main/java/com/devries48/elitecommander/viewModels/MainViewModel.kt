@@ -170,7 +170,7 @@ class MainViewModel(client: CommanderClient?) : ViewModel() {
     @Subscribe(threadMode = ThreadMode.ASYNC)
     fun onDistanceSearch(distanceSearch: DistanceSearchEvent) {
         GlobalScope.launch {
-            if (distanceSearch.success)
+            if (!distanceSearch.success)
                 sendAlert(R.string.edsm_distance, distanceSearch.error)
             else
                 launchDistanceSearch(distanceSearch)

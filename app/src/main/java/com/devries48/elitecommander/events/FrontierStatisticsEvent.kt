@@ -42,7 +42,7 @@ data class FrontierCombat(
 
 data class FrontierExploration(
     var efficientScans: Int,
-    val explorationProfits: Long,
+    var explorationProfits: Long,
     val greatestDistanceFromStart: Double,
     val highestPayout: Int,
     var planetsScannedToLevel2: Int,
