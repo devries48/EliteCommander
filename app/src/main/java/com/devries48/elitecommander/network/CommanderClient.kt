@@ -1,5 +1,6 @@
 package com.devries48.elitecommander.network
 
+import androidx.lifecycle.MutableLiveData
 import com.devries48.elitecommander.App
 import com.devries48.elitecommander.declarations.enqueueWrap
 import com.devries48.elitecommander.events.FrontierFleetEvent
@@ -21,10 +22,21 @@ import retrofit2.Response
 import java.util.*
 import kotlin.collections.ArrayList
 
-class CommanderClient {
+@DelicateCoroutinesApi
+class CommanderClient private constructor() {
+
+    private object HOLDER {
+        val INSTANCE = CommanderClient()
+    }
+
+    companion object {
+        val instance: CommanderClient by lazy { HOLDER.INSTANCE }
+    }
 
     private var mFrontierApi: FrontierInterface? = null
     private var mJournalWorker: JournalWorker? = null
+
+    val currentSystem = MutableLiveData("")
 
     init {
         mFrontierApi = RetrofitClient.getInstance()?.getFrontierRetrofit(App.getContext())
@@ -101,9 +113,10 @@ class CommanderClient {
         val commanderName: String = profile.commander?.name!!
         val credits: Long = profile.commander?.credits!!
         val debt: Long = profile.commander?.debt!!
-        val systemName = profile.lastSystem?.name!!
         val hull = profile.ship?.health?.hull!!
         val integrity = 1000000 - profile.ship?.health?.integrity!!
+
+        currentSystem.postValue(profile.lastSystem?.name)
 
         frontierProfileEvent = profile.commander?.let {
             FrontierProfileEvent(
@@ -112,7 +125,7 @@ class CommanderClient {
                 commanderName,
                 credits,
                 debt,
-                systemName,
+                profile.lastSystem?.name!!,
                 hull,
                 integrity
             )
@@ -169,5 +182,4 @@ class CommanderClient {
     private fun sendResultMessage(data: Any?) {
         EventBus.getDefault().post(data)
     }
-
 }

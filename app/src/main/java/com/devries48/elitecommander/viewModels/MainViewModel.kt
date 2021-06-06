@@ -21,11 +21,11 @@ import org.greenrobot.eventbus.ThreadMode
 import kotlin.math.round
 
 @DelicateCoroutinesApi
-class MainViewModel(client: CommanderClient?) : ViewModel() {
+class MainViewModel : ViewModel() {
 
-    //<editor-fold desc="Private definitions">
+    // <editor-fold desc="Private definitions">
 
-    private val mCommanderApi = client
+    private val mCommanderApi = CommanderClient.instance
     private var mCurrentSettings = StatisticSettingsModel()
     private lateinit var mStatisticSettings: StatisticSettingsModel
 
@@ -37,11 +37,14 @@ class MainViewModel(client: CommanderClient?) : ViewModel() {
     private val mIsStatsBusy = MutableLiveData<Boolean>().default(false)
     private val mIsDiscoveryBusy = MutableLiveData<Boolean>().default(false)
 
-    private val mCombatRank = MutableLiveData(RankModel(RankModel.RankType.COMBAT, FrontierRanksEvent.FrontierRank()))
-    private val mTradeRank = MutableLiveData(RankModel(RankModel.RankType.TRADING, FrontierRanksEvent.FrontierRank()))
+    private val mCombatRank =
+        MutableLiveData(RankModel(RankModel.RankType.COMBAT, FrontierRanksEvent.FrontierRank()))
+    private val mTradeRank =
+        MutableLiveData(RankModel(RankModel.RankType.TRADING, FrontierRanksEvent.FrontierRank()))
     private val mExploreRank =
         MutableLiveData(RankModel(RankModel.RankType.EXPLORATION, FrontierRanksEvent.FrontierRank()))
-    private val mCqcRank = MutableLiveData(RankModel(RankModel.RankType.CQC, FrontierRanksEvent.FrontierRank()))
+    private val mCqcRank =
+        MutableLiveData(RankModel(RankModel.RankType.CQC, FrontierRanksEvent.FrontierRank()))
     private val mFederationRank =
         MutableLiveData(RankModel(RankModel.RankType.FEDERATION, FrontierRanksEvent.FrontierRank()))
     private val mEmpireRank =
@@ -62,7 +65,7 @@ class MainViewModel(client: CommanderClient?) : ViewModel() {
     private val mBuilderPassenger: StatisticsBuilder = StatisticsBuilder()
     private val mBuilderTrading: StatisticsBuilder = StatisticsBuilder()
 
-    //</editor-fold>
+    // </editor-fold>
 
     val name: LiveData<String> = mName
     val notoriety: LiveData<Int> = mNotoriety
@@ -93,8 +96,8 @@ class MainViewModel(client: CommanderClient?) : ViewModel() {
         println("VIEWMODEL.LOAD")
         setAllBusyIndicators(true)
 
-        mCommanderApi?.loadProfile()
-        mCommanderApi?.loadCurrentJournal()
+        mCommanderApi.loadProfile()
+        mCommanderApi.loadCurrentJournal()
     }
 
     private fun loadSettings() {
@@ -137,8 +140,7 @@ class MainViewModel(client: CommanderClient?) : ViewModel() {
     @Subscribe(threadMode = ThreadMode.ASYNC)
     fun onFrontierProfileEvent(profile: FrontierProfileEvent) {
         GlobalScope.launch {
-            if (!profile.success)
-                sendAlert(R.string.frontier_profile, profile.error)
+            if (!profile.success) sendAlert(R.string.frontier_profile, profile.error)
             else {
                 launchProfile(profile)
                 saveStatisticsSettings()
@@ -150,8 +152,7 @@ class MainViewModel(client: CommanderClient?) : ViewModel() {
     @Subscribe(threadMode = ThreadMode.ASYNC)
     fun onFrontierRanksEvent(ranks: FrontierRanksEvent) {
         GlobalScope.launch {
-            if (ranks.success)
-                launchRanks(ranks)
+            if (ranks.success) launchRanks(ranks)
 
             mIsRanksBusy.postValue(false)
         }
@@ -160,30 +161,23 @@ class MainViewModel(client: CommanderClient?) : ViewModel() {
     @Subscribe(threadMode = ThreadMode.ASYNC)
     fun onFrontierFleetEvent(fleet: FrontierFleetEvent) {
         GlobalScope.launch {
-            if (!fleet.success)
-                sendAlert(R.string.frontier_fleet, fleet.error)
-            else
-                launchFleet(fleet)
+            if (!fleet.success) sendAlert(R.string.frontier_fleet, fleet.error) else launchFleet(fleet)
         }
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
     fun onDistanceSearch(distanceSearch: DistanceSearchEvent) {
         GlobalScope.launch {
-            if (!distanceSearch.success)
-                sendAlert(R.string.edsm_distance, distanceSearch.error)
-            else
-                launchDistanceSearch(distanceSearch)
+            if (!distanceSearch.success) sendAlert(R.string.edsm_distance, distanceSearch.error)
+            else launchDistanceSearch(distanceSearch)
         }
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
     fun onCurrentDiscoveries(discoveries: FrontierDiscoveriesEvent) {
         GlobalScope.launch {
-            if (!discoveries.success)
-                sendAlert(R.string.Frontier_journal_discoveries, discoveries.error)
-            else
-                launchCurrentDiscoveries(discoveries)
+            if (!discoveries.success) sendAlert(R.string.Frontier_journal_discoveries, discoveries.error)
+            else launchCurrentDiscoveries(discoveries)
 
             mIsDiscoveryBusy.postValue(false)
         }
@@ -257,10 +251,11 @@ class MainViewModel(client: CommanderClient?) : ViewModel() {
         mName.postValue(profile.name)
 
         val amount = profile.balance
-        var credits = if (profile.loan != 0L) {
-            val loan = StatisticsBuilder.formatCurrency(profile.loan)
-            "$amount CR and loan $loan"
-        } else amount
+        var credits =
+            if (profile.loan != 0L) {
+                val loan = StatisticsBuilder.formatCurrency(profile.loan)
+                "$amount CR and loan $loan"
+            } else amount
 
         // error case
         if (profile.balance == -1L) {
@@ -286,7 +281,7 @@ class MainViewModel(client: CommanderClient?) : ViewModel() {
             StatisticsBuilder.Companion.StatisticColor.DIMMED
         )
 
-        mCommanderApi?.getDistanceToSol(profile.systemName)
+        mCommanderApi.getDistanceToSol(profile.systemName)
 
         val hullPercentage: Int = profile.hull / 10000
 
@@ -297,7 +292,8 @@ class MainViewModel(client: CommanderClient?) : ViewModel() {
             "$hullPercentage%",
             null,
             StatisticsBuilder.Companion.StatisticFormat.NONE,
-            if (hullPercentage >= 50) StatisticsBuilder.Companion.StatisticColor.DIMMED else StatisticsBuilder.Companion.StatisticColor.WARNING
+            if (hullPercentage >= 50) StatisticsBuilder.Companion.StatisticColor.DIMMED
+            else StatisticsBuilder.Companion.StatisticColor.WARNING
         )
 
         val integrityPercentage: Int = profile.integrity / 10000
@@ -309,7 +305,8 @@ class MainViewModel(client: CommanderClient?) : ViewModel() {
             "$integrityPercentage%",
             null,
             StatisticsBuilder.Companion.StatisticFormat.NONE,
-            if (integrityPercentage >= 50) StatisticsBuilder.Companion.StatisticColor.DIMMED else StatisticsBuilder.Companion.StatisticColor.WARNING
+            if (integrityPercentage >= 50) StatisticsBuilder.Companion.StatisticColor.DIMMED
+            else StatisticsBuilder.Companion.StatisticColor.WARNING
         )
 
         mBuilderMain.post()
@@ -365,7 +362,8 @@ class MainViewModel(client: CommanderClient?) : ViewModel() {
             StatisticsBuilder.Companion.StatisticType.CMDR_LOCATION,
             StatisticsBuilder.Companion.StatisticPosition.RIGHT,
             R.string.distance_sol,
-            if (distanceSearch.distance == 0.0) "Discovered" else "${StatisticsBuilder.formatDouble(distanceSearch.distance)} LY",
+            if (distanceSearch.distance == 0.0) "Discovered"
+            else "${StatisticsBuilder.formatDouble(distanceSearch.distance)} LY",
             null,
             StatisticsBuilder.Companion.StatisticFormat.NONE,
             StatisticsBuilder.Companion.StatisticColor.DIMMED
@@ -376,50 +374,62 @@ class MainViewModel(client: CommanderClient?) : ViewModel() {
 
     @SuppressLint("NullSafeMutableLiveData")
     private fun launchCurrentDiscoveries(discoveries: FrontierDiscoveriesEvent) {
-        if (discoveries.summary != null)
-            mCurrentDiscoverySummary.postValue(discoveries.summary)
-        if (discoveries.discoveries != null)
-            mCurrentDiscoveries.postValue(discoveries.discoveries)
+        if (discoveries.summary != null) mCurrentDiscoverySummary.postValue(discoveries.summary)
+        if (discoveries.discoveries != null) mCurrentDiscoveries.postValue(discoveries.discoveries)
     }
 
     private fun launchProfitChart(statistics: FrontierStatisticsEvent) {
         val combatTotal: Long =
-            statistics.combat?.assassinationProfits!! + statistics.combat.bountyHuntingProfit + statistics.combat.combatBondProfits
+            statistics.combat?.assassinationProfits!! +
+                    statistics.combat.bountyHuntingProfit +
+                    statistics.combat.combatBondProfits
         val total: Long =
-            combatTotal + statistics.exploration?.explorationProfits!! + statistics.trading?.marketProfits!! + statistics.mining?.miningProfits!!
+            combatTotal +
+                    statistics.exploration?.explorationProfits!! +
+                    statistics.trading?.marketProfits!! +
+                    statistics.mining?.miningProfits!!
 
-        val smugglingProfit = statistics.smuggling?.let {
-            ProfitModel(
-                ProfitModel.ProfitType.SMUGGLING,
-                it.blackMarketsProfits,
-                round(statistics.smuggling.blackMarketsProfits / total.toFloat() * 1000) / 10
+        val smugglingProfit =
+            statistics.smuggling?.let {
+                ProfitModel(
+                    ProfitModel.ProfitType.SMUGGLING,
+                    it.blackMarketsProfits,
+                    round(statistics.smuggling.blackMarketsProfits / total.toFloat() * 1000) / 10
+                )
+            }
+
+        val rescueProfit =
+            statistics.searchAndRescue?.let {
+                ProfitModel(
+                    ProfitModel.ProfitType.SEARCH_RESCUE,
+                    it.searchRescueProfit,
+                    round(statistics.searchAndRescue.searchRescueProfit / total.toFloat() * 1000) / 10
+                )
+            }
+
+        val models =
+            arrayListOf(
+                ProfitModel(
+                    ProfitModel.ProfitType.EXPLORATION, statistics.exploration.explorationProfits
+                ),
+                ProfitModel(
+                    ProfitModel.ProfitType.COMBAT,
+                    combatTotal,
+                    round(combatTotal / total.toFloat() * 1000) / 10
+                ),
+                ProfitModel(
+                    ProfitModel.ProfitType.TRADING,
+                    statistics.trading.marketProfits,
+                    round(statistics.trading.marketProfits / total.toFloat() * 1000) / 10
+                ),
+                ProfitModel(
+                    ProfitModel.ProfitType.MINING,
+                    statistics.trading.marketProfits,
+                    round(statistics.mining.miningProfits / total.toFloat() * 1000) / 10
+                ),
+                smugglingProfit!!,
+                rescueProfit!!
             )
-        }
-
-        val rescueProfit = statistics.searchAndRescue?.let {
-            ProfitModel(
-                ProfitModel.ProfitType.SEARCH_RESCUE,
-                it.searchRescueProfit,
-                round(statistics.searchAndRescue.searchRescueProfit / total.toFloat() * 1000) / 10
-            )
-        }
-
-        val models = arrayListOf(
-            ProfitModel(ProfitModel.ProfitType.EXPLORATION, statistics.exploration.explorationProfits),
-            ProfitModel(ProfitModel.ProfitType.COMBAT, combatTotal, round(combatTotal / total.toFloat() * 1000) / 10),
-            ProfitModel(
-                ProfitModel.ProfitType.TRADING,
-                statistics.trading.marketProfits,
-                round(statistics.trading.marketProfits / total.toFloat() * 1000) / 10
-            ),
-            ProfitModel(
-                ProfitModel.ProfitType.MINING,
-                statistics.trading.marketProfits,
-                round(statistics.mining.miningProfits / total.toFloat() * 1000) / 10
-            ),
-            smugglingProfit!!,
-            rescueProfit!!
-        )
 
         var lowPercentage = 0f
         var percentageTotal = 0f
@@ -579,7 +589,8 @@ class MainViewModel(client: CommanderClient?) : ViewModel() {
     private fun launchCombatStats(statistics: FrontierStatisticsEvent) {
 
         val totalKills =
-            statistics.combat!!.bountiesClaimed + statistics.combat.combatBonds - (statistics.combat.assassinations + statistics.combat.skimmersKilled)
+            statistics.combat!!.bountiesClaimed + statistics.combat.combatBonds -
+                    (statistics.combat.assassinations + statistics.combat.skimmersKilled)
 
         mBuilderCombat.addStatistic(
             StatisticsBuilder.Companion.StatisticType.COMBAT_TOTAL_KILLS,
@@ -785,10 +796,8 @@ class MainViewModel(client: CommanderClient?) : ViewModel() {
         mBuilderPassenger.post()
     }
 
-
-    class Factory(private val client: CommanderClient?) :
-        ViewModelProvider.NewInstanceFactory() {
+    class Factory : ViewModelProvider.NewInstanceFactory() {
         @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T = MainViewModel(client) as T
+        override fun <T : ViewModel?> create(modelClass: Class<T>): T = MainViewModel() as T
     }
 }

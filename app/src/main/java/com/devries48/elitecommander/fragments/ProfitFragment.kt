@@ -14,10 +14,13 @@ import com.devries48.elitecommander.adapters.ProfitsRecyclerAdapter
 import com.devries48.elitecommander.adapters.StatisticsRecyclerAdapter
 import com.devries48.elitecommander.databinding.FragmentProfitBinding
 import com.devries48.elitecommander.viewModels.MainViewModel
+import kotlinx.coroutines.DelicateCoroutinesApi
 
+@DelicateCoroutinesApi
 class ProfitFragment : Fragment() {
 
     private val mViewModel: MainViewModel by navGraphViewModels(R.id.nav_main)
+
     private lateinit var mStatisticAdapter: StatisticsRecyclerAdapter
     private lateinit var mProfitAdapter: ProfitsRecyclerAdapter
 

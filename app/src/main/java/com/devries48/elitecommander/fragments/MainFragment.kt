@@ -9,7 +9,9 @@ import androidx.viewpager2.widget.ViewPager2
 import com.devries48.elitecommander.adapters.ViewPagerAdapter
 import com.devries48.elitecommander.adapters.ViewPagerTransform
 import com.devries48.elitecommander.databinding.FragmentMainBinding
+import kotlinx.coroutines.DelicateCoroutinesApi
 
+@DelicateCoroutinesApi
 class MainFragment : Fragment() {
 
     private var mAdapter: ViewPagerAdapter? = null

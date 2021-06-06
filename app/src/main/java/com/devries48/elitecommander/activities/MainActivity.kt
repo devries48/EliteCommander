@@ -17,7 +17,6 @@ import com.devries48.elitecommander.R
 import com.devries48.elitecommander.databinding.ActivityMainBinding
 import com.devries48.elitecommander.events.AlertEvent
 import com.devries48.elitecommander.events.FrontierAuthNeededEvent
-import com.devries48.elitecommander.network.CommanderClient
 import com.devries48.elitecommander.utils.OAuthUtils.storeUpdatedTokens
 import com.devries48.elitecommander.viewModels.MainViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -33,7 +32,6 @@ class MainActivity : AppCompatActivity() {
 
     private var mCurrentDestinationId: Int = 0
     private lateinit var mBinding: ActivityMainBinding
-    private lateinit var mCommanderClient: CommanderClient
     private lateinit var mResultLauncher: ActivityResultLauncher<Intent>
 
     private val mNavController by lazy { findNavController() }
@@ -123,11 +121,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupViewModel() {
         try {
-            mCommanderClient = CommanderClient()
-
             val viewModelProvider = ViewModelProvider(
                 mNavController.getViewModelStoreOwner(R.id.nav_main),
-                MainViewModel.Factory(mCommanderClient)
+                MainViewModel.Factory()
             )
             mMainViewModel = viewModelProvider.get(MainViewModel::class.java)
             mMainViewModel!!.load()

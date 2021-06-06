@@ -21,8 +21,7 @@ class RankModel(type: RankType, frontierRank: FrontierRanksEvent.FrontierRank) {
     }
 
     private val ctx = App.getContext()
-    private var mType: RankType = type
-
+    val rankType: RankType = type
     var rank: FrontierRanksEvent.FrontierRank = FrontierRanksEvent.FrontierRank()
     var isFactionRank: Boolean = false
 
@@ -34,7 +33,7 @@ class RankModel(type: RankType, frontierRank: FrontierRanksEvent.FrontierRank) {
 
     fun getName(): String {
         @ArrayRes
-        val array = when (mType) {
+        val array = when (rankType) {
             RankType.COMBAT -> R.array.ranks_combat
             RankType.TRADING -> R.array.ranks_trading
             RankType.EXPLORATION -> R.array.ranks_exploration
@@ -54,7 +53,7 @@ class RankModel(type: RankType, frontierRank: FrontierRanksEvent.FrontierRank) {
 
     @DrawableRes
     fun getLogoResId(): Int {
-        return when (mType) {
+        return when (rankType) {
             RankType.COMBAT -> NamingUtils.getCombatRankDrawableId(rank.value)
             RankType.TRADING -> NamingUtils.getTradeRankDrawableId(rank.value)
             RankType.EXPLORATION -> NamingUtils.getExplorationRankDrawableId(rank.value)
@@ -67,7 +66,7 @@ class RankModel(type: RankType, frontierRank: FrontierRanksEvent.FrontierRank) {
 
     @StringRes
     fun getTitleResId(): Int {
-        return when (mType) {
+        return when (rankType) {
             RankType.COMBAT -> R.string.rank_combat
             RankType.TRADING -> R.string.rank_trading
             RankType.EXPLORATION -> R.string.rank_explore
