@@ -93,7 +93,6 @@ class MainViewModel : ViewModel() {
     }
 
     fun load() {
-        println("VIEWMODEL.LOAD")
         setAllBusyIndicators(true)
 
         mCommanderApi.loadProfile()

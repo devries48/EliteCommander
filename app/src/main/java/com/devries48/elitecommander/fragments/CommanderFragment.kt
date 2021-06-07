@@ -57,5 +57,4 @@ class CommanderFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-
 }
