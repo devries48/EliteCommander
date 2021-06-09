@@ -21,7 +21,7 @@ class JournalStatistics(worker: JournalWorker) {
             try {
                 val rawStatistics =
                     rawEvents.firstOrNull { it.event == JournalConstants.EVENT_STATISTICS }
-                        ?: throw error("No statistics event found!")
+                        ?: throw error("No rows event found!")
 
                 val statistics = Gson().fromJson(rawStatistics.json, JournalStatisticsResponse::class.java)
                 mVoucherProfit = setVoucherProfits(rawEvents)
@@ -87,7 +87,7 @@ class JournalStatistics(worker: JournalWorker) {
                 sendWorkerEvent(
                     FrontierStatisticsEvent(
                         false,
-                        "Error parsing statistics event from journal." + e.message,
+                        "Error parsing rows event from journal." + e.message,
                         null,
                         null,
                         null,

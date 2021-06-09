@@ -9,14 +9,16 @@ import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.devries48.elitecommander.R
-import com.devries48.elitecommander.adapters.StatisticsRecyclerAdapter
+import com.devries48.elitecommander.adapters.RowsRecyclerAdapter
 import com.devries48.elitecommander.databinding.FragmentFindNearestBinding
 import com.devries48.elitecommander.viewModels.SearchViewModel
+import kotlinx.coroutines.DelicateCoroutinesApi
 
+@DelicateCoroutinesApi
 class FindNearestFragment : Fragment() {
 
     private val mViewModel: SearchViewModel by navGraphViewModels(R.id.nav_search)
-    private lateinit var mStatisticAdapter: StatisticsRecyclerAdapter
+    private lateinit var mStatisticAdapter: RowsRecyclerAdapter
 
     private var _binding: FragmentFindNearestBinding? = null
     private val binding get() = _binding!!
@@ -47,7 +49,7 @@ class FindNearestFragment : Fragment() {
         }
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
 
-        mStatisticAdapter = StatisticsRecyclerAdapter(list.value!!)
+        mStatisticAdapter = RowsRecyclerAdapter(list.value!!)
         binding.nearestRecyclerView.layoutManager = layoutManager
         binding.nearestRecyclerView.adapter = mStatisticAdapter
 

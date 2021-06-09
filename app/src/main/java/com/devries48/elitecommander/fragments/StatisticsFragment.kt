@@ -9,17 +9,17 @@ import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.devries48.elitecommander.R
-import com.devries48.elitecommander.adapters.StatisticsRecyclerAdapter
+import com.devries48.elitecommander.adapters.RowsRecyclerAdapter
 import com.devries48.elitecommander.databinding.FragmentStatisticsBinding
 import com.devries48.elitecommander.viewModels.MainViewModel
 
 class StatisticsFragment : Fragment() {
 
     private val mViewModel: MainViewModel by navGraphViewModels(R.id.nav_main)
-    private lateinit var mCombatAdapter: StatisticsRecyclerAdapter
-    private lateinit var mExplorationAdapter: StatisticsRecyclerAdapter
-    private lateinit var mTradingAdapter: StatisticsRecyclerAdapter
-    private lateinit var mPassengerAdapter: StatisticsRecyclerAdapter
+    private lateinit var mCombatAdapter: RowsRecyclerAdapter
+    private lateinit var mExplorationAdapter: RowsRecyclerAdapter
+    private lateinit var mTradingAdapter: RowsRecyclerAdapter
+    private lateinit var mPassengerAdapter: RowsRecyclerAdapter
 
     private var _binding: FragmentStatisticsBinding? = null
     private val binding get() = _binding!!
@@ -50,7 +50,7 @@ class StatisticsFragment : Fragment() {
         val list = mViewModel.getCombatStatistics()
         val manager: RecyclerView.LayoutManager = LinearLayoutManager(context)
 
-        mCombatAdapter = StatisticsRecyclerAdapter(list.value!!)
+        mCombatAdapter = RowsRecyclerAdapter(list.value!!)
         binding.combatRecyclerView.layoutManager = manager
         binding.combatRecyclerView.adapter = mCombatAdapter
     }
@@ -59,7 +59,7 @@ class StatisticsFragment : Fragment() {
         val list = mViewModel.getExplorationStatistics()
         val manager: RecyclerView.LayoutManager = LinearLayoutManager(context)
 
-        mExplorationAdapter = StatisticsRecyclerAdapter(list.value!!)
+        mExplorationAdapter = RowsRecyclerAdapter(list.value!!)
         binding.explorationRecyclerView.layoutManager = manager
         binding.explorationRecyclerView.adapter = mExplorationAdapter
     }
@@ -68,7 +68,7 @@ class StatisticsFragment : Fragment() {
         val list = mViewModel.getTradingStatistics()
         val manager: RecyclerView.LayoutManager = LinearLayoutManager(context)
 
-        mTradingAdapter = StatisticsRecyclerAdapter(list.value!!)
+        mTradingAdapter = RowsRecyclerAdapter(list.value!!)
         binding.tradingRecyclerView.layoutManager = manager
         binding.tradingRecyclerView.adapter = mTradingAdapter
     }
@@ -77,7 +77,7 @@ class StatisticsFragment : Fragment() {
         val list = mViewModel.getPassengerStatistics()
         val manager: RecyclerView.LayoutManager = LinearLayoutManager(context)
 
-        mPassengerAdapter = StatisticsRecyclerAdapter(list.value!!)
+        mPassengerAdapter = RowsRecyclerAdapter(list.value!!)
         binding.passengersRecyclerView.layoutManager = manager
         binding.passengersRecyclerView.adapter = mPassengerAdapter
     }

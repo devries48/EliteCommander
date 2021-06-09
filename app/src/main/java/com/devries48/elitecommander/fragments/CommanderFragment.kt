@@ -9,7 +9,7 @@ import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.devries48.elitecommander.R
-import com.devries48.elitecommander.adapters.StatisticsRecyclerAdapter
+import com.devries48.elitecommander.adapters.RowsRecyclerAdapter
 import com.devries48.elitecommander.databinding.FragmentCommanderBinding
 import com.devries48.elitecommander.viewModels.MainViewModel
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -18,7 +18,7 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 class CommanderFragment : Fragment() {
 
     private val mViewModel: MainViewModel by navGraphViewModels(R.id.nav_main)
-    private lateinit var mAdapter: StatisticsRecyclerAdapter
+    private lateinit var mAdapter: RowsRecyclerAdapter
 
     private var _binding: FragmentCommanderBinding? = null
     private val binding get() = _binding!!
@@ -41,7 +41,7 @@ class CommanderFragment : Fragment() {
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
         val list = mViewModel.getMainStatistics()
 
-        mAdapter = StatisticsRecyclerAdapter(list.value)
+        mAdapter = RowsRecyclerAdapter(list.value)
         binding.statsRecyclerView.layoutManager = layoutManager
         binding.statsRecyclerView.adapter = mAdapter
 

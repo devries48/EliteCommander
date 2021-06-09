@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import app.futured.donut.DonutSection
 import com.devries48.elitecommander.R
 import com.devries48.elitecommander.adapters.ProfitsRecyclerAdapter
-import com.devries48.elitecommander.adapters.StatisticsRecyclerAdapter
+import com.devries48.elitecommander.adapters.RowsRecyclerAdapter
 import com.devries48.elitecommander.databinding.FragmentProfitBinding
 import com.devries48.elitecommander.viewModels.MainViewModel
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -21,7 +21,7 @@ class ProfitFragment : Fragment() {
 
     private val mViewModel: MainViewModel by navGraphViewModels(R.id.nav_main)
 
-    private lateinit var mStatisticAdapter: StatisticsRecyclerAdapter
+    private lateinit var mStatisticAdapter: RowsRecyclerAdapter
     private lateinit var mProfitAdapter: ProfitsRecyclerAdapter
 
     private var _binding: FragmentProfitBinding? = null
@@ -55,7 +55,7 @@ class ProfitFragment : Fragment() {
         }
         val statisticLayoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
 
-        mStatisticAdapter = StatisticsRecyclerAdapter(list.value!!)
+        mStatisticAdapter = RowsRecyclerAdapter(list.value!!)
         binding.statsRecyclerView.layoutManager = statisticLayoutManager
         binding.statsRecyclerView.adapter = mStatisticAdapter
 

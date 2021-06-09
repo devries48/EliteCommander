@@ -58,12 +58,12 @@ class MainViewModel : ViewModel() {
 
     private var mProfitChart = MutableLiveData<List<ProfitModel>>()
 
-    private val mBuilderProfit: StatisticsBuilder = StatisticsBuilder()
-    private val mBuilderMain: StatisticsBuilder = StatisticsBuilder()
-    private val mBuilderCombat: StatisticsBuilder = StatisticsBuilder()
-    private val mBuilderExploration: StatisticsBuilder = StatisticsBuilder()
-    private val mBuilderPassenger: StatisticsBuilder = StatisticsBuilder()
-    private val mBuilderTrading: StatisticsBuilder = StatisticsBuilder()
+    private val mBuilderProfit: RowBuilder = RowBuilder()
+    private val mBuilderMain: RowBuilder = RowBuilder()
+    private val mBuilderCombat: RowBuilder = RowBuilder()
+    private val mBuilderExploration: RowBuilder = RowBuilder()
+    private val mBuilderPassenger: RowBuilder = RowBuilder()
+    private val mBuilderTrading: RowBuilder = RowBuilder()
 
     // </editor-fold>
 
@@ -104,36 +104,36 @@ class MainViewModel : ViewModel() {
         mCurrentSettings.timestamp = mStatisticSettings.timestamp
     }
 
-    internal fun getMainStatistics(): LiveData<List<StatisticModel>> {
-        return mBuilderMain.statistics
+    internal fun getMainStatistics(): LiveData<List<RowModel>> {
+        return mBuilderMain.rows
     }
 
     internal fun getCurrentDiscoveries(): LiveData<List<FrontierDiscovery>> {
         return mCurrentDiscoveries
     }
 
-    internal fun getProfitStatistics(): LiveData<List<StatisticModel>> {
-        return mBuilderProfit.statistics
+    internal fun getProfitStatistics(): LiveData<List<RowModel>> {
+        return mBuilderProfit.rows
     }
 
     internal fun getProfitChart(): LiveData<List<ProfitModel>> {
         return mProfitChart
     }
 
-    internal fun getCombatStatistics(): LiveData<List<StatisticModel>> {
-        return mBuilderCombat.statistics
+    internal fun getCombatStatistics(): LiveData<List<RowModel>> {
+        return mBuilderCombat.rows
     }
 
-    internal fun getExplorationStatistics(): LiveData<List<StatisticModel>> {
-        return mBuilderExploration.statistics
+    internal fun getExplorationStatistics(): LiveData<List<RowModel>> {
+        return mBuilderExploration.rows
     }
 
-    internal fun getTradingStatistics(): LiveData<List<StatisticModel>> {
-        return mBuilderTrading.statistics
+    internal fun getTradingStatistics(): LiveData<List<RowModel>> {
+        return mBuilderTrading.rows
     }
 
-    internal fun getPassengerStatistics(): LiveData<List<StatisticModel>> {
-        return mBuilderPassenger.statistics
+    internal fun getPassengerStatistics(): LiveData<List<RowModel>> {
+        return mBuilderPassenger.rows
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
@@ -224,22 +224,22 @@ class MainViewModel : ViewModel() {
 
     private fun launchPlayerStats(statistics: FrontierStatisticsEvent) {
         mBuilderMain.addStatistic(
-            StatisticsBuilder.Companion.StatisticType.CMDR_TIME_PLAYED,
-            StatisticsBuilder.Companion.StatisticPosition.LEFT,
+            RowBuilder.StatisticType.CMDR_TIME_PLAYED,
+            RowBuilder.RowPosition.LEFT,
             R.string.time_played,
             statistics.exploration!!.timePlayed,
             mStatisticSettings.timePlayed,
-            StatisticsBuilder.Companion.StatisticFormat.TIME
+            RowBuilder.RowFormat.TIME
         )
 
         mBuilderMain.addStatistic(
-            StatisticsBuilder.Companion.StatisticType.CMDR_TIME_PLAYED,
-            StatisticsBuilder.Companion.StatisticPosition.RIGHT,
+            RowBuilder.StatisticType.CMDR_TIME_PLAYED,
+            RowBuilder.RowPosition.RIGHT,
             R.string.last_journal,
             statistics.lastJournalDate!!,
             null,
-            StatisticsBuilder.Companion.StatisticFormat.DATETIME,
-            StatisticsBuilder.Companion.StatisticColor.DIMMED
+            RowBuilder.RowFormat.DATETIME,
+            RowBuilder.RowColor.DIMMED
         )
 
         mBuilderMain.post()
@@ -252,7 +252,7 @@ class MainViewModel : ViewModel() {
         val amount = profile.balance
         var credits =
             if (profile.loan != 0L) {
-                val loan = StatisticsBuilder.formatCurrency(profile.loan)
+                val loan = RowBuilder.formatCurrency(profile.loan)
                 "$amount CR and loan $loan"
             } else amount
 
@@ -262,22 +262,22 @@ class MainViewModel : ViewModel() {
         }
 
         mBuilderMain.addStatistic(
-            StatisticsBuilder.Companion.StatisticType.CMDR_CREDITS,
-            StatisticsBuilder.Companion.StatisticPosition.LEFT,
+            RowBuilder.StatisticType.CMDR_CREDITS,
+            RowBuilder.RowPosition.LEFT,
             R.string.credits,
             credits,
             mStatisticSettings.credits,
-            StatisticsBuilder.Companion.StatisticFormat.CURRENCY
+            RowBuilder.RowFormat.CURRENCY
         )
 
         mBuilderMain.addStatistic(
-            StatisticsBuilder.Companion.StatisticType.CMDR_LOCATION,
-            StatisticsBuilder.Companion.StatisticPosition.LEFT,
+            RowBuilder.StatisticType.CMDR_LOCATION,
+            RowBuilder.RowPosition.LEFT,
             R.string.current_location,
             profile.systemName,
             null,
-            StatisticsBuilder.Companion.StatisticFormat.NONE,
-            StatisticsBuilder.Companion.StatisticColor.DIMMED
+            RowBuilder.RowFormat.NONE,
+            RowBuilder.RowColor.DIMMED
         )
 
         mCommanderApi.getDistanceToSol(profile.systemName)
@@ -285,27 +285,27 @@ class MainViewModel : ViewModel() {
         val hullPercentage: Int = profile.hull / 10000
 
         mBuilderMain.addStatistic(
-            StatisticsBuilder.Companion.StatisticType.CMDR_SHIP,
-            StatisticsBuilder.Companion.StatisticPosition.RIGHT,
+            RowBuilder.StatisticType.CMDR_SHIP,
+            RowBuilder.RowPosition.RIGHT,
             R.string.hull,
             "$hullPercentage%",
             null,
-            StatisticsBuilder.Companion.StatisticFormat.NONE,
-            if (hullPercentage >= 50) StatisticsBuilder.Companion.StatisticColor.DIMMED
-            else StatisticsBuilder.Companion.StatisticColor.WARNING
+            RowBuilder.RowFormat.NONE,
+            if (hullPercentage >= 50) RowBuilder.RowColor.DIMMED
+            else RowBuilder.RowColor.WARNING
         )
 
         val integrityPercentage: Int = profile.integrity / 10000
 
         mBuilderMain.addStatistic(
-            StatisticsBuilder.Companion.StatisticType.CMDR_SHIP,
-            StatisticsBuilder.Companion.StatisticPosition.CENTER,
+            RowBuilder.StatisticType.CMDR_SHIP,
+            RowBuilder.RowPosition.CENTER,
             R.string.integrity,
             "$integrityPercentage%",
             null,
-            StatisticsBuilder.Companion.StatisticFormat.NONE,
-            if (integrityPercentage >= 50) StatisticsBuilder.Companion.StatisticColor.DIMMED
-            else StatisticsBuilder.Companion.StatisticColor.WARNING
+            RowBuilder.RowFormat.NONE,
+            if (integrityPercentage >= 50) RowBuilder.RowColor.DIMMED
+            else RowBuilder.RowColor.WARNING
         )
 
         mBuilderMain.post()
@@ -330,25 +330,25 @@ class MainViewModel : ViewModel() {
             fleet.frontierShips.forEach {
                 if (it.isCurrentShip) {
                     mBuilderMain.addStatistic(
-                        StatisticsBuilder.Companion.StatisticType.CMDR_SHIP,
-                        StatisticsBuilder.Companion.StatisticPosition.LEFT,
+                        RowBuilder.StatisticType.CMDR_SHIP,
+                        RowBuilder.RowPosition.LEFT,
                         R.string.current_ship,
                         it.model,
                         null,
-                        StatisticsBuilder.Companion.StatisticFormat.NONE,
-                        StatisticsBuilder.Companion.StatisticColor.DIMMED
+                        RowBuilder.RowFormat.NONE,
+                        RowBuilder.RowColor.DIMMED
                     )
                 }
                 assets += it.totalValue
             }
 
             mBuilderMain.addStatistic(
-                StatisticsBuilder.Companion.StatisticType.CMDR_CREDITS,
-                StatisticsBuilder.Companion.StatisticPosition.RIGHT,
+                RowBuilder.StatisticType.CMDR_CREDITS,
+                RowBuilder.RowPosition.RIGHT,
                 R.string.assets_value,
                 assets,
                 mStatisticSettings.assets,
-                StatisticsBuilder.Companion.StatisticFormat.CURRENCY
+                RowBuilder.RowFormat.CURRENCY
             )
             mBuilderMain.post()
 
@@ -358,14 +358,14 @@ class MainViewModel : ViewModel() {
 
     private fun launchDistanceSearch(distanceSearch: DistanceSearchEvent) {
         mBuilderMain.addStatistic(
-            StatisticsBuilder.Companion.StatisticType.CMDR_LOCATION,
-            StatisticsBuilder.Companion.StatisticPosition.RIGHT,
+            RowBuilder.StatisticType.CMDR_LOCATION,
+            RowBuilder.RowPosition.RIGHT,
             R.string.distance_sol,
             if (distanceSearch.distance == 0.0) "Discovered"
-            else "${StatisticsBuilder.formatDouble(distanceSearch.distance)} LY",
+            else "${RowBuilder.formatDouble(distanceSearch.distance)} LY",
             null,
-            StatisticsBuilder.Companion.StatisticFormat.NONE,
-            StatisticsBuilder.Companion.StatisticColor.DIMMED
+            RowBuilder.RowFormat.NONE,
+            RowBuilder.RowColor.DIMMED
         )
 
         mBuilderProfit.post()
@@ -445,129 +445,129 @@ class MainViewModel : ViewModel() {
 
     private fun launchProfitStats(statistics: FrontierStatisticsEvent) {
         mBuilderProfit.addStatistic(
-            StatisticsBuilder.Companion.StatisticType.PROFIT_COMBAT_ASSASSINATIONS,
-            StatisticsBuilder.Companion.StatisticPosition.LEFT,
+            RowBuilder.StatisticType.PROFIT_COMBAT_ASSASSINATIONS,
+            RowBuilder.RowPosition.LEFT,
             R.string.assassinations,
             statistics.combat!!.assassinationProfits,
             mStatisticSettings.assassinationsProfit,
-            StatisticsBuilder.Companion.StatisticFormat.CURRENCY
+            RowBuilder.RowFormat.CURRENCY
         )
         mBuilderProfit.addStatistic(
-            StatisticsBuilder.Companion.StatisticType.PROFIT_COMBAT_BONDS,
-            StatisticsBuilder.Companion.StatisticPosition.LEFT,
+            RowBuilder.StatisticType.PROFIT_COMBAT_BONDS,
+            RowBuilder.RowPosition.LEFT,
             R.string.combat_bonds,
             statistics.combat.combatBondProfits,
             mStatisticSettings.bondsProfit,
-            StatisticsBuilder.Companion.StatisticFormat.CURRENCY
+            RowBuilder.RowFormat.CURRENCY
         )
         mBuilderProfit.addStatistic(
-            StatisticsBuilder.Companion.StatisticType.PROFIT_COMBAT_BOUNTIES,
-            StatisticsBuilder.Companion.StatisticPosition.LEFT,
+            RowBuilder.StatisticType.PROFIT_COMBAT_BOUNTIES,
+            RowBuilder.RowPosition.LEFT,
             R.string.bounties,
             statistics.combat.bountyHuntingProfit,
             mStatisticSettings.bountiesProfit,
-            StatisticsBuilder.Companion.StatisticFormat.CURRENCY
+            RowBuilder.RowFormat.CURRENCY
         )
         mBuilderProfit.addStatistic(
-            StatisticsBuilder.Companion.StatisticType.PROFIT_COMBAT_BOUNTIES,
-            StatisticsBuilder.Companion.StatisticPosition.RIGHT,
+            RowBuilder.StatisticType.PROFIT_COMBAT_BOUNTIES,
+            RowBuilder.RowPosition.RIGHT,
             R.string.highest_reward,
             statistics.combat.highestSingleReward,
             null,
-            StatisticsBuilder.Companion.StatisticFormat.CURRENCY,
-            StatisticsBuilder.Companion.StatisticColor.DIMMED
+            RowBuilder.RowFormat.CURRENCY,
+            RowBuilder.RowColor.DIMMED
         )
 
         mBuilderProfit.addStatistic(
-            StatisticsBuilder.Companion.StatisticType.PROFIT_EXPLORATION,
-            StatisticsBuilder.Companion.StatisticPosition.LEFT,
+            RowBuilder.StatisticType.PROFIT_EXPLORATION,
+            RowBuilder.RowPosition.LEFT,
             R.string.exploration,
             statistics.exploration!!.explorationProfits,
             mStatisticSettings.explorationProfit,
-            StatisticsBuilder.Companion.StatisticFormat.CURRENCY
+            RowBuilder.RowFormat.CURRENCY
         )
         mBuilderProfit.addStatistic(
-            StatisticsBuilder.Companion.StatisticType.PROFIT_EXPLORATION,
-            StatisticsBuilder.Companion.StatisticPosition.RIGHT,
+            RowBuilder.StatisticType.PROFIT_EXPLORATION,
+            RowBuilder.RowPosition.RIGHT,
             R.string.highest_reward,
             statistics.exploration.highestPayout,
             null,
-            StatisticsBuilder.Companion.StatisticFormat.CURRENCY,
-            StatisticsBuilder.Companion.StatisticColor.DIMMED
+            RowBuilder.RowFormat.CURRENCY,
+            RowBuilder.RowColor.DIMMED
         )
 
         mBuilderProfit.addStatistic(
-            StatisticsBuilder.Companion.StatisticType.PROFIT_TRADING,
-            StatisticsBuilder.Companion.StatisticPosition.LEFT,
+            RowBuilder.StatisticType.PROFIT_TRADING,
+            RowBuilder.RowPosition.LEFT,
             R.string.trading,
             statistics.trading!!.marketProfits,
             mStatisticSettings.tradingProfit,
-            StatisticsBuilder.Companion.StatisticFormat.CURRENCY
+            RowBuilder.RowFormat.CURRENCY
         )
 
         mBuilderProfit.addStatistic(
-            StatisticsBuilder.Companion.StatisticType.PROFIT_TRADING,
-            StatisticsBuilder.Companion.StatisticPosition.RIGHT,
+            RowBuilder.StatisticType.PROFIT_TRADING,
+            RowBuilder.RowPosition.RIGHT,
             R.string.highest_reward,
             statistics.trading.highestSingleTransaction,
             null,
-            StatisticsBuilder.Companion.StatisticFormat.CURRENCY,
-            StatisticsBuilder.Companion.StatisticColor.DIMMED
+            RowBuilder.RowFormat.CURRENCY,
+            RowBuilder.RowColor.DIMMED
         )
 
         mBuilderProfit.addStatistic(
-            StatisticsBuilder.Companion.StatisticType.PROFIT_SMUGGLING,
-            StatisticsBuilder.Companion.StatisticPosition.LEFT,
+            RowBuilder.StatisticType.PROFIT_SMUGGLING,
+            RowBuilder.RowPosition.LEFT,
             R.string.smuggling,
             statistics.smuggling!!.blackMarketsProfits,
             mStatisticSettings.blackMarketProfit,
-            StatisticsBuilder.Companion.StatisticFormat.CURRENCY
+            RowBuilder.RowFormat.CURRENCY
         )
 
         mBuilderProfit.addStatistic(
-            StatisticsBuilder.Companion.StatisticType.PROFIT_SMUGGLING,
-            StatisticsBuilder.Companion.StatisticPosition.RIGHT,
+            RowBuilder.StatisticType.PROFIT_SMUGGLING,
+            RowBuilder.RowPosition.RIGHT,
             R.string.highest_reward,
             statistics.smuggling.highestSingleTransaction,
             null,
-            StatisticsBuilder.Companion.StatisticFormat.CURRENCY,
-            StatisticsBuilder.Companion.StatisticColor.DIMMED
+            RowBuilder.RowFormat.CURRENCY,
+            RowBuilder.RowColor.DIMMED
         )
 
         mBuilderProfit.addStatistic(
-            StatisticsBuilder.Companion.StatisticType.PROFIT_MINING,
-            StatisticsBuilder.Companion.StatisticPosition.LEFT,
+            RowBuilder.StatisticType.PROFIT_MINING,
+            RowBuilder.RowPosition.LEFT,
             R.string.mining,
             statistics.mining!!.miningProfits,
             mStatisticSettings.miningProfit,
-            StatisticsBuilder.Companion.StatisticFormat.CURRENCY
+            RowBuilder.RowFormat.CURRENCY
         )
         mBuilderProfit.addStatistic(
-            StatisticsBuilder.Companion.StatisticType.PROFIT_MINING,
-            StatisticsBuilder.Companion.StatisticPosition.RIGHT,
+            RowBuilder.StatisticType.PROFIT_MINING,
+            RowBuilder.RowPosition.RIGHT,
             R.string.quantity,
             statistics.mining.quantityMined,
             mStatisticSettings.miningTotal,
-            StatisticsBuilder.Companion.StatisticFormat.TONS,
-            StatisticsBuilder.Companion.StatisticColor.DIMMED
+            RowBuilder.RowFormat.TONS,
+            RowBuilder.RowColor.DIMMED
         )
 
         mBuilderProfit.addStatistic(
-            StatisticsBuilder.Companion.StatisticType.PROFIT_SEARCH_RESCUE,
-            StatisticsBuilder.Companion.StatisticPosition.LEFT,
+            RowBuilder.StatisticType.PROFIT_SEARCH_RESCUE,
+            RowBuilder.RowPosition.LEFT,
             R.string.search_rescue,
             statistics.searchAndRescue!!.searchRescueProfit,
             mStatisticSettings.rescueProfit,
-            StatisticsBuilder.Companion.StatisticFormat.CURRENCY
+            RowBuilder.RowFormat.CURRENCY
         )
         mBuilderProfit.addStatistic(
-            StatisticsBuilder.Companion.StatisticType.PROFIT_SEARCH_RESCUE,
-            StatisticsBuilder.Companion.StatisticPosition.RIGHT,
+            RowBuilder.StatisticType.PROFIT_SEARCH_RESCUE,
+            RowBuilder.RowPosition.RIGHT,
             R.string.total,
             statistics.searchAndRescue.searchRescueCount,
             null,
-            StatisticsBuilder.Companion.StatisticFormat.INTEGER,
-            StatisticsBuilder.Companion.StatisticColor.DIMMED
+            RowBuilder.RowFormat.INTEGER,
+            RowBuilder.RowColor.DIMMED
         )
 
         mCurrentSettings.bountiesProfit = statistics.combat.bountyHuntingProfit
@@ -592,44 +592,44 @@ class MainViewModel : ViewModel() {
                     (statistics.combat.assassinations + statistics.combat.skimmersKilled)
 
         mBuilderCombat.addStatistic(
-            StatisticsBuilder.Companion.StatisticType.COMBAT_TOTAL_KILLS,
-            StatisticsBuilder.Companion.StatisticPosition.LEFT,
+            RowBuilder.StatisticType.COMBAT_TOTAL_KILLS,
+            RowBuilder.RowPosition.LEFT,
             R.string.ships_destroyed,
             totalKills,
             mStatisticSettings.totalKills,
-            StatisticsBuilder.Companion.StatisticFormat.INTEGER
+            RowBuilder.RowFormat.INTEGER
         )
         mBuilderCombat.addStatistic(
-            StatisticsBuilder.Companion.StatisticType.COMBAT_TOTAL_KILLS,
-            StatisticsBuilder.Companion.StatisticPosition.RIGHT,
+            RowBuilder.StatisticType.COMBAT_TOTAL_KILLS,
+            RowBuilder.RowPosition.RIGHT,
             R.string.skimmers_killed,
             statistics.combat.skimmersKilled,
             mStatisticSettings.skimmersKilled,
-            StatisticsBuilder.Companion.StatisticFormat.INTEGER
+            RowBuilder.RowFormat.INTEGER
         )
         mBuilderCombat.addStatistic(
-            StatisticsBuilder.Companion.StatisticType.COMBAT_KILLS,
-            StatisticsBuilder.Companion.StatisticPosition.LEFT,
+            RowBuilder.StatisticType.COMBAT_KILLS,
+            RowBuilder.RowPosition.LEFT,
             R.string.bounties,
             statistics.combat.bountiesClaimed,
             mStatisticSettings.bountiesTotal,
-            StatisticsBuilder.Companion.StatisticFormat.INTEGER
+            RowBuilder.RowFormat.INTEGER
         )
         mBuilderCombat.addStatistic(
-            StatisticsBuilder.Companion.StatisticType.COMBAT_KILLS,
-            StatisticsBuilder.Companion.StatisticPosition.CENTER,
+            RowBuilder.StatisticType.COMBAT_KILLS,
+            RowBuilder.RowPosition.CENTER,
             R.string.bonds,
             statistics.combat.combatBonds,
             mStatisticSettings.bondsTotal,
-            StatisticsBuilder.Companion.StatisticFormat.INTEGER
+            RowBuilder.RowFormat.INTEGER
         )
         mBuilderCombat.addStatistic(
-            StatisticsBuilder.Companion.StatisticType.COMBAT_KILLS,
-            StatisticsBuilder.Companion.StatisticPosition.RIGHT,
+            RowBuilder.StatisticType.COMBAT_KILLS,
+            RowBuilder.RowPosition.RIGHT,
             R.string.assassinations,
             statistics.combat.assassinations,
             mStatisticSettings.assassinationsTotal,
-            StatisticsBuilder.Companion.StatisticFormat.INTEGER
+            RowBuilder.RowFormat.INTEGER
         )
 
         mCurrentSettings.totalKills = totalKills
@@ -644,58 +644,58 @@ class MainViewModel : ViewModel() {
     private fun launchExplorationStats(statistics: FrontierStatisticsEvent) {
 
         mBuilderExploration.addStatistic(
-            StatisticsBuilder.Companion.StatisticType.EXPLORATION_HYPERSPACE,
-            StatisticsBuilder.Companion.StatisticPosition.LEFT,
+            RowBuilder.StatisticType.EXPLORATION_HYPERSPACE,
+            RowBuilder.RowPosition.LEFT,
             R.string.hyperspace_jumps,
             statistics.exploration!!.totalHyperspaceJumps,
             mStatisticSettings.totalHyperspaceJumps,
-            StatisticsBuilder.Companion.StatisticFormat.INTEGER
+            RowBuilder.RowFormat.INTEGER
         )
 
         mBuilderExploration.addStatistic(
-            StatisticsBuilder.Companion.StatisticType.EXPLORATION_HYPERSPACE,
-            StatisticsBuilder.Companion.StatisticPosition.RIGHT,
+            RowBuilder.StatisticType.EXPLORATION_HYPERSPACE,
+            RowBuilder.RowPosition.RIGHT,
             R.string.hyperspace_distance,
             statistics.exploration.totalHyperspaceDistance,
             mStatisticSettings.totalHyperspaceDistance,
-            StatisticsBuilder.Companion.StatisticFormat.LIGHTYEAR
+            RowBuilder.RowFormat.LIGHTYEAR
         )
 
         mBuilderExploration.addStatistic(
-            StatisticsBuilder.Companion.StatisticType.EXPLORATION_SYSTEMS_VISITED,
-            StatisticsBuilder.Companion.StatisticPosition.LEFT,
+            RowBuilder.StatisticType.EXPLORATION_SYSTEMS_VISITED,
+            RowBuilder.RowPosition.LEFT,
             R.string.systems_visited,
             statistics.exploration.systemsVisited,
             mStatisticSettings.systemsVisited,
-            StatisticsBuilder.Companion.StatisticFormat.INTEGER
+            RowBuilder.RowFormat.INTEGER
         )
 
         mBuilderExploration.addStatistic(
-            StatisticsBuilder.Companion.StatisticType.EXPLORATION_SYSTEMS_VISITED,
-            StatisticsBuilder.Companion.StatisticPosition.RIGHT,
+            RowBuilder.StatisticType.EXPLORATION_SYSTEMS_VISITED,
+            RowBuilder.RowPosition.RIGHT,
             R.string.greatest_distance_from_start,
             statistics.exploration.greatestDistanceFromStart,
             null,
-            StatisticsBuilder.Companion.StatisticFormat.LIGHTYEAR,
-            StatisticsBuilder.Companion.StatisticColor.DIMMED
+            RowBuilder.RowFormat.LIGHTYEAR,
+            RowBuilder.RowColor.DIMMED
         )
 
         mBuilderExploration.addStatistic(
-            StatisticsBuilder.Companion.StatisticType.EXPLORATION_SCANS,
-            StatisticsBuilder.Companion.StatisticPosition.LEFT,
+            RowBuilder.StatisticType.EXPLORATION_SCANS,
+            RowBuilder.RowPosition.LEFT,
             R.string.planets_scanned,
             statistics.exploration.planetsScannedToLevel2,
             mStatisticSettings.planetsScanned,
-            StatisticsBuilder.Companion.StatisticFormat.INTEGER
+            RowBuilder.RowFormat.INTEGER
         )
 
         mBuilderExploration.addStatistic(
-            StatisticsBuilder.Companion.StatisticType.EXPLORATION_SCANS,
-            StatisticsBuilder.Companion.StatisticPosition.RIGHT,
+            RowBuilder.StatisticType.EXPLORATION_SCANS,
+            RowBuilder.RowPosition.RIGHT,
             R.string.planets_efficient_mapped,
             statistics.exploration.efficientScans,
             mStatisticSettings.planetsEfficientMapped,
-            StatisticsBuilder.Companion.StatisticFormat.INTEGER
+            RowBuilder.RowFormat.INTEGER
         )
 
         mCurrentSettings.totalHyperspaceJumps = statistics.exploration.totalHyperspaceJumps
@@ -710,38 +710,38 @@ class MainViewModel : ViewModel() {
     private fun launchTradingStats(statistics: FrontierStatisticsEvent) {
 
         mBuilderTrading.addStatistic(
-            StatisticsBuilder.Companion.StatisticType.TRADING_MARKETS,
-            StatisticsBuilder.Companion.StatisticPosition.LEFT,
+            RowBuilder.StatisticType.TRADING_MARKETS,
+            RowBuilder.RowPosition.LEFT,
             R.string.marketsTradedWith,
             statistics.trading!!.marketsTradedWith,
             mStatisticSettings.marketsTradedWith,
-            StatisticsBuilder.Companion.StatisticFormat.INTEGER
+            RowBuilder.RowFormat.INTEGER
         )
         mBuilderTrading.addStatistic(
-            StatisticsBuilder.Companion.StatisticType.TRADING_MARKETS,
-            StatisticsBuilder.Companion.StatisticPosition.RIGHT,
+            RowBuilder.StatisticType.TRADING_MARKETS,
+            RowBuilder.RowPosition.RIGHT,
             R.string.blackMarkets,
             statistics.smuggling!!.blackMarketsTradedWith,
             mStatisticSettings.blackMarketsTradedWith,
-            StatisticsBuilder.Companion.StatisticFormat.INTEGER
+            RowBuilder.RowFormat.INTEGER
         )
         mBuilderTrading.addStatistic(
-            StatisticsBuilder.Companion.StatisticType.TRADING_RESOURCES,
-            StatisticsBuilder.Companion.StatisticPosition.LEFT,
+            RowBuilder.StatisticType.TRADING_RESOURCES,
+            RowBuilder.RowPosition.LEFT,
             R.string.resourcesTraded,
             statistics.trading.resourcesTraded,
             null,
-            StatisticsBuilder.Companion.StatisticFormat.INTEGER,
-            StatisticsBuilder.Companion.StatisticColor.DIMMED
+            RowBuilder.RowFormat.INTEGER,
+            RowBuilder.RowColor.DIMMED
         )
         mBuilderTrading.addStatistic(
-            StatisticsBuilder.Companion.StatisticType.TRADING_RESOURCES,
-            StatisticsBuilder.Companion.StatisticPosition.RIGHT,
+            RowBuilder.StatisticType.TRADING_RESOURCES,
+            RowBuilder.RowPosition.RIGHT,
             R.string.smuggled,
             statistics.smuggling.resourcesSmuggled,
             null,
-            StatisticsBuilder.Companion.StatisticFormat.INTEGER,
-            StatisticsBuilder.Companion.StatisticColor.DIMMED
+            RowBuilder.RowFormat.INTEGER,
+            RowBuilder.RowColor.DIMMED
         )
 
         mCurrentSettings.marketsTradedWith = statistics.trading.marketsTradedWith
@@ -752,42 +752,42 @@ class MainViewModel : ViewModel() {
 
     private fun launchPassengerStats(statistics: FrontierStatisticsEvent) {
         mBuilderPassenger.addStatistic(
-            StatisticsBuilder.Companion.StatisticType.PASSENGERS_DELIVERED,
-            StatisticsBuilder.Companion.StatisticPosition.LEFT,
+            RowBuilder.StatisticType.PASSENGERS_DELIVERED,
+            RowBuilder.RowPosition.LEFT,
             R.string.passengers_delivered,
             statistics.passengers!!.passengersMissionsDelivered,
             mStatisticSettings.passengersDelivered,
-            StatisticsBuilder.Companion.StatisticFormat.INTEGER
+            RowBuilder.RowFormat.INTEGER
         )
 
         mBuilderPassenger.addStatistic(
-            StatisticsBuilder.Companion.StatisticType.PASSENGERS_DELIVERED,
-            StatisticsBuilder.Companion.StatisticPosition.RIGHT,
+            RowBuilder.StatisticType.PASSENGERS_DELIVERED,
+            RowBuilder.RowPosition.RIGHT,
             R.string.passengers_ejected,
             statistics.passengers.passengersMissionsEjected,
             null,
-            StatisticsBuilder.Companion.StatisticFormat.INTEGER,
-            StatisticsBuilder.Companion.StatisticColor.DIMMED
+            RowBuilder.RowFormat.INTEGER,
+            RowBuilder.RowColor.DIMMED
         )
 
         mBuilderPassenger.addStatistic(
-            StatisticsBuilder.Companion.StatisticType.PASSENGERS_TYPE,
-            StatisticsBuilder.Companion.StatisticPosition.LEFT,
+            RowBuilder.StatisticType.PASSENGERS_TYPE,
+            RowBuilder.RowPosition.LEFT,
             R.string.passengers_bulk,
             statistics.passengers.passengersMissionsBulk,
             null,
-            StatisticsBuilder.Companion.StatisticFormat.INTEGER,
-            StatisticsBuilder.Companion.StatisticColor.DIMMED
+            RowBuilder.RowFormat.INTEGER,
+            RowBuilder.RowColor.DIMMED
         )
 
         mBuilderPassenger.addStatistic(
-            StatisticsBuilder.Companion.StatisticType.PASSENGERS_TYPE,
-            StatisticsBuilder.Companion.StatisticPosition.RIGHT,
+            RowBuilder.StatisticType.PASSENGERS_TYPE,
+            RowBuilder.RowPosition.RIGHT,
             R.string.passengers_vip,
             statistics.passengers.passengersMissionsVIP,
             null,
-            StatisticsBuilder.Companion.StatisticFormat.INTEGER,
-            StatisticsBuilder.Companion.StatisticColor.DIMMED
+            RowBuilder.RowFormat.INTEGER,
+            RowBuilder.RowColor.DIMMED
         )
 
         mCurrentSettings.passengersDelivered = statistics.passengers.passengersMissionsDelivered

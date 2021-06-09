@@ -26,7 +26,6 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import kotlin.properties.Delegates
 
-
 @DelicateCoroutinesApi
 class MainActivity : AppCompatActivity() {
 
@@ -62,9 +61,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupLauncher() {
-        mResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            mIsLoggedIn = true
-        }
+        mResultLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                mIsLoggedIn = true
+            }
     }
 
     public override fun onStart() {
@@ -107,24 +107,22 @@ class MainActivity : AppCompatActivity() {
 
     private fun startEventBus() {
         synchronized(this) {
-            if (!EventBus.getDefault().isRegistered(this))
-                EventBus.getDefault().register(this)
+            if (!EventBus.getDefault().isRegistered(this)) EventBus.getDefault().register(this)
         }
     }
 
     private fun stopEventBus() {
         synchronized(this) {
-            if (EventBus.getDefault().isRegistered(this))
-                EventBus.getDefault().unregister(this)
+            if (EventBus.getDefault().isRegistered(this)) EventBus.getDefault().unregister(this)
         }
     }
 
     private fun setupViewModel() {
         try {
-            val viewModelProvider = ViewModelProvider(
-                mNavController.getViewModelStoreOwner(R.id.nav_main),
-                MainViewModel.Factory()
-            )
+            val viewModelProvider =
+                ViewModelProvider(
+                    mNavController.getViewModelStoreOwner(R.id.nav_main), MainViewModel.Factory()
+                )
             mMainViewModel = viewModelProvider.get(MainViewModel::class.java)
             mMainViewModel!!.load()
         } catch (e: IllegalArgumentException) {
@@ -151,9 +149,7 @@ class MainActivity : AppCompatActivity() {
                 mAlertDialog = null
                 mAlertList.clear()
                 mMainViewModel!!.load()
-                swipeRefresh.post {
-                    swipeRefresh.isRefreshing = false
-                }
+                swipeRefresh.post { swipeRefresh.isRefreshing = false }
             }
         }
     }
@@ -185,18 +181,16 @@ class MainActivity : AppCompatActivity() {
 
             mAlertList.add(alertEvent.message)
 
+            var message = ""
+
+            for ((index, it) in mAlertList.withIndex()) {
+                message += "\u2022 " + this.getString(it)
+                if (index < mAlertList.count() - 1) message += "\n"
+            }
             if (mAlertDialog == null)
                 showAlertDialog(alertEvent)
-            else {
-                var message = ""
 
-                for ((index, it) in mAlertList.withIndex()) {
-                    message += "\u2022 " + this.getString(it)
-                    if (index < mAlertList.count() - 1)
-                        message += "\n"
-                }
-                mAlertDialog!!.setMessage(message)
-            }
+            mAlertDialog!!.setMessage(message)
         }
     }
 
@@ -204,7 +198,6 @@ class MainActivity : AppCompatActivity() {
         val builder = MaterialAlertDialogBuilder(this, R.style.AlertDialogTheme)
         builder.setIcon(android.R.drawable.ic_dialog_alert)
         builder.setTitle(transformTitle(alertEvent.title))
-        builder.setMessage(alertEvent.message)
         builder.background = ColorDrawable(ContextCompat.getColor(this, R.color.black))
         builder.setPositiveButton("OK") { _, _ ->
             mAlertDialog?.dismiss()
@@ -220,10 +213,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun transformTitle(title: String?): String {
-        return if (title != null && title.startsWith("Unable to resolve"))
-            "Frontier server down"
-        else
-            title ?: this.getString(R.string.download_error)
-
+        return if (title != null && title.startsWith("Unable to resolve")) "Frontier server down"
+        else title ?: this.getString(R.string.download_error)
     }
 }

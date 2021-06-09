@@ -7,13 +7,11 @@ import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.recyclerview.widget.RecyclerView
 import com.devries48.elitecommander.R
-import com.devries48.elitecommander.models.StatisticModel
-import com.devries48.elitecommander.models.StatisticsBuilder
-import com.devries48.elitecommander.models.StatisticsBuilder.Companion.StatisticColor.DIMMED
-import com.devries48.elitecommander.models.StatisticsBuilder.Companion.StatisticColor.WARNING
+import com.devries48.elitecommander.models.RowBuilder
+import com.devries48.elitecommander.models.RowModel
 
-class StatisticsRecyclerAdapter(var data: List<StatisticModel>?) :
-    RecyclerView.Adapter<StatisticsRecyclerAdapter.ViewHolder>() {
+class RowsRecyclerAdapter(var data: List<RowModel>?) :
+    RecyclerView.Adapter<RowsRecyclerAdapter.ViewHolder>() {
 
     /**
      * Provide a reference to the type of views that you are using
@@ -85,7 +83,7 @@ class StatisticsRecyclerAdapter(var data: List<StatisticModel>?) :
         deltaTextView: TextView,
         @StringRes titleResId: Int,
         value: String?,
-        color: StatisticsBuilder.Companion.StatisticColor,
+        color: RowBuilder.RowColor,
         delta: String?
     ) {
         val ctx = nameTextView.context
@@ -115,16 +113,16 @@ class StatisticsRecyclerAdapter(var data: List<StatisticModel>?) :
         return if (leftDelta.startsWith("-")) R.style.eliteStyle_RedText else R.style.eliteStyle_AzureText
     }
 
-    private fun getItemStyle(color: StatisticsBuilder.Companion.StatisticColor): Int {
+    private fun getItemStyle(color: RowBuilder.RowColor): Int {
         return when (color) {
-            DIMMED -> R.style.eliteStyle_Value
-            WARNING -> R.style.eliteStyle_RedText
+            RowBuilder.RowColor.DIMMED -> R.style.eliteStyle_Value
+            RowBuilder.RowColor.WARNING -> R.style.eliteStyle_RedText
             else -> R.style.eliteStyle_Bright
         }
     }
 
-    fun updateList(stats: List<StatisticModel>) {
-        data = stats
+    fun updateList(rows: List<RowModel>) {
+        data = rows
         notifyDataSetChanged()
     }
 }
