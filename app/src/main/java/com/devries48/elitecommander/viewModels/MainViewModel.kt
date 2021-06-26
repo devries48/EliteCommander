@@ -175,7 +175,7 @@ class MainViewModel : ViewModel() {
     @Subscribe(threadMode = ThreadMode.ASYNC)
     fun onCurrentDiscoveries(discoveries: FrontierDiscoveriesEvent) {
         GlobalScope.launch {
-            if (!discoveries.success) sendAlert(R.string.Frontier_journal_discoveries, discoveries.error)
+            if (!discoveries.success) sendAlert(R.string.frontier_journal_discoveries, discoveries.error)
             else launchCurrentDiscoveries(discoveries)
 
             mIsDiscoveryBusy.postValue(false)
@@ -186,7 +186,7 @@ class MainViewModel : ViewModel() {
     fun onStatistics(statistics: FrontierStatisticsEvent) {
         GlobalScope.launch {
             if (!statistics.success) {
-                sendAlert(R.string.Frontier_journal_statistics, statistics.error)
+                sendAlert(R.string.frontier_journal_statistics, statistics.error)
                 mIsStatsBusy.postValue(false)
                 return@launch
             }
@@ -712,7 +712,7 @@ class MainViewModel : ViewModel() {
         mBuilderTrading.addStatistic(
             RowBuilder.StatisticType.TRADING_MARKETS,
             RowBuilder.RowPosition.LEFT,
-            R.string.marketsTradedWith,
+            R.string.markets_traded_with,
             statistics.trading!!.marketsTradedWith,
             mStatisticSettings.marketsTradedWith,
             RowBuilder.RowFormat.INTEGER
@@ -720,7 +720,7 @@ class MainViewModel : ViewModel() {
         mBuilderTrading.addStatistic(
             RowBuilder.StatisticType.TRADING_MARKETS,
             RowBuilder.RowPosition.RIGHT,
-            R.string.blackMarkets,
+            R.string.black_markets,
             statistics.smuggling!!.blackMarketsTradedWith,
             mStatisticSettings.blackMarketsTradedWith,
             RowBuilder.RowFormat.INTEGER
@@ -728,7 +728,7 @@ class MainViewModel : ViewModel() {
         mBuilderTrading.addStatistic(
             RowBuilder.StatisticType.TRADING_RESOURCES,
             RowBuilder.RowPosition.LEFT,
-            R.string.resourcesTraded,
+            R.string.resources_traded,
             statistics.trading.resourcesTraded,
             null,
             RowBuilder.RowFormat.INTEGER,

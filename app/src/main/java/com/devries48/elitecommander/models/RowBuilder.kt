@@ -169,7 +169,11 @@ class RowBuilder {
     }
 
     enum class SearchType {
-        NEAREST_INTERSTELLAR
+        NEAREST_INTERSTELLAR,
+        NEAREST_RAW,
+        NEAREST_ENCODED,
+        NEAREST_MANUFACTURED,
+        NEAREST_TECHNOLOGY_BROKER
     }
 
     enum class RowPosition {

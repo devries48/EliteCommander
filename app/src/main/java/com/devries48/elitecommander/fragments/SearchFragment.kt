@@ -9,6 +9,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.devries48.elitecommander.adapters.ViewPagerAdapter
 import com.devries48.elitecommander.adapters.ViewPagerTransform
 import com.devries48.elitecommander.databinding.FragmentSearchBinding
+import kotlinx.coroutines.DelicateCoroutinesApi
 
 class SearchFragment : Fragment() {
 
@@ -16,6 +17,7 @@ class SearchFragment : Fragment() {
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
 
+    @DelicateCoroutinesApi
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

@@ -18,7 +18,7 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 class FindNearestFragment : Fragment() {
 
     private val mViewModel: SearchViewModel by navGraphViewModels(R.id.nav_search)
-    private lateinit var mStatisticAdapter: RowsRecyclerAdapter
+    private lateinit var mNearestAdapter: RowsRecyclerAdapter
 
     private var _binding: FragmentFindNearestBinding? = null
     private val binding get() = _binding!!
@@ -43,18 +43,14 @@ class FindNearestFragment : Fragment() {
 
     private fun bindNearestFacilities() {
         val list = mViewModel.getNearestFacilities()
-        if (list.value == null) {
-            println("LOG: FindNearestFragment.getNearestFacilities is null!")
-            return
-        }
+        list.observe(viewLifecycleOwner,
+            { stats -> run { mNearestAdapter.updateList(stats) } })
+
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
 
-        mStatisticAdapter = RowsRecyclerAdapter(list.value!!)
+        mNearestAdapter = RowsRecyclerAdapter(list.value)
         binding.nearestRecyclerView.layoutManager = layoutManager
-        binding.nearestRecyclerView.adapter = mStatisticAdapter
-
-        list.observe(viewLifecycleOwner,
-            { stats -> run { mStatisticAdapter.updateList(stats) } })
+        binding.nearestRecyclerView.adapter = mNearestAdapter
     }
 
     override fun onDestroyView() {

@@ -216,8 +216,8 @@
     <string name="frontier_profile">Frontier profile</string>
     <string name="frontier_fleet">Frontier fleet</string>
     <string name="edsm_distance">EDSM distance search</string>
-    <string name="Frontier_journal_discoveries">Frontier journal discoveries</string>
-    <string name="Frontier_journal_statistics">Frontier journal statistics</string>
+    <string name="frontier_journal_discoveries">Frontier journal discoveries</string>
+    <string name="frontier_journal_statistics">Frontier journal statistics</string>
     <string name="combat">Combat</string>
     <string name="statistics">Statistics</string>
     <string name="ships_destroyed">Ships destroyed</string>
@@ -235,16 +235,19 @@
     <string name="passengers_bulk">Bulk</string>
     <string name="passengers_vip">VIP</string>
     <string name="last_journal">Last journal</string>
-    <string name="marketsTradedWith">Markets traded with</string>
-    <string name="blackMarkets">Black markets</string>
-    <string name="resourcesTraded">Resources traded</string>
+    <string name="markets_traded_with">Markets traded with</string>
+    <string name="black_markets">Black markets</string>
+    <string name="resources_traded">Resources traded</string>
     <string name="smuggled">Smuggled</string>
-    <string name="tradingAndSmuggling"><![CDATA[Trading & Smuggling]]></string>
+    <string name="trading_smuggling"><![CDATA[Trading & Smuggling]]></string>
     <string name="search">Search</string>
     <string name="nearest_facilities">Nearest Facilities</string>
     <string name="distance">Distance</string>
     <string name="jumps">Jumps</string>
     <string name="last_docked">Last docked</string>
-    <string name="refresh">Refresh</string>
-    <string name="Interstellar_Factor">Interstellar Factor</string>
+    <string name="interstellar_factor">Interstellar Factor</string>
+    <string name="raw_material_trader">Raw material  trader</string>
+    <string name="encoded_material_trader">Encoded material trader</string>
+    <string name="manufactured_material_trader">Manufactured material trader</string>
+    <string name="technology_broker">Technology broker</string>
 </resources>

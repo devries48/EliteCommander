@@ -12,7 +12,9 @@ import com.devries48.elitecommander.R
 import com.devries48.elitecommander.adapters.RowsRecyclerAdapter
 import com.devries48.elitecommander.databinding.FragmentStatisticsBinding
 import com.devries48.elitecommander.viewModels.MainViewModel
+import kotlinx.coroutines.DelicateCoroutinesApi
 
+@DelicateCoroutinesApi
 class StatisticsFragment : Fragment() {
 
     private val mViewModel: MainViewModel by navGraphViewModels(R.id.nav_main)

@@ -24,9 +24,53 @@ class SearchViewModel : ViewModel() {
         mBuilderNearest.addSearch(
             RowBuilder.SearchType.NEAREST_INTERSTELLAR,
             RowBuilder.RowPosition.LEFT,
-            R.string.Interstellar_Factor,
-            "TEST LY"
+            R.string.interstellar_factor,
+            "TEST LY",
+            null,
+            RowBuilder.RowFormat.NONE,
+            RowBuilder.RowColor.DIMMED
         )
+
+        mBuilderNearest.addSearch(
+            RowBuilder.SearchType.NEAREST_RAW,
+            RowBuilder.RowPosition.LEFT,
+            R.string.raw_material_trader,
+            "TEST LY",
+            null,
+            RowBuilder.RowFormat.NONE,
+            RowBuilder.RowColor.DIMMED
+        )
+
+        mBuilderNearest.addSearch(
+            RowBuilder.SearchType.NEAREST_ENCODED,
+            RowBuilder.RowPosition.LEFT,
+            R.string.encoded_material_trader,
+            "TEST LY",
+            null,
+            RowBuilder.RowFormat.NONE,
+            RowBuilder.RowColor.DIMMED
+        )
+
+        mBuilderNearest.addSearch(
+            RowBuilder.SearchType.NEAREST_MANUFACTURED,
+            RowBuilder.RowPosition.LEFT,
+            R.string.manufactured_material_trader,
+            "TEST LY",
+            null,
+            RowBuilder.RowFormat.NONE,
+            RowBuilder.RowColor.DIMMED
+        )
+
+        mBuilderNearest.addSearch(
+            RowBuilder.SearchType.NEAREST_TECHNOLOGY_BROKER,
+            RowBuilder.RowPosition.LEFT,
+            R.string.technology_broker,
+            "TEST LY",
+            null,
+            RowBuilder.RowFormat.NONE,
+            RowBuilder.RowColor.DIMMED
+        )
+
         mBuilderNearest.post()
 
         return mBuilderNearest.rows

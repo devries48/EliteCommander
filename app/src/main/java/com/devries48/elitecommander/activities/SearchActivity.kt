@@ -9,7 +9,6 @@ import com.devries48.elitecommander.R
 class SearchActivity : AppCompatActivity() {
 
     private var mCurrentDestinationId: Int = 0
-    private val mNavController by lazy { findNavController() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
