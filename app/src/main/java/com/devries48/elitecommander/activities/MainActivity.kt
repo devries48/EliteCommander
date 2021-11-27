@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
 
     private val mNavController by lazy { findNavController() }
     private var mMainViewModel: MainViewModel? = null
-    private var mAlertList = ArrayList<@StringRes Int>()
+    private var mAlertList = ArrayList<Int>()
     private var mAlertDialog: androidx.appcompat.app.AlertDialog? = null
 
     private var mIsLoggedIn: Boolean? by Delegates.observable(null) { _, _, newValue ->

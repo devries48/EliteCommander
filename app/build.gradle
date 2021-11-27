@@ -11,8 +11,8 @@ def localProperties = new Properties()
 localProperties.load(new FileInputStream(rootProject.file("local.properties")))
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion "30.0.3"
+    compileSdkVersion 31
+    buildToolsVersion '30.0.3'
 
     def _major = 0
     def _minor = 0
@@ -58,7 +58,7 @@ android {
     defaultConfig {
         applicationId "com.devries48.elitecommander"
         minSdkVersion 24
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode _versionCode
         versionName _versionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -95,23 +95,23 @@ android {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    implementation 'androidx.core:core-ktx:1.5.0'
-    implementation 'androidx.appcompat:appcompat:1.3.0'
-    implementation 'com.google.android.material:material:1.3.0'
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.4.0'
+    implementation 'com.google.android.material:material:1.4.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.3.5'
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
     implementation "androidx.preference:preference-ktx:1.1.1"
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.0'
     implementation 'org.greenrobot:eventbus:3.2.0'
-    implementation 'com.google.code.gson:gson:2.8.7'
+    implementation 'com.google.code.gson:gson:2.8.9'
 
     // Firebase
-    implementation 'com.google.firebase:firebase-crashlytics-ktx:18.1.0'
-    implementation 'com.google.firebase:firebase-analytics:19.0.0'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx:18.2.4'
+    implementation 'com.google.firebase:firebase-analytics:20.0.0'
     // Import the BoM for the Firebase platform
     implementation platform('com.google.firebase:firebase-bom:28.0.1')
     // Declare the dependency for the Performance Monitoring library
@@ -124,20 +124,20 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
 
     // Log request & response
-    implementation('com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.2')
+    implementation('com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.3')
 
     // Futured donut
-    ext.futuredVersion = '2.1.0'
+    ext.futuredVersion = '2.2.0'
     implementation "app.futured.donut:donut:$futuredVersion"
     implementation "app.futured.donut:donut-compose:$futuredVersion"
 
     // Unit & instrumented tests
-    testImplementation('org.junit.jupiter:junit-jupiter-api:5.7.1')
-    testRuntimeOnly('org.junit.jupiter:junit-jupiter-engine:5.7.1')
-    testRuntimeOnly('org.junit.vintage:junit-vintage-engine:5.7.1')
+    testImplementation('org.junit.jupiter:junit-jupiter-api:5.8.1')
+    testRuntimeOnly('org.junit.jupiter:junit-jupiter-engine:5.8.1')
+    testRuntimeOnly('org.junit.vintage:junit-vintage-engine:5.8.1')
 
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 }
 
 tasks.withType(Test) {

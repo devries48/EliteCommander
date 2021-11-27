@@ -17,7 +17,8 @@
             android:name=".activities.LoginActivity"
             android:label="@string/frontier_login"
             android:launchMode="singleTask"
-            android:permission="">
+            android:permission=""
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -34,7 +35,8 @@
             android:configChanges=""
             android:label="@string/app_name"
             android:permission=""
-            android:theme="@style/Theme.EliteCommander.Main">
+            android:theme="@style/Theme.EliteCommander.Main"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
