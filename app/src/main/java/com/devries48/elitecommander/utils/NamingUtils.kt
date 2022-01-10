@@ -96,7 +96,7 @@ object NamingUtils {
     }
 
     fun getFederationRankDrawableId(rankValue: Int): Int {
-        return when (rankValue + 1) {
+        return when (rankValue) {
             2 -> R.drawable.rank_fed_2
             3 -> R.drawable.rank_fed_3
             4 -> R.drawable.rank_fed_4
@@ -115,7 +115,7 @@ object NamingUtils {
     }
 
     fun getEmpireRankDrawableId(rankValue: Int): Int {
-        return when (rankValue + 1) {
+        return when (rankValue) {
             2 -> R.drawable.rank_emp_2
             3 -> R.drawable.rank_emp_3
             4 -> R.drawable.rank_emp_4

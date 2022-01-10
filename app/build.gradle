@@ -11,8 +11,8 @@ def localProperties = new Properties()
 localProperties.load(new FileInputStream(rootProject.file("local.properties")))
 
 android {
-    compileSdkVersion 31
-    buildToolsVersion '30.0.3'
+    compileSdkVersion 32
+    buildToolsVersion '32.0.0'
 
     def _major = 0
     def _minor = 0
@@ -58,12 +58,12 @@ android {
     defaultConfig {
         applicationId "com.devries48.elitecommander"
         minSdkVersion 24
-        targetSdkVersion 31
+        targetSdkVersion 32
         versionCode _versionCode
         versionName _versionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        // Get or create frontier client id here: https://user.frontierstore.net
+        // Get or create frontier client id here: https://www.frontierstore.net
         buildConfigField "String", "FRONTIER_AUTH_CLIENT_ID", "\"${localProperties.getProperty("frontierclientid")}\""
     }
 
@@ -105,13 +105,13 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
     implementation "androidx.preference:preference-ktx:1.1.1"
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.0'
-    implementation 'org.greenrobot:eventbus:3.2.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0-native-mt'
+    implementation 'org.greenrobot:eventbus:3.3.1'
     implementation 'com.google.code.gson:gson:2.8.9'
 
     // Firebase
-    implementation 'com.google.firebase:firebase-crashlytics-ktx:18.2.4'
-    implementation 'com.google.firebase:firebase-analytics:20.0.0'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx:18.2.6'
+    implementation 'com.google.firebase:firebase-analytics:20.0.2'
     // Import the BoM for the Firebase platform
     implementation platform('com.google.firebase:firebase-bom:28.0.1')
     // Declare the dependency for the Performance Monitoring library
@@ -132,9 +132,9 @@ dependencies {
     implementation "app.futured.donut:donut-compose:$futuredVersion"
 
     // Unit & instrumented tests
-    testImplementation('org.junit.jupiter:junit-jupiter-api:5.8.1')
-    testRuntimeOnly('org.junit.jupiter:junit-jupiter-engine:5.8.1')
-    testRuntimeOnly('org.junit.vintage:junit-vintage-engine:5.8.1')
+    testImplementation('org.junit.jupiter:junit-jupiter-api:5.8.2')
+    testRuntimeOnly('org.junit.jupiter:junit-jupiter-engine:5.8.2')
+    testRuntimeOnly('org.junit.vintage:junit-vintage-engine:5.8.2')
 
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
