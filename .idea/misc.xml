@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/rvrie/StudioProjects/EliteCommander/app/src/main/res/layout/fragment_profit.xml" value="0.22" />
         <entry key="app/src/main/res/layout/fragment_commander.xml" value="0.15885416666666666" />
         <entry key="app/src/main/res/layout/fragment_discoveries.xml" value="0.15885416666666666" />
         <entry key="app/src/main/res/layout/fragment_find_nearest.xml" value="0.15885416666666666" />

@@ -86,12 +86,13 @@
 
                 <app.futured.donut.DonutProgressView
                     android:id="@+id/donut_view"
-                    android:layout_width="0dp"
                     android:layout_height="0dp"
+                    android:layout_width="0dp"
                     app:donut_bgLineColor="@color/background"
                     app:donut_gapWidth="0"
                     app:donut_strokeCap="butt"
                     app:donut_strokeWidth="16dp"
+                    app:layout_constraintHorizontal_weight="1"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/profits_recyclerView"
                     app:layout_constraintStart_toStartOf="parent"
@@ -99,10 +100,11 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/profits_recyclerView"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginStart="@dimen/margin_medium"
                     android:layout_marginTop="@dimen/margin_medium"
+                    app:layout_constraintHorizontal_weight="1"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent" />
 
