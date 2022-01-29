@@ -59,8 +59,9 @@ class ProfitFragment : Fragment() {
         binding.statsRecyclerView.layoutManager = statisticLayoutManager
         binding.statsRecyclerView.adapter = mStatisticAdapter
 
-        list.observe(viewLifecycleOwner,
-            { stats -> run { mStatisticAdapter.updateList(stats) } })
+        list.observe(
+            viewLifecycleOwner
+        ) { stats -> run { mStatisticAdapter.updateList(stats) } }
     }
 
     private fun bindProfitChart() {
@@ -72,26 +73,27 @@ class ProfitFragment : Fragment() {
         binding.profitsRecyclerView.layoutManager = profitLayoutManager
         binding.profitsRecyclerView.adapter = mProfitAdapter
 
-        chartList.observe(viewLifecycleOwner,
-            {
-                run {
-                    val sections = ArrayList<DonutSection>()
+        chartList.observe(
+            viewLifecycleOwner
+        ) {
+            run {
+                val sections = ArrayList<DonutSection>()
 
-                    chartList.value?.forEach {
-                        sections.add(
-                            DonutSection(
-                                this.resources.getString(it.getTitle()), it.getColor(), it.percentage
-                            )
+                chartList.value?.forEach {
+                    sections.add(
+                        DonutSection(
+                            this.resources.getString(it.getTitle()), it.getColor(), it.percentage
                         )
-                    }
-
-                    binding.donutView.cap = 100f
-                    binding.donutView.submitData(sections)
-
-                    val sorted = chartList.value?.sortedByDescending { it.percentage }
-                    mProfitAdapter.updateList(sorted)
+                    )
                 }
-            })
+
+                binding.donutView.cap = 100f
+                binding.donutView.submitData(sections)
+
+                val sorted = chartList.value?.sortedByDescending { it.percentage }
+                mProfitAdapter.updateList(sorted)
+            }
+        }
     }
 
 
