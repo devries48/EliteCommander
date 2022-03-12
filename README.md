@@ -9,9 +9,14 @@
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=devries48_EliteCommander&metric=ncloc)](https://sonarcloud.io/dashboard?id=devries48_EliteCommander)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=devries48_EliteCommander&metric=code_smells)](https://sonarcloud.io/dashboard?id=devries48_EliteCommander)
 ## Table of content
+- [Screenshots](#screenshots)
 - [FUNCTIONALITY](#functionality)
 - [API's USED](#apis-used)
 - [RESOURCES USED](#resources-used)
+
+
+## FUNCTIONALITY
+
 
 
 ## FUNCTIONALITY
