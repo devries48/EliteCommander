@@ -15,8 +15,8 @@
 - [RESOURCES USED](#resources-used)
 
 
-## FUNCTIONALITY
-
+## SCREENSHOTS
+<img src="https://user-images.githubusercontent.com/9018231/158037791-628e1d00-6d20-41d0-975d-326625ac6a7a.png" width="45%"></img> <img src="https://user-images.githubusercontent.com/9018231/158037796-1fe4d6ed-07ff-426e-8393-3c7b534e0c15.png" width="45%"></img> <img src="https://user-images.githubusercontent.com/9018231/158037801-f0c3e77e-025d-4e62-b1cb-2fb4da1d8062.png" width="45%"></img> <img src="https://user-images.githubusercontent.com/9018231/158037803-73ebc5d9-965a-4de1-b214-763bb4a8764e.png" width="45%"></img> 
 
 
 ## FUNCTIONALITY
